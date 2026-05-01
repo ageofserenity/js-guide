@@ -5475,7 +5475,7 @@ const c = \`hello\`;    // backticks — only when you need \${} or multi-line
 // fix:
 const userName = "Os";</code></pre>
 
-<pre class="language-javascript"><code class="language-javascript">const greeting = "Hello, ${userName}";
+<pre class="language-javascript"><code class="language-javascript">const greeting = "Hello, \${userName}";
 // wrong: \${} only works inside backticks
 // fix:
 const greeting = \`Hello, \${userName}\`;</code></pre>
@@ -5582,6 +5582,675 @@ const response = await fetch(USERS_ENDPOINT);</code></pre>
       <li>Escape characters (<code>\\n</code>, <code>\\t</code>, <code>\\"</code>)</li>
       <li>Storing numbers</li>
       <li>Storing booleans</li>
+    </ul>
+  `,
+
+
+  /* ===== Sub-lesson: 3.1 Variables → storing numbers =====
+     Path: topics-0-14-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-0-14-0-0': `
+    <p>Storing a number means putting a numeric value into a variable. No quotes — just the digits.</p>
+    <p>Whole numbers, decimals, negatives — all numbers. JavaScript doesn't distinguish between integers and decimals like some languages do; everything is just "number."</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-0-14-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const age = 25;             // whole number
+const price = 19.99;        // decimal
+const temperature = -5;     // negative
+const total = 0;            // zero is a number too
+
+let count = 0;              // let if it'll change later</code></pre>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-0-14-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const price = 19.99;
+
+// const   → keyword (creates the variable)
+// price   → variable name
+// =       → assignment
+// 19.99   → the number value (no quotes!)
+// ;       → ends the statement
+
+// No quotes around 19.99 — that's how JS knows it's a number, not a string.</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-0-14-0-3': `
+    <p>No quotes — that's the key difference from strings:</p>
+<pre class="language-javascript"><code class="language-javascript">const age = 25;       // number
+const age = "25";     // string — looks the same, behaves very differently</code></pre>
+
+    <p>Decimals use a period, never a comma:</p>
+<pre class="language-javascript"><code class="language-javascript">const price = 19.99;   // correct
+const price = 19,99;   // wrong: comma creates two values, not a decimal</code></pre>
+
+    <p>You can use underscores as visual separators in big numbers (ignored by JS):</p>
+<pre class="language-javascript"><code class="language-javascript">const million = 1_000_000;     // 1000000 — easier to read
+const distance = 384_400;       // 384400</code></pre>
+
+    <p>Numbers can be the result of math:</p>
+<pre class="language-javascript"><code class="language-javascript">const total = 10 + 5;          // right side runs first → 15 stored
+const tax = price * 0.08;      // calculation, then stored
+const remaining = 100 - used;  // mixed literal and variable</code></pre>
+
+    <p>JavaScript has special number-like values you'll occasionally see:</p>
+<pre class="language-javascript"><code class="language-javascript">const inf = Infinity;          // mathematical infinity
+const tiny = -Infinity;        // negative infinity
+const broken = NaN;             // "Not a Number" — result of bad math like 0/0</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-0-14-1-0': `
+    <p>JavaScript needs a way to represent quantities you can do math with — counts, prices, ages, scores, positions, times. Without numbers, you couldn't add anything up, compare amounts, or track anything that grows or shrinks.</p>
+    <p>Storing a number in a variable lets you do calculations once, save the result, and reuse it.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-0-14-1-1': `
+    <p>Use a number any time the value represents an amount, a count, or a position — anything you might do math with.</p>
+<pre class="language-javascript"><code class="language-javascript">// Counts
+const cartItemCount = 3;
+let unreadMessages = 12;
+
+// Prices
+const productPrice = 29.99;
+const shippingCost = 5.99;
+
+// Positions and indexes
+let currentSlide = 0;
+const firstIndex = 0;
+
+// Times
+const timeoutMs = 5000;
+const dayInMs = 86_400_000;</code></pre>
+    <p>If you'll only display it as text and never compute anything with it (like a phone number or zip code), strings might be a better choice — leading zeros disappear in numbers.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-0-14-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Calculation results
+const subtotal = quantity * pricePerItem;
+const grandTotal = subtotal + tax;
+
+// Counters that go up
+let clicks = 0;
+clicks = clicks + 1;
+
+// Configuration
+const MAX_RETRIES = 3;
+const TIMEOUT_MS = 5000;
+
+// Index/position tracking
+let currentPage = 1;
+
+// Working with form input (after converting from string)
+const userAge = Number(ageInput.value);
+
+// Math operations
+const angle = 90;
+const radians = angle * (Math.PI / 180);</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-0-14-1-3': `
+    <p>Storing a number is the same as storing anything else — just put it in the variable. The only thing that makes it a number instead of a string is the absence of quotes.</p>
+    <p>Once stored, the variable holds the number, and you can do math with it the same way you would with a literal number.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-0-14-1-4': `
+    <p>Numbers are values you can do math with. Strings are values you treat as text. The same digits can be either, depending on whether they're wrapped in quotes:</p>
+<pre class="language-javascript"><code class="language-javascript">const a = 5;
+const b = "5";
+
+a + 1;       // 6   (number addition)
+b + 1;       // "51"  (string concatenation — JS converts 1 to "1" and joins)
+
+a + a;       // 10
+b + b;       // "55"</code></pre>
+    <p>Numbers behave like math. Strings behave like text. Don't mix them up.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-0-14-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const price = 19.99;
+const tax = price * 0.08;
+const total = price + tax;
+console.log(total);
+
+// JavaScript is thinking:
+// Line 1: declare price. Right side is 19.99 (a number literal).
+//         Store the number 19.99 in price.
+// Line 2: declare tax. Right side: look up price (19.99), multiply by 0.08.
+//         Result: 1.5992. Store in tax.
+// Line 3: declare total. Right side: look up price (19.99), look up tax (1.5992).
+//         Add them: 21.5892. Store in total.
+// Line 4: look up total → 21.5892 → log it.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-0-14-2-0': `
+    <p>If math gives you weird results, the most common cause is a string sneaking in where you expected a number:</p>
+<pre class="language-javascript"><code class="language-javascript">const price = "10";       // string, not number!
+const total = price + 5;
+console.log(total);        // "105" — JS concatenated instead of adding
+
+// fix: convert to number first
+const price = Number("10");
+const total = price + 5;
+console.log(total);        // 15</code></pre>
+
+    <p>Form inputs are always strings, even if they hold numbers:</p>
+<pre class="language-javascript"><code class="language-javascript">const userAge = ageInput.value;
+console.log(userAge + 1);     // "251" if user typed "25" — string concat
+
+// fix: convert before doing math
+const userAge = Number(ageInput.value);
+console.log(userAge + 1);     // 26</code></pre>
+
+    <p>If you see <code>NaN</code> ("Not a Number"), one of the values in your math wasn't a valid number:</p>
+<pre class="language-javascript"><code class="language-javascript">const total = "abc" * 2;
+console.log(total);            // NaN — can't multiply text by a number
+
+const broken = undefined + 5;
+console.log(broken);           // NaN — undefined isn't a number</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-0-14-2-1': `
+    <p>No quotes = number. Quotes = string. JavaScript will not figure it out for you.</p>
+    <p>If you need to do math with a value that came in as a string (like form input), convert it first with <code>Number()</code>.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-0-14-2-2': `
+    <p><strong>Confusion: number vs string number</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const a = 25;     // number — can do math
+const b = "25";   // string that looks like a number — careful
+
+a + 1;            // 26
+b + 1;            // "251"  (string concat)
+a * 2;            // 50
+b * 2;            // 50  (JS coerces b to number for *, but not for +)</code></pre>
+
+    <p><strong>Confusion: form input is always a string</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Even &lt;input type="number"&gt; returns a string
+const userAge = ageInput.value;       // "25" (string)
+const userAge = Number(ageInput.value);  // 25 (number)</code></pre>
+
+    <p><strong>Confusion: floating-point math is sometimes weird</strong></p>
+<pre class="language-javascript"><code class="language-javascript">console.log(0.1 + 0.2);    // 0.30000000000000004 — not 0.3!
+
+// This is a quirk of how computers store decimals.
+// For money or anything that needs precision, work with cents (integers):
+const price = 1999;          // $19.99 stored as cents
+console.log(price + 50);     // 2049 cents = $20.49</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-0-14-2-3': `
+<pre class="language-javascript"><code class="language-javascript">const age = "25";
+console.log(age + 1);     // "251"
+// fix: store as a number, not a string
+const age = 25;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const price = 19,99;
+// wrong: comma creates a different expression in JS
+// fix: use a period for decimals
+const price = 19.99;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const userAge = ageInput.value;
+console.log(userAge + 5);  // string concat, not math
+// fix: convert from form input
+const userAge = Number(ageInput.value);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const total = 0.1 + 0.2;
+if (total === 0.3) {}     // wrong: 0.1 + 0.2 isn't exactly 0.3 in JS
+// fix: compare with a tolerance, or use integers (cents)</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const phone = 5551234567;
+const zip = 02134;        // wrong: leading 0 makes JS think it's octal
+// fix: store as strings if you don't need to do math
+const phone = "555-123-4567";
+const zip = "02134";</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-0-14-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Whole number
+const age = 25;
+console.log(age);          // 25
+
+// Decimal
+const price = 19.99;
+console.log(price * 2);    // 39.98
+
+// Negative
+const temperature = -5;
+console.log(temperature);  // -5
+
+// Math result
+const sum = 10 + 20 + 30;
+console.log(sum);          // 60
+
+// Counter that updates
+let score = 0;
+score = score + 10;        // 10
+score = score + 5;         // 15
+console.log(score);        // 15
+
+// Underscores for readability
+const million = 1_000_000;
+console.log(million);      // 1000000</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-0-14-3-1': `
+    <p><strong>Example: shopping cart math</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const itemPrice = 29.99;
+const quantity = 3;
+const subtotal = itemPrice * quantity;
+const tax = subtotal * 0.08;
+const total = subtotal + tax;</code></pre>
+
+    <p><strong>Example: tracking a counter</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let cartCount = 0;
+
+addToCartBtn.addEventListener("click", () => {
+  cartCount = cartCount + 1;
+  cartBadge.textContent = cartCount;
+});</code></pre>
+
+    <p><strong>Example: configuration constants</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const MAX_LOGIN_ATTEMPTS = 3;
+const SESSION_TIMEOUT_MS = 1_800_000;   // 30 min in ms
+const TAX_RATE = 0.08;</code></pre>
+
+    <p><strong>Example: converting form input to do math</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const enteredAge = Number(ageInput.value);
+
+if (enteredAge < 18) {
+  showError("Must be 18 or older");
+}</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-0-14-3-2': `
+    <ul>
+      <li><strong>Numbers</strong> → the topic of numbers as a data type (deeper coverage)</li>
+      <li><strong>Math operators</strong> → <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code></li>
+      <li><strong>Number()</strong> → convert strings to numbers</li>
+      <li><strong>Forms</strong> → input values come in as strings, often need conversion</li>
+      <li><strong>NaN</strong> → what you get from invalid math</li>
+      <li><strong>Math object</strong> → <code>Math.round</code>, <code>Math.floor</code>, <code>Math.random</code></li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-0-14-3-3': `
+    <ul>
+      <li>Numbers (full topic)</li>
+      <li>Math operators</li>
+      <li><code>Number()</code> conversion</li>
+      <li><code>parseInt()</code> and <code>parseFloat()</code></li>
+      <li><code>NaN</code> and <code>Infinity</code></li>
+      <li>Floating-point precision</li>
+      <li>Storing strings</li>
+      <li>Storing booleans</li>
+    </ul>
+  `,
+
+
+  /* ===== Sub-lesson: 3.1 Variables → storing booleans =====
+     Path: topics-0-15-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-0-15-0-0': `
+    <p>Storing a boolean means putting either <code>true</code> or <code>false</code> into a variable. Just those two values — nothing else is a boolean.</p>
+    <p>Booleans answer yes/no questions. Is the user logged in? Is the menu open? Is the form valid? Each one's answer is a boolean stored somewhere in your code.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-0-15-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const isLoggedIn = true;
+const isMenuOpen = false;
+const hasUnreadMessages = true;
+const canEdit = false;
+
+let isLoading = true;          // let if it'll flip later</code></pre>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-0-15-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const isLoggedIn = true;
+
+// const        → keyword (creates the variable)
+// isLoggedIn   → variable name (starts with "is" — reads as a question)
+// =            → assignment
+// true         → the boolean value (no quotes!)
+// ;            → ends the statement
+
+// true and false are keywords in JS — not strings, not variables.</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-0-15-0-3': `
+    <p>No quotes around <code>true</code> or <code>false</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">const isOpen = true;       // boolean — what you want
+const isOpen = "true";     // string — looks similar, behaves very differently</code></pre>
+
+    <p>Lowercase only — <code>true</code> and <code>false</code> are keywords:</p>
+<pre class="language-javascript"><code class="language-javascript">const isOpen = true;       // correct
+const isOpen = True;       // wrong: ReferenceError — True isn't defined
+const isOpen = TRUE;       // wrong: same reason</code></pre>
+
+    <p>You can store the result of a comparison directly:</p>
+<pre class="language-javascript"><code class="language-javascript">const age = 25;
+const canVote = age >= 18;       // comparison evaluates to true or false
+console.log(canVote);             // true
+
+const isMatching = "Os" === "Sam";   // false
+console.log(isMatching);              // false</code></pre>
+
+    <p>Use <code>!</code> to flip a boolean:</p>
+<pre class="language-javascript"><code class="language-javascript">let isOpen = false;
+isOpen = !isOpen;        // flips false to true
+isOpen = !isOpen;        // flips true to false</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-0-15-1-0': `
+    <p>Code constantly needs to make decisions: should this run? should that show? Is the form ready to submit? Booleans are JavaScript's answer for representing those yes/no states.</p>
+    <p>Without booleans, every if-statement, every conditional render, every "should I do this?" check would have to use other types and risk getting them wrong.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-0-15-1-1': `
+    <p>Use a boolean any time you need to track a yes/no state — something that's only ever in one of two conditions.</p>
+<pre class="language-javascript"><code class="language-javascript">// User states
+let isLoggedIn = false;
+const isAdmin = true;
+
+// UI states
+let isMenuOpen = false;
+let isModalVisible = false;
+let isLoading = true;
+
+// Validation
+let isFormValid = false;
+let hasErrors = false;
+
+// Permissions
+const canEdit = true;
+const canDelete = false;</code></pre>
+    <p>Booleans are the natural type for any "is this true?" question. They're what every <code>if</code> statement actually evaluates.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-0-15-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Inside if statements
+if (isLoggedIn) {
+  showDashboard();
+}
+
+// Storing comparison results
+const isExpensive = price > 100;
+const namesMatch = userInput === expectedName;
+
+// Toggling UI state
+let isMenuOpen = false;
+hamburgerBtn.addEventListener("click", () => {
+  isMenuOpen = !isMenuOpen;
+  menu.classList.toggle("open");
+});
+
+// Form validation
+let isFormValid = checkAllFields();
+submitBtn.disabled = !isFormValid;
+
+// Permission checks
+if (canEditProfile) {
+  showEditButton();
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-0-15-1-3': `
+    <p>A boolean is a variable that can only ever be one of two things: yes or no, on or off, true or false.</p>
+    <p>You use it whenever your code needs to remember a yes/no answer to something. Was the user logged in? Did the form pass validation? Is dark mode on? Each of those is a boolean.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-0-15-1-4': `
+    <p>Booleans are switches. Each one is either ON or OFF. There's no in-between, no third option.</p>
+<pre class="language-javascript"><code class="language-javascript">let isMenuOpen = false;       // switch is OFF
+isMenuOpen = true;             // switch is ON
+isMenuOpen = !isMenuOpen;      // flip it (now OFF)
+isMenuOpen = !isMenuOpen;      // flip it again (now ON)</code></pre>
+    <p>Whenever you need to track a state with exactly two possibilities, you reach for a boolean.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-0-15-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const age = 25;
+const canVote = age >= 18;
+if (canVote) {
+  console.log("You can vote");
+}
+
+// JavaScript is thinking:
+// Line 1: declare age, store 25.
+// Line 2: declare canVote.
+//         Right side: look up age (25), check if 25 >= 18 → true.
+//         Store true in canVote.
+// Line 3: see if (canVote) → look up canVote → true.
+//         The condition is true, run the block.
+// Line 4: log "You can vote".</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-0-15-2-0': `
+    <p>If a boolean isn't behaving the way you expect, log it to confirm what's actually stored:</p>
+<pre class="language-javascript"><code class="language-javascript">let isLoggedIn = false;
+// some logic happens...
+console.log(isLoggedIn);   // peek to verify
+console.log(typeof isLoggedIn);  // "boolean" — confirms it's a real boolean</code></pre>
+
+    <p>The most common boolean trap: a string that <em>looks</em> like a boolean. Strings are always truthy, even <code>"false"</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">const isOpen = "false";   // string, not boolean!
+if (isOpen) {
+  console.log("This runs!");   // strings are truthy — even "false"
+}
+
+// fix: store an actual boolean
+const isOpen = false;
+if (isOpen) { /* doesn't run */ }</code></pre>
+
+    <p>If you're using <code>localStorage</code> values as booleans, remember they come back as strings:</p>
+<pre class="language-javascript"><code class="language-javascript">localStorage.setItem("darkMode", true);
+const darkMode = localStorage.getItem("darkMode");
+console.log(typeof darkMode);     // "string" — it's "true" not true
+
+// fix: parse back to a boolean
+const darkMode = localStorage.getItem("darkMode") === "true";</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-0-15-2-1': `
+    <p>Booleans are the language of decisions. Every <code>if</code> statement is asking a boolean question.</p>
+    <p><code>true</code> and <code>false</code> are special keywords — no quotes, lowercase only. Anything else is not a boolean.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-0-15-2-2': `
+    <p><strong>Confusion: <code>"false"</code> (string) vs <code>false</code> (boolean)</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const a = false;        // boolean — falsy
+const b = "false";      // string — truthy! (any non-empty string is truthy)
+
+if (a) { /* doesn't run */ }
+if (b) { /* RUNS! — confusing */ }</code></pre>
+
+    <p><strong>Confusion: truthy vs true</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Many values aren't booleans but BEHAVE like booleans in if statements:
+if ("hello") { }      // runs — non-empty strings are truthy
+if (1) { }            // runs — non-zero numbers are truthy
+if ([]) { }           // runs — arrays are truthy (even empty ones!)
+
+if ("") { }           // doesn't run — empty string is falsy
+if (0) { }            // doesn't run — zero is falsy
+if (null) { }         // doesn't run — null is falsy
+if (undefined) { }    // doesn't run — undefined is falsy</code></pre>
+    <p>Truthy/falsy is a separate concept — values that <em>act like</em> booleans without being booleans.</p>
+
+    <p><strong>Confusion: storing comparisons</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Beginners often write:
+let isOver18;
+if (age >= 18) {
+  isOver18 = true;
+} else {
+  isOver18 = false;
+}
+
+// You can store the comparison result directly:
+const isOver18 = age >= 18;   // shorter, same result</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-0-15-2-3': `
+<pre class="language-javascript"><code class="language-javascript">const isOpen = "true";
+// wrong: this is a string, not a boolean
+// fix: drop the quotes
+const isOpen = true;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const isOpen = True;
+// wrong: True (capitalized) isn't a keyword in JS
+// fix: lowercase
+const isOpen = true;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (isOpen = true) { }
+// wrong: this ASSIGNS true to isOpen, then checks if true is truthy (it is)
+// always runs!
+// fix: use ===
+if (isOpen === true) { }
+// even better — booleans don't need ===, just check the variable
+if (isOpen) { }</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">localStorage.setItem("darkMode", true);
+const darkMode = localStorage.getItem("darkMode");
+if (darkMode) { }
+// wrong: localStorage stores "true" as a string, and any non-empty string is truthy
+// even if it was "false", this if would run
+// fix: convert back to a boolean
+const darkMode = localStorage.getItem("darkMode") === "true";</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-0-15-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Direct values
+const isLoggedIn = true;
+const hasErrors = false;
+
+// From a comparison
+const age = 25;
+const canVote = age >= 18;        // true
+const isAdult = age > 17;          // true
+
+// Flipping
+let isMenuOpen = false;
+isMenuOpen = !isMenuOpen;          // true
+isMenuOpen = !isMenuOpen;          // false
+
+// In an if statement
+if (isLoggedIn) {
+  console.log("Welcome");
+}
+
+// Combined with logical operators
+const isAdmin = true;
+const isPremium = false;
+const hasAccess = isAdmin || isPremium;   // true (either one)</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-0-15-3-1': `
+    <p><strong>Example: tracking menu open/closed</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let isMenuOpen = false;
+
+hamburgerBtn.addEventListener("click", () => {
+  isMenuOpen = !isMenuOpen;
+  menu.classList.toggle("open");
+});</code></pre>
+
+    <p><strong>Example: form validation flag</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let isFormValid = false;
+
+emailInput.addEventListener("input", () => {
+  isFormValid = emailInput.value.includes("@");
+  submitBtn.disabled = !isFormValid;
+});</code></pre>
+
+    <p><strong>Example: loading state</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let isLoading = true;
+spinner.style.display = "block";
+
+const data = await fetch(url);
+isLoading = false;
+spinner.style.display = "none";</code></pre>
+
+    <p><strong>Example: permission flags</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const isAdmin = currentUser.role === "admin";
+const canEditPost = isAdmin || post.authorId === currentUser.id;
+
+if (canEditPost) {
+  showEditButton();
+}</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-0-15-3-2': `
+    <ul>
+      <li><strong>Booleans</strong> → the topic of booleans as a data type (deeper coverage)</li>
+      <li><strong>If / else</strong> → conditions that depend on booleans</li>
+      <li><strong>Comparison operators</strong> → <code>===</code>, <code>!==</code>, <code>&gt;</code>, <code>&lt;</code> all return booleans</li>
+      <li><strong>Logical operators</strong> → <code>&&</code>, <code>||</code>, <code>!</code> work on booleans</li>
+      <li><strong>Truthy / falsy</strong> → values that act like booleans without being booleans</li>
+      <li><strong>Form validation</strong> → most validation results in booleans</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-0-15-3-3': `
+    <ul>
+      <li>Booleans (full topic)</li>
+      <li>If / else statements</li>
+      <li>Comparison operators</li>
+      <li>Logical operators (<code>&&</code>, <code>||</code>, <code>!</code>)</li>
+      <li>Truthy and falsy values</li>
+      <li>Boolean naming (is/has/can/should)</li>
+      <li>Storing strings</li>
+      <li>Storing numbers</li>
     </ul>
   `,
 
