@@ -8547,4 +8547,911 @@ calculateOrder(cart2);   // completely separate</code></pre>
     </ul>
   `,
 
+
+  /* ===== Sub-lesson: 3.1 Variables → variables outside functions =====
+     Path: topics-0-22-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-0-22-0-0': `
+    <p>Variables declared outside any function (at the top of your file or script) are accessible to every function in that file. They live for the whole life of the page.</p>
+    <p>These are sometimes called <strong>module-level</strong> or <strong>top-level</strong> variables. If they're declared at the very top of an old-style script (with no module system), they're effectively <strong>global</strong> — visible everywhere.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-0-22-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// At the top of your file — outside any function
+const API_URL = "https://api.example.com";
+let cartCount = 0;
+
+function addToCart() {
+  cartCount = cartCount + 1;       // function can read AND change top-level variables
+  console.log(cartCount);
+}
+
+addToCart();
+console.log(cartCount);             // 1 — accessible here too</code></pre>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-0-22-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const API_URL = "https://api.example.com";
+let cartCount = 0;
+
+// const / let     → declares the variable
+// API_URL         → name (accessible anywhere in this file)
+// = "..."         → value
+//
+// Because the declaration is OUTSIDE any function or block,
+// the variable is "top-level" — visible to every function below.</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-0-22-0-3': `
+    <p>Variables declared outside any function or block are visible to everything below them in the same file:</p>
+<pre class="language-javascript"><code class="language-javascript">const API_URL = "https://api.example.com";
+
+function fetchUsers() {
+  console.log(API_URL);     // works
+}
+
+function fetchProducts() {
+  console.log(API_URL);     // also works
+}</code></pre>
+
+    <p>Functions can both read and write top-level variables:</p>
+<pre class="language-javascript"><code class="language-javascript">let cartCount = 0;
+
+function addToCart() {
+  cartCount = cartCount + 1;     // changes the top-level cartCount
+}
+
+addToCart();
+addToCart();
+console.log(cartCount);          // 2 — changes persist</code></pre>
+
+    <p>Order matters — a function can only see variables declared <em>before</em> the function runs:</p>
+<pre class="language-javascript"><code class="language-javascript">function showName() {
+  console.log(userName);
+}
+
+showName();              // ReferenceError if userName not yet declared
+const userName = "Os";
+showName();              // "Os" — now works</code></pre>
+
+    <p>If you forget <code>const</code>/<code>let</code>/<code>var</code>, you accidentally create a global — bad practice:</p>
+<pre class="language-javascript"><code class="language-javascript">function setup() {
+  config = { theme: "dark" };       // wrong: no keyword — leaks as a global
+}
+
+setup();
+console.log(config);                  // accessible — but unintended
+
+// fix: always use const or let
+function setup() {
+  const config = { theme: "dark" };
+  return config;
+}</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-0-22-1-0': `
+    <p>Some values need to be shared. Configuration, app state, references to elements, counters that update over time — these need to be visible to multiple functions, not trapped inside one.</p>
+    <p>Top-level variables solve this. Declare them once at the top, every function can read and update them.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-0-22-1-1': `
+    <p>Use top-level variables for things multiple functions need to share:</p>
+<pre class="language-javascript"><code class="language-javascript">// Configuration that doesn't change
+const API_URL = "https://api.example.com";
+const MAX_RETRIES = 3;
+
+// State that changes over time
+let cartCount = 0;
+let isLoggedIn = false;
+let currentUser = null;
+
+// DOM references used in many handlers
+const submitBtn = document.querySelector(".submit");
+const errorMsg = document.querySelector(".error");
+
+function login() {
+  isLoggedIn = true;             // updates shared state
+  submitBtn.disabled = false;    // uses shared element
+}</code></pre>
+    <p>If a value is only used inside one function, declare it <em>inside</em> that function instead. Don't pollute the top of your file with things that don't need to be shared.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-0-22-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// API config
+const BASE_URL = "https://api.example.com";
+
+// DOM references at the top of the file
+const form = document.querySelector(".form");
+const submitBtn = document.querySelector(".submit");
+
+// App state
+let isLoggedIn = false;
+let cartItems = [];
+
+// Functions below use these shared values
+function login() {
+  isLoggedIn = true;
+}
+
+function addToCart(item) {
+  cartItems.push(item);
+}
+
+submitBtn.addEventListener("click", () => {
+  // can use isLoggedIn, cartItems, BASE_URL — all top-level
+});</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-0-22-1-3': `
+    <p>A top-level variable is one declared at the top of your file — outside any function or block. Because nothing wraps it, it's visible to everything else in the file.</p>
+    <p>Use them sparingly. Just because you <em>can</em> share a variable everywhere doesn't mean you should. Most variables should live inside the function that uses them.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-0-22-1-4': `
+    <p>Top-level variables sit on a shared shelf that every function can reach. Local variables sit inside individual rooms — only the function in that room can see them.</p>
+<pre class="language-javascript"><code class="language-javascript">const sharedConfig = "I'm on the shelf — everyone can see me";
+
+function room1() {
+  const localToRoom1 = "only room1 can see me";
+  console.log(sharedConfig);     // works — reaching out to the shelf
+}
+
+function room2() {
+  console.log(sharedConfig);     // works — same shelf
+  console.log(localToRoom1);     // ReferenceError — that's in room1, not here
+}</code></pre>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-0-22-1-5': `
+<pre class="language-javascript"><code class="language-javascript">let cartCount = 0;
+
+function addToCart() {
+  cartCount = cartCount + 1;
+}
+
+addToCart();
+addToCart();
+console.log(cartCount);
+
+// JavaScript is thinking:
+// Line 1: declare cartCount at the top level. Set to 0.
+// Line 3-5: declare addToCart function. Don't run it yet.
+//
+// Line 7: call addToCart().
+//   - Look up cartCount → 0 (top-level).
+//   - Add 1 → 1. Update cartCount to 1.
+//   - Function ends. cartCount stays at 1 (it's top-level).
+//
+// Line 8: call addToCart() again.
+//   - Look up cartCount → 1 (still the same top-level variable).
+//   - Add 1 → 2. Update cartCount to 2.
+//
+// Line 9: log cartCount → 2.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-0-22-2-0': `
+    <p>If a top-level variable isn't updating the way you expect, check whether a function is accidentally creating a local one with the same name:</p>
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+
+function increment() {
+  let count = count + 1;       // wrong: let creates a NEW local count
+}
+
+increment();
+console.log(count);              // 0 — outer count never changed
+
+// fix: drop the let to use the outer one
+function increment() {
+  count = count + 1;
+}</code></pre>
+
+    <p>If you accidentally created a global by forgetting <code>let</code>/<code>const</code>, you'll get strange behavior — something is updating that variable from places you don't expect:</p>
+<pre class="language-javascript"><code class="language-javascript">function setup() {
+  config = { theme: "dark" };    // forgot const — leaks as a global
+}
+
+// elsewhere in your code:
+console.log(config);              // unexpectedly accessible
+
+// fix: always declare with const or let
+function setup() {
+  const config = { theme: "dark" };
+  return config;
+}</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-0-22-2-1': `
+    <p>Top-level variables are accessible everywhere in the file. That power comes with responsibility — the more variables you put at the top, the more places can change them, and the harder it is to track what changed what.</p>
+    <p>Default to local. Reach for top-level only when something genuinely needs to be shared.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-0-22-2-2': `
+    <p><strong>Confusion: top-level vs local with same name</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+
+function reset() {
+  let count = 100;     // creates a NEW local count (unrelated to the outer one)
+  console.log(count);   // 100
+}
+
+reset();
+console.log(count);     // 0 — outer count untouched</code></pre>
+
+    <p><strong>Confusion: order of declaration</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function showName() {
+  console.log(userName);    // tries to find userName
+}
+
+showName();                  // ReferenceError — userName not declared yet
+const userName = "Os";
+
+// Fix: declare top-level variables BEFORE functions that use them.</code></pre>
+
+    <p><strong>Confusion: global vs module-level</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// In an old script tag — top-level variables become global (window.x)
+// In a module (&lt;script type="module"&gt;) — top-level is module-scoped, not global
+
+const API_URL = "...";    // module-level, only this file can use it (in modules)
+                           // global, anywhere in the page (in old scripts)</code></pre>
+
+    <p><strong>Confusion: shared vs duplicated</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let cartCount = 0;
+
+function add1() { cartCount = cartCount + 1; }
+function add2() { cartCount = cartCount + 1; }
+
+add1();    // cartCount → 1
+add2();    // cartCount → 2 — same variable, both functions saw the update</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-0-22-2-3': `
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+function increment() {
+  let count = count + 1;
+}
+// wrong: creates new local count instead of updating outer
+// fix: drop the let
+function increment() {
+  count = count + 1;
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function setup() {
+  config = { theme: "dark" };
+}
+// wrong: forgot const — leaks as global by accident
+// fix:
+function setup() {
+  const config = { theme: "dark" };
+  return config;
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function fetch() {
+  console.log(API_URL);
+}
+fetch();
+const API_URL = "...";
+// wrong: API_URL not yet declared when fetch ran
+// fix: declare top-level vars BEFORE functions that use them</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Cluttering the top with one-time-use variables
+const tempData = items.filter(i => i.active);
+const sortedTemp = tempData.sort();
+const finalResult = sortedTemp.slice(0, 5);
+// these don't need to be top-level
+// fix: bundle them inside a function
+function getTopFive(items) {
+  return items.filter(i => i.active).sort().slice(0, 5);
+}</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-0-22-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Configuration shared across the file
+const API_URL = "https://api.example.com";
+const MAX_ITEMS = 10;
+
+// State that updates
+let cartCount = 0;
+
+function addToCart() {
+  cartCount = cartCount + 1;
+}
+
+addToCart();
+console.log(cartCount);   // 1
+
+// DOM references shared across handlers
+const button = document.querySelector(".btn");
+const message = document.querySelector(".msg");
+
+button.addEventListener("click", () => {
+  message.textContent = "Clicked!";
+});</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-0-22-3-1': `
+    <p><strong>Example: shared configuration constants</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// At top of script
+const API_BASE = "https://api.example.com";
+const TAX_RATE = 0.08;
+const MAX_RETRIES = 3;
+
+// Used by many functions below
+async function fetchUsers() {
+  return fetch(\`\${API_BASE}/users\`);
+}
+
+async function fetchProducts() {
+  return fetch(\`\${API_BASE}/products\`);
+}
+
+function calculateTotal(price) {
+  return price + price * TAX_RATE;
+}</code></pre>
+
+    <p><strong>Example: app state that multiple functions update</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let isMenuOpen = false;
+let cartItems = [];
+let currentUser = null;
+
+hamburgerBtn.addEventListener("click", () => {
+  isMenuOpen = !isMenuOpen;
+  menu.classList.toggle("open");
+});
+
+addToCartBtn.addEventListener("click", (e) => {
+  cartItems.push(e.target.dataset.id);
+});
+
+loginBtn.addEventListener("click", async () => {
+  currentUser = await login();
+});</code></pre>
+
+    <p><strong>Example: DOM references at the top</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const form = document.querySelector(".signup");
+const emailInput = document.querySelector("#email");
+const submitBtn = document.querySelector(".submit");
+const errorMsg = document.querySelector(".error");
+
+// All functions can use them
+emailInput.addEventListener("input", validate);
+submitBtn.addEventListener("click", submit);
+
+function validate() {
+  if (!emailInput.value.includes("@")) {
+    errorMsg.textContent = "Invalid email";
+  }
+}
+
+function submit() {
+  // ...
+}</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-0-22-3-2': `
+    <ul>
+      <li><strong>Variables inside functions</strong> → the local opposite</li>
+      <li><strong>Scope</strong> → the rules that determine where variables can be reached</li>
+      <li><strong>Global scope</strong> → the wider scope when not in a module</li>
+      <li><strong>Modules</strong> → top-level variables are scoped to the module file</li>
+      <li><strong>State</strong> → top-level variables often hold app state</li>
+      <li><strong>Configuration</strong> → constants used across the file</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-0-22-3-3': `
+    <ul>
+      <li>Variables inside functions</li>
+      <li>Scope basics</li>
+      <li>Global scope</li>
+      <li>Module scope</li>
+      <li>Hoisting</li>
+      <li>Configuration constants</li>
+      <li>App state patterns</li>
+    </ul>
+  `,
+
+
+  /* ===== Sub-lesson: 3.1 Variables → scope basics =====
+     Path: topics-0-23-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-0-23-0-0': `
+    <p>Scope is the rule that decides where in your code a variable can be reached. Every variable has a territory — outside that territory, the name doesn't exist.</p>
+    <p>The simple rule: variables only live inside the closest pair of curly braces <code>{ }</code> they were declared in (for <code>let</code> and <code>const</code>). If they were declared outside any braces, they're visible to the whole file.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-0-23-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const globalName = "Os";   // outside everything → top-level scope
+
+function greet() {
+  const localName = "Sam";  // inside function → function scope
+  console.log(globalName);   // works — can see outer
+  console.log(localName);    // works — same scope
+}
+
+greet();
+console.log(globalName);     // works — top-level
+console.log(localName);      // ReferenceError — out of scope here</code></pre>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-0-23-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function example() {
+  const local = "I live here";
+
+  if (true) {
+    const blockOnly = "I live in this if block";
+    console.log(local);          // works — outer function scope
+    console.log(blockOnly);      // works — same block
+  }
+
+  console.log(blockOnly);        // ReferenceError — out of scope
+}
+
+// Each set of { } creates a new scope.
+// Variables declared inside that { } only live inside it.
+// Code OUTSIDE the { } can't reach them.</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-0-23-0-3': `
+    <p><code>let</code> and <code>const</code> are block-scoped — they only live inside the closest <code>{ }</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">if (true) {
+  let x = 5;
+  const y = 10;
+}
+console.log(x);    // ReferenceError — out of scope
+console.log(y);    // ReferenceError — out of scope</code></pre>
+
+    <p>Functions create their own scope every time they run:</p>
+<pre class="language-javascript"><code class="language-javascript">function greet() {
+  const message = "Hi";
+}
+
+greet();
+console.log(message);    // ReferenceError</code></pre>
+
+    <p>Loops create a fresh scope for each iteration when you use <code>let</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  // i exists only inside this loop
+}
+console.log(i);    // ReferenceError</code></pre>
+
+    <p>Inner scopes can see outer scopes, but not the other way around:</p>
+<pre class="language-javascript"><code class="language-javascript">const outer = "outer";
+
+function example() {
+  const inner = "inner";
+  console.log(outer);     // works — inner can see outer
+  console.log(inner);     // works
+}
+
+console.log(outer);       // works
+console.log(inner);       // ReferenceError — outer can't see inner</code></pre>
+
+    <p><code>var</code> ignores blocks — it's function-scoped, not block-scoped:</p>
+<pre class="language-javascript"><code class="language-javascript">if (true) {
+  var x = 5;       // var ignores the if block
+  let y = 10;
+}
+console.log(x);    // 5 — var leaked out
+console.log(y);    // ReferenceError — let stayed inside</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-0-23-1-0': `
+    <p>Without scope, every variable would be visible to every line of code. Two functions using <code>i</code> for a loop counter would step on each other. Helper variables would clutter your whole file. Bugs would multiply as code grew.</p>
+    <p>Scope keeps variables in their lane. A function's variables are <em>its</em> business. The rest of the code doesn't know they exist.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-0-23-1-1': `
+    <p>You don't really "use" scope — it's how JavaScript works. But understanding it lets you:</p>
+<pre class="language-javascript"><code class="language-javascript">// 1. Keep variables small and contained
+function calculate() {
+  const tax = 0.08;       // only this function needs it
+  const total = 100 + 100 * tax;
+  return total;
+}
+
+// 2. Reuse the same name in different scopes safely
+function loopOne() {
+  for (let i = 0; i < 10; i++) {}    // this i
+}
+function loopTwo() {
+  for (let i = 0; i < 5; i++) {}      // a different i — no conflict
+}
+
+// 3. Hide implementation details
+function buildCart() {
+  const items = [];        // private to this function
+  // ...
+  return items;
+}</code></pre>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-0-23-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Function scope — variables inside the function
+function calculate() {
+  const tax = 0.08;
+  const total = 100 + 100 * tax;
+  return total;
+}
+
+// Block scope — variables inside if/for/etc
+if (loggedIn) {
+  const welcome = "Hi there";
+  console.log(welcome);
+}
+// welcome doesn't exist out here
+
+// Loop scope
+for (let i = 0; i < 5; i++) {
+  console.log(i);
+}
+// i doesn't exist out here
+
+// Top-level scope (file-wide)
+const API_URL = "https://api.example.com";
+function fetchUsers() {
+  console.log(API_URL);   // visible everywhere in this file
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-0-23-1-3': `
+    <p>Every variable lives in a "room" — the nearest pair of <code>{ }</code> around its declaration. Code in the same room can use it. Code in other rooms can't.</p>
+    <p>Inner rooms can see out (they can use variables from rooms wrapping them). Outer rooms can't see in.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-0-23-1-4': `
+    <p>Picture nested boxes. Each set of <code>{ }</code> is a box. Variables declared inside a box are only visible inside that box.</p>
+<pre class="language-javascript"><code class="language-javascript">const a = "outer";
+
+function outer() {
+  const b = "middle";
+
+  if (true) {
+    const c = "inner";
+
+    // here: a, b, c all visible
+  }
+
+  // here: a and b visible, c is gone
+}
+
+// here: only a is visible</code></pre>
+    <p>Each level can see itself and everything wrapping it. Each level CANNOT see things nested inside it.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-0-23-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const globalX = "global";
+
+function example() {
+  const localX = "local";
+  console.log(globalX);
+  console.log(localX);
+}
+
+example();
+console.log(globalX);
+console.log(localX);
+
+// JavaScript is thinking:
+// Line 1: declare globalX in top-level scope.
+// Line 3-7: declare example function. Don't run yet.
+//
+// Line 9: call example().
+//   - Create function scope.
+//   - Declare localX in this scope.
+//   - log globalX → look up in nested scopes → found at top level → "global".
+//   - log localX → found in current scope → "local".
+//   - Function ends, function scope is destroyed (localX gone).
+//
+// Line 10: log globalX → still in top-level scope → "global".
+// Line 11: log localX → not in any active scope → ReferenceError.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-0-23-2-0': `
+    <p>If you see <code>ReferenceError: x is not defined</code>, you're trying to use a variable outside its scope. Either it was never declared, or it was declared inside a smaller scope you've already left.</p>
+<pre class="language-javascript"><code class="language-javascript">function setup() {
+  const config = { theme: "dark" };
+}
+
+setup();
+console.log(config);    // ReferenceError — config was local to setup()
+
+// fix: return it
+function setup() {
+  const config = { theme: "dark" };
+  return config;
+}
+const config = setup();</code></pre>
+
+    <p>If a value is wrong, check whether you accidentally created a NEW variable with the same name in a smaller scope:</p>
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+
+function increment() {
+  let count = count + 1;     // wrong: NEW local count
+  console.log(count);          // logs 1, but outer count never changed
+}
+
+increment();
+console.log(count);    // 0
+
+// fix: drop the inner let
+function increment() {
+  count = count + 1;
+}</code></pre>
+
+    <p>Block-scoped variables in loops can surprise you if you expect them to leak out:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 5; i++) {
+  // ...
+}
+console.log(i);     // ReferenceError — let stays inside the loop
+
+// If you actually need i out here:
+let i;
+for (i = 0; i < 5; i++) {
+  // ...
+}
+console.log(i);     // 5</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-0-23-2-1': `
+    <p>Variables aren't everywhere. They live in the nearest <code>{ }</code> and die when those braces close.</p>
+    <p>Inner can see out. Outer can't see in. Function scope and block scope follow this same rule.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-0-23-2-2': `
+    <p><strong>Confusion: <code>let</code>/<code>const</code> are block-scoped, <code>var</code> isn't</strong></p>
+<pre class="language-javascript"><code class="language-javascript">if (true) {
+  let a = 1;
+  const b = 2;
+  var c = 3;
+}
+
+console.log(a);    // ReferenceError
+console.log(b);    // ReferenceError
+console.log(c);    // 3 — var leaked out</code></pre>
+
+    <p><strong>Confusion: same name in different scopes</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const x = "outer";
+
+function example() {
+  const x = "inner";       // a NEW x — doesn't conflict
+  console.log(x);           // "inner" — uses the closer one
+}
+
+example();
+console.log(x);             // "outer" — outer x is unchanged
+
+// This is called "variable shadowing" — the inner x shadows the outer one.</code></pre>
+
+    <p><strong>Confusion: function calls don't share scope</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function counter() {
+  let n = 0;
+  n = n + 1;
+  return n;
+}
+
+counter();    // 1
+counter();    // 1 — fresh n each call (NOT 2)</code></pre>
+
+    <p><strong>Confusion: loops with <code>let</code> create a new scope per iteration</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i), 100);
+}
+// logs 0, 1, 2 — each iteration's i is captured separately
+
+for (var i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i), 100);
+}
+// logs 3, 3, 3 — var has one shared i</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-0-23-2-3': `
+<pre class="language-javascript"><code class="language-javascript">if (loggedIn) {
+  let userName = "Os";
+}
+console.log(userName);
+// wrong: userName is block-scoped to the if
+// fix: declare outside if you need it elsewhere
+let userName = "";
+if (loggedIn) {
+  userName = "Os";
+}
+console.log(userName);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function setup() {
+  const config = { theme: "dark" };
+}
+console.log(config);
+// wrong: config is local to setup
+// fix: return it
+function setup() {
+  return { theme: "dark" };
+}
+const config = setup();</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+function increment() {
+  let count = count + 1;
+}
+// wrong: creates new local count
+// fix: drop the let
+function increment() {
+  count = count + 1;
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 5; i++) {}
+console.log(i);
+// wrong: i doesn't exist out here
+// fix: declare i outside if you need it after
+let i;
+for (i = 0; i < 5; i++) {}
+console.log(i);   // 5</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function setup() {
+  config = { theme: "dark" };
+}
+// wrong: forgot const — leaks as global
+// fix: always declare with const or let
+function setup() {
+  const config = { theme: "dark" };
+  return config;
+}</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-0-23-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Function scope
+function calc() {
+  const x = 10;
+  return x * 2;
+}
+calc();          // 20
+// x doesn't exist out here
+
+// Block scope
+if (true) {
+  const inside = "hi";
+}
+// inside doesn't exist out here
+
+// Loop scope
+for (let i = 0; i < 3; i++) {
+  console.log(i);   // 0, 1, 2
+}
+// i doesn't exist out here
+
+// Inner reads outer
+const greeting = "Hi";
+function greet() {
+  console.log(greeting);   // works
+}
+greet();
+
+// Same name, different scopes
+const x = "outer";
+function inner() {
+  const x = "inner";
+  console.log(x);    // "inner" — closer one wins
+}
+inner();
+console.log(x);      // "outer"</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-0-23-3-1': `
+    <p><strong>Example: keeping helper variables out of the global scope</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function processOrder(items) {
+  const subtotal = items.reduce((sum, i) => sum + i.price, 0);
+  const tax = subtotal * 0.08;
+  const total = subtotal + tax;
+  return total;
+}
+
+// subtotal, tax, total are all local — no global pollution</code></pre>
+
+    <p><strong>Example: each event handler with its own scope</strong></p>
+<pre class="language-javascript"><code class="language-javascript">submitBtn.addEventListener("click", (e) => {
+  const formData = new FormData(form);
+  const userInput = formData.get("name");
+  // formData and userInput are local to this handler
+  saveUser(userInput);
+});</code></pre>
+
+    <p><strong>Example: loop counter contained to the loop</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const items = ["apple", "banana", "cherry"];
+
+for (let i = 0; i < items.length; i++) {
+  const item = items[i];
+  renderItem(item);
+}
+
+// i and item are gone — no chance of reusing them by mistake</code></pre>
+
+    <p><strong>Example: hiding implementation in a function</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function buildCard(user) {
+  const initials = user.firstName[0] + user.lastName[0];
+  const fullName = \`\${user.firstName} \${user.lastName}\`;
+  const html = \`&lt;div class="card"&gt;\${fullName} (\${initials})&lt;/div&gt;\`;
+  return html;
+}
+
+// initials, fullName, html — all local. The function only exposes its return value.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-0-23-3-2': `
+    <ul>
+      <li><strong>Variables inside functions</strong> → the most common scope rule in practice</li>
+      <li><strong>Variables outside functions</strong> → top-level scope, accessible everywhere</li>
+      <li><strong>Block scope</strong> → the rules for <code>{ }</code> blocks</li>
+      <li><strong>Function scope</strong> → the rules for function bodies</li>
+      <li><strong>let / const / var</strong> → block-scoped vs function-scoped</li>
+      <li><strong>Closures</strong> → inner functions remembering outer scope</li>
+      <li><strong>ReferenceError</strong> → the error when you reach outside scope</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-0-23-3-3': `
+    <ul>
+      <li>Block scope</li>
+      <li>Function scope</li>
+      <li>Global scope</li>
+      <li>Module scope</li>
+      <li>Closures</li>
+      <li>Variable shadowing</li>
+      <li>Hoisting</li>
+      <li>Temporal Dead Zone</li>
+    </ul>
+  `,
+
 };
