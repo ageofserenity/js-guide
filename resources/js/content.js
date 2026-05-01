@@ -4637,4 +4637,312 @@ const REQUEST_TIMEOUT_MS = 5000;</code></pre>
     </ul>
   `,
 
+
+  /* ===== Sub-lesson: 3.1 Variables → camelCase =====
+     Path: topics-0-11-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-0-11-0-0': `
+    <p>camelCase is the naming style where you write a multi-word name as one word with no spaces, starting with a lowercase letter and capitalizing the first letter of each new word.</p>
+    <p>It's the standard convention for variable and function names in JavaScript. The "humps" of capital letters in the middle look like camel humps — that's where the name comes from.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-0-11-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// camelCase examples
+const userName = "Os";
+const cartItemCount = 5;
+const isMenuOpen = false;
+const calculateTotalPrice = () => {};
+
+// First word lowercase, capital on each new word</code></pre>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-0-11-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const cartItemCount = 5;
+
+//   c artItemCount
+//   ↑ ↑   ↑
+//   |  |   capital on "Count" (third word)
+//   |  capital on "Item" (second word)
+//   first word lowercase
+//
+// All joined together — no spaces, no underscores, no dashes</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-0-11-0-3': `
+    <p>The first letter is always lowercase. Capital letters mark word boundaries:</p>
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";          // correct camelCase
+const UserName = "Os";          // PascalCase — different convention (used for classes)
+const username = "Os";          // works, but unclear when there are multiple words
+const user_name = "Os";          // snake_case — unusual in JavaScript</code></pre>
+
+    <p>Acronyms inside camelCase have special handling — only the first letter capitalizes:</p>
+<pre class="language-javascript"><code class="language-javascript">// One acronym in the middle:
+const userId = 123;             // not userID
+const apiUrl = "...";           // not apiURL
+const htmlContent = "...";      // not HTMLContent
+
+// Acronym at the start:
+const idLookup = {};            // not IDLookup
+const urlParser = () => {};     // not URLParser</code></pre>
+
+    <p>Numbers are allowed but can't start the name:</p>
+<pre class="language-javascript"><code class="language-javascript">const user1 = "Os";              // works
+const user2 = "Sam";             // works
+const 1user = "Os";              // wrong: can't start with a number</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-0-11-1-0': `
+    <p>JavaScript doesn't allow spaces in variable names. So when you have a multi-word name, you need a way to make the words readable as one identifier. camelCase is the convention the JavaScript community settled on.</p>
+    <p>Other languages use other conventions (snake_case in Python, PascalCase in C#), but in JavaScript, camelCase is the default.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-0-11-1-1': `
+    <p>Use camelCase because it's what every JS codebase uses. If you write code in a different style, your code looks out of place — and tools like linters will flag it.</p>
+<pre class="language-javascript"><code class="language-javascript">// Standard JS — what everyone uses
+const userName = "Os";
+const cartItemCount = 5;
+const handleSubmit = () => {};
+
+// Stands out as non-standard
+const user_name = "Os";          // looks like Python
+const UserName = "Os";           // looks like a class
+const username = "Os";           // hard to read with multiple words</code></pre>
+    <p>The exception: built-in classes and components use PascalCase (covered separately). Constants in some codebases use UPPER_CASE.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-0-11-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// All variable names
+const userEmail = "os@example.com";
+const productPrice = 29.99;
+const totalItems = 5;
+
+// All function names
+const handleClick = () => {};
+const calculateTax = (price) => price * 0.08;
+const fetchUserData = async (id) => {};
+
+// Object properties (also camelCase)
+const user = {
+  firstName: "Os",
+  lastLogin: "2024-01-15",
+  isActive: true
+};
+
+// Method names (also camelCase)
+button.addEventListener("click", handleClick);
+array.forEach(callback);
+string.toUpperCase();</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-0-11-1-3': `
+    <p>camelCase is "smush all the words together, but capitalize where each new word starts (except the very first one)."</p>
+    <p>It's how JavaScript folks fake the look of a multi-word name without using spaces. The eye picks up on the capital letters as word boundaries.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-0-11-1-4': `
+    <p>Imagine writing a phrase, then deleting the spaces and capitalizing where the spaces were:</p>
+<pre class="language-javascript"><code class="language-javascript">// "user name" → drop the space → "user Name"
+const userName = "Os";
+
+// "cart item count" → drop spaces → "cart Item Count"
+const cartItemCount = 5;
+
+// "is menu open" → drop spaces → "is Menu Open"
+const isMenuOpen = false;</code></pre>
+    <p>The first word stays lowercase. The capital letters mark where new words begin.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-0-11-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// Naming process for "the user's email address"
+
+// Step 1: Strip filler words.
+// → "user email address"
+
+// Step 2: Decide if you need all three or just two.
+// → "user email" is probably enough
+
+// Step 3: Apply camelCase.
+// "user email" → drop space → "user" + "Email" → "userEmail"
+
+const userEmail = "os@example.com";</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-0-11-2-0': `
+    <p>Mismatched casing creates "different" variables. JS won't suggest a fix — you have to spot it:</p>
+<pre class="language-javascript"><code class="language-javascript">const userEmail = "os@example.com";
+console.log(useremail);          // ReferenceError — different variable name
+console.log(UserEmail);          // ReferenceError — different variable name
+console.log(userEmail);          // works</code></pre>
+
+    <p>If you see "is not defined" but you swear you defined it, check the casing of every reference. The most common cause:</p>
+<pre class="language-javascript"><code class="language-javascript">const userId = 123;
+console.log(userID);            // wrong — uppercase ID, but the variable was userId
+
+// fix one or the other to match
+const userID = 123;             // and use userID everywhere
+// OR
+console.log(userId);            // matches the original</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-0-11-2-1': `
+    <p>camelCase: lowercase first letter, capital at the start of every new word, no spaces.</p>
+    <p>That's the whole rule. Use it for every variable and function name in JavaScript.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-0-11-2-2': `
+    <p><strong>Confusion: camelCase vs PascalCase</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";     // camelCase — variables, functions
+class UserName {}           // PascalCase — classes, components
+
+// camelCase: first letter is lowercase
+// PascalCase: first letter is uppercase
+// Otherwise identical</code></pre>
+
+    <p><strong>Confusion: camelCase vs snake_case</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";     // camelCase — JavaScript convention
+const user_name = "Os";    // snake_case — Python convention, rare in JS
+
+// Both work in JS, but mixing styles in one project looks messy.
+// JavaScript ecosystem uses camelCase.</code></pre>
+
+    <p><strong>Confusion: handling acronyms</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Common debate — both styles exist:
+const userId = 123;          // strict camelCase (most common today)
+const userID = 123;          // alternative style (older code)
+
+// Strict camelCase treats acronyms as one word.
+// Pick one style and stick with it across your project.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-0-11-2-3': `
+<pre class="language-javascript"><code class="language-javascript">const UserName = "Os";
+// not technically wrong, but PascalCase is for classes
+// fix: use camelCase for variables
+const userName = "Os";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const user_name = "Os";
+// works, but JavaScript convention is camelCase
+// fix:
+const userName = "Os";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const username = "Os";
+// works for one word, but unclear with multiple
+// "userfirstname" is hard to read
+// fix:
+const userFirstName = "Os";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";
+console.log(username);
+// wrong: lowercase n is a different variable
+// fix: match exact casing
+console.log(userName);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const u = "Os";
+const n = 5;
+// works, but cryptic
+// fix: use descriptive camelCase
+const userName = "Os";
+const itemCount = 5;</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-0-11-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Variables
+const firstName = "Os";
+const lastName = "Smith";
+const fullName = firstName + " " + lastName;
+
+// Boolean flags (often start with is/has/can)
+const isActive = true;
+const hasPermission = false;
+const canEdit = true;
+
+// Functions (often start with verbs)
+const handleClick = () => {};
+const updateProfile = () => {};
+const sendNotification = () => {};
+
+// Object properties
+const user = {
+  emailAddress: "os@example.com",
+  phoneNumber: "555-1234",
+  preferredLanguage: "en"
+};</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-0-11-3-1': `
+    <p><strong>Example: form variables</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const emailInput = document.querySelector("#email");
+const passwordInput = document.querySelector("#password");
+const submitButton = document.querySelector(".submit");
+const errorMessage = document.querySelector(".error");</code></pre>
+
+    <p><strong>Example: API response handling</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const response = await fetch(API_URL);
+const userData = await response.json();
+const userId = userData.id;
+const userEmail = userData.email;</code></pre>
+
+    <p><strong>Example: state tracking</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let isLoading = false;
+let cartItemCount = 0;
+let currentPageNumber = 1;
+let lastSearchQuery = "";</code></pre>
+
+    <p><strong>Example: event handlers</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const handleFormSubmit = (event) => {};
+const handleInputChange = (event) => {};
+const handleButtonClick = (event) => {};
+const handleWindowResize = () => {};</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-0-11-3-2': `
+    <ul>
+      <li><strong>Naming variables</strong> → the parent topic; camelCase is the default style</li>
+      <li><strong>PascalCase</strong> → similar style for classes, starts uppercase</li>
+      <li><strong>UPPER_CASE</strong> → alternative for constants/config</li>
+      <li><strong>Functions</strong> → also use camelCase</li>
+      <li><strong>Object properties</strong> → also use camelCase</li>
+      <li><strong>Linters</strong> → tools that enforce naming conventions automatically</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-0-11-3-3': `
+    <ul>
+      <li>Naming variables</li>
+      <li>PascalCase</li>
+      <li>UPPER_CASE constants</li>
+      <li>snake_case (other languages)</li>
+      <li>kebab-case (CSS, URLs)</li>
+      <li>Acronym handling in identifiers</li>
+      <li>ESLint naming rules</li>
+    </ul>
+  `,
+
 };
