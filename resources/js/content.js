@@ -3687,4 +3687,954 @@ addToCartBtn.addEventListener("click", () => {
     </ul>
   `,
 
+
+  /* ===== Sub-lesson: 3.1 Variables → reassigning a value =====
+     Path: topics-0-8-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-0-8-0-0': `
+    <p>Reassigning a value means putting a new value into a variable that already exists. The old value is replaced by the new one.</p>
+    <p>You can only reassign variables declared with <code>let</code> (or <code>var</code>). Variables declared with <code>const</code> can't be reassigned — that's the whole point of <code>const</code>.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-0-8-0-1': `
+<pre class="language-javascript"><code class="language-javascript">let count = 0;     // declaration + first assignment
+count = 5;          // reassignment — no let, just the name
+count = 10;         // reassign again — works
+count = 100;        // and again — let allows unlimited reassignment</code></pre>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-0-8-0-2': `
+<pre class="language-javascript"><code class="language-javascript">count = 10;
+
+// count   → the existing variable being reassigned
+// =       → the assignment operator
+// 10      → the new value being assigned
+// ;       → ends the statement
+// (no keyword — that's what makes it reassignment, not declaration)</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-0-8-0-3': `
+    <p>No keyword on reassignment. Don't write <code>let</code> the second time:</p>
+<pre class="language-javascript"><code class="language-javascript">let score = 0;
+score = 5;          // correct — just the name
+let score = 5;      // wrong — SyntaxError, already declared</code></pre>
+
+    <p>Reassignment replaces the old value entirely:</p>
+<pre class="language-javascript"><code class="language-javascript">let userName = "Os";
+userName = "Sam";
+console.log(userName);    // "Sam" — "Os" is gone</code></pre>
+
+    <p>You can use the variable's current value to compute its new value:</p>
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+count = count + 1;   // right side runs first: 0 + 1 = 1, then 1 goes into count
+count = count + 1;   // 1 + 1 = 2, then 2 goes into count
+
+// shorthand for the same thing:
+count += 1;          // count = count + 1
+count++;             // count = count + 1 (only adds 1)</code></pre>
+
+    <p><code>const</code> blocks reassignment:</p>
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";
+userName = "Sam";    // wrong — TypeError: Assignment to constant variable</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-0-8-1-0': `
+    <p>Many values change over time as a program runs. A counter goes up. A status flips. A user types something new. Without reassignment, you'd need a brand new variable every time something changed — your code would balloon out of control.</p>
+    <p>Reassignment lets one variable track a value as it evolves.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-0-8-1-1': `
+    <p>Reassignment is how state changes in JavaScript. Anywhere a value needs to update — counters, toggles, current selections, running totals — you reach for a <code>let</code> variable and reassign it.</p>
+<pre class="language-javascript"><code class="language-javascript">// Counter
+let clicks = 0;
+clicks = clicks + 1;   // user clicked once
+
+// Toggle
+let isOpen = false;
+isOpen = !isOpen;      // flipped open
+
+// Status
+let status = "loading";
+status = "done";       // work finished
+
+// Running total
+let total = 0;
+total = total + price; // accumulating</code></pre>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-0-8-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Inside event handlers (most common)
+button.addEventListener("click", () => {
+  cartCount = cartCount + 1;
+});
+
+// Inside loops
+for (let i = 0; i < 10; i++) {
+  total = total + i;   // i and total both get reassigned each iteration
+}
+
+// After validation or processing
+let isValid = false;
+if (input.value.length > 0) {
+  isValid = true;
+}
+
+// In response to API data
+let userName = "Loading...";
+const response = await fetch(url);
+userName = await response.json();</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-0-8-1-3': `
+    <p>Reassigning is taking the old thing out of the box and putting a new thing in.</p>
+    <p>The box stays the same. The label stays the same. Only what's inside changes.</p>
+    <p>You don't need to make a new box. You're using the one that already exists.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-0-8-1-4': `
+    <p>Reassignment moves the variable's pointer from the old value to the new one.</p>
+<pre class="language-javascript"><code class="language-javascript">let userName = "Os";
+
+// userName  →  "Os"
+
+userName = "Sam";
+
+// userName  →  "Sam"
+// "Os" is no longer pointed at — JS will eventually clean it up</code></pre>
+    <p>The old value isn't edited or transformed. It's <em>abandoned</em>, and the variable now points somewhere new.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-0-8-1-5': `
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+count = 5;
+count = count + 1;
+console.log(count);
+
+// JavaScript is thinking:
+// Line 1: declare count, point it at 0.
+// Line 2: see count with no let → reassignment.
+//         Right side is 5. Point count at 5 (0 is abandoned).
+// Line 3: reassignment again.
+//         Right side: look up count (5), add 1 → 6.
+//         Point count at 6 (5 is abandoned).
+// Line 4: look up count → 6 → log 6.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-0-8-2-0': `
+    <p>If a variable's value is wrong, the bug is at whatever line did the most recent reassignment. Add a <code>console.log</code> right after each reassignment to find where things went sideways:</p>
+<pre class="language-javascript"><code class="language-javascript">let total = 0;
+console.log(total);   // 0
+
+total = 100;
+console.log(total);   // 100
+
+total = total - bonus;
+console.log(total);   // peek here — is it what you expected?</code></pre>
+
+    <p>If you see "TypeError: Assignment to constant variable", you tried to reassign something declared with <code>const</code>. Either change the declaration to <code>let</code>, or use a different variable.</p>
+
+    <p>If a value isn't updating when you expect it to, double-check you're reassigning the same variable name (no typos or scope issues):</p>
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+function increment() {
+  let count = 0;     // wrong — this creates a NEW count inside the function
+  count = count + 1;
+}
+increment();
+console.log(count);  // still 0 — the outer count was never touched</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-0-8-2-1': `
+    <p>Reassignment doesn't change the value — it replaces it.</p>
+    <p>Whatever was in the variable before is gone. Whatever's on the right side of <code>=</code> is now what's there.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-0-8-2-2': `
+    <p><strong>Confusion: declaring vs reassigning</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let score = 0;     // declaring (uses let)
+score = 5;          // reassigning (no let)
+let score = 5;      // wrong — already declared</code></pre>
+
+    <p><strong>Confusion: <code>count = count + 1</code> looks weird</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+count = count + 1;
+// reads right-to-left:
+// 1. calculate the right side: count + 1 → 0 + 1 = 1
+// 2. put 1 into count
+// (the old count is gone, replaced by the new one)</code></pre>
+
+    <p><strong>Confusion: const blocks reassignment, but not internal change</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
+
+user = { name: "Sam" };    // wrong — reassignment, blocked by const
+user.name = "Sam";          // works — modifying inside the object</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-0-8-2-3': `
+<pre class="language-javascript"><code class="language-javascript">let score = 0;
+let score = 5;
+// wrong: redeclaring with let — drop the second let
+score = 5;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const score = 0;
+score = 5;
+// wrong: TypeError — const can't be reassigned
+// fix: use let if it needs to change
+let score = 0;
+score = 5;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+count + 1;
+// wrong: this calculates 0 + 1 but throws the result away
+// fix: reassign the result
+count = count + 1;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">let userName = "Os";
+function update() {
+  let userName = "Sam";    // creates a NEW local variable
+}
+update();
+console.log(userName);     // "Os" — outer one wasn't touched
+// fix: drop the let inside the function to reassign the outer one</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-0-8-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Counter going up
+let count = 0;
+count = count + 1;       // 1
+count = count + 1;       // 2
+
+// Toggle flipping
+let isOpen = false;
+isOpen = !isOpen;        // true
+isOpen = !isOpen;        // false
+
+// Building a string
+let message = "Hello";
+message = message + ", world";    // "Hello, world"
+message = message + "!";          // "Hello, world!"
+
+// Shorthand reassignment
+let total = 100;
+total += 50;             // 150 (same as total = total + 50)
+total -= 25;             // 125
+total *= 2;              // 250</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-0-8-3-1': `
+    <p><strong>Example: cart counter going up on click</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let cartCount = 0;
+
+addToCartBtn.addEventListener("click", () => {
+  cartCount = cartCount + 1;
+  cartBadge.textContent = cartCount;
+});</code></pre>
+
+    <p><strong>Example: toggling a menu open/closed</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let isMenuOpen = false;
+
+hamburgerBtn.addEventListener("click", () => {
+  isMenuOpen = !isMenuOpen;
+  menu.classList.toggle("open");
+});</code></pre>
+
+    <p><strong>Example: tracking the current page in pagination</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let currentPage = 1;
+
+nextBtn.addEventListener("click", () => {
+  currentPage = currentPage + 1;
+  loadPage(currentPage);
+});</code></pre>
+
+    <p><strong>Example: updating loading state</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let isLoading = true;
+loadingSpinner.style.display = "block";
+
+const data = await fetch(url);
+isLoading = false;
+loadingSpinner.style.display = "none";</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-0-8-3-2': `
+    <ul>
+      <li><strong>Assigning a value</strong> → reassignment is just doing it again</li>
+      <li><strong>let</strong> → the keyword that allows reassignment</li>
+      <li><strong>const</strong> → the keyword that blocks reassignment</li>
+      <li><strong>Operators</strong> → <code>+=</code>, <code>-=</code>, <code>++</code> are shorthand reassignments</li>
+      <li><strong>Loops</strong> → counters get reassigned each iteration</li>
+      <li><strong>Events</strong> → most reassignments happen inside event handlers</li>
+      <li><strong>Scope</strong> → reassigning the wrong variable is often a scope confusion</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-0-8-3-3': `
+    <ul>
+      <li>Assigning a value</li>
+      <li><code>let</code></li>
+      <li><code>const</code></li>
+      <li><code>+=</code>, <code>-=</code>, <code>*=</code></li>
+      <li><code>++</code> and <code>--</code></li>
+      <li>Mutating objects vs reassigning variables</li>
+      <li>Scope basics</li>
+    </ul>
+  `,
+
+
+  /* ===== Sub-lesson: 3.1 Variables → when const can still hold arrays/objects that change =====
+     Path: topics-0-9-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-0-9-0-0': `
+    <p><code>const</code> stops you from reassigning the variable. It does NOT stop you from changing what's inside an object or array that the variable points at.</p>
+    <p>This trips up almost everyone learning JavaScript: <code>const user = {...}</code> and then <code>user.name = "Sam"</code> is allowed. The variable can't be reassigned, but the object's properties can.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-0-9-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os", age: 25 };
+
+user.name = "Sam";          // works — modifying inside the object
+user.age = 26;              // works — adding/changing properties
+user.email = "os@a.com";    // works — adding new properties
+delete user.age;            // works — removing properties
+
+user = { name: "Sam" };     // wrong — reassigning the variable, blocked by const</code></pre>
+<pre class="language-javascript"><code class="language-javascript">const colors = ["red", "blue"];
+
+colors.push("green");       // works — adding to the array
+colors.pop();               // works — removing from the array
+colors[0] = "purple";       // works — changing an item
+
+colors = ["green"];         // wrong — reassigning the variable, blocked by const</code></pre>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-0-9-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
+
+// const   → blocks reassignment of the variable "user"
+// user    → the variable (the label)
+// =       → assigns the value
+// { name: "Os" }  → the value (the object)
+// ;       → ends the statement
+
+// const protects:    user → (this object reference)
+// const does NOT protect:  what's inside the object</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-0-9-0-3': `
+    <p>Reassigning means changing what the variable points at. That's blocked:</p>
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
+
+user = { name: "Sam" };        // wrong — pointing at a NEW object
+user = "Os";                    // wrong — pointing at a string instead
+user = null;                    // wrong — same idea</code></pre>
+
+    <p>Mutating means changing what's inside the existing object/array. That's allowed:</p>
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
+
+user.name = "Sam";              // works
+user.age = 25;                  // works
+Object.assign(user, { age: 30 }); // works</code></pre>
+
+    <p>If you really need to lock the contents too, use <code>Object.freeze()</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">const user = Object.freeze({ name: "Os" });
+
+user.name = "Sam";              // silently fails (or throws in strict mode)
+console.log(user.name);         // still "Os"</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-0-9-1-0': `
+    <p>This isn't really a problem <code>const</code> "solves" — it's a quirk that comes from how JavaScript handles objects and arrays. The variable doesn't hold the object directly. It holds a <em>reference</em> (a pointer) to the object. <code>const</code> locks the pointer, not what the pointer points at.</p>
+    <p>Understanding this saves you from a whole category of bugs and confused moments.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-0-9-1-1': `
+    <p>This is just how JavaScript works — you don't choose to use it, you have to know it.</p>
+    <p>The practical takeaway: use <code>const</code> for objects and arrays even when you plan to modify their contents. The variable still shouldn't be reassigned. Use <code>let</code> only if you specifically need to reassign the variable to a completely different object/array.</p>
+<pre class="language-javascript"><code class="language-javascript">// Default — const, modify contents freely
+const cart = [];
+cart.push("apple");
+cart.push("banana");
+
+// Need to swap to a brand new array? Use let
+let cart = [];
+// ...
+cart = await fetchUpdatedCart();   // pointing at a totally new array</code></pre>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-0-9-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Building up a list of items
+const items = [];
+items.push(newItem);
+
+// Updating user data without replacing the whole object
+const userProfile = { name: "Os", age: 25 };
+userProfile.age = 26;
+userProfile.lastLogin = Date.now();
+
+// Tracking a state object
+const appState = {
+  isLoggedIn: false,
+  cartCount: 0
+};
+appState.isLoggedIn = true;
+
+// Storing DOM data attributes
+const dataset = element.dataset;
+dataset.status = "active";</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-0-9-1-3': `
+    <p><code>const</code> is more like "this label can't move" than "this thing can't change."</p>
+    <p>If the variable holds a simple value like a string or number, the label and the thing are basically the same — there's nothing to mutate, so nothing changes.</p>
+    <p>But if the variable holds an object or array, the variable holds a label pointing at a separate thing in memory. <code>const</code> welds the label in place. The thing being pointed at is fair game.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-0-9-1-4': `
+    <p>For simple values, <code>const</code> protects everything:</p>
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";
+
+// userName  →  "Os"
+//           (welded — pointer can't move)
+// "Os" itself can't be modified — strings are immutable in JS</code></pre>
+
+    <p>For objects and arrays, <code>const</code> only protects the pointer:</p>
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
+
+// user  →  { name: "Os" }
+//       (pointer is welded — user always points at THIS specific object)
+// But the contents of the object are not welded — properties can be added,
+// changed, or removed.</code></pre>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-0-9-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
+user.name = "Sam";
+user.age = 25;
+console.log(user);
+
+// JavaScript is thinking:
+// Line 1: create an object { name: "Os" } in memory.
+//         Create a const variable "user" that points at it.
+//         Lock the pointer.
+// Line 2: look up user → it points at the object → access .name
+//         Reassign .name to "Sam" — modifying the object, not the pointer.
+//         (const doesn't care about this — the pointer hasn't moved.)
+// Line 3: same thing — add a new property "age".
+// Line 4: look up user → still pointing at the same object →
+//         log it: { name: "Sam", age: 25 }</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-0-9-2-0': `
+    <p>If something is changing that you didn't expect to, check whether you're modifying an object/array through a <code>const</code>. <code>const</code> doesn't prevent it.</p>
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
+
+function updateUser(u) {
+  u.name = "Sam";   // this changes the original — surprise!
+}
+
+updateUser(user);
+console.log(user.name);   // "Sam" — the original was mutated</code></pre>
+    <p>If you really want a function that doesn't change the original, work with a copy:</p>
+<pre class="language-javascript"><code class="language-javascript">function updateUser(u) {
+  const copy = { ...u, name: "Sam" };   // spread creates a new object
+  return copy;
+}
+
+const updated = updateUser(user);
+// user is unchanged; updated is the new version</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-0-9-2-1': `
+    <p><code>const</code> protects the variable. It doesn't protect the contents of objects or arrays.</p>
+    <p>The pointer can't move. What it points at can still change.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-0-9-2-2': `
+    <p><strong>Confusion: "const means the value can't change"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
+
+user.name = "Sam";            // works — most people don't expect this
+console.log(user.name);       // "Sam"</code></pre>
+    <p><code>const</code> means "the variable can't be reassigned." The internal contents of objects and arrays are not protected.</p>
+
+    <p><strong>Confusion: "I should use let if I need to change anything"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Right approach
+const cart = [];
+cart.push("apple");      // adding items — totally fine with const
+
+// Wrong instinct
+let cart = [];
+cart.push("apple");      // works, but signals "this variable will be reassigned"
+                          // and that's misleading if it never is</code></pre>
+    <p>Use <code>const</code> by default — even when you'll modify the contents. Use <code>let</code> only when you'll actually swap the variable to point at something new.</p>
+
+    <p><strong>Confusion: <code>Object.freeze</code> vs <code>const</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">const a = { x: 1 };
+a.x = 2;                  // works — const doesn't freeze contents
+
+const b = Object.freeze({ x: 1 });
+b.x = 2;                  // silently fails — Object.freeze freezes contents
+console.log(b.x);         // still 1</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-0-9-2-3': `
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
+user = { name: "Sam" };
+// wrong: TypeError — that's reassignment, blocked
+// fix: modify the existing object instead
+user.name = "Sam";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const colors = ["red"];
+colors = colors.concat("blue");
+// wrong: concat returns a NEW array, then you're trying to reassign
+// fix: either use push (modifies in place), or use let
+colors.push("blue");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const config = { url: "https://example.com" };
+
+function getConfig() {
+  config.url = "/oops";   // accidentally mutates the original
+  return config;
+}
+// fix: return a copy if you don't want to mutate
+function getConfig() {
+  return { ...config, url: "/oops" };
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Assuming const makes the object truly immutable
+const settings = { theme: "dark" };
+Object.freeze(settings);   // NOW it's locked
+settings.theme = "light";   // silently fails
+// const alone doesn't do this — you need Object.freeze</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-0-9-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Modifying object properties
+const user = { name: "Os" };
+user.name = "Sam";          // works
+user.age = 25;              // works
+console.log(user);          // { name: "Sam", age: 25 }
+
+// Modifying array contents
+const items = ["a", "b"];
+items.push("c");            // works
+items[0] = "z";             // works
+console.log(items);         // ["z", "b", "c"]
+
+// Reassignment is still blocked
+const user = { name: "Os" };
+user = { name: "Sam" };     // TypeError</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-0-9-3-1': `
+    <p><strong>Example: building up a shopping cart array</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const cart = [];
+
+addToCartBtn.addEventListener("click", (e) => {
+  const productId = e.target.dataset.id;
+  cart.push(productId);
+  updateCartUI(cart);
+});</code></pre>
+
+    <p><strong>Example: tracking app state in one object</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const appState = {
+  isLoggedIn: false,
+  currentUser: null,
+  cartCount: 0
+};
+
+loginBtn.addEventListener("click", async () => {
+  appState.currentUser = await login();
+  appState.isLoggedIn = true;
+});</code></pre>
+
+    <p><strong>Example: updating user profile data</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const profile = { name: "Os", email: "" };
+
+emailInput.addEventListener("input", () => {
+  profile.email = emailInput.value;
+});</code></pre>
+
+    <p><strong>Example: configuration object that grows</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const config = { theme: "dark" };
+
+if (userPreferences) {
+  config.fontSize = userPreferences.fontSize;
+  config.language = userPreferences.language;
+}</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-0-9-3-2': `
+    <ul>
+      <li><strong>const</strong> → the keyword whose behavior is being clarified here</li>
+      <li><strong>Objects</strong> → most common case where this comes up</li>
+      <li><strong>Arrays</strong> → same idea — you can mutate the contents</li>
+      <li><strong>Reassignment</strong> → the operation <code>const</code> blocks</li>
+      <li><strong>Mutation</strong> → the operation <code>const</code> does NOT block</li>
+      <li><strong>References vs values</strong> → the underlying concept that explains this</li>
+      <li><strong><code>Object.freeze()</code></strong> → the way to actually lock object contents</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-0-9-3-3': `
+    <ul>
+      <li><code>const</code></li>
+      <li><code>let</code></li>
+      <li>Mutating objects</li>
+      <li>Mutating arrays</li>
+      <li>References vs values</li>
+      <li><code>Object.freeze()</code></li>
+      <li>Spread operator (<code>...</code>) for copying</li>
+      <li>Pass-by-reference</li>
+    </ul>
+  `,
+
+
+  /* ===== Sub-lesson: 3.1 Variables → naming variables =====
+     Path: topics-0-10-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-0-10-0-0': `
+    <p>A variable name is the label you give a variable when you create it. JavaScript has rules about what characters you can use, plus conventions for what good names look like.</p>
+    <p>Good names make your code readable. Bad names make it a guessing game six months later.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-0-10-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// Good names
+const userName = "Os";
+const cartCount = 0;
+const isLoggedIn = false;
+const submitButton = document.querySelector(".submit");
+
+// Bad names (legal, but unclear)
+const x = "Os";
+const c = 0;
+const flag = false;
+const btn = document.querySelector(".submit");</code></pre>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-0-10-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const cartItemCount = 5;
+
+// const            → keyword
+// cartItemCount    → the variable name (the identifier)
+//                    multiple words joined together,
+//                    starting lowercase, capital on each new word (camelCase)
+// =                → assignment
+// 5                → the value</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-0-10-0-3': `
+    <p>What's allowed in a variable name:</p>
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";        // letters
+const user1 = "Os";            // letters and numbers
+const _userName = "Os";        // underscore at the start (uncommon but legal)
+const $element = button;        // dollar sign at the start (used by some libraries)
+const userName_2 = "Sam";       // underscores in the middle</code></pre>
+
+    <p>What's not allowed:</p>
+<pre class="language-javascript"><code class="language-javascript">const 1user = "Os";       // wrong: can't start with a number
+const user-name = "Os";    // wrong: dashes aren't allowed
+const user name = "Os";    // wrong: spaces aren't allowed
+const class = "Os";        // wrong: "class" is a reserved keyword
+const let = "Os";          // wrong: "let" is a reserved keyword</code></pre>
+
+    <p>Names are case-sensitive — different casing means different variables:</p>
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";
+const username = "Sam";    // a totally different variable
+const UserName = "Pat";    // also different</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-0-10-1-0': `
+    <p>Code is read way more often than it's written. A variable named <code>x</code> tells you nothing. A variable named <code>cartItemCount</code> tells you exactly what it holds.</p>
+    <p>Good names mean you (or someone else) can read the code later and understand what's happening without having to trace every variable back to its source.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-0-10-1-1': `
+    <p>Pick names that say what the variable is for. Aim for something a person can read and immediately understand.</p>
+<pre class="language-javascript"><code class="language-javascript">// Hard to read
+const d = new Date();
+const u = res.data;
+const t = p * 0.08;
+
+// Easy to read
+const today = new Date();
+const user = res.data;
+const tax = price * 0.08;</code></pre>
+    <p>The extra characters cost nothing. The clarity is worth a lot.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-0-10-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Multi-word names → camelCase
+const userName = "Os";
+const cartItemCount = 5;
+const isLoggedIn = true;
+
+// Boolean flags often start with "is", "has", "can", or "should"
+const isMenuOpen = false;
+const hasUnreadMessages = true;
+const canEdit = false;
+const shouldShowAlert = true;
+
+// Functions often start with verbs
+const handleClick = () => { /* ... */ };
+const calculateTotal = () => { /* ... */ };
+const fetchUsers = async () => { /* ... */ };
+
+// Constants (config) often UPPER_CASE
+const MAX_RETRIES = 3;
+const API_URL = "https://api.example.com";
+const TIMEOUT_MS = 5000;</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-0-10-1-3': `
+    <p>A good variable name reads like a phrase. Read your code out loud — if it makes sense, the names are good. If it sounds like alphabet soup, the names need work.</p>
+    <p>Aim for names that answer the question: "what does this hold?" or "what does this do?"</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-0-10-1-4': `
+    <p>Variable names are labels for future-you and other developers. JavaScript doesn't care if you call it <code>x</code> or <code>cartItemCount</code> — both work. But humans care, a lot.</p>
+<pre class="language-javascript"><code class="language-javascript">// JavaScript reads this:
+const x = a * b;
+
+// Humans read this:
+const totalPrice = quantity * pricePerItem;
+
+// Same code to JS — much clearer to humans.</code></pre>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-0-10-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const cartItemCount = 5;
+const isCartEmpty = cartItemCount === 0;
+
+// JavaScript is thinking:
+// Line 1: declare a variable. The name "cartItemCount" is just a label.
+//         JS doesn't analyze it for meaning — it just registers the name.
+//         Assign 5.
+// Line 2: declare another variable.
+//         Right side: look up cartItemCount (5), check if 5 === 0 → false.
+//         Assign false to isCartEmpty.
+
+// JavaScript treats names as opaque labels. The meaning is for humans.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-0-10-2-0': `
+    <p>Most variable bugs are typos. JavaScript is case-sensitive, and a typo creates a different (or undefined) variable:</p>
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";
+console.log(userName);      // works
+console.log(username);      // wrong: lowercase n — different variable
+                             // ReferenceError: username is not defined
+console.log(UserName);      // wrong: capital U — different variable</code></pre>
+
+    <p>If something is "not defined" but you swear you defined it, check the spelling and casing of every place the variable shows up. The fastest fix is renaming with your editor's "rename symbol" feature, which catches every reference at once.</p>
+
+    <p>Reserved words used as variable names cause errors:</p>
+<pre class="language-javascript"><code class="language-javascript">const class = "Math";        // SyntaxError — "class" is reserved
+// fix: use a different name
+const className = "Math";</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-0-10-2-1': `
+    <p>Names are for humans. JavaScript only checks if they're spelled the same.</p>
+    <p>A great name today is one that future-you (or a teammate) can understand without having to read the surrounding code.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-0-10-2-2': `
+    <p><strong>Confusion: case sensitivity</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";
+const username = "Sam";
+const UserName = "Pat";
+
+// these are THREE different variables to JavaScript</code></pre>
+
+    <p><strong>Confusion: which casing style to use</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Three common styles in JS:
+const userName = "Os";          // camelCase — for variables and functions (most common)
+const UserName = "Os";          // PascalCase — for classes and components
+const USER_NAME = "Os";         // UPPER_CASE — for constants/config (rare)
+
+// snake_case is rare in JavaScript
+const user_name = "Os";          // legal, but unusual — most JS uses camelCase</code></pre>
+
+    <p><strong>Confusion: short vs descriptive names</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Short names OK in tiny scopes (loops, callbacks)
+items.forEach(i => console.log(i));
+
+// Descriptive names better when the scope is bigger
+const cartItems = await fetchCart();
+cartItems.forEach(item => addToView(item));</code></pre>
+    <p>Short names like <code>i</code> or <code>x</code> are fine in tight, throwaway contexts. Anywhere else, prefer descriptive names.</p>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-0-10-2-3': `
+<pre class="language-javascript"><code class="language-javascript">const 1user = "Os";
+// wrong: can't start with a number</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const user-name = "Os";
+// wrong: dashes mean subtraction in JS, not allowed in names</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const class = "Math";
+// wrong: "class" is a reserved keyword</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";
+console.log(username);
+// wrong: typo — 'username' is a different variable (or undefined)</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const x = totalPrice + tax;
+// not technically wrong, but unclear
+// better: const grandTotal = totalPrice + tax;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const data = response.json();
+const data2 = response.json();
+const data3 = response.json();
+// numbered names are usually a sign you should rename for clarity
+// better: const userData, productData, orderData</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-0-10-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// camelCase for variables
+const userName = "Os";
+const cartItemCount = 5;
+const isLoggedIn = true;
+
+// Boolean flags read like questions
+const hasUnreadMessages = true;
+const canEditProfile = false;
+
+// Function names read like commands
+const calculateTotal = () => { /* ... */ };
+const fetchUserData = async () => { /* ... */ };
+
+// Constants in UPPER_CASE
+const MAX_FILE_SIZE = 5_000_000;
+const API_BASE = "https://api.example.com";</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-0-10-3-1': `
+    <p><strong>Example: descriptive names in a checkout flow</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const cartItems = await fetchCart();
+const subtotal = cartItems.reduce((sum, item) => sum + item.price, 0);
+const tax = subtotal * 0.08;
+const shippingCost = calculateShipping(cartItems);
+const grandTotal = subtotal + tax + shippingCost;</code></pre>
+
+    <p><strong>Example: clear names for DOM elements</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const submitButton = document.querySelector(".submit");
+const emailInput = document.querySelector("#email");
+const errorMessage = document.querySelector(".error");
+const loadingSpinner = document.querySelector(".spinner");</code></pre>
+
+    <p><strong>Example: boolean flags reading as questions</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const isMenuOpen = false;
+const hasUserAccepted = true;
+const canSubmit = email.length > 0;
+const shouldShowWarning = stockCount < 5;</code></pre>
+
+    <p><strong>Example: configuration constants</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const API_URL = "https://api.example.com";
+const MAX_RETRIES = 3;
+const REQUEST_TIMEOUT_MS = 5000;</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-0-10-3-2': `
+    <ul>
+      <li><strong>Declaring a variable</strong> → naming happens at declaration</li>
+      <li><strong>camelCase</strong> → the standard convention for JS variables</li>
+      <li><strong>Reserved keywords</strong> → words you can't use as names</li>
+      <li><strong>Case sensitivity</strong> → JS treats different casing as different variables</li>
+      <li><strong>Functions</strong> → similar naming conventions apply</li>
+      <li><strong>Debugging</strong> → typos in names cause most ReferenceErrors</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-0-10-3-3': `
+    <ul>
+      <li>camelCase</li>
+      <li>PascalCase</li>
+      <li>UPPER_CASE constants</li>
+      <li>Reserved keywords</li>
+      <li>Case sensitivity</li>
+      <li>Boolean naming patterns (is/has/can/should)</li>
+      <li>Function naming patterns</li>
+    </ul>
+  `,
+
 };
