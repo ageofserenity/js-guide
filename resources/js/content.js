@@ -9454,4 +9454,774 @@ for (let i = 0; i < items.length; i++) {
     </ul>
   `,
 
+
+  /* ===== Sub-lesson: 3.1 Variables → common mistakes =====
+     Path: topics-0-24-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-0-24-0-0': `
+    <p>This is a roundup of the most common mistakes beginners make with variables — and how to fix each one.</p>
+    <p>Most variable bugs come from a small set of repeating patterns. Knowing them in advance saves hours of confused debugging later.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-0-24-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// The seven most common variable mistakes:
+
+// 1. Forgetting const/let
+score = 100;                         // creates a global by accident
+
+// 2. Trying to reassign a const
+const x = 5;
+x = 10;                              // TypeError
+
+// 3. Redeclaring with let
+let x = 5;
+let x = 10;                          // SyntaxError
+
+// 4. Typo in the variable name
+const userName = "Os";
+console.log(username);               // ReferenceError or undefined
+
+// 5. Using before declaring
+console.log(name);
+let name = "Os";                     // ReferenceError
+
+// 6. Confusing = and ===
+if (x = 10) {}                       // assigns instead of comparing
+
+// 7. Forgetting that const allows internal mutation
+const user = { name: "Os" };
+user.name = "Sam";                   // this WORKS — surprises some beginners</code></pre>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-0-24-0-2': `
+<pre class="language-javascript"><code class="language-javascript">score = 100;
+// no const, no let
+// = before any declaration keyword
+// → JavaScript creates a GLOBAL variable by accident
+
+// vs
+
+const score = 100;
+// const     → properly declares the variable
+// score     → name
+// =         → assignment
+// 100       → value
+// ;         → ends the statement
+
+// The keyword is what distinguishes a declaration from an accidental global.</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-0-24-0-3': `
+    <p>Always start with a keyword. No exceptions:</p>
+<pre class="language-javascript"><code class="language-javascript">score = 100;            // wrong — no keyword
+const score = 100;       // correct
+let score = 100;          // correct (if you'll reassign)</code></pre>
+
+    <p>Use <code>===</code> for comparing, <code>=</code> for assigning. They're easy to mix up:</p>
+<pre class="language-javascript"><code class="language-javascript">if (x === 10) { }       // correct: comparing
+if (x = 10) { }          // wrong: assigning, then checking truthiness</code></pre>
+
+    <p>Match casing exactly. <code>userName</code> is not the same as <code>username</code> or <code>UserName</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";
+
+console.log(userName);      // works
+console.log(username);      // ReferenceError
+console.log(UserName);      // ReferenceError</code></pre>
+
+    <p><code>const</code> protects the variable, not its contents. Modifying object/array contents is allowed:</p>
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
+user.name = "Sam";          // allowed — changing INSIDE the object
+user = { name: "Sam" };      // wrong — reassigning the variable</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-0-24-1-0': `
+    <p>Most variable bugs are silent. JavaScript doesn't always warn you. A typo gives you a different variable. A missing keyword creates a global. A <code>=</code> instead of <code>===</code> makes your <code>if</code> always true.</p>
+    <p>Knowing these patterns before they hit you turns "what's wrong with my code?" into "oh, I know what this is."</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-0-24-1-1': `
+    <p>Train yourself to spot these patterns. When something feels off, scan for these first:</p>
+<pre class="language-javascript"><code class="language-javascript">// Pattern 1: typo in name
+const userName = "Os";
+console.log(username);             // ReferenceError or undefined
+
+// Pattern 2: missing keyword
+score = 100;                       // accidental global
+
+// Pattern 3: const reassignment
+const x = 5;
+x = 10;                            // TypeError
+
+// Pattern 4: = vs ===
+if (x = 10) { }                    // always true!
+
+// Pattern 5: using before declaring
+console.log(name);
+const name = "Os";                 // ReferenceError</code></pre>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-0-24-1-2': `
+    <p>These mistakes can show up anywhere. Some hot spots:</p>
+<pre class="language-javascript"><code class="language-javascript">// Inside event handlers — easy to typo or forget keywords
+btn.addEventListener("click", () => {
+  count = count + 1;        // forgot let — creates global
+});
+
+// In if statements — = vs === confusion
+if (status = "active") { }   // wrong: assigns and always runs
+
+// When refactoring — leftover variables, redeclarations
+let total = 0;
+// ... code ...
+let total = 100;             // SyntaxError
+
+// Working with objects — assuming const freezes everything
+const config = { theme: "dark" };
+config.theme = "light";       // works, even though const
+
+// Using API data — typing properties wrong
+const user = { firstName: "Os" };
+console.log(user.firstname);  // undefined — case mismatch</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-0-24-1-3': `
+    <p>Variables follow strict rules: they have to be declared before use, names have to match exactly, <code>const</code> can't be reassigned, <code>=</code> isn't <code>===</code>.</p>
+    <p>Almost every variable-related bug is one of those rules being broken. When something doesn't work, run through the list before going deeper.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-0-24-1-4': `
+    <p>Most beginner bugs cluster around two themes:</p>
+<pre class="language-javascript"><code class="language-javascript">// Theme 1: identity mistakes
+//   - typos
+//   - wrong casing
+//   - wrong scope
+// "JavaScript can't find the variable I meant."
+
+const userName = "Os";
+console.log(username);    // typo → ReferenceError or undefined
+
+
+// Theme 2: lifecycle mistakes
+//   - using before declaring
+//   - reassigning a const
+//   - accidentally creating a global
+// "I broke a rule about when/how a variable can change."
+
+const x = 5;
+x = 10;                    // can't reassign const</code></pre>
+    <p>If you can sort your bug into one of those themes, you're 80% of the way to fixing it.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-0-24-1-5': `
+<pre class="username-javascript"><code class="language-javascript">// Working through a typical bug:
+
+// You wrote:
+const userName = "Os";
+console.log(usernameValue);
+
+// Browser says:
+// ReferenceError: usernameValue is not defined
+
+// Step 1: read the error literally.
+//   It's saying "I have no variable called usernameValue."
+
+// Step 2: search your code for that name.
+//   You don't see usernameValue anywhere.
+
+// Step 3: check the closest variables.
+//   You have userName — close but different.
+
+// Step 4: fix the typo.
+console.log(userName);   // works</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-0-24-2-0': `
+    <p>The fastest way to debug a variable issue: <code>console.log</code> the variable AND its <code>typeof</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";
+console.log(userName);              // see the value
+console.log(typeof userName);       // see the type</code></pre>
+
+    <p>Read errors literally. They almost always point straight at the problem:</p>
+<pre class="language-javascript"><code class="language-javascript">// "ReferenceError: x is not defined"
+// → variable doesn't exist (typo, wrong scope, or never declared)
+
+// "TypeError: Assignment to constant variable"
+// → you tried to reassign a const
+
+// "SyntaxError: Identifier 'x' has already been declared"
+// → already declared in this scope, drop the second let/const
+
+// "Cannot access 'x' before initialization"
+// → using a let/const before its declaration line ran</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-0-24-2-1': `
+    <p>Most variable bugs are typos, missing keywords, or rule violations. Read the error literally — JavaScript usually tells you exactly what's wrong.</p>
+    <p>If you can't find a variable, it's almost always: misspelled, wrong case, or out of scope.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-0-24-2-2': `
+    <p><strong>Confusion: ReferenceError vs undefined</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let a;
+console.log(a);    // undefined — variable EXISTS, no value
+console.log(b);    // ReferenceError — variable doesn't exist at all</code></pre>
+
+    <p><strong>Confusion: const blocks reassignment, not internal change</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const obj = { x: 1 };
+obj.x = 2;             // works — modifying inside
+obj = { x: 2 };        // wrong — reassigning the variable</code></pre>
+
+    <p><strong>Confusion: redeclaring vs reassigning</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+let count = 5;       // wrong — redeclaring
+count = 5;           // right — reassigning</code></pre>
+
+    <p><strong>Confusion: <code>=</code> vs <code>==</code> vs <code>===</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">x = 5;        // assigns
+x == 5;       // compares (loose, type-coercing)
+x === 5;      // compares (strict — what you usually want)</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-0-24-2-3': `
+<pre class="language-javascript"><code class="language-javascript">score = 100;
+// wrong: no const/let — accidental global
+// fix:
+const score = 100;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const x = 5;
+x = 10;
+// wrong: TypeError — can't reassign const
+// fix: use let if it needs to change
+let x = 5;
+x = 10;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+let count = 5;
+// wrong: SyntaxError — already declared
+// fix: drop the second let
+count = 5;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";
+console.log(username);
+// wrong: typo — different variable
+// fix: match the exact name
+console.log(userName);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">console.log(name);
+let name = "Os";
+// wrong: using before declaring
+// fix: declare first
+let name = "Os";
+console.log(name);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (x = 10) { }
+// wrong: this assigns, doesn't compare
+// fix:
+if (x === 10) { }</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
+user = { name: "Sam" };
+// wrong: reassigning a const
+// fix: modify properties or use let
+user.name = "Sam";</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-0-24-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Wrong / right pairs for the most common mistakes:
+
+// Forgetting the keyword
+score = 100;                  // wrong
+const score = 100;             // right
+
+// Reassigning a const
+const x = 5;
+x = 10;                        // wrong
+let x = 5;                     // right (if it needs to change)
+x = 10;
+
+// Typo
+const userName = "Os";
+console.log(username);          // wrong
+console.log(userName);          // right
+
+// = instead of ===
+if (x = 10) {}                 // wrong
+if (x === 10) {}               // right</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-0-24-3-1': `
+    <p><strong>Example: catching a typo in form code</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const emailInput = document.querySelector("#email");
+
+// Bug: typed "emailinput" instead of "emailInput"
+console.log(emailinput.value);
+// ReferenceError: emailinput is not defined
+
+// Fix: match exact casing
+console.log(emailInput.value);</code></pre>
+
+    <p><strong>Example: trying to reassign a const that holds a DOM element</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const button = document.querySelector(".btn");
+
+// Bug: tried to swap to a different button
+button = document.querySelector(".other-btn");
+// TypeError: Assignment to constant variable
+
+// Fix: use a different variable name
+const otherButton = document.querySelector(".other-btn");</code></pre>
+
+    <p><strong>Example: <code>=</code> vs <code>===</code> in an if</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Bug: assignment inside if always runs the block
+if (status = "active") {
+  // always runs, regardless of status
+}
+
+// Fix:
+if (status === "active") {
+  // runs only when status is actually "active"
+}</code></pre>
+
+    <p><strong>Example: forgetting <code>const</code> in an event handler</strong></p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", () => {
+  count = count + 1;     // wrong — accidentally creates a global
+});
+
+// Fix: declare count somewhere with let/const
+let count = 0;
+btn.addEventListener("click", () => {
+  count = count + 1;
+});</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-0-24-3-2': `
+    <ul>
+      <li><strong>Declaring a variable</strong> → most mistakes start at declaration</li>
+      <li><strong>Reassigning</strong> → const reassignment is a top-3 mistake</li>
+      <li><strong>Naming variables</strong> → typos and casing cause many bugs</li>
+      <li><strong>Scope</strong> → "out of scope" errors can look like missing variables</li>
+      <li><strong><code>===</code></strong> → easy to confuse with <code>=</code></li>
+      <li><strong>Debugging variables</strong> → the next sub-lesson, fixing what you spot</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-0-24-3-3': `
+    <ul>
+      <li>Debugging variables</li>
+      <li>ReferenceError</li>
+      <li>TypeError</li>
+      <li>SyntaxError</li>
+      <li><code>typeof</code> operator</li>
+      <li>Strict equality (<code>===</code>)</li>
+      <li><code>const</code> and immutability</li>
+    </ul>
+  `,
+
+
+  /* ===== Sub-lesson: 3.1 Variables → debugging variables =====
+     Path: topics-0-25-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-0-25-0-0': `
+    <p>Debugging variables means figuring out what's actually inside a variable when your code isn't doing what you expect.</p>
+    <p>Most variable bugs come down to one question: <em>"What value is in this variable, right now, at this line?"</em> The tools to answer that are simple — but knowing how to use them well saves hours.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-0-25-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// The two most useful debugging tools
+
+console.log(myVariable);                  // see the value
+console.log(typeof myVariable);            // see the type
+
+// Combined — the fastest debug check
+console.log(myVariable, typeof myVariable);
+
+// Label your logs so you know which one is which
+console.log("at line 42, score is:", score);</code></pre>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-0-25-0-2': `
+<pre class="language-javascript"><code class="language-javascript">console.log("score:", score);
+
+// console            → built-in object for logging
+// .log               → method that prints to the developer console
+// "score:"           → label so you can find this log in the output
+// score              → the variable being logged
+// → output: "score: 100"
+
+// Adding a label is critical when you have multiple logs.
+// Without one, "100" by itself doesn't tell you which variable that was.</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-0-25-0-3': `
+    <p><code>console.log</code> can take multiple arguments — useful for showing related values together:</p>
+<pre class="language-javascript"><code class="language-javascript">console.log("name:", userName, "age:", userAge);
+// output: name: Os age: 25</code></pre>
+
+    <p><code>console.log</code> with an object shows everything inside:</p>
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os", age: 25 };
+console.log(user);
+// output: { name: "Os", age: 25 }
+
+console.log(user.profile);
+// undefined — the property doesn't exist</code></pre>
+
+    <p><code>typeof</code> tells you what KIND of value the variable holds:</p>
+<pre class="language-javascript"><code class="language-javascript">console.log(typeof "Os");          // "string"
+console.log(typeof 42);             // "number"
+console.log(typeof true);           // "boolean"
+console.log(typeof undefined);      // "undefined"
+console.log(typeof null);           // "object" (a famous JS quirk)
+console.log(typeof []);             // "object" (arrays are objects)
+console.log(typeof {});             // "object"
+console.log(typeof function(){});   // "function"</code></pre>
+
+    <p>Use <code>console.table</code> for arrays of objects:</p>
+<pre class="language-javascript"><code class="language-javascript">const users = [
+  { name: "Os", age: 25 },
+  { name: "Sam", age: 30 }
+];
+console.table(users);
+// renders a clean table in the dev console</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-0-25-1-0': `
+    <p>Variable bugs hide in plain sight. The variable is right there, the code looks right, but the result is wrong. The problem is your assumption about what the variable holds — and reality.</p>
+    <p>Logging the variable replaces assumption with fact. You see what's actually there.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-0-25-1-1': `
+    <p>Use <code>console.log</code> any time you're unsure about a variable's value. It's the cheapest, most reliable debugging tool you have.</p>
+<pre class="language-javascript"><code class="language-javascript">// Code isn't working? First step:
+const total = price + tax;
+console.log("price:", price, "tax:", tax, "total:", total);
+
+// Now you can see if any of these are not what you expected:
+//   - is price a string instead of a number?
+//   - did tax come back as undefined?
+//   - is total NaN?</code></pre>
+    <p>Bonus: when you find the bug, you can leave the log there to confirm the fix works.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-0-25-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Right after fetching API data
+const response = await fetch(url);
+const data = await response.json();
+console.log("API data:", data);
+
+// Right after reading form input
+const userInput = emailInput.value;
+console.log("user typed:", userInput, typeof userInput);
+
+// Inside an event handler when something's not firing right
+btn.addEventListener("click", (e) => {
+  console.log("clicked, target:", e.target);
+});
+
+// In a loop when you suspect a counter is off
+for (let i = 0; i < items.length; i++) {
+  console.log("iteration", i, "item:", items[i]);
+}
+
+// Right before a calculation that might be wrong
+console.log("about to compute total. price:", price, "qty:", quantity);
+const total = price * quantity;</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-0-25-1-3': `
+    <p>When code doesn't work, your assumption about what the variable holds is probably wrong.</p>
+    <p>Logging the variable lets you SEE what's actually inside. Once you see the truth, the fix is usually obvious.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-0-25-1-4': `
+    <p>Debugging variables is like tracing footprints. You walk through the code from earliest to latest, asking at each step: <em>"what's in this variable now?"</em></p>
+<pre class="language-javascript"><code class="language-javascript">const price = priceInput.value;
+console.log("step 1 — price:", price, typeof price);
+// "10" string — aha, came in as a string
+
+const tax = price * 0.08;
+console.log("step 2 — tax:", tax);
+// 0.8 — math worked despite the string (JS coerced it)
+
+const total = price + tax;
+console.log("step 3 — total:", total);
+// "100.8" — string concat instead of math!
+
+// Now you've found it: + with a string and number = string concat.</code></pre>
+    <p>Each log is a footprint. The bug is wherever the values stop making sense.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-0-25-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// Bug: "Why is my total wrong?"
+
+const price = priceInput.value;
+const quantity = qtyInput.value;
+const total = price * quantity;
+displayTotal.textContent = total;
+
+// Step 1: log every variable involved
+console.log("price:", price, typeof price);       // "10" string
+console.log("quantity:", quantity, typeof quantity); // "5" string
+console.log("total:", total, typeof total);          // 50 number (* coerced)
+
+// Step 2: notice — values came in as strings
+//   For * (multiplication), JS coerces strings to numbers — happens to work.
+//   For + (addition), it would have done string concatenation instead.
+
+// Step 3: fix proactively
+const price = Number(priceInput.value);
+const quantity = Number(qtyInput.value);
+const total = price * quantity;</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-0-25-2-0': `
+    <p>If the issue is hard to spot from the value alone, log the type too:</p>
+<pre class="language-javascript"><code class="language-javascript">console.log(score, typeof score);
+// "10" string  → ah, that's why my math is wrong
+// 10 number    → math should work
+// undefined "undefined"  → variable was never assigned
+// null "object" → set to null somewhere</code></pre>
+
+    <p>If a variable seems to vanish, you might be in the wrong scope. Try logging from where you DECLARED it:</p>
+<pre class="language-javascript"><code class="language-javascript">function setup() {
+  const config = { theme: "dark" };
+  console.log("inside setup:", config);   // works — config exists here
+}
+setup();
+console.log("outside setup:", config);    // ReferenceError — out of scope</code></pre>
+
+    <p>If you have many logs, label them so the output is readable:</p>
+<pre class="language-javascript"><code class="language-javascript">// Hard to read
+console.log(price);
+console.log(quantity);
+console.log(total);
+// output: 10  5  50
+
+// Easy to read
+console.log("price:", price);
+console.log("quantity:", quantity);
+console.log("total:", total);
+// output:
+// price: 10
+// quantity: 5
+// total: 50</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-0-25-2-1': `
+    <p>When debugging variables, replace assumption with fact. <code>console.log</code> is how.</p>
+    <p>Add the type with <code>typeof</code> when something looks right but behaves wrong — strings disguised as numbers are a top offender.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-0-25-2-2': `
+    <p><strong>Confusion: logging an object that changes later</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
+console.log(user);          // browsers may show LIVE data, not a snapshot
+
+user.name = "Sam";
+// the earlier console.log now shows { name: "Sam" } if you expand it!
+
+// fix: log a copy if you need a snapshot
+console.log({ ...user });</code></pre>
+
+    <p><strong>Confusion: <code>console.log</code> doesn't return anything</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getName() {
+  console.log("Os");        // logs but doesn't return
+}
+const name = getName();
+console.log(name);           // undefined</code></pre>
+
+    <p><strong>Confusion: <code>typeof null</code> is <code>"object"</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">console.log(typeof null);    // "object" — historical JS quirk
+
+// to check for null specifically:
+if (value === null) { }</code></pre>
+
+    <p><strong>Confusion: which variable is which</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Without labels — confusing
+console.log(score);
+console.log(level);
+// output: 10  3
+
+// With labels — clear
+console.log("score:", score);
+console.log("level:", level);
+// output:
+// score: 10
+// level: 3</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-0-25-2-3': `
+<pre class="language-javascript"><code class="language-javascript">console.log(score);
+console.log(level);
+console.log(total);
+// works, but no labels — hard to read in big logs
+// fix: label them
+console.log("score:", score);
+console.log("level:", level);
+console.log("total:", total);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">console.log("everything is fine");
+// no actual variable inspection — useless for debugging
+// fix: log the variables involved
+console.log("price:", price, "quantity:", quantity);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Logging an object that changes later
+const user = { name: "Os" };
+console.log(user);
+user.name = "Sam";
+// the log might show "Sam" depending on the browser
+// fix: log a copy
+console.log({ ...user });</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Logging just the value when type is the actual issue
+const score = "10";
+console.log(score);          // "10" — looks fine
+console.log(score + 5);      // "105" — string concat!
+// fix: also log the type
+console.log(score, typeof score);   // "10" string — caught it</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Leaving lots of debug logs in production code
+// fix: delete them once the bug is fixed,
+// or use a logger that can be turned off</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-0-25-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Just the value
+const score = 100;
+console.log(score);              // 100
+
+// Value and type — best for catching surprises
+console.log(score, typeof score); // 100 'number'
+
+// Multiple values with labels
+const a = 5, b = 10;
+console.log("a:", a, "b:", b);    // a: 5 b: 10
+
+// Object inspection
+const user = { name: "Os" };
+console.log(user);                // { name: "Os" }
+
+// Array of objects
+const users = [{ name: "Os" }, { name: "Sam" }];
+console.table(users);             // shown as a table in dev tools</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-0-25-3-1': `
+    <p><strong>Example: confirming form input read correctly</strong></p>
+<pre class="language-javascript"><code class="language-javascript">submitBtn.addEventListener("click", () => {
+  const email = emailInput.value;
+  console.log("email read as:", email, typeof email);
+
+  if (!email.includes("@")) {
+    showError("Invalid email");
+  }
+});</code></pre>
+
+    <p><strong>Example: tracking a state variable as it changes</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let cartCount = 0;
+
+addToCartBtn.addEventListener("click", () => {
+  cartCount = cartCount + 1;
+  console.log("cartCount:", cartCount);
+  updateBadge(cartCount);
+});</code></pre>
+
+    <p><strong>Example: peeking at API data structure</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const response = await fetch(url);
+const data = await response.json();
+console.log("API response:", data);
+// look in the dev console to see what shape the data has
+// before writing code that uses it</code></pre>
+
+    <p><strong>Example: walking through a multi-step calculation</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function checkout(items) {
+  const subtotal = items.reduce((sum, i) => sum + i.price, 0);
+  console.log("subtotal:", subtotal);
+
+  const tax = subtotal * 0.08;
+  console.log("tax:", tax);
+
+  const total = subtotal + tax;
+  console.log("total:", total);
+
+  return total;
+}</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-0-25-3-2': `
+    <ul>
+      <li><strong>Common mistakes</strong> → debugging is how you find them</li>
+      <li><strong><code>console.log</code></strong> → the main tool</li>
+      <li><strong><code>typeof</code></strong> → catches type-related surprises</li>
+      <li><strong>Reading errors</strong> → ReferenceError and TypeError tell you what's wrong</li>
+      <li><strong>Browser dev tools</strong> → where logs show up</li>
+      <li><strong>Forms</strong> → input values often need type-checking</li>
+      <li><strong>API data</strong> → almost always worth logging on first use</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-0-25-3-3': `
+    <ul>
+      <li>Common mistakes</li>
+      <li><code>console.log</code></li>
+      <li><code>console.table</code></li>
+      <li><code>console.error</code> and <code>console.warn</code></li>
+      <li><code>typeof</code></li>
+      <li>Browser dev tools</li>
+      <li>Breakpoints (advanced debugging)</li>
+    </ul>
+  `,
+
 };
