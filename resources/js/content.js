@@ -10238,19 +10238,25 @@ console.log("API response:", data);
 
   /* 0.0 What it is */
   'topics-1-0-0-0': `
-    <p>A data type is the kind of value something is. JavaScript has a small set of built-in types — string, number, boolean, array, object, null, undefined — and every value belongs to one of them.</p>
+    <p>A data type is the kind of value something is. JavaScript has a set of built-in types — <strong>string, number, boolean, array, object, function, null, undefined</strong>. Every value belongs to one of them.</p>
+    <p>There are two more — <strong>symbol</strong> and <strong>bigint</strong> — but those are rare and mostly show up in advanced code or libraries. You can safely ignore them while learning.</p>
     <p>The type decides what you can do with the value. You can do math with numbers, get the length of a string, loop through an array — but each only works with the right type.</p>
   `,
 
   /* 0.1 Syntax */
   'topics-1-0-0-1': `
-<pre class="language-javascript"><code class="language-javascript">"hello"          // string
-42                // number
-true              // boolean
-[1, 2, 3]         // array
-{ name: "Os" }    // object
-null              // null
-undefined         // undefined</code></pre>
+<pre class="language-javascript"><code class="language-javascript">"hello"               // string
+42                     // number
+true                   // boolean
+[1, 2, 3]              // array
+{ name: "Os" }         // object
+function() {}          // function
+null                   // null
+undefined              // undefined
+
+// Rare types you'll mostly only see in advanced code:
+Symbol("id")           // symbol
+9999999999999999n      // bigint (notice the trailing "n")</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -10270,14 +10276,18 @@ const isLoggedIn = true;
   /* 0.3 Syntax Details That Matter */
   'topics-1-0-0-3': `
     <p>You can check a value's type with <code>typeof</code>:</p>
-<pre class="language-javascript"><code class="language-javascript">typeof "Os";        // "string"
-typeof 42;           // "number"
-typeof true;         // "boolean"
-typeof undefined;    // "undefined"
-typeof null;         // "object"  ← famous JS quirk
-typeof [];           // "object"  ← arrays are objects
-typeof {};           // "object"
-typeof function(){}; // "function"</code></pre>
+<pre class="language-javascript"><code class="language-javascript">typeof "Os";          // "string"
+typeof 42;             // "number"
+typeof true;           // "boolean"
+typeof undefined;      // "undefined"
+typeof null;           // "object"  ← famous JS quirk
+typeof [];             // "object"  ← arrays are objects
+typeof {};             // "object"
+typeof function(){};   // "function"
+
+// Rare types:
+typeof Symbol("id");   // "symbol"
+typeof 99n;            // "bigint"</code></pre>
 
     <p>Each type has its own way of being written:</p>
 <pre class="language-javascript"><code class="language-javascript">"hello"           // string — quotes
@@ -10285,6 +10295,7 @@ typeof function(){}; // "function"</code></pre>
 true               // boolean — keyword
 [1, 2]             // array — square brackets
 { x: 1 }           // object — curly braces
+function(){}       // function — function keyword (or arrow syntax)
 null               // null — keyword
 undefined          // undefined — keyword (rarely written by hand)</code></pre>
 
@@ -10572,7 +10583,9 @@ if (Array.isArray(data)) {
       <li><strong>Booleans</strong> → true/false type</li>
       <li><strong>Arrays</strong> → list type</li>
       <li><strong>Objects</strong> → labeled-bundle type</li>
+      <li><strong>Functions</strong> → also a type — values you can call</li>
       <li><strong>null and undefined</strong> → "empty" types</li>
+      <li><strong>Symbol and BigInt</strong> → rare types (advanced/library code)</li>
       <li><strong><code>typeof</code></strong> → operator that returns the type</li>
       <li><strong>Type coercion</strong> → JS auto-converting between types</li>
     </ul>
@@ -10587,7 +10600,9 @@ if (Array.isArray(data)) {
       <li>Type coercion</li>
       <li><code>Number()</code>, <code>String()</code>, <code>Boolean()</code> conversions</li>
       <li>Strict equality (<code>===</code>)</li>
-      <li>The 7 primitive types in JS</li>
+      <li>Functions as values</li>
+      <li>Symbol (advanced)</li>
+      <li>BigInt (advanced)</li>
     </ul>
   `,
 
