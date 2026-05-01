@@ -6254,4 +6254,2297 @@ if (canEditPost) {
     </ul>
   `,
 
+
+  /* ===== Sub-lesson: 3.1 Variables → storing arrays =====
+     Path: topics-0-16-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-0-16-0-0': `
+    <p>Storing an array means putting a list of values into a variable. The whole list — no matter how many items — counts as one value, so it lives in one variable.</p>
+    <p>Anything that's a "list" in real terms (colors, products, names, tasks) lives in an array.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-0-16-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const colors = ["red", "blue", "green"];
+const numbers = [1, 2, 3, 4, 5];
+const empty = [];
+
+let scores = [10, 20, 30];        // let if the array variable will be reassigned</code></pre>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-0-16-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const colors = ["red", "blue", "green"];
+
+// const                          → keyword
+// colors                          → variable name
+// =                               → assignment
+// [                               → opening bracket — starts the array
+// "red", "blue", "green"          → items, separated by commas
+// ]                               → closing bracket — ends the array
+// ;                               → ends the statement</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-0-16-0-3': `
+    <p>Square brackets create the array. Items are comma-separated:</p>
+<pre class="language-javascript"><code class="language-javascript">const a = ["red", "blue"];      // correct
+const a = ["red" "blue"];        // wrong: missing comma
+const a = ("red", "blue");       // wrong: those are parens, not array brackets</code></pre>
+
+    <p>Items can be any type, even mixed:</p>
+<pre class="language-javascript"><code class="language-javascript">const mixed = [1, "two", true, null, [3, 4]];
+// numbers, strings, booleans, null, even other arrays — all valid</code></pre>
+
+    <p>Trailing commas are allowed (and actually nice in long arrays):</p>
+<pre class="language-javascript"><code class="language-javascript">const items = [
+  "apple",
+  "banana",
+  "cherry",       // ← trailing comma is fine
+];</code></pre>
+
+    <p>Access items by index — starts at 0, not 1:</p>
+<pre class="language-javascript"><code class="language-javascript">const colors = ["red", "blue", "green"];
+
+colors[0];      // "red"   — first item
+colors[1];      // "blue"  — second item
+colors[2];      // "green" — third item
+colors[3];      // undefined — no item at that position</code></pre>
+
+    <p><code>const</code> doesn't freeze array contents — items can still be changed:</p>
+<pre class="language-javascript"><code class="language-javascript">const colors = ["red", "blue"];
+
+colors.push("green");      // works — modifying the array
+colors[0] = "purple";       // works — changing an item
+
+colors = ["yellow"];        // wrong: TypeError — reassigning, blocked by const</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-0-16-1-0': `
+    <p>Lots of real things come in lists — products in a cart, replies on a post, tasks in a to-do. Without arrays, you'd need a separate variable for every single item, and your code would have no way to handle "however many" of something.</p>
+    <p>An array is one variable that holds a list, no matter how long. JavaScript can loop over it, count items, add or remove items — all without you having to track each one individually.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-0-16-1-1': `
+    <p>Use an array any time you have multiple things of the same kind that belong together.</p>
+<pre class="language-javascript"><code class="language-javascript">// Lists of items
+const cartItems = ["shirt", "shoes", "hat"];
+const colors = ["red", "blue", "green"];
+
+// Lists of users or products
+const users = [user1, user2, user3];
+
+// Steps in a process
+const steps = ["enter email", "verify", "set password"];
+
+// Items rendered to a page
+const tasks = ["buy milk", "walk dog", "send email"];</code></pre>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-0-16-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Looping over items
+const colors = ["red", "blue", "green"];
+for (const color of colors) {
+  console.log(color);
+}
+
+// Building up a list
+const cart = [];
+cart.push("apple");
+cart.push("banana");
+
+// Storing API responses
+const response = await fetch("/users");
+const users = await response.json();   // usually an array
+
+// Storing DOM matches
+const allButtons = document.querySelectorAll(".btn");
+// (technically a NodeList, but you treat it like an array)
+
+// Tracking selections
+const selectedTags = ["javascript", "html"];</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-0-16-1-3': `
+    <p>An array is one box that holds many things in order.</p>
+    <p>The whole box has one label (the variable name), but inside, items are stacked in a specific order. You can ask for "the first item," "the third item," "how many items," or "all items" — all by talking to the one variable.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-0-16-1-4': `
+    <p>Picture a numbered row of slots. The variable name labels the whole row. Each slot has an index (its position number, starting at 0).</p>
+<pre class="language-javascript"><code class="language-javascript">const colors = ["red", "blue", "green"];
+
+// colors  →  [ "red" , "blue" , "green" ]
+//             index 0  index 1  index 2
+//
+// colors.length     → 3
+// colors[0]         → "red"
+// colors[colors.length - 1]  → last item ("green")</code></pre>
+    <p>The whole array is one value pointed at by the variable. Items inside are accessed by number.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-0-16-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const cart = [];
+cart.push("apple");
+cart.push("banana");
+console.log(cart);
+
+// JavaScript is thinking:
+// Line 1: declare cart. Right side is [] → an empty array.
+//         Store the empty array in cart.
+// Line 2: look up cart → the array.
+//         Call .push("apple") → adds "apple" at the end.
+//         Array is now ["apple"].
+// Line 3: same idea — push "banana".
+//         Array is now ["apple", "banana"].
+// Line 4: log the array → ["apple", "banana"]</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-0-16-2-0': `
+    <p>If you're getting <code>undefined</code> from an array index, the index is probably out of range:</p>
+<pre class="language-javascript"><code class="language-javascript">const colors = ["red", "blue", "green"];
+console.log(colors[3]);    // undefined — there's no item at index 3
+console.log(colors.length);  // 3 — last valid index is 2</code></pre>
+
+    <p>Off-by-one errors happen because indexes start at 0:</p>
+<pre class="language-javascript"><code class="language-javascript">const colors = ["red", "blue", "green"];
+const lastColor = colors[colors.length - 1];     // correct: "green"
+const lastColor2 = colors[colors.length];        // wrong: undefined</code></pre>
+
+    <p>If <code>console.log</code> shows the array changing when you didn't expect it to, something somewhere is mutating it. Arrays are passed by reference, so a function can modify the original:</p>
+<pre class="language-javascript"><code class="language-javascript">const items = ["a", "b"];
+function modify(arr) {
+  arr.push("c");        // this changes the ORIGINAL items array
+}
+modify(items);
+console.log(items);     // ["a", "b", "c"] — surprise!
+
+// fix: work with a copy if you don't want to mutate
+function modify(arr) {
+  const copy = [...arr, "c"];
+  return copy;
+}</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-0-16-2-1': `
+    <p>An array is a single value that holds many. The brackets <code>[]</code> are what turn many things into one value you can pass around.</p>
+    <p>Indexes start at 0. The last item is always at <code>length - 1</code>.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-0-16-2-2': `
+    <p><strong>Confusion: indexes start at 0, not 1</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const colors = ["red", "blue", "green"];
+
+colors[0];     // "red"   — FIRST item
+colors[1];     // "blue"  — second
+colors[2];     // "green" — third (LAST item, since length is 3)
+colors[3];     // undefined</code></pre>
+
+    <p><strong>Confusion: <code>const</code> doesn't make the array immutable</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const colors = ["red"];
+
+colors.push("blue");      // works — modifying the array
+colors[0] = "green";       // works — changing an item
+
+colors = ["yellow"];       // wrong: reassigning, blocked by const</code></pre>
+
+    <p><strong>Confusion: <code>length</code> is one bigger than the last index</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const items = ["a", "b", "c"];
+
+items.length;           // 3 (count of items)
+items[2];               // "c" (last item, at index 2)
+items[items.length];    // undefined (one past the end)
+items[items.length - 1]; // "c" (correct way to get last)</code></pre>
+
+    <p><strong>Confusion: arrays vs objects</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const arr = ["red", "blue"];        // array — items by NUMBER (index)
+const obj = { color: "red" };       // object — items by NAME (key)
+
+arr[0];           // "red"
+obj.color;        // "red"</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-0-16-2-3': `
+<pre class="language-javascript"><code class="language-javascript">const colors = ["red" "blue"];
+// wrong: missing comma between items
+// fix:
+const colors = ["red", "blue"];</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const colors = ["red", "blue", "green"];
+const last = colors[3];
+// wrong: index 3 doesn't exist (length is 3, indexes go 0-2)
+// fix:
+const last = colors[colors.length - 1];</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const items = [];
+items = ["a", "b"];
+// wrong: reassigning a const array
+// fix: use push, or use let if you really need to swap
+items.push("a");
+items.push("b");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const colors = ["red", "blue"];
+const copy = colors;
+copy.push("green");
+console.log(colors);   // ["red", "blue", "green"] — original got mutated!
+// arrays are shared by reference
+// fix: spread to make a real copy
+const copy = [...colors];
+copy.push("green");
+console.log(colors);   // ["red", "blue"] — unchanged</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const cart = ["apple", "banana"];
+cart[5] = "cherry";
+console.log(cart.length);   // 6 — JS fills the gaps with empty slots
+console.log(cart[3]);        // undefined
+// fix: use push instead of skipping indexes
+cart.push("cherry");</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-0-16-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Basic array
+const colors = ["red", "blue", "green"];
+console.log(colors[0]);          // "red"
+console.log(colors.length);      // 3
+
+// Mixed types
+const mixed = [1, "two", true];
+console.log(mixed[1]);            // "two"
+
+// Empty, then build it up
+const cart = [];
+cart.push("apple");
+cart.push("banana");
+console.log(cart);                // ["apple", "banana"]
+
+// Looping
+const numbers = [1, 2, 3];
+for (const n of numbers) {
+  console.log(n * 2);             // 2, 4, 6
+}
+
+// Last item
+const items = ["a", "b", "c"];
+console.log(items[items.length - 1]);   // "c"</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-0-16-3-1': `
+    <p><strong>Example: building a shopping cart</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const cart = [];
+
+addToCartBtn.addEventListener("click", (e) => {
+  const productId = e.target.dataset.id;
+  cart.push(productId);
+  updateCartUI(cart);
+});</code></pre>
+
+    <p><strong>Example: rendering a list of items</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const tasks = ["buy milk", "walk dog", "send email"];
+
+tasks.forEach((task) => {
+  const li = document.createElement("li");
+  li.textContent = task;
+  taskList.appendChild(li);
+});</code></pre>
+
+    <p><strong>Example: storing API data</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const response = await fetch("/api/users");
+const users = await response.json();
+// users is now an array of user objects
+
+users.forEach(user => renderUserCard(user));</code></pre>
+
+    <p><strong>Example: tracking multi-select tags</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const selectedTags = [];
+
+tagBtn.addEventListener("click", (e) => {
+  const tag = e.target.dataset.tag;
+  selectedTags.push(tag);
+  updateFilters(selectedTags);
+});</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-0-16-3-2': `
+    <ul>
+      <li><strong>Arrays</strong> → the topic of arrays as a data type (deeper coverage)</li>
+      <li><strong>Indexes</strong> → positions inside an array (0-based)</li>
+      <li><strong>Loops</strong> → the main way to walk through an array</li>
+      <li><strong>Array methods</strong> → <code>.push()</code>, <code>.map()</code>, <code>.filter()</code>, <code>.forEach()</code></li>
+      <li><strong>const with arrays</strong> → blocks reassignment, not mutation</li>
+      <li><strong>Spread (<code>...</code>)</strong> → for copying arrays</li>
+      <li><strong>Storing objects</strong> → arrays of objects are everywhere</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-0-16-3-3': `
+    <ul>
+      <li>Arrays (full topic)</li>
+      <li>Array indexes</li>
+      <li>Array <code>.length</code></li>
+      <li><code>.push()</code> and <code>.pop()</code></li>
+      <li><code>.map()</code>, <code>.filter()</code>, <code>.forEach()</code></li>
+      <li>Spread operator (<code>...</code>)</li>
+      <li>Storing objects</li>
+      <li>Arrays of objects</li>
+    </ul>
+  `,
+
+
+  /* ===== Sub-lesson: 3.1 Variables → storing objects =====
+     Path: topics-0-17-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-0-17-0-0': `
+    <p>Storing an object means putting a labeled bundle of data into a variable. The whole bundle — properties and values — counts as one value.</p>
+    <p>Whenever a single thing has multiple pieces of information (a user has a name, age, email; a product has a title, price, image), that thing is an object.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-0-17-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const user = {
+  name: "Os",
+  age: 25,
+  isLoggedIn: true
+};
+
+const empty = {};
+
+let settings = { theme: "dark" };       // let if you'll reassign the variable</code></pre>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-0-17-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os", age: 25 };
+
+// const          → keyword
+// user           → variable name
+// =              → assignment
+// {              → opening curly brace — starts the object
+// name: "Os"     → a property: key "name", value "Os"
+// ,              → comma separates properties
+// age: 25        → another property: key "age", value 25
+// }              → closing curly brace — ends the object
+// ;              → ends the statement</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-0-17-0-3': `
+    <p>Curly braces create the object. Properties use colons between key and value, commas between properties:</p>
+<pre class="language-javascript"><code class="language-javascript">const user = {
+  name: "Os",        // property: key, colon, value, comma
+  age: 25,
+  email: "os@a.com"  // last property — comma optional
+};</code></pre>
+
+    <p>Keys are usually unquoted strings. Quotes are needed only if the key has weird characters:</p>
+<pre class="language-javascript"><code class="language-javascript">const user = {
+  name: "Os",          // unquoted key — most common
+  "first-name": "Os",  // quoted: needed because of the dash
+  "1st": "first"       // quoted: needed because keys can't start with a digit unquoted
+};</code></pre>
+
+    <p>Access properties with dot notation or bracket notation:</p>
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os", age: 25 };
+
+user.name;        // "Os"  — dot notation (most common)
+user["name"];     // "Os"  — bracket notation (same result)
+user.email;       // undefined — no such property
+
+// Bracket notation is needed when the key is in a variable:
+const key = "name";
+user[key];        // "Os"</code></pre>
+
+    <p><code>const</code> doesn't freeze object contents — properties can still change:</p>
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
+
+user.name = "Sam";        // works — modifying the object
+user.age = 25;             // works — adding a new property
+delete user.name;          // works — removing a property
+
+user = { name: "Sam" };    // wrong: TypeError — reassigning, blocked by const</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-0-17-1-0': `
+    <p>Real-world things have multiple pieces of information. A user isn't just a name — it's a name AND an age AND an email AND a login status. Without objects, you'd need a separate variable for each piece, and you'd have no way to keep them grouped.</p>
+    <p>Objects bundle related data under one variable, so the whole thing travels together.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-0-17-1-1': `
+    <p>Use an object when a single concept has multiple labeled pieces of data.</p>
+<pre class="language-javascript"><code class="language-javascript">// User info
+const user = {
+  name: "Os",
+  email: "os@example.com",
+  age: 25
+};
+
+// Product info
+const product = {
+  title: "Coffee Mug",
+  price: 9.99,
+  inStock: true
+};
+
+// App settings
+const settings = {
+  theme: "dark",
+  fontSize: "medium",
+  language: "en"
+};
+
+// API response
+const response = {
+  status: 200,
+  message: "OK",
+  data: [/* ... */]
+};</code></pre>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-0-17-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Bundling related state
+const appState = {
+  isLoggedIn: false,
+  cartCount: 0,
+  currentUser: null
+};
+
+// API responses (almost always objects or arrays of objects)
+const response = await fetch("/api/user");
+const user = await response.json();
+
+// Configuration
+const config = {
+  apiUrl: "https://api.example.com",
+  timeout: 5000,
+  retries: 3
+};
+
+// Lists of objects (very common)
+const products = [
+  { id: 1, name: "Mug", price: 9.99 },
+  { id: 2, name: "Hat", price: 19.99 }
+];
+
+// Function arguments grouped together
+function createUser({ name, email, age }) {
+  // ...
+}
+createUser({ name: "Os", email: "os@a.com", age: 25 });</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-0-17-1-3': `
+    <p>An object is one box with multiple labeled compartments.</p>
+    <p>The whole box has one name (the variable). Inside, each compartment has its own label (a key) and its own contents (a value). You ask the box for a specific compartment by its label.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-0-17-1-4': `
+    <p>Where an array uses position numbers (0, 1, 2), an object uses labels. Same idea — bundling multiple values into one — different way to find them.</p>
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os", age: 25, email: "os@a.com" };
+
+// user  →  { name: "Os", age: 25, email: "os@a.com" }
+//
+// user.name   → "Os"
+// user.age    → 25
+// user.email  → "os@a.com"</code></pre>
+    <p>The variable points at the whole bundle. Dot or bracket notation reaches into the bundle and grabs a specific value by its label.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-0-17-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
+user.age = 25;
+console.log(user);
+
+// JavaScript is thinking:
+// Line 1: declare user. Right side is { name: "Os" } → create an object.
+//         Store the object in user. Lock the variable (const).
+// Line 2: look up user → the object.
+//         user.age = 25 → add (or set) the property "age" with value 25.
+//         (const doesn't block this — we're modifying contents, not reassigning.)
+// Line 3: log user → { name: "Os", age: 25 }</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-0-17-2-0': `
+    <p>If a property returns <code>undefined</code>, the property doesn't exist or you typed it wrong:</p>
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
+
+user.email;       // undefined — no such property
+user.Name;        // undefined — typo, capital N (case-sensitive)
+user.name;        // "Os" — correct</code></pre>
+
+    <p>If you get <code>"Cannot read properties of undefined (reading 'X')"</code>, something earlier was undefined and you're trying to access a property on it:</p>
+<pre class="language-javascript"><code class="language-javascript">const user = await fetchUser();
+console.log(user.profile.email);
+// TypeError: Cannot read properties of undefined (reading 'email')
+// (user.profile was undefined)
+
+// fix: optional chaining
+console.log(user.profile?.email);   // undefined instead of throwing</code></pre>
+
+    <p>If <code>console.log</code> shows the object changing unexpectedly, something is mutating it. Objects are passed by reference:</p>
+<pre class="language-javascript"><code class="language-javascript">const original = { name: "Os" };
+
+function updateName(u) {
+  u.name = "Sam";   // changes the ORIGINAL — surprise
+}
+
+updateName(original);
+console.log(original.name);   // "Sam"
+
+// fix: spread to make a copy
+function updateName(u) {
+  return { ...u, name: "Sam" };
+}</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-0-17-2-1': `
+    <p>Arrays use numbers to find items. Objects use names. Same idea — different label.</p>
+    <p>Use an object when the things you're storing aren't naturally a list — they're a single thing with multiple parts.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-0-17-2-2': `
+    <p><strong>Confusion: dot notation vs bracket notation</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
+
+user.name;        // dot — when you know the key
+user["name"];     // bracket — same thing, just verbose
+
+const key = "name";
+user.key;         // undefined — looks for a literal "key" property
+user[key];        // "Os" — uses the value of the key variable</code></pre>
+    <p>Use dot when the key is a fixed name. Use brackets when the key is in a variable, or has special characters.</p>
+
+    <p><strong>Confusion: <code>const</code> doesn't freeze object contents</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
+
+user.name = "Sam";       // works — changing properties is allowed
+user.age = 25;            // works — adding new properties is allowed
+
+user = { name: "Sam" };   // wrong: reassigning, blocked by const</code></pre>
+
+    <p><strong>Confusion: missing properties return <code>undefined</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
+
+user.email;       // undefined — no error, no warning, just undefined
+user.profile.x;   // TypeError — can't read .x of undefined</code></pre>
+    <p>Accessing a missing property returns <code>undefined</code>. But trying to access a property OF that <code>undefined</code> throws an error.</p>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-0-17-2-3': `
+<pre class="language-javascript"><code class="language-javascript">const user = {
+  name: "Os"
+  age: 25
+};
+// wrong: missing comma between properties
+// fix:
+const user = {
+  name: "Os",
+  age: 25
+};</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
+user = { name: "Sam" };
+// wrong: reassigning, blocked by const
+// fix: modify properties, don't reassign
+user.name = "Sam";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
+console.log(user.Name);   // undefined — capital N is wrong
+// fix: keys are case-sensitive
+console.log(user.name);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const original = { name: "Os" };
+const copy = original;
+copy.name = "Sam";
+console.log(original.name);   // "Sam" — original mutated too!
+// objects are shared by reference
+// fix: spread for a real copy
+const copy = { ...original };</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const user = { "first name": "Os" };
+console.log(user.first name);
+// wrong: SyntaxError — dot notation can't have spaces
+// fix: bracket notation
+console.log(user["first name"]);</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-0-17-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Basic object
+const user = { name: "Os", age: 25 };
+console.log(user.name);          // "Os"
+console.log(user.age);            // 25
+
+// Empty, then add properties
+const settings = {};
+settings.theme = "dark";
+settings.fontSize = "medium";
+
+// Nested object
+const profile = {
+  user: { name: "Os" },
+  preferences: { theme: "dark" }
+};
+console.log(profile.user.name);   // "Os"
+
+// Array of objects (super common)
+const products = [
+  { id: 1, name: "Mug" },
+  { id: 2, name: "Hat" }
+];
+console.log(products[0].name);    // "Mug"
+
+// Bracket notation for dynamic keys
+const key = "name";
+const user2 = { name: "Sam" };
+console.log(user2[key]);          // "Sam"</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-0-17-3-1': `
+    <p><strong>Example: tracking app state in one bundle</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const appState = {
+  isLoggedIn: false,
+  currentUser: null,
+  cartCount: 0,
+  isLoading: false
+};
+
+loginBtn.addEventListener("click", async () => {
+  appState.currentUser = await login();
+  appState.isLoggedIn = true;
+});</code></pre>
+
+    <p><strong>Example: storing user profile data</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const profile = {
+  name: nameInput.value,
+  email: emailInput.value,
+  age: Number(ageInput.value)
+};
+
+await saveProfile(profile);</code></pre>
+
+    <p><strong>Example: configuration</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const config = {
+  apiUrl: "https://api.example.com",
+  timeout: 5000,
+  retries: 3,
+  debug: false
+};</code></pre>
+
+    <p><strong>Example: rendering a list of objects from an API</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const response = await fetch("/api/products");
+const products = await response.json();
+// products is an array of objects:
+// [{ id: 1, name: "Mug", price: 9.99 }, ...]
+
+products.forEach(product => {
+  const card = document.createElement("div");
+  card.textContent = \`\${product.name} - \$\${product.price}\`;
+  productList.appendChild(card);
+});</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-0-17-3-2': `
+    <ul>
+      <li><strong>Objects</strong> → the topic of objects as a data type (deeper coverage)</li>
+      <li><strong>Properties</strong> → the labeled values inside an object</li>
+      <li><strong>Dot vs bracket notation</strong> → two ways to access properties</li>
+      <li><strong>Storing arrays</strong> → arrays of objects are everywhere</li>
+      <li><strong>const with objects</strong> → blocks reassignment, not mutation</li>
+      <li><strong>Spread (<code>...</code>)</strong> → for copying objects</li>
+      <li><strong>Optional chaining (<code>?.</code>)</strong> → safe access for possibly-missing properties</li>
+      <li><strong>JSON</strong> → what objects look like when sent over the network</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-0-17-3-3': `
+    <ul>
+      <li>Objects (full topic)</li>
+      <li>Object properties</li>
+      <li>Dot notation</li>
+      <li>Bracket notation</li>
+      <li>Optional chaining (<code>?.</code>)</li>
+      <li>Spread operator (<code>...</code>)</li>
+      <li>Destructuring</li>
+      <li>JSON</li>
+      <li>Storing arrays</li>
+    </ul>
+  `,
+
+
+  /* ===== Sub-lesson: 3.1 Variables → storing DOM elements =====
+     Path: topics-0-18-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-0-18-0-0': `
+    <p>Storing a DOM element means saving a reference to an HTML element from the page in a variable, so you can use it again without searching the page each time.</p>
+    <p>This is one of the most common patterns in real JavaScript. Almost every script starts by selecting elements and storing them.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-0-18-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// Single element
+const submitBtn = document.querySelector(".submit");
+const heading = document.querySelector("#main-title");
+const firstLink = document.querySelector("a");
+
+// Multiple elements (returns a NodeList — like an array)
+const allButtons = document.querySelectorAll("button");
+const navLinks = document.querySelectorAll(".nav-link");</code></pre>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-0-18-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const submitBtn = document.querySelector(".submit");
+
+// const                          → keyword
+// submitBtn                       → variable name
+// =                               → assignment
+// document.querySelector(...)     → method that finds an element
+// ".submit"                       → CSS selector (class with a dot prefix)
+// ;                               → ends the statement
+
+// The variable now holds a reference to the actual button on the page.</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-0-18-0-3': `
+    <p>The selector inside <code>querySelector()</code> uses CSS syntax — same as you'd use in a stylesheet:</p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector(".btn");        // class — needs the dot
+document.querySelector("#main");        // id — needs the hash
+document.querySelector("button");       // tag — no prefix
+document.querySelector(".form .btn");   // descendant — space between
+document.querySelector("[data-id]");    // attribute selector</code></pre>
+
+    <p>Use <code>const</code> — almost always. The selected element doesn't change once stored:</p>
+<pre class="language-javascript"><code class="language-javascript">const button = document.querySelector(".btn");      // correct — won't be reassigned
+let button = document.querySelector(".btn");         // works, but signals it'll change
+                                                       // — misleading if it never does</code></pre>
+
+    <p><code>querySelector</code> returns the FIRST match. <code>querySelectorAll</code> returns ALL matches:</p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector(".item");        // first .item element
+document.querySelectorAll(".item");      // all .item elements (a NodeList)</code></pre>
+
+    <p>If no element matches, <code>querySelector</code> returns <code>null</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">const ghost = document.querySelector(".does-not-exist");
+console.log(ghost);                                   // null
+
+ghost.textContent = "hello";
+// TypeError: Cannot set properties of null (setting 'textContent')</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-0-18-1-0': `
+    <p>Searching the page for an element is slow — especially if you do it over and over. Without a stored reference, you'd be calling <code>document.querySelector()</code> every time you wanted to interact with the same element.</p>
+    <p>Storing the result once means JavaScript searches the page once. After that, the variable just points at the element directly. Cleaner code, faster code.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-0-18-1-1': `
+    <p>Any element you'll touch more than once should be stored in a variable.</p>
+<pre class="language-javascript"><code class="language-javascript">// Without storing — searches the page 4 times
+document.querySelector(".btn").textContent = "Click";
+document.querySelector(".btn").classList.add("ready");
+document.querySelector(".btn").addEventListener("click", handle);
+document.querySelector(".btn").disabled = false;
+
+// With storing — searches once, reuses the reference
+const btn = document.querySelector(".btn");
+btn.textContent = "Click";
+btn.classList.add("ready");
+btn.addEventListener("click", handle);
+btn.disabled = false;</code></pre>
+    <p>Same code, but cleaner and faster. The page is only searched one time.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-0-18-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// At the top of a script — selecting the elements you'll use
+const form = document.querySelector(".signup-form");
+const emailInput = document.querySelector("#email");
+const submitBtn = document.querySelector(".submit");
+const errorMsg = document.querySelector(".error");
+
+// Inside an event handler
+submitBtn.addEventListener("click", () => {
+  emailInput.classList.add("touched");
+  errorMsg.textContent = "";
+});
+
+// Storing collections of elements
+const allTabs = document.querySelectorAll(".tab");
+allTabs.forEach((tab) => {
+  tab.addEventListener("click", handleTabClick);
+});
+
+// Inside a function — searching for a child element
+function setupCard(card) {
+  const title = card.querySelector(".title");
+  const button = card.querySelector(".btn");
+  // ...
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-0-18-1-3': `
+    <p>The variable becomes a remote control for the element on the page.</p>
+    <p>You select the element once, store it in a variable, and from then on you talk to the variable instead of finding the element again. Anything you do through the variable affects the real element.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-0-18-1-4': `
+    <p>The variable doesn't COPY the element. It points at the actual element on the page.</p>
+<pre class="language-javascript"><code class="language-javascript">const btn = document.querySelector(".btn");
+
+// btn  →  (the actual button on the page)
+//
+// Anything you do through btn affects the real button:
+btn.textContent = "Hello";       // changes the real button's text
+btn.classList.add("active");      // adds the class to the real button</code></pre>
+    <p>If the page updates the element somehow (its text changes, its class changes), the variable still points at it. The variable just holds the reference.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-0-18-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const btn = document.querySelector(".submit");
+btn.textContent = "Click me";
+btn.addEventListener("click", () => {
+  console.log("clicked");
+});
+
+// JavaScript is thinking:
+// Line 1: declare btn.
+//         Right side: call document.querySelector(".submit") — search the page.
+//         Find the first element matching ".submit" → return it (or null).
+//         Store the reference in btn.
+//
+// Line 2: look up btn → the button.
+//         Set its textContent to "Click me" — the page updates.
+//
+// Line 3-5: look up btn → the button.
+//         Attach a click listener. When clicked, run the callback.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-0-18-2-0': `
+    <p>If you get <code>"Cannot read properties of null"</code>, the selector found nothing — and you tried to use the result anyway:</p>
+<pre class="language-javascript"><code class="language-javascript">const btn = document.querySelector(".submitt");   // typo
+btn.textContent = "Click";
+// TypeError: Cannot read properties of null (setting 'textContent')
+
+// fix: check the selector
+const btn = document.querySelector(".submit");</code></pre>
+
+    <p>If the selector returns nothing but the element IS in your HTML, the script might be running before the page is loaded:</p>
+<pre class="language-javascript"><code class="language-javascript">// HTML loads from top to bottom.
+// If &lt;script&gt; is in the &lt;head&gt;, the script runs before the body exists.
+const btn = document.querySelector(".btn");
+console.log(btn);     // null — element doesn't exist yet
+
+// fix: put your &lt;script&gt; before the closing &lt;/body&gt;
+// or use the defer attribute: &lt;script src="..." defer&gt;&lt;/script&gt;</code></pre>
+
+    <p>Always check the selector with <code>console.log</code> right after selecting:</p>
+<pre class="language-javascript"><code class="language-javascript">const btn = document.querySelector(".btn");
+console.log(btn);     // confirm: is it the element, or null?</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-0-18-2-1': `
+    <p>Storing a DOM element doesn't make a copy. The variable is a remote control for the actual element on the page.</p>
+    <p>If <code>querySelector</code> finds nothing, you get <code>null</code>. Always handle that case if there's any chance the element might not be there.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-0-18-2-2': `
+    <p><strong>Confusion: <code>querySelector</code> vs <code>querySelectorAll</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector(".btn");         // first match — single element OR null
+document.querySelectorAll(".btn");       // all matches — NodeList (even if 0 or 1 match)
+
+const oneBtn = document.querySelector(".btn");
+oneBtn.textContent = "Click";            // works — it's a single element
+
+const allBtns = document.querySelectorAll(".btn");
+allBtns.textContent = "Click";           // wrong — NodeList doesn't have textContent
+allBtns.forEach(btn => btn.textContent = "Click");   // correct</code></pre>
+
+    <p><strong>Confusion: NodeList vs Array</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const btns = document.querySelectorAll(".btn");
+
+btns.length;       // works — NodeList has length
+btns.forEach(...); // works — NodeList has forEach
+btns.map(...);     // wrong: NodeList doesn't have .map
+btns[0];           // works — NodeList supports indexing
+
+// fix: convert to a real array if you need full array methods
+const arr = [...btns];
+arr.map(...);      // works now</code></pre>
+
+    <p><strong>Confusion: searching from <code>document</code> vs searching from an element</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// document.querySelector searches the WHOLE page
+const allBtns = document.querySelectorAll(".btn");
+
+// element.querySelector searches inside that element
+const card = document.querySelector(".card");
+const cardBtn = card.querySelector(".btn");   // only the .btn inside this card</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-0-18-2-3': `
+<pre class="language-javascript"><code class="language-javascript">const btn = document.querySelector("submit");
+// wrong: forgot the dot — querySelector now looks for a &lt;submit&gt; tag, which doesn't exist
+// fix:
+const btn = document.querySelector(".submit");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const btn = document.querySelector(".btn");
+btn.textContent = "Click";
+// works only if the element exists. If not, "Cannot read properties of null"
+// fix: guard against null
+if (btn) {
+  btn.textContent = "Click";
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// In &lt;head&gt; before HTML loads:
+const btn = document.querySelector(".btn");   // null — page isn't ready
+// fix: load script at end of body, or use defer</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const allBtns = document.querySelectorAll(".btn");
+allBtns.textContent = "Click";
+// wrong: querySelectorAll returns a NodeList, not a single element
+// fix: loop through them
+allBtns.forEach(btn => btn.textContent = "Click");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">let btn = document.querySelector(".btn");
+// works, but should probably be const — won't be reassigned
+// fix:
+const btn = document.querySelector(".btn");</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-0-18-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Single element
+const heading = document.querySelector("h1");
+heading.textContent = "Hello";
+
+// Multiple elements
+const items = document.querySelectorAll(".item");
+items.forEach(item => {
+  item.classList.add("loaded");
+});
+
+// Form input
+const emailInput = document.querySelector("#email");
+console.log(emailInput.value);          // whatever the user typed
+
+// Element with event
+const btn = document.querySelector(".submit");
+btn.addEventListener("click", () => {
+  console.log("clicked");
+});
+
+// Search inside a parent
+const card = document.querySelector(".card");
+const cardTitle = card.querySelector(".title");</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-0-18-3-1': `
+    <p><strong>Example: setting up a form's elements at the top of a script</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const form = document.querySelector(".signup-form");
+const nameInput = document.querySelector("#name");
+const emailInput = document.querySelector("#email");
+const submitBtn = document.querySelector(".submit");
+const errorMsg = document.querySelector(".error");</code></pre>
+
+    <p><strong>Example: attaching a click listener</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const hamburgerBtn = document.querySelector(".hamburger");
+const menu = document.querySelector(".mobile-menu");
+
+hamburgerBtn.addEventListener("click", () => {
+  menu.classList.toggle("open");
+});</code></pre>
+
+    <p><strong>Example: looping over a list of elements</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const tabButtons = document.querySelectorAll(".tab-btn");
+
+tabButtons.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    activateTab(btn.dataset.tab);
+  });
+});</code></pre>
+
+    <p><strong>Example: updating text and styles dynamically</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const cartBadge = document.querySelector(".cart-count");
+const cartIcon = document.querySelector(".cart-icon");
+
+let cartCount = 0;
+addToCartBtn.addEventListener("click", () => {
+  cartCount = cartCount + 1;
+  cartBadge.textContent = cartCount;
+  cartIcon.classList.add("bounce");
+});</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-0-18-3-2': `
+    <ul>
+      <li><strong>DOM</strong> → the topic of the DOM as a whole (deeper coverage)</li>
+      <li><strong><code>querySelector</code> / <code>querySelectorAll</code></strong> → the methods that find elements</li>
+      <li><strong>CSS selectors</strong> → the syntax used inside querySelector</li>
+      <li><strong><code>const</code></strong> → DOM references almost always go in const</li>
+      <li><strong><code>null</code></strong> → what you get when no element matches</li>
+      <li><strong>Events</strong> → most stored elements get listeners attached</li>
+      <li><strong>Forms</strong> → input elements are stored to read <code>.value</code></li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-0-18-3-3': `
+    <ul>
+      <li>DOM (full topic)</li>
+      <li><code>querySelector</code></li>
+      <li><code>querySelectorAll</code></li>
+      <li>CSS selectors in JS</li>
+      <li>Null-checking DOM results</li>
+      <li><code>NodeList</code> vs Array</li>
+      <li><code>defer</code> attribute on scripts</li>
+      <li>Events</li>
+    </ul>
+  `,
+
+
+  /* ===== Sub-lesson: 3.1 Variables → storing function results =====
+     Path: topics-0-19-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-0-19-0-0': `
+    <p>Storing a function result means calling a function and capturing whatever it returns into a variable.</p>
+    <p>The function does its work, hands back a value, and you save that value with a name so the rest of your code can use it.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-0-19-0-1': `
+<pre class="language-javascript"><code class="language-javascript">function double(num) {
+  return num * 2;
+}
+
+const result = double(5);          // call the function, store the result
+console.log(result);                // 10
+
+// Inline / one-line examples
+const upperName = "os".toUpperCase();    // "OS"
+const today = new Date();                 // current date object
+const random = Math.random();             // random number 0–1</code></pre>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-0-19-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const result = double(5);
+
+// const     → keyword
+// result    → variable name
+// =         → assignment
+// double    → the function being called
+// (5)       → the argument passed in (parentheses with the input)
+// ;         → ends the statement
+
+// JS calls double(5) first, gets 10 back, then puts 10 into result.</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-0-19-0-3': `
+    <p>The parentheses are what call the function. Without them, you'd just store the function itself:</p>
+<pre class="language-javascript"><code class="language-javascript">function double(num) {
+  return num * 2;
+}
+
+const a = double(5);     // 10 — called the function, stored the result
+const b = double;         // (the function itself) — stored the function reference
+const c = double();       // NaN — called with no argument, num is undefined</code></pre>
+
+    <p>If a function has no <code>return</code>, you get <code>undefined</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {
+  console.log("Hi " + name);     // logs but doesn't return
+}
+
+const message = greet("Os");      // "Hi Os" gets logged
+console.log(message);             // undefined — nothing was returned</code></pre>
+
+    <p>Method chaining means storing the result of one method, then calling another on it. JavaScript lets you skip the intermediate variable:</p>
+<pre class="language-javascript"><code class="language-javascript">// Step by step
+const trimmed = "  Os  ".trim();        // "Os"
+const upper = trimmed.toUpperCase();    // "OS"
+
+// Chained — same result, less code
+const upper = "  Os  ".trim().toUpperCase();   // "OS"</code></pre>
+
+    <p>Async functions return a Promise. To get the actual value, use <code>await</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">const data = fetch("/api/users");        // a Promise, not the data!
+const data = await fetch("/api/users");   // the actual response — but only inside an async function</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-0-19-1-0': `
+    <p>Functions calculate, transform, or fetch values. If you don't store what they return, that value is gone the moment the line finishes — you can't use it later.</p>
+    <p>Storing function results lets you do the work once, save the answer, and reuse it.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-0-19-1-1': `
+    <p>Use a stored function result whenever you need to use the same calculation more than once, or whenever the result is part of building up something bigger.</p>
+<pre class="language-javascript"><code class="language-javascript">// Without storing — calling twice does the same work twice
+console.log(calculateTax(price));
+sendInvoice(price + calculateTax(price));   // tax computed again
+
+// With storing — calculate once, reuse
+const tax = calculateTax(price);
+console.log(tax);
+sendInvoice(price + tax);</code></pre>
+    <p>Storing also makes the code easier to read — the variable's name explains what the result is.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-0-19-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Math results
+const tax = price * 0.08;
+const total = subtotal + tax;
+const discount = calculateDiscount(price, coupon);
+
+// String transformations
+const cleanInput = userInput.trim().toLowerCase();
+const fullName = formatName(firstName, lastName);
+
+// API responses
+const response = await fetch("/api/users");
+const users = await response.json();
+
+// Validation results
+const isValid = validateEmail(emailInput.value);
+
+// Date / time
+const now = new Date();
+const timestamp = Date.now();</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-0-19-1-3': `
+    <p>A function is like a vending machine — you put something in (the argument), and you get something out (the return value). Storing a function result is just catching what comes out so you can use it later.</p>
+    <p>If you don't catch it, the value rolls off the counter. Gone.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-0-19-1-4': `
+    <p>The function call runs first (right side). Then the returned value lands in the variable (left side).</p>
+<pre class="language-javascript"><code class="language-javascript">const result = double(5);
+
+// Step 1 (right side): JS runs double(5)
+//   → inside the function, num = 5
+//   → return num * 2 → return 10
+//
+// Step 2 (left side): JS puts the returned 10 into result
+//
+// Final state: result → 10</code></pre>
+    <p>The function does its work, returns a value, and that value is what gets stored. The variable doesn't store the function — it stores the function's output.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-0-19-1-5': `
+<pre class="language-javascript"><code class="language-javascript">function add(a, b) {
+  return a + b;
+}
+
+const sum = add(2, 3);
+console.log(sum);
+
+// JavaScript is thinking:
+// Line 1-3: declare the add function (don't run it yet — just register it).
+//
+// Line 5: declare sum.
+//         Right side: call add(2, 3).
+//         Inside add: a = 2, b = 3, return 2 + 3 → return 5.
+//         The function gives back 5.
+//         Store 5 in sum.
+//
+// Line 6: look up sum → 5 → log 5.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-0-19-2-0': `
+    <p>If your variable is <code>undefined</code> after calling a function, the function probably forgot to <code>return</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">function double(num) {
+  num * 2;       // calculated, but never returned
+}
+
+const result = double(5);
+console.log(result);    // undefined — no return statement</code></pre>
+
+    <p>If you accidentally stored the function instead of calling it, your variable holds a function — not a value:</p>
+<pre class="language-javascript"><code class="language-javascript">function getName() {
+  return "Os";
+}
+
+const name = getName;       // missing parens — stored the function itself
+console.log(name);           // [Function: getName]
+console.log(typeof name);    // "function"
+
+// fix: call the function
+const name = getName();      // "Os"</code></pre>
+
+    <p>If you're working with async functions and your variable is a <code>Promise</code> instead of the value, you forgot <code>await</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">const data = fetch("/api");           // Promise, not the response
+const data = await fetch("/api");      // the actual response</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-0-19-2-1': `
+    <p>The parentheses <code>()</code> after a function name mean "run it now and give me the result." Without parentheses, you're just referencing the function itself.</p>
+    <p><code>console.log</code> shows a value. <code>return</code> hands it back so the caller can store it. They're not the same.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-0-19-2-2': `
+    <p><strong>Confusion: storing the function vs storing the result</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getName() { return "Os"; }
+
+const a = getName;       // stored the FUNCTION
+const b = getName();     // stored the RESULT ("Os")
+
+a;       // [Function]
+a();     // "Os" — call it later
+b;       // "Os"</code></pre>
+
+    <p><strong>Confusion: <code>console.log</code> doesn't return anything</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function showName(name) {
+  console.log(name);     // prints, but doesn't return anything
+}
+
+const x = showName("Os");
+console.log(x);           // undefined — function didn't return
+
+// console.log is for HUMANS to see.
+// return is for the rest of your code to USE.</code></pre>
+
+    <p><strong>Confusion: async functions return Promises, not values</strong></p>
+<pre class="language-javascript"><code class="language-javascript">async function getUsers() {
+  const response = await fetch("/api/users");
+  return response.json();
+}
+
+const users = getUsers();          // Promise, not users!
+const users = await getUsers();    // actual users (only inside another async fn)</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-0-19-2-3': `
+<pre class="language-javascript"><code class="language-javascript">function double(num) {
+  num * 2;     // forgot to return
+}
+const result = double(5);
+console.log(result);   // undefined
+// fix: add return
+function double(num) {
+  return num * 2;
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const result = double;     // missing parens
+// stores the function itself, not the result
+// fix:
+const result = double(5);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {
+  console.log("Hi " + name);
+}
+const msg = greet("Os");
+// "Hi Os" gets logged, but msg is undefined
+// fix: console.log shows, return hands back
+function greet(name) {
+  return "Hi " + name;
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const data = fetch("/api/users");
+console.log(data);     // a Promise — not the data
+// fix: await it (and put it inside an async function)
+const data = await fetch("/api/users");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const a = double 5;
+// wrong: missing parentheses around the argument
+// fix:
+const a = double(5);</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-0-19-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Math result
+function add(a, b) { return a + b; }
+const total = add(5, 3);          // 8
+
+// String method result
+const upper = "hello".toUpperCase();   // "HELLO"
+const trimmed = "  os  ".trim();        // "os"
+
+// Method chain
+const cleaned = "  Os  ".trim().toUpperCase();   // "OS"
+
+// Date
+const now = new Date();
+const year = now.getFullYear();    // e.g. 2025
+
+// Built-in math
+const random = Math.random();      // 0 to (just under) 1
+const rounded = Math.round(4.7);   // 5
+
+// Async with await (inside an async function)
+const response = await fetch("/api");
+const data = await response.json();</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-0-19-3-1': `
+    <p><strong>Example: storing the result of a calculation</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const subtotal = calculateSubtotal(cartItems);
+const tax = calculateTax(subtotal);
+const total = subtotal + tax;
+displayCheckout(total);</code></pre>
+
+    <p><strong>Example: storing API data</strong></p>
+<pre class="language-javascript"><code class="language-javascript">async function loadUsers() {
+  const response = await fetch("/api/users");
+  const users = await response.json();
+  renderUserList(users);
+}</code></pre>
+
+    <p><strong>Example: cleaning up form input</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const cleanEmail = emailInput.value.trim().toLowerCase();
+const cleanName = nameInput.value.trim();
+saveUser({ email: cleanEmail, name: cleanName });</code></pre>
+
+    <p><strong>Example: storing validation results</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const isEmailValid = validateEmail(emailInput.value);
+const isPasswordStrong = checkPasswordStrength(passwordInput.value);
+
+if (isEmailValid && isPasswordStrong) {
+  submitForm();
+}</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-0-19-3-2': `
+    <ul>
+      <li><strong>Functions</strong> → the source of the result being stored</li>
+      <li><strong>return</strong> → the keyword that hands back a value</li>
+      <li><strong>Assignment</strong> → the way the result lands in a variable</li>
+      <li><strong>Method chaining</strong> → calling another method on a returned value</li>
+      <li><strong>Async / await</strong> → required for storing Promise values</li>
+      <li><strong>undefined</strong> → what comes back when there's no <code>return</code></li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-0-19-3-3': `
+    <ul>
+      <li>Functions (full topic)</li>
+      <li><code>return</code> statement</li>
+      <li>Method chaining</li>
+      <li><code>async</code> and <code>await</code></li>
+      <li>Promises</li>
+      <li><code>undefined</code> from missing return</li>
+      <li><code>console.log</code> vs <code>return</code></li>
+    </ul>
+  `,
+
+
+  /* ===== Sub-lesson: 3.1 Variables → undefined variables =====
+     Path: topics-0-20-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-0-20-0-0': `
+    <p><code>undefined</code> is JavaScript's default value for things that exist but haven't been given a value yet.</p>
+    <p>You almost never write <code>undefined</code> yourself — it shows up automatically when a variable is declared with no value, when an object property doesn't exist, or when a function returns nothing.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-0-20-0-1': `
+<pre class="language-javascript"><code class="language-javascript">let userName;
+console.log(userName);     // undefined — declared but no value yet
+
+const user = { name: "Os" };
+console.log(user.email);   // undefined — no email property exists
+
+function greet() {}        // no return statement
+console.log(greet());      // undefined — function returned nothing</code></pre>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-0-20-0-2': `
+<pre class="language-javascript"><code class="language-javascript">let userName;
+console.log(userName);
+
+// let               → declares the variable
+// userName          → name of the variable
+// (no = and no value) → JavaScript fills in undefined automatically
+// ;                 → ends the statement
+//
+// console.log(userName) → prints whatever's inside → undefined
+
+// undefined isn't a string. It's a special built-in value
+// that means "this slot is empty because nothing has filled it yet."</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-0-20-0-3': `
+    <p>You don't usually write <code>undefined</code> yourself. It just appears:</p>
+<pre class="language-javascript"><code class="language-javascript">// Three places undefined automatically appears:
+
+// 1. Declared variable with no value
+let a;
+console.log(a);            // undefined
+
+// 2. Missing object property
+const obj = { name: "Os" };
+console.log(obj.email);    // undefined
+
+// 3. Function with no return
+function silent() {}
+console.log(silent());     // undefined</code></pre>
+
+    <p><code>undefined</code> is its own type:</p>
+<pre class="language-javascript"><code class="language-javascript">let x;
+console.log(typeof x);     // "undefined"
+
+const y = undefined;
+console.log(typeof y);     // "undefined"</code></pre>
+
+    <p>Comparing with <code>===</code> is the safe way to check for it:</p>
+<pre class="language-javascript"><code class="language-javascript">let userName;
+
+if (userName === undefined) {
+  console.log("no value yet");      // runs
+}
+
+if (typeof userName === "undefined") {
+  console.log("also works");         // runs — useful if variable might not exist at all
+}</code></pre>
+
+    <p><code>undefined</code> is NOT the same as <code>null</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">let a;
+let b = null;
+
+console.log(a === null);        // false — undefined isn't null
+console.log(a === undefined);   // true
+console.log(a == null);          // true (loose check, treats null and undefined as equal)</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-0-20-1-0': `
+    <p>JavaScript has to do <em>something</em> when a variable exists but has no value. Some languages throw an error. JavaScript chose: give it a special placeholder value called <code>undefined</code>.</p>
+    <p>That choice means your code doesn't crash on every empty variable — but it also means weird bugs when <code>undefined</code> shows up where you expected something else.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-0-20-1-1': `
+    <p>You don't really "use" <code>undefined</code> — you handle it. Most of your code is going to assume variables hold useful values. When <code>undefined</code> shows up, it's usually a sign of:</p>
+<pre class="language-javascript"><code class="language-javascript">// 1. A variable you declared but forgot to set
+let cartTotal;
+console.log(cartTotal);       // undefined — forgot to initialize
+
+// 2. A typo'd object property
+const user = { name: "Os" };
+console.log(user.Name);       // undefined — wrong casing
+
+// 3. A function that should have returned but didn't
+function calculate() {
+  // forgot to write: return result
+}
+const result = calculate();   // undefined</code></pre>
+    <p>If you see <code>undefined</code> where you expected a real value, work backwards to find where the value was supposed to come from.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-0-20-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Checking before using a value
+let userName;
+if (userName === undefined) {
+  userName = "Anonymous";          // give it a default
+}
+
+// Default parameters in functions
+function greet(name) {
+  if (name === undefined) {
+    name = "friend";
+  }
+  console.log("Hello, " + name);
+}
+
+// Modern shortcut — default parameters
+function greet(name = "friend") {
+  console.log("Hello, " + name);   // "friend" if name was undefined
+}
+
+// Optional chaining for missing properties
+const user = {};
+const email = user.profile?.email;   // undefined (no error)</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-0-20-1-3': `
+    <p><code>undefined</code> is JavaScript's way of saying "this exists, but nothing is in it."</p>
+    <p>The variable was declared. The slot is there. JavaScript just hasn't been told what to put inside, so it keeps a placeholder there until something replaces it.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-0-20-1-4': `
+    <p><code>undefined</code> means: <em>"the variable exists, but no value has been assigned to it yet."</em></p>
+<pre class="language-javascript"><code class="language-javascript">let a;
+// a  →  undefined  (declared, but empty)
+
+a = 5;
+// a  →  5  (now it has a value)
+
+console.log(b);
+// ReferenceError — b doesn't exist at all (not even undefined)</code></pre>
+    <p>There's a difference between <strong>"empty container"</strong> (undefined) and <strong>"no container"</strong> (ReferenceError). Both feel like "nothing," but they mean different things.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-0-20-1-5': `
+<pre class="language-javascript"><code class="language-javascript">let userName;
+console.log(userName);
+
+const user = { name: "Os" };
+console.log(user.email);
+
+function greet() {
+  console.log("hi");
+}
+console.log(greet());
+
+// JavaScript is thinking:
+// Line 1: declare userName. No value given. Default to undefined.
+// Line 2: look up userName → undefined → log undefined.
+//
+// Line 3: declare user, point at { name: "Os" }.
+// Line 4: look up user.email → no such property → return undefined → log undefined.
+//
+// Line 5-7: declare greet. It logs "hi" but doesn't return anything.
+// Line 8: call greet() → logs "hi" → function returns nothing → undefined → log undefined.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-0-20-2-0': `
+    <p>Seeing <code>undefined</code> where you expected a value? It's almost always one of:</p>
+<pre class="language-javascript"><code class="language-javascript">// 1. Forgot to assign the variable
+let userName;
+console.log(userName);       // undefined
+// fix:
+let userName = "Os";
+
+// 2. Typo'd a property name
+const user = { firstName: "Os" };
+console.log(user.firstname);  // undefined — case-sensitive
+// fix:
+console.log(user.firstName);
+
+// 3. Forgot to return from a function
+function greet(name) {
+  "Hi " + name;             // calculated, not returned
+}
+const msg = greet("Os");
+console.log(msg);             // undefined
+// fix:
+function greet(name) {
+  return "Hi " + name;
+}
+
+// 4. Async function not awaited
+async function getUser() { return { name: "Os" }; }
+const user = getUser();      // Promise, not the user
+console.log(user.name);       // undefined (because user is a Promise)
+// fix: await it</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-0-20-2-1': `
+    <p>If you see <code>undefined</code>, ask: <em>did I forget to assign this, or did I misspell something?</em> One of those two is almost always the answer.</p>
+    <p><code>undefined</code> means the variable EXISTS but holds nothing. <code>ReferenceError</code> means the variable doesn't exist AT ALL.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-0-20-2-2': `
+    <p><strong>Confusion: <code>undefined</code> vs <code>null</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">let a;
+let b = null;
+
+// Both feel like "nothing", but they mean different things:
+// undefined → "JavaScript's default empty"
+// null      → "I, the developer, set this to nothing on purpose"
+
+console.log(a);              // undefined
+console.log(b);              // null
+console.log(a == b);          // true (loose equality treats them as equal)
+console.log(a === b);         // false (strict equality keeps them apart)</code></pre>
+
+    <p><strong>Confusion: <code>undefined</code> vs not declared</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let a;
+console.log(a);              // undefined — variable EXISTS, no value
+console.log(b);              // ReferenceError — variable doesn't exist at all</code></pre>
+
+    <p><strong>Confusion: <code>undefined</code> as a string</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let a;
+console.log(a);                // undefined (the value)
+console.log("undefined");      // "undefined" (the string)
+console.log(a === "undefined"); // false — totally different things</code></pre>
+
+    <p><strong>Confusion: <code>typeof undefined</code> is the string <code>"undefined"</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">let a;
+console.log(typeof a);              // "undefined" — string!
+console.log(typeof a === "undefined");   // true</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-0-20-2-3': `
+<pre class="language-javascript"><code class="language-javascript">let userName;
+if (userName == "undefined") { }
+// wrong: comparing to the STRING "undefined"
+// fix: compare to the actual value
+if (userName === undefined) { }</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function getName() {
+  // forgot return
+}
+const name = getName();
+console.log(name.toUpperCase());
+// TypeError: Cannot read properties of undefined (reading 'toUpperCase')
+// fix: return from the function, or check for undefined before using</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const user = {};
+console.log(user.profile.email);
+// TypeError — user.profile is undefined, can't read .email of undefined
+// fix: optional chaining
+console.log(user.profile?.email);   // undefined, no error</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">let result = undefined;
+// works, but unusual — you almost never need to write undefined yourself
+// fix: leave the variable empty (let result;) or use null intentionally</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (cartTotal) { }
+// wrong if cartTotal could be 0 — 0 is falsy AND undefined is falsy
+// the if doesn't run for either
+// fix: check explicitly
+if (cartTotal !== undefined) { }</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-0-20-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Declared, no value
+let userName;
+console.log(userName);               // undefined
+
+// Missing object property
+const user = { name: "Os" };
+console.log(user.age);               // undefined
+
+// Function with no return
+function silent() {}
+console.log(silent());                // undefined
+
+// Checking for it
+let cartTotal;
+if (cartTotal === undefined) {
+  cartTotal = 0;
+}
+console.log(cartTotal);               // 0
+
+// Default parameter
+function greet(name = "friend") {
+  return "Hi " + name;
+}
+console.log(greet());                 // "Hi friend"</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-0-20-3-1': `
+    <p><strong>Example: defaulting a missing parameter</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function showAlert(message, type = "info") {
+  // type defaults to "info" when undefined
+  alertBox.classList.add(\`alert-\${type}\`);
+  alertBox.textContent = message;
+}
+
+showAlert("Saved!");           // type → "info"
+showAlert("Error", "danger");  // type → "danger"</code></pre>
+
+    <p><strong>Example: safely accessing nested data from an API</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const response = await fetch("/api/user");
+const user = await response.json();
+
+// user.profile might not exist for new accounts
+const email = user.profile?.email;
+
+if (email !== undefined) {
+  emailInput.value = email;
+}</code></pre>
+
+    <p><strong>Example: checking if a function returned</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const cached = getCachedValue("user");
+
+if (cached === undefined) {
+  // Cache miss — fetch fresh data
+  const fresh = await fetch("/api/user");
+  return fresh;
+}
+return cached;</code></pre>
+
+    <p><strong>Example: handling form fields the user might leave blank</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const phoneInput = document.querySelector("#phone");
+
+const phone = phoneInput.value || undefined;
+// empty string becomes undefined — useful for optional API fields
+saveContact({ name, email, phone });</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-0-20-3-2': `
+    <ul>
+      <li><strong><code>null</code></strong> → the intentional version of "empty"</li>
+      <li><strong>Declaring variables</strong> → declared-without-value gives undefined</li>
+      <li><strong>Functions</strong> → missing <code>return</code> gives undefined</li>
+      <li><strong>Objects</strong> → missing properties give undefined</li>
+      <li><strong>Optional chaining (<code>?.</code>)</strong> → safe access that gives undefined instead of throwing</li>
+      <li><strong>Default parameters</strong> → fill in missing values automatically</li>
+      <li><strong>Truthy / falsy</strong> → <code>undefined</code> is falsy</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-0-20-3-3': `
+    <ul>
+      <li><code>null</code></li>
+      <li><code>typeof</code> operator</li>
+      <li>Optional chaining (<code>?.</code>)</li>
+      <li>Default parameters</li>
+      <li>Truthy and falsy</li>
+      <li><code>ReferenceError</code></li>
+      <li>Nullish coalescing (<code>??</code>)</li>
+    </ul>
+  `,
+
+
+  /* ===== Sub-lesson: 3.1 Variables → variables inside functions =====
+     Path: topics-0-21-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-0-21-0-0': `
+    <p>Variables declared inside a function only exist inside that function. They're created when the function runs and disappear when it finishes.</p>
+    <p>This is called <strong>local scope</strong> — the variables are local to the function, invisible to code outside.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-0-21-0-1': `
+<pre class="language-javascript"><code class="language-javascript">function calculatePrice(item) {
+  const tax = item.price * 0.08;        // local variable
+  const total = item.price + tax;       // also local
+  return total;
+}
+
+const result = calculatePrice({ price: 100 });
+console.log(result);     // 108
+console.log(tax);        // ReferenceError — tax doesn't exist out here</code></pre>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-0-21-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {
+  const greeting = "Hi, " + name;
+  return greeting;
+}
+
+// function greet(name) {
+//   ↑ everything between { and } is the function's BODY
+//   variables declared inside only exist while the function runs
+//
+//   const greeting = "Hi, " + name;
+//   ↑ "greeting" is a local variable
+//   ↑ exists from this line until the function ends
+//
+//   return greeting;
+//   ↑ value goes out, but the variable itself doesn't survive
+// }</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-0-21-0-3': `
+    <p>Local variables only exist inside the function:</p>
+<pre class="language-javascript"><code class="language-javascript">function example() {
+  const local = "I'm local";
+  console.log(local);        // works — we're inside the function
+}
+
+example();
+console.log(local);          // ReferenceError — local doesn't exist here</code></pre>
+
+    <p>Each function call creates fresh variables — they don't carry over between calls:</p>
+<pre class="language-javascript"><code class="language-javascript">function counter() {
+  let count = 0;
+  count = count + 1;
+  console.log(count);
+}
+
+counter();    // 1
+counter();    // 1 — fresh count each time
+counter();    // 1 — still fresh</code></pre>
+
+    <p>Function parameters are also local variables:</p>
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {
+  // name is a local variable — only exists during this call
+  console.log(name);
+}
+
+greet("Os");
+console.log(name);          // ReferenceError or window.name — not the parameter</code></pre>
+
+    <p>Inner functions can see outer variables, but not the other way around:</p>
+<pre class="language-javascript"><code class="language-javascript">const outer = "outer value";
+
+function example() {
+  const inner = "inner value";
+  console.log(outer);       // works — inner can see outer
+  console.log(inner);       // works
+}
+
+console.log(inner);         // ReferenceError — outer can't see inner</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-0-21-1-0': `
+    <p>If every variable was global, two functions using the same name (like <code>count</code> or <code>i</code>) would step on each other. Bugs would multiply as your code grew.</p>
+    <p>Local variables solve this. Each function gets its own private workspace. Variables declared inside don't leak out and can't be touched from elsewhere.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-0-21-1-1': `
+    <p>Almost every variable should be local. Declare it inside the function that uses it. That keeps your code clean and your scope predictable.</p>
+<pre class="language-javascript"><code class="language-javascript">// Don't do this — global variables that leak everywhere
+let total = 0;
+function calculate() {
+  total = price * quantity;   // accidentally affecting outside code
+}
+
+// Do this — local, contained, safe
+function calculate(price, quantity) {
+  const total = price * quantity;
+  return total;
+}</code></pre>
+    <p>If a function needs a value from outside, take it as a parameter. If it needs to send something out, return it. That's how functions communicate cleanly.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-0-21-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Calculation helpers — all local
+function calculateTax(price) {
+  const taxRate = 0.08;
+  const tax = price * taxRate;
+  return tax;
+}
+
+// Event handlers — local state
+button.addEventListener("click", () => {
+  const clickedAt = Date.now();
+  const message = "Clicked at " + clickedAt;
+  console.log(message);
+});
+
+// Loops inside functions — local index
+function findItem(items, target) {
+  for (let i = 0; i < items.length; i++) {
+    if (items[i] === target) return i;
+  }
+  return -1;
+}
+
+// Validation
+function validateEmail(input) {
+  const trimmed = input.trim();
+  const isValid = trimmed.includes("@");
+  return isValid;
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-0-21-1-3': `
+    <p>A function is like a private workspace. Variables you declare inside the workspace only exist while you're working in there. Once you leave, the workspace is wiped clean.</p>
+    <p>This is a feature, not a limitation. It means functions don't accidentally clutter the rest of your code. Each function does its job and cleans up after itself.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-0-21-1-4': `
+    <p>Each function call gets its own scope — its own little bubble of variables that doesn't share with other calls.</p>
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {
+  const message = "Hi " + name;
+  return message;
+}
+
+greet("Os");      // call 1: creates message="Hi Os", returns it, message destroyed
+greet("Sam");     // call 2: creates a NEW message="Hi Sam", returns it, destroyed
+greet("Pat");     // call 3: again, brand new message variable
+
+// Each call's variables are completely independent.</code></pre>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-0-21-1-5': `
+<pre class="language-javascript"><code class="language-javascript">function calculate(price) {
+  const tax = price * 0.08;
+  const total = price + tax;
+  return total;
+}
+
+const result = calculate(100);
+console.log(result);
+console.log(tax);
+
+// JavaScript is thinking:
+// Line 1-5: declare the calculate function. Don't run it yet.
+//
+// Line 7: see calculate(100) → run the function with price = 100.
+//   - Create local "tax" → 100 * 0.08 → 8.
+//   - Create local "total" → 100 + 8 → 108.
+//   - Return 108.
+//   - Function ends. Local variables (tax, total, price) are destroyed.
+//   - 108 lands in result.
+//
+// Line 8: log result → 108.
+// Line 9: log tax → ReferenceError — tax was destroyed when the function finished.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-0-21-2-0': `
+    <p>If you get <code>ReferenceError: x is not defined</code> when trying to use a variable from a function, that variable was local — it died when the function ended.</p>
+<pre class="language-javascript"><code class="language-javascript">function calculate() {
+  const total = 100;
+}
+
+calculate();
+console.log(total);        // ReferenceError — total was local
+
+// fix 1: return it
+function calculate() {
+  const total = 100;
+  return total;
+}
+const total = calculate();
+console.log(total);
+
+// fix 2: declare outside if you really need shared state
+let total;
+function calculate() {
+  total = 100;
+}</code></pre>
+
+    <p>If a function isn't seeing changes you expect, you might be accidentally creating a NEW local variable instead of updating the outer one:</p>
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+
+function increment() {
+  let count = count + 1;     // wrong — let creates a NEW local count
+}
+
+increment();
+console.log(count);           // 0 — outer count never changed
+
+// fix: drop the let — assign to the outer count
+function increment() {
+  count = count + 1;
+}</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-0-21-2-1': `
+    <p>Variables inside a function are private. Born when the function runs, gone when it ends.</p>
+    <p>If you need a value to escape the function, <code>return</code> it. That's how the value crosses the boundary.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-0-21-2-2': `
+    <p><strong>Confusion: parameters are local variables too</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {
+  // name is a LOCAL variable here, only exists during this call
+  console.log(name);
+}
+
+greet("Os");
+console.log(name);    // not the parameter — ReferenceError or unrelated</code></pre>
+
+    <p><strong>Confusion: variables don't carry between calls</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function counter() {
+  let count = 0;
+  count = count + 1;
+  return count;
+}
+
+counter();    // 1
+counter();    // 1 (NOT 2 — fresh count each time)
+counter();    // 1
+
+// fix: keep state OUTSIDE the function if it needs to persist
+let count = 0;
+function counter() {
+  count = count + 1;
+  return count;
+}
+counter();    // 1
+counter();    // 2
+counter();    // 3</code></pre>
+
+    <p><strong>Confusion: inner functions CAN see outer variables (closures)</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function outer() {
+  const message = "from outer";
+
+  function inner() {
+    console.log(message);   // works — inner sees outer's variables
+  }
+
+  inner();
+}
+outer();   // "from outer"</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-0-21-2-3': `
+<pre class="language-javascript"><code class="language-javascript">function calculate() {
+  const total = 100;
+}
+calculate();
+console.log(total);
+// wrong: ReferenceError — total was local
+// fix: return it
+function calculate() {
+  return 100;
+}
+const total = calculate();</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+function increment() {
+  let count = count + 1;
+}
+// wrong: let creates a new local count, outer count never updates
+// fix: drop the let
+function increment() {
+  count = count + 1;
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function greet() {
+  message = "hi";    // forgot let/const — creates a global by accident
+}
+greet();
+console.log(message);    // "hi" — leaked into global scope
+// fix: always declare with let or const
+function greet() {
+  const message = "hi";
+  return message;
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function counter() {
+  let count = 0;
+  count++;
+  return count;
+}
+counter();    // 1
+counter();    // 1 — count resets every call
+// fix: keep count outside if you want it to persist
+let count = 0;
+function counter() {
+  count++;
+  return count;
+}</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-0-21-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Local variables in a calculation
+function add(a, b) {
+  const sum = a + b;
+  return sum;
+}
+add(2, 3);    // 5
+
+// Each call gets its own scope
+function makeMessage(name) {
+  const message = "Hi " + name;
+  return message;
+}
+makeMessage("Os");     // "Hi Os"
+makeMessage("Sam");    // "Hi Sam" (separate message variable)
+
+// Loop counter is local
+function findFirst(arr, target) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === target) return i;
+  }
+  return -1;
+}
+
+// Inner can see outer
+function outer() {
+  const x = 10;
+  function inner() {
+    return x * 2;     // works — inner sees outer's x
+  }
+  return inner();
+}
+outer();    // 20</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-0-21-3-1': `
+    <p><strong>Example: form validation function with local helpers</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function validateForm(form) {
+  const email = form.email.value.trim();
+  const password = form.password.value;
+
+  const isEmailValid = email.includes("@");
+  const isPasswordLong = password.length >= 8;
+
+  return isEmailValid && isPasswordLong;
+}</code></pre>
+
+    <p><strong>Example: event handler with local state</strong></p>
+<pre class="language-javascript"><code class="language-javascript">submitBtn.addEventListener("click", () => {
+  const formData = new FormData(form);
+  const name = formData.get("name");
+  const email = formData.get("email");
+
+  saveUser({ name, email });
+});</code></pre>
+
+    <p><strong>Example: data transformation</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function buildUserCard(user) {
+  const name = user.firstName + " " + user.lastName;
+  const initials = user.firstName[0] + user.lastName[0];
+  const html = \`
+    &lt;div class="card"&gt;
+      &lt;span class="initials"&gt;\${initials}&lt;/span&gt;
+      &lt;span class="name"&gt;\${name}&lt;/span&gt;
+    &lt;/div&gt;
+  \`;
+  return html;
+}</code></pre>
+
+    <p><strong>Example: each call totally independent</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function calculateOrder(items) {
+  const subtotal = items.reduce((sum, i) => sum + i.price, 0);
+  const tax = subtotal * 0.08;
+  const total = subtotal + tax;
+  return { subtotal, tax, total };
+}
+
+calculateOrder(cart1);   // its own subtotal, tax, total
+calculateOrder(cart2);   // completely separate</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-0-21-3-2': `
+    <ul>
+      <li><strong>Functions</strong> → the home for local variables</li>
+      <li><strong>Scope</strong> → the rules for where variables can be reached</li>
+      <li><strong>Parameters</strong> → also local variables, just delivered by the caller</li>
+      <li><strong><code>return</code></strong> → how a value escapes a function's scope</li>
+      <li><strong>Closures</strong> → inner functions remembering outer variables</li>
+      <li><strong>Block scope</strong> → similar idea applied to <code>{ }</code> in general</li>
+      <li><strong>Global scope</strong> → the opposite — variables visible everywhere</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-0-21-3-3': `
+    <ul>
+      <li>Functions (full topic)</li>
+      <li>Scope</li>
+      <li>Block scope</li>
+      <li>Global scope</li>
+      <li>Closures</li>
+      <li>Parameters and arguments</li>
+      <li><code>return</code> statement</li>
+    </ul>
+  `,
+
 };
