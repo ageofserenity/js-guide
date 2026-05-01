@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JS Learning System</title>
+  <meta name="description" content="An ADHD-friendly JavaScript learning system organized by topic, combo, method, pattern, and error." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Prism.js base theme -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+
+  <!-- App stylesheets -->
+  <link rel="stylesheet" href="resources/css/styles.css" />
+  <link rel="stylesheet" href="resources/css/prism-theme.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       APP SHELL — single-page app behavior.
+       Only one .view is visible at a time.
+       ============================================================ -->
+  <div class="app">
+
+    <!-- ============================================================
+         TOP BAR
+         ============================================================ -->
+    <header class="topbar">
+      <div class="topbar__inner">
+        <button class="topbar__home" data-go-home aria-label="Return to dashboard">
+          <span class="topbar__home-mark">JS</span>
+          <span class="topbar__home-label">Learning System</span>
+        </button>
+
+        <button class="topbar__menu-btn" aria-expanded="false" aria-controls="mobile-nav" data-mobile-toggle>
+          <span class="sr-only">Toggle menu</span>
+          <span class="topbar__menu-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <nav id="mobile-nav" class="mobile-nav" aria-label="Sections">
+        <ul class="mobile-nav__list" data-mobile-nav-list>
+          <!-- populated by script.js -->
+        </ul>
+      </nav>
+    </header>
+
+    <!-- ============================================================
+         MAIN — holds all views.
+         ============================================================ -->
+    <main class="main">
+
+      <!-- ========== VIEW: DASHBOARD ========== -->
+      <section class="view view--dashboard is-active" id="view-dashboard" data-view="dashboard">
+        <div class="view__inner">
+          <header class="dashboard__header">
+            <p class="dashboard__eyebrow">A learning system, not a cheat sheet</p>
+            <h1 class="dashboard__title">JavaScript, organized.</h1>
+            <p class="dashboard__lead">
+              Eight isolated rooms. Each one teaches a different angle of the same language.
+              Open one at a time. Close it when you're done.
+            </p>
+          </header>
+
+          <div class="dashboard__grid" data-dashboard-grid>
+            <!-- populated by script.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== VIEW: BEFORE YOU START ========== -->
+      <section class="view" id="view-before" data-view="before">
+        <div class="view__inner">
+
+          <nav class="breadcrumb" aria-label="Breadcrumb" data-breadcrumb>
+            <!-- populated by script.js -->
+          </nav>
+
+          <div class="section-header">
+            <p class="section-header__number">00</p>
+            <h1 class="section-header__title">Before You Start</h1>
+            <p class="section-header__intro">How this guide teaches, and how to read it.</p>
+          </div>
+
+          <div class="accordion-group" data-accordion-group="before">
+            <!-- populated by script.js -->
+          </div>
+
+          <nav class="section-nav" aria-label="Section navigation" data-section-nav>
+            <!-- populated by script.js -->
+          </nav>
+        </div>
+      </section>
+
+      <!-- ========== VIEW: BIG PICTURE ========== -->
+      <section class="view" id="view-bigpicture" data-view="bigpicture">
+        <div class="view__inner">
+          <nav class="breadcrumb" aria-label="Breadcrumb" data-breadcrumb></nav>
+          <div class="section-header">
+            <p class="section-header__number">01</p>
+            <h1 class="section-header__title">Big Picture</h1>
+            <p class="section-header__intro">What JavaScript actually does, before any topic details.</p>
+          </div>
+          <div class="accordion-group" data-accordion-group="bigpicture"></div>
+          <nav class="section-nav" aria-label="Section navigation" data-section-nav></nav>
+        </div>
+      </section>
+
+      <!-- ========== VIEW: CORE MENTAL MODELS ========== -->
+      <section class="view" id="view-mental" data-view="mental">
+        <div class="view__inner">
+          <nav class="breadcrumb" aria-label="Breadcrumb" data-breadcrumb></nav>
+          <div class="section-header">
+            <p class="section-header__number">02</p>
+            <h1 class="section-header__title">Core Mental Models</h1>
+            <p class="section-header__intro">The mental folders to put every topic into.</p>
+          </div>
+          <div class="accordion-group" data-accordion-group="mental"></div>
+          <nav class="section-nav" aria-label="Section navigation" data-section-nav></nav>
+        </div>
+      </section>
+
+      <!-- ========== VIEW: MAIN TOPIC GUIDES ========== -->
+      <section class="view" id="view-topics" data-view="topics">
+        <div class="view__inner">
+          <nav class="breadcrumb" aria-label="Breadcrumb" data-breadcrumb></nav>
+          <div class="section-header">
+            <p class="section-header__number">03</p>
+            <h1 class="section-header__title">Main Topic Guides</h1>
+            <p class="section-header__intro">Each big JavaScript topic, taught deeply by itself.</p>
+          </div>
+          <div class="accordion-group" data-accordion-group="topics"></div>
+          <nav class="section-nav" aria-label="Section navigation" data-section-nav></nav>
+        </div>
+      </section>
+
+      <!-- ========== VIEW: TOPIC COMBO GUIDE (NESTED) ========== -->
+      <section class="view" id="view-combos" data-view="combos">
+        <div class="view__inner">
+          <nav class="breadcrumb" aria-label="Breadcrumb" data-breadcrumb></nav>
+          <div class="section-header">
+            <p class="section-header__number">04</p>
+            <h1 class="section-header__title">Topic Combo Guide</h1>
+            <p class="section-header__intro">How topics combine in real code. Click a group to reveal its combos.</p>
+          </div>
+          <div class="accordion-group" data-accordion-group="combos"></div>
+          <nav class="section-nav" aria-label="Section navigation" data-section-nav></nav>
+        </div>
+      </section>
+
+      <!-- ========== VIEW: METHOD / SNIPPET REFERENCE (NESTED) ========== -->
+      <section class="view" id="view-methods" data-view="methods">
+        <div class="view__inner">
+          <nav class="breadcrumb" aria-label="Breadcrumb" data-breadcrumb></nav>
+          <div class="section-header">
+            <p class="section-header__number">05</p>
+            <h1 class="section-header__title">Method / Snippet Reference</h1>
+            <p class="section-header__intro">Look up one method, property, or syntax piece. Click a category to reveal its methods.</p>
+          </div>
+          <div class="accordion-group" data-accordion-group="methods"></div>
+          <nav class="section-nav" aria-label="Section navigation" data-section-nav></nav>
+        </div>
+      </section>
+
+      <!-- ========== VIEW: REAL WEBSITE PATTERNS ========== -->
+      <section class="view" id="view-patterns" data-view="patterns">
+        <div class="view__inner">
+          <nav class="breadcrumb" aria-label="Breadcrumb" data-breadcrumb></nav>
+          <div class="section-header">
+            <p class="section-header__number">06</p>
+            <h1 class="section-header__title">Real Website Patterns</h1>
+            <p class="section-header__intro">JavaScript pieces combined into real features.</p>
+          </div>
+          <div class="accordion-group" data-accordion-group="patterns"></div>
+          <nav class="section-nav" aria-label="Section navigation" data-section-nav></nav>
+        </div>
+      </section>
+
+      <!-- ========== VIEW: DEBUGGING / ERROR GUIDE ========== -->
+      <section class="view" id="view-debug" data-view="debug">
+        <div class="view__inner">
+          <nav class="breadcrumb" aria-label="Breadcrumb" data-breadcrumb></nav>
+          <div class="section-header">
+            <p class="section-header__number">07</p>
+            <h1 class="section-header__title">Debugging / Error Guide</h1>
+            <p class="section-header__intro">Understand, trace, and fix broken JavaScript.</p>
+          </div>
+          <div class="accordion-group" data-accordion-group="debug"></div>
+          <nav class="section-nav" aria-label="Section navigation" data-section-nav></nav>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="footer">
+      <div class="footer__inner">
+        <p class="footer__note">Built as a structure-first learning system. Lessons populated separately.</p>
+        <button class="footer__home" data-go-home>Return to dashboard ↑</button>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Prism.js (syntax highlighting) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+
+  <!-- App scripts: data first, then content, then behavior -->
+  <script src="resources/js/data.js"></script>
+  <script src="resources/js/content.js"></script>
+  <script src="resources/js/script.js"></script>
+</body>
+</html>
