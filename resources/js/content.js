@@ -4945,4 +4945,644 @@ const handleWindowResize = () => {};</code></pre>
     </ul>
   `,
 
+
+  /* ===== Sub-lesson: 3.1 Variables → meaningful names =====
+     Path: topics-0-12-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-0-12-0-0': `
+    <p>A meaningful name is one that describes what the variable holds, clearly enough that someone reading your code understands without having to dig.</p>
+    <p>The opposite is a vague name like <code>x</code>, <code>data</code>, <code>thing</code>, or <code>temp</code> — names that work for JavaScript but tell humans nothing.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-0-12-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// Vague names — work, but unclear
+const x = 50;
+const data = response.json();
+const arr = ["a", "b", "c"];
+
+// Meaningful names — same code, way more readable
+const userAge = 50;
+const userProfile = response.json();
+const colorOptions = ["a", "b", "c"];</code></pre>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-0-12-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const totalCartPrice = 49.99;
+
+// total       → describes WHAT (a sum, not a single price)
+// Cart        → describes WHERE it's from (the cart, not the wishlist)
+// Price       → describes the unit (a price, not a count)
+// = 49.99     → the actual value
+
+// The name does the work of explaining. The reader doesn't have
+// to look at surrounding code to figure out what 49.99 represents.</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-0-12-0-3': `
+    <p>A meaningful name is specific enough to be useful, short enough to be readable. There's a sweet spot:</p>
+<pre class="language-javascript"><code class="language-javascript">// Too vague
+const u = userObj;
+const data = userObj;
+
+// Just right
+const user = userObj;
+const userProfile = userObj;
+
+// Too verbose
+const userObjectFromAPIWithFullProfileData = userObj;</code></pre>
+
+    <p>Don't include the type in the name unless it really matters:</p>
+<pre class="language-javascript"><code class="language-javascript">// Redundant — the type is obvious from how it's used
+const userArray = ["Os", "Sam"];
+const nameString = "Os";
+
+// Cleaner
+const users = ["Os", "Sam"];
+const name = "Os";</code></pre>
+
+    <p>For booleans, lead with a question word so the name reads as true/false:</p>
+<pre class="language-javascript"><code class="language-javascript">// Hard to tell what's true/false
+const loggedIn = true;
+const menu = false;
+
+// Reads naturally as a yes/no
+const isLoggedIn = true;
+const hasUnreadMessages = false;
+const canEdit = true;
+const shouldShowAlert = false;</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-0-12-1-0': `
+    <p>You'll read your own code days, weeks, or months after writing it. By then you'll have forgotten what every variable was for. Other developers will read it without ever having seen it before. Vague names force everyone — including future you — to play detective.</p>
+    <p>A meaningful name puts the answer right next to the question. You read the name and immediately know what's there.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-0-12-1-1': `
+    <p>The cost of a meaningful name is a few extra characters. The cost of a vague name is everyone reading your code having to trace it back through five other lines to figure out what's happening.</p>
+<pre class="language-javascript"><code class="language-javascript">// What does this do? You'd have to read the rest of the file to find out.
+const t = p * 0.08;
+const g = p + t;
+
+// Now it's obvious without context.
+const tax = price * 0.08;
+const grandTotal = price + tax;</code></pre>
+    <p>Code is read way more than it's written. Optimize for the read.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-0-12-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Anywhere a value has a clear purpose
+const submitButton = document.querySelector(".submit");
+const userEmail = emailInput.value;
+const isFormValid = checkForm();
+const totalPrice = subtotal + tax;
+const cartItems = await fetchCart();
+
+// Even short-lived loop variables can be meaningful
+for (const product of products) {     // not "for (const p of products)"
+  console.log(product.name);
+}
+
+cartItems.forEach((item) => {          // not "forEach((i) =>"
+  console.log(item.price);
+});</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-0-12-1-3': `
+    <p>If a stranger reads one line of your code with no context, can they tell what the variable holds? If yes, the name is meaningful. If no, it's vague.</p>
+    <p>A meaningful name is a one-word documentation. The variable describes itself.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-0-12-1-4': `
+    <p>Think of variable names as labels on shipping boxes. If you label a box "stuff," you'll have no idea what's inside without opening it. If you label it "winter coats," you know immediately.</p>
+<pre class="language-javascript"><code class="language-javascript">const stuff = users.filter(u => u.age > 18);   // mystery box
+const adultUsers = users.filter(u => u.age > 18);  // labeled box
+
+// Same code. The second one tells you what's inside without making
+// you look at the filter logic.</code></pre>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-0-12-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// How to pick a meaningful name:
+
+// Step 1: Ask "what does this hold?"
+// Answer: a list of users who haven't logged in for 30 days.
+
+// Step 2: Strip filler words.
+// → "users who haven't logged in for 30 days"
+// → "inactive users"
+
+// Step 3: Apply camelCase.
+// → "inactiveUsers"
+
+const inactiveUsers = users.filter(u => daysSinceLogin(u) > 30);
+
+// Now anyone reading this knows exactly what the variable holds.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-0-12-2-0': `
+    <p>If you're debugging unfamiliar code and the variable names are vague, you're going to have a bad time. The first thing experienced developers do when they take over a confusing codebase is rename variables for clarity.</p>
+<pre class="language-javascript"><code class="language-javascript">// Before — what's d? what's r? what's i?
+function calc(d, r, i) {
+  return d * r * i;
+}
+
+// After — same logic, instantly readable
+function calculateTotal(daysRented, dailyRate, insuranceRate) {
+  return daysRented * dailyRate * insuranceRate;
+}</code></pre>
+    <p>If you can't easily say what a variable holds, that's a sign the name needs to change.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-0-12-2-1': `
+    <p>A meaningful name is the cheapest documentation you'll ever write.</p>
+    <p>The few extra characters you spend naming things well save hours of confusion later — for you and for anyone else who reads your code.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-0-12-2-2': `
+    <p><strong>Confusion: short names are "cleaner"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// "Clean" but unclear
+const u = await getUser();
+const p = u.profile;
+const e = p.email;
+
+// Slightly longer, way more useful
+const user = await getUser();
+const profile = user.profile;
+const email = profile.email;</code></pre>
+    <p>Short doesn't mean clean. Clear means clean.</p>
+
+    <p><strong>Confusion: when single letters are OK</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Single letters are fine for tiny scopes:
+for (let i = 0; i < 10; i++) {        // i = index, lives 1-2 lines
+  console.log(i);
+}
+
+users.forEach(u => console.log(u));    // u = user, lives 1 line — but...
+users.forEach(user => console.log(user));   // ...still better
+
+// Single letters get bad as scope grows or logic gets complex.</code></pre>
+
+    <p><strong>Confusion: data, info, item — vague defaults</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// "data" is the universal vague name — it tells you nothing
+const data = await fetch(url);
+const data2 = data.json();
+
+// What kind of data?
+const response = await fetch(url);
+const userList = await response.json();</code></pre>
+    <p>If the name could apply to almost anything, it's not meaningful.</p>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-0-12-2-3': `
+<pre class="language-javascript"><code class="language-javascript">const x = totalPrice * taxRate;
+// vague: x could be anything
+// fix: name it for what it is
+const tax = totalPrice * taxRate;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const data = await fetch(url);
+// vague: every API response is "data"
+// fix: name it for what it actually contains
+const userResponse = await fetch(url);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const arr = users.filter(u => u.active);
+// vague: it's an array, sure, but of what?
+// fix:
+const activeUsers = users.filter(u => u.active);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const flag = true;
+// vague: flag for what?
+// fix: lead with a question word
+const isFormValid = true;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const userObjectWithFullProfileDataFromAPI = res.json();
+// too verbose: makes lines hard to read
+// fix: shorter, still meaningful
+const userProfile = res.json();</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const num = 5;
+// vague: what is the number?
+// fix: be specific
+const itemCount = 5;
+const cartTotal = 5;</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-0-12-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Specific over generic
+const userAge = 25;              // not just "age"
+const productPrice = 19.99;       // not just "price"
+const cartItemCount = 5;          // not just "count"
+
+// Booleans as questions
+const isLoggedIn = true;
+const hasUnreadMessages = false;
+const canEdit = true;
+const shouldRedirect = true;
+
+// Functions as commands
+const calculateTax = (price) => price * 0.08;
+const fetchUserData = async () => {};
+const handleSubmit = (event) => {};
+
+// Loops with named items
+for (const product of products) {
+  console.log(product.name);
+}</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-0-12-3-1': `
+    <p><strong>Example: shopping cart logic</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const cartItems = await fetchCart();
+const subtotal = cartItems.reduce((sum, item) => sum + item.price, 0);
+const taxAmount = subtotal * TAX_RATE;
+const shippingCost = calculateShipping(cartItems);
+const grandTotal = subtotal + taxAmount + shippingCost;</code></pre>
+
+    <p><strong>Example: form validation</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const enteredEmail = emailInput.value.trim();
+const isEmailValid = /^[^@]+@[^@]+\\.[^@]+$/.test(enteredEmail);
+const enteredPassword = passwordInput.value;
+const isPasswordLongEnough = enteredPassword.length >= 8;
+const canSubmit = isEmailValid && isPasswordLongEnough;</code></pre>
+
+    <p><strong>Example: user-related variables</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const currentUser = await getLoggedInUser();
+const isAdmin = currentUser.role === "admin";
+const recentlyLoggedIn = currentUser.lastLogin > Date.now() - 86400000;
+const hasCompletedProfile = currentUser.profile.completed;</code></pre>
+
+    <p><strong>Example: DOM elements named for what they are</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const navMenu = document.querySelector(".nav-menu");
+const searchBar = document.querySelector(".search-bar");
+const checkoutButton = document.querySelector(".checkout-btn");
+const errorBanner = document.querySelector(".error-banner");</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-0-12-3-2': `
+    <ul>
+      <li><strong>Naming variables</strong> → meaningful names are part of good naming overall</li>
+      <li><strong>camelCase</strong> → the casing style applied to those names</li>
+      <li><strong>Boolean naming patterns</strong> → is/has/can/should for true-or-false variables</li>
+      <li><strong>Functions</strong> → function names should be meaningful too (verbs)</li>
+      <li><strong>Code readability</strong> → meaningful names are the #1 readability tool</li>
+      <li><strong>Refactoring</strong> → renaming for clarity is the most common kind</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-0-12-3-3': `
+    <ul>
+      <li>Naming variables</li>
+      <li>Boolean naming (is/has/can/should)</li>
+      <li>Function naming (verbs)</li>
+      <li>Self-documenting code</li>
+      <li>Magic numbers and named constants</li>
+      <li>Code review and renaming</li>
+    </ul>
+  `,
+
+
+  /* ===== Sub-lesson: 3.1 Variables → storing strings =====
+     Path: topics-0-13-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-0-13-0-0': `
+    <p>Storing a string means putting text inside a variable. The text gets wrapped in quotes, the variable holds it, and you can use the variable's name anywhere you'd otherwise have to retype that text.</p>
+    <p>This is the most common kind of variable storage you'll do. Names, messages, labels, URLs, CSS class names — all strings stored in variables.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-0-13-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";              // double quotes
+const greeting = 'hello';            // single quotes
+const message = \`hi there\`;          // backticks (template literal)
+
+let status = "loading";              // let if it'll change later</code></pre>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-0-13-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";
+
+// const     → keyword (creates the variable)
+// userName  → variable name
+// =         → assignment
+// "         → opening quote (marks start of the string)
+// Os        → the actual text
+// "         → closing quote (marks end of the string)
+// ;         → ends the statement
+
+// The quotes are NOT part of the value — they're just markers
+// that tell JS "everything in here is text"</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-0-13-0-3': `
+    <p>Quotes must match — opening and closing must be the same type:</p>
+<pre class="language-javascript"><code class="language-javascript">const a = "Os";       // double-double — works
+const b = 'Os';       // single-single — works
+const c = "Os';       // wrong: SyntaxError — mixed quote types
+const d = "Os;        // wrong: SyntaxError — missing closing quote</code></pre>
+
+    <p>Pick the quote style that doesn't conflict with what's inside:</p>
+<pre class="language-javascript"><code class="language-javascript">const greeting = "Hello, I'm Os";        // double quotes wrap an apostrophe
+const sentence = 'She said "hi"';         // single quotes wrap double quotes inside</code></pre>
+
+    <p>Backticks (template literals) let you embed variables with <code>\${}</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";
+const greeting = \`Hello, \${userName}\`;
+console.log(greeting);                    // "Hello, Os"
+
+// \${} only works inside backticks — not single or double quotes
+const wrong = "Hello, \${userName}";
+console.log(wrong);                       // literal: "Hello, \${userName}"</code></pre>
+
+    <p>Empty strings are valid:</p>
+<pre class="language-javascript"><code class="language-javascript">let userInput = "";       // empty string — useful as a starting value
+console.log(userInput);   // "" (nothing visible, but it IS a string)
+console.log(typeof userInput);  // "string"</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-0-13-1-0': `
+    <p>Code constantly works with text — names, messages, labels, content the user typed, paths to files, URLs to APIs. Without storing strings in variables, you'd retype the same text everywhere it's used.</p>
+    <p>Storing the text once and using the variable's name keeps your code shorter and lets you change the text in one spot if it ever needs to update.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-0-13-1-1': `
+    <p>Whenever you have text that's used more than once, or text with a meaningful name, store it in a variable.</p>
+<pre class="language-javascript"><code class="language-javascript">// Without a variable
+console.log("Welcome to the app, " + "Os");
+heading.textContent = "Welcome to the app, " + "Os";
+
+// With a variable — write the text once
+const welcomeMessage = "Welcome to the app";
+const userName = "Os";
+console.log(welcomeMessage + ", " + userName);
+heading.textContent = welcomeMessage + ", " + userName;</code></pre>
+    <p>Updating the welcome message later is now a one-line change instead of a hunt-and-replace through your whole file.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-0-13-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Names and labels
+const userName = "Os";
+const buttonLabel = "Submit";
+const errorMessage = "Email is required";
+
+// URLs and paths
+const apiUrl = "https://api.example.com/users";
+const imagePath = "/images/logo.png";
+
+// CSS class names
+const activeClass = "is-active";
+const hiddenClass = "hidden";
+
+// User input
+const userEmail = emailInput.value;
+const searchQuery = searchInput.value.trim();
+
+// Status flags as text
+let appStatus = "loading";       // later: "ready" or "error"</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-0-13-1-3': `
+    <p>Storing a string is putting words inside a labeled box. The label is the variable name. The words go inside, wrapped in quotes so JavaScript knows they're text and not code.</p>
+    <p>You can then refer back to the box by its label any time you need that text. Same as any other variable — only the contents are text.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-0-13-1-4': `
+    <p>The variable holds the text. The quotes are like wrappers — they aren't part of what's stored.</p>
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";
+
+// userName  →  Os    (the actual stored value, no quotes)
+
+console.log(userName);     // logs: Os
+console.log("userName");   // logs: userName (literal text, not the variable)</code></pre>
+    <p>When you write the variable name with no quotes, JavaScript looks up its value. When you write quotes, JavaScript treats whatever's inside as literal text.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-0-13-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";
+const greeting = \`Hello, \${userName}\`;
+console.log(greeting);
+
+// JavaScript is thinking:
+// Line 1: see const → declare userName.
+//         Right side has " " → this is a string.
+//         Strip the quotes, store the text "Os" inside userName.
+//
+// Line 2: declare greeting.
+//         Right side has \` \` → template literal.
+//         Find \${userName} → look up userName → "Os".
+//         Replace \${userName} with "Os" → "Hello, Os".
+//         Store "Hello, Os" inside greeting.
+//
+// Line 3: look up greeting → "Hello, Os" → log it.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-0-13-2-0': `
+    <p>If text isn't behaving like text, check the quotes:</p>
+<pre class="language-javascript"><code class="language-javascript">const userName = Os;
+// wrong: ReferenceError — without quotes, JS thinks Os is a variable name
+
+const userName = "Os";
+// works: quotes mark this as a string</code></pre>
+
+    <p>If a string isn't combining the way you expect, watch out for the difference between text and variables:</p>
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";
+console.log("userName");   // "userName" — literal text, not what you wanted
+console.log(userName);     // "Os" — the actual value</code></pre>
+
+    <p>If template literals aren't substituting the variable, check that you used backticks (not regular quotes):</p>
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";
+console.log("Hello, \${userName}");    // "Hello, \${userName}" — wrong quote type
+console.log(\`Hello, \${userName}\`);    // "Hello, Os" — backticks
+</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-0-13-2-1': `
+    <p>Quotes turn text into a value. Without quotes, JavaScript tries to treat the text as code.</p>
+    <p>Once stored, the variable holds the text without the quotes. Use the variable name (no quotes) to read the value back.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-0-13-2-2': `
+    <p><strong>Confusion: variable name vs string text</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";
+
+console.log(userName);     // "Os" — looks up the variable
+console.log("userName");   // "userName" — literal text</code></pre>
+
+    <p><strong>Confusion: numbers in quotes are strings, not numbers</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const a = "5";        // string "5" — can't do math with it normally
+const b = 5;          // number 5 — can do math
+
+console.log(a + 1);   // "51" — string concatenation, not addition
+console.log(b + 1);   // 6 — number addition</code></pre>
+
+    <p><strong>Confusion: which quote type to use</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// All three create a string — pick the one that fits the situation:
+const a = "hello";    // double — most common in many style guides
+const b = 'hello';    // single — common in others
+const c = \`hello\`;    // backticks — only when you need \${} or multi-line
+
+// All three are strings. Be consistent within a project.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-0-13-2-3': `
+<pre class="language-javascript"><code class="language-javascript">const userName = Os;
+// wrong: forgot quotes — JS thinks Os is a variable
+// fix:
+const userName = "Os";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const greeting = "Hello, ${userName}";
+// wrong: \${} only works inside backticks
+// fix:
+const greeting = \`Hello, \${userName}\`;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const sentence = "She said "hi"";
+// wrong: quote conflict — inner quotes close the string early
+// fix: use single quotes outside, or escape:
+const sentence = 'She said "hi"';
+const sentence2 = "She said \\"hi\\"";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const a = "5";
+const b = "10";
+console.log(a + b);    // "510" — string concat, not 15
+// fix: convert to number if you want math
+console.log(Number(a) + Number(b));   // 15</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const message = 'It's a test';
+// wrong: apostrophe ends the single-quoted string early
+// fix: use double quotes or escape
+const message = "It's a test";
+const message2 = 'It\\'s a test';</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-0-13-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Basic storage
+const greeting = "Hello";
+console.log(greeting);             // "Hello"
+
+// Combining strings
+const firstName = "Os";
+const lastName = "Smith";
+const fullName = firstName + " " + lastName;
+console.log(fullName);             // "Os Smith"
+
+// Template literal
+const userName = "Os";
+const message = \`Welcome, \${userName}!\`;
+console.log(message);              // "Welcome, Os!"
+
+// Empty string as starting point
+let status = "";
+status = "ready";
+console.log(status);               // "ready"
+
+// String length
+const name = "Os";
+console.log(name.length);          // 2 (number of characters)</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-0-13-3-1': `
+    <p><strong>Example: storing user input</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const userEmail = emailInput.value.trim();
+const userPassword = passwordInput.value;
+
+if (userEmail.length === 0) {
+  showError("Email is required");
+}</code></pre>
+
+    <p><strong>Example: storing UI text labels</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const SUBMIT_LABEL = "Submit";
+const LOADING_LABEL = "Submitting...";
+const SUCCESS_LABEL = "Submitted!";
+
+submitBtn.textContent = LOADING_LABEL;</code></pre>
+
+    <p><strong>Example: storing CSS class names</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const ACTIVE_CLASS = "is-active";
+const HIDDEN_CLASS = "is-hidden";
+
+card.classList.add(ACTIVE_CLASS);
+modal.classList.remove(HIDDEN_CLASS);</code></pre>
+
+    <p><strong>Example: storing API URLs</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const API_BASE = "https://api.example.com";
+const USERS_ENDPOINT = \`\${API_BASE}/users\`;
+const PRODUCTS_ENDPOINT = \`\${API_BASE}/products\`;
+
+const response = await fetch(USERS_ENDPOINT);</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-0-13-3-2': `
+    <ul>
+      <li><strong>Strings</strong> → the topic of strings as a data type (much deeper coverage)</li>
+      <li><strong>Template literals</strong> → backtick strings with <code>\${}</code> embedding</li>
+      <li><strong>Forms</strong> → user input always comes back as a string</li>
+      <li><strong>DOM</strong> → text on the page is set with strings (<code>.textContent</code>)</li>
+      <li><strong>String methods</strong> → <code>.trim()</code>, <code>.toUpperCase()</code>, etc.</li>
+      <li><strong>Concatenation</strong> → joining strings with <code>+</code> or template literals</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-0-13-3-3': `
+    <ul>
+      <li>Strings (full topic)</li>
+      <li>Template literals</li>
+      <li>String methods</li>
+      <li>String concatenation</li>
+      <li>Escape characters (<code>\\n</code>, <code>\\t</code>, <code>\\"</code>)</li>
+      <li>Storing numbers</li>
+      <li>Storing booleans</li>
+    </ul>
+  `,
+
 };
