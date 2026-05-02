@@ -57,7 +57,8 @@ const CONTENT = {
 42           // a number value
 true         // a yes/no value (boolean)
 ["a", "b"]   // a list value (array)
-null         // an "empty on purpose" value</code></pre>
+null         // an "empty on purpose" value
+</code></pre>
     <p>Every line above is a value. JavaScript treats each one as a real thing it can store, check, change, or pass around.</p>
   `,
   'mental-0-0-3': `
@@ -91,7 +92,8 @@ null         // an "empty on purpose" value</code></pre>
 
 console.log(username);
 // JS goes "username? oh, that's pointing at 'Os'"
-// then it prints "Os"</code></pre>
+// then it prints "Os"
+</code></pre>
     <p>If you change <code>username</code> to point somewhere else, the label moves. The value <code>"Os"</code> doesn't transform — it just stops being pointed at.</p>
   `,
   'mental-0-1-3': `
@@ -119,15 +121,18 @@ console.log(username);
   'mental-0-2-2': `
 <pre class="language-javascript"><code class="language-javascript">"hello"     // double quotes — a string
 'hello'     // single quotes — also a string
-\`hello\`     // backticks — also a string (special powers, see template literals)</code></pre>
+\`hello\`     // backticks — also a string (special powers, see template literals)
+</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const greeting = "Hi there";
 // stores the string "Hi there" in the greeting variable
-// the quotes are NOT part of the value — they just mark where the text starts and ends</code></pre>
+// the quotes are NOT part of the value — they just mark where the text starts and ends
+</code></pre>
     <div class="callout callout--wrongright">
       <div class="callout__label">Wrong vs right</div>
       <div class="callout__body">
 <pre class="language-javascript"><code class="language-javascript">"Hi there"   // ✅ string — has quotes
-Hi there     // ❌ error — JS thinks "Hi" is a variable name</code></pre>
+Hi there     // ❌ error — JS thinks "Hi" is a variable name
+</code></pre>
       </div>
     </div>
   `,
@@ -158,12 +163,14 @@ Hi there     // ❌ error — JS thinks "Hi" is a variable name</code></pre>
   'mental-0-3-2': `
 <pre class="language-javascript"><code class="language-javascript">const age = 25;        // a number
 const price = 9.99;    // also a number
-const score = -3;      // negatives are numbers too</code></pre>
+const score = -3;      // negatives are numbers too
+</code></pre>
     <div class="callout callout--wrongright">
       <div class="callout__label">Wrong vs right</div>
       <div class="callout__body">
 <pre class="language-javascript"><code class="language-javascript">const a = 5 + 3;       // a is 8 — math worked
-const b = "5" + "3";   // b is "53" — those are strings, JS glued them together</code></pre>
+const b = "5" + "3";   // b is "53" — those are strings, JS glued them together
+</code></pre>
       </div>
     </div>
     <p>That second example is one of the most common JavaScript surprises. Quotes change everything.</p>
@@ -199,13 +206,15 @@ const isMenuOpen = false;    // no
 if (isLoggedIn) {
   // runs only if isLoggedIn is true
   console.log("Welcome back");
-}</code></pre>
+}
+</code></pre>
     <div class="callout callout--mistake">
       <div class="callout__label">Common mistake</div>
       <div class="callout__body">
 <pre class="language-javascript"><code class="language-javascript">true      // ✅ boolean — the literal value
 "true"    // ❌ this is a STRING, not a boolean
-          // strings can mislead: "false" is actually treated as truthy!</code></pre>
+          // strings can mislead: "false" is actually treated as truthy!
+</code></pre>
       </div>
     </div>
   `,
@@ -241,9 +250,11 @@ console.log(colors[0]);
 // "red" — the first item (index 0, not 1!)
 
 console.log(colors.length);
-// 3 — how many items the array has</code></pre>
+// 3 — how many items the array has
+</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const mixed = [1, "two", true, null];
-// arrays can hold any types of values, mixed together</code></pre>
+// arrays can hold any types of values, mixed together
+</code></pre>
   `,
   'mental-0-5-3': `
     <ul>
@@ -281,10 +292,12 @@ console.log(user.name);
 // "Os" — access using the dot and the label
 
 console.log(user.age);
-// 25</code></pre>
+// 25
+</code></pre>
 <pre class="language-javascript"><code class="language-javascript">user.name        // "Os"  — dot notation
 user["name"]     // "Os"  — bracket notation, same thing
-user.email       // undefined — no email key was set</code></pre>
+user.email       // undefined — no email key was set
+</code></pre>
   `,
   'mental-0-6-3': `
     <ul>
@@ -319,7 +332,8 @@ selectedUser = { name: "Os" };
 // later, a user gets selected
 
 selectedUser = null;
-// later, the selection is cleared back to "nothing"</code></pre>
+// later, the selection is cleared back to "nothing"
+</code></pre>
     <div class="callout callout--debug">
       <div class="callout__label">Debugging clue</div>
       <div class="callout__body">
@@ -328,7 +342,8 @@ selectedUser = null;
 
 button.addEventListener("click", ...);
 // ❌ TypeError: Cannot read properties of null
-// JS is saying: "button is null — there's nothing here to attach to"</code></pre>
+// JS is saying: "button is null — there's nothing here to attach to"
+</code></pre>
       </div>
     </div>
   `,
@@ -369,7 +384,8 @@ function greet() {
   // notice: no return statement
 }
 console.log(greet());
-// undefined — the function ran but returned nothing</code></pre>
+// undefined — the function ran but returned nothing
+</code></pre>
   `,
   'mental-0-8-3': `
     <ul>
@@ -406,10 +422,12 @@ username = "Sam";
 // but it now points at a different value: "Sam"
 
 console.log(username);
-// "Sam" — the variable hasn't changed, but what it points to has</code></pre>
+// "Sam" — the variable hasn't changed, but what it points to has
+</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const a = "hello";
 const b = a;
-// b also points at "hello" — same value, two variables</code></pre>
+// b also points at "hello" — same value, two variables
+</code></pre>
   `,
   'mental-0-9-3': `
     <ul>
@@ -442,10 +460,12 @@ if (age === 25) {
   //         ^^ also a literal value (used in the comparison)
   console.log("twenty-five");
   //          ^^^^^^^^^^^^^ also a literal value (a string literal)
-}</code></pre>
+}
+</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const colors = ["red", "blue", "green"];
 //             ^^^^^^^^^^^^^^^^^^^^^^^^ array literal
-//              ^^^^^ ^^^^^^ ^^^^^^^ each is a string literal</code></pre>
+//              ^^^^^ ^^^^^^ ^^^^^^^ each is a string literal
+</code></pre>
   `,
   'mental-0-10-3': `
     <ul>
@@ -481,7 +501,8 @@ const result = double(5);
 // result is now 10
 
 console.log(result);
-// 10</code></pre>
+// 10
+</code></pre>
     <div class="callout callout--mistake">
       <div class="callout__label">Common mistake</div>
       <div class="callout__body">
@@ -492,7 +513,8 @@ console.log(result);
 
 const message = greet("Os");
 // "Hi Os" gets logged
-// but message is undefined — nothing was returned</code></pre>
+// but message is undefined — nothing was returned
+</code></pre>
       </div>
     </div>
   `,
@@ -526,7 +548,8 @@ const message = greet("Os");
 
 const typed = input.value;
 // reads what the user typed
-// typed is now a string of whatever they wrote</code></pre>
+// typed is now a string of whatever they wrote
+</code></pre>
     <div class="callout callout--syntax">
       <div class="callout__label">Syntax detail that matters</div>
       <div class="callout__body">
@@ -535,7 +558,8 @@ ageInput.value
 // "25" — a STRING, even though it looks like a number
 
 Number(ageInput.value)
-// 25 — an actual number, after converting</code></pre>
+// 25 — an actual number, after converting
+</code></pre>
       </div>
     </div>
   `,
@@ -573,13 +597,15 @@ Number(ageInput.value)
 
   console.log(users);
   // [{name: "Os", id: 1}, {name: "Sam", id: 2}, ...]
-}</code></pre>
+}
+</code></pre>
     <div class="callout callout--mistake">
       <div class="callout__label">Common mistake</div>
       <div class="callout__body">
 <pre class="language-javascript"><code class="language-javascript">const data = fetch("...");
 // ❌ data is a Promise, not the value
-// you forgot to await it</code></pre>
+// you forgot to await it
+</code></pre>
       </div>
     </div>
   `,
@@ -617,12 +643,14 @@ const greeting = document.querySelector(".greeting");
 
 greeting.textContent = \`Welcome, \${username}\`;
 // write the value into the page
-// now the user sees: "Welcome, Os"</code></pre>
+// now the user sees: "Welcome, Os"
+</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const score = 100;
 const display = document.querySelector(".score");
 
 display.textContent = score;
-// works — JS converts the number to text automatically when displayed</code></pre>
+// works — JS converts the number to text automatically when displayed
+</code></pre>
   `,
   'mental-0-14-3': `
     <ul>
@@ -657,7 +685,8 @@ display.textContent = score;
 //    the label  the value inside
 
 console.log(username);
-// "Os" — JS looks up the label and gives you what's inside</code></pre>
+// "Os" — JS looks up the label and gives you what's inside
+</code></pre>
 <pre class="language-javascript"><code class="language-javascript">// without a variable — you'd repeat yourself
 console.log("Welcome, Os");
 console.log("Goodbye, Os");
@@ -665,7 +694,8 @@ console.log("Goodbye, Os");
 // with a variable — write the value once, reuse it
 const name = "Os";
 console.log("Welcome, " + name);
-console.log("Goodbye, " + name);</code></pre>
+console.log("Goodbye, " + name);
+</code></pre>
   `,
   'mental-1-0-3': `
     <ul>
@@ -700,14 +730,16 @@ score = 10;
 // now score is 10 — no "let" needed to update it
 
 score = score + 5;
-// now score is 15</code></pre>
+// now score is 15
+</code></pre>
     <div class="callout callout--mistake">
       <div class="callout__label">Common mistake</div>
       <div class="callout__body">
 <pre class="language-javascript"><code class="language-javascript">let score = 0;
 let score = 10;
 // ❌ SyntaxError: Identifier 'score' has already been declared
-// once declared, just reassign — don't redeclare</code></pre>
+// once declared, just reassign — don't redeclare
+</code></pre>
       </div>
     </div>
   `,
@@ -741,7 +773,8 @@ let score = 10;
 
 username = "Sam";
 // ❌ TypeError: Assignment to constant variable
-// you can't point this label at anything else</code></pre>
+// you can't point this label at anything else
+</code></pre>
     <div class="callout callout--syntax">
       <div class="callout__label">Syntax detail that matters</div>
       <div class="callout__body">
@@ -752,7 +785,8 @@ user = { name: "Sam" };
 
 user.name = "Sam";
 // ✅ Allowed — the variable still points at the same object,
-//    we just changed what's INSIDE the object</code></pre>
+//    we just changed what's INSIDE the object
+</code></pre>
       </div>
     </div>
   `,
@@ -789,13 +823,15 @@ user.name = "Sam";
 
 const total = 5 + 10;
 // right side runs first → 15
-// then 15 gets assigned to total</code></pre>
+// then 15 gets assigned to total
+</code></pre>
     <div class="callout callout--wrongright">
       <div class="callout__label">Wrong vs right</div>
       <div class="callout__body">
 <pre class="language-javascript"><code class="language-javascript">const x = 5;       // ✅ assignment — x is now 5
 if (x = 10) {}     // ❌ accidentally assigning, not comparing!
-if (x === 10) {}   // ✅ comparison — checks if x equals 10</code></pre>
+if (x === 10) {}   // ✅ comparison — checks if x equals 10
+</code></pre>
       </div>
     </div>
   `,
@@ -835,10 +871,12 @@ count = count + 1;
 // (1 + 1 = 2) then puts 2 into count
 
 console.log(count);
-// 2</code></pre>
+// 2
+</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const score = 0;
 score = 10;
-// ❌ TypeError — const cannot be reassigned</code></pre>
+// ❌ TypeError — const cannot be reassigned
+</code></pre>
   `,
   'mental-1-4-3': `
     <ul>
@@ -877,7 +915,8 @@ button.classList.add("active");
 button.addEventListener("click", () => {
   console.log("clicked");
 });
-// listens for clicks on the real element</code></pre>
+// listens for clicks on the real element
+</code></pre>
     <div class="callout callout--wrongright">
       <div class="callout__label">Wrong vs right</div>
       <div class="callout__body">
@@ -890,7 +929,8 @@ document.querySelector(".btn").addEventListener("click", () => {});
 const btn = document.querySelector(".btn");
 btn.textContent = "Hi";
 btn.classList.add("active");
-btn.addEventListener("click", () => {});</code></pre>
+btn.addEventListener("click", () => {});
+</code></pre>
       </div>
     </div>
   `,
@@ -926,13 +966,15 @@ btn.addEventListener("click", () => {});</code></pre>
 
 const result = double(5);
 // double(5) runs and returns 10
-// result is now 10</code></pre>
+// result is now 10
+</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const name = "os";
 
 const upper = name.toUpperCase();
 // .toUpperCase() returns a new uppercase string
 // upper is now "OS"
-// the original "os" is unchanged</code></pre>
+// the original "os" is unchanged
+</code></pre>
     <div class="callout callout--mistake">
       <div class="callout__label">Common mistake</div>
       <div class="callout__body">
@@ -945,7 +987,8 @@ const sum = add;
 // sum is now the add function, not a number
 
 const sum = add(2, 3);
-// ✅ called it — sum is now 5</code></pre>
+// ✅ called it — sum is now 5
+</code></pre>
       </div>
     </div>
   `,
@@ -980,7 +1023,8 @@ const user = {
   name: "Os",
   age: 25
 };
-// one variable, one object value (which holds two properties)</code></pre>
+// one variable, one object value (which holds two properties)
+</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
 
 user.name = "Sam";
@@ -988,7 +1032,8 @@ user.name = "Sam";
 // const blocked reassignment, not modification
 
 user = { name: "Sam" };
-// ❌ TypeError — that IS reassignment</code></pre>
+// ❌ TypeError — that IS reassignment
+</code></pre>
   `,
   'mental-1-7-3': `
     <ul>
@@ -1028,7 +1073,8 @@ const theme = localStorage.getItem("theme");
 localStorage.removeItem("theme");
 
 // wipe everything
-localStorage.clear();</code></pre>
+localStorage.clear();
+</code></pre>
     <div class="callout callout--syntax">
       <div class="callout__label">Syntax detail that matters</div>
       <div class="callout__body">
@@ -1041,7 +1087,8 @@ localStorage.setItem("user", JSON.stringify(user));
 // ✅ stores the object as a JSON string
 
 const saved = JSON.parse(localStorage.getItem("user"));
-// ✅ parsed back into a real object</code></pre>
+// ✅ parsed back into a real object
+</code></pre>
       </div>
     </div>
   `,
@@ -1075,20 +1122,23 @@ const saved = JSON.parse(localStorage.getItem("user"));
 let cartCount = 0;
 cartCount = cartCount + 1;
 // works great while the page is open
-// disappears on refresh</code></pre>
+// disappears on refresh
+</code></pre>
 <pre class="language-javascript"><code class="language-javascript">// LOCALSTORAGE — permanent, persists across reloads
 localStorage.setItem("cartCount", "1");
 
 // later, even after the user closes and reopens the page
 const saved = localStorage.getItem("cartCount");
-// "1" — still there</code></pre>
+// "1" — still there
+</code></pre>
 <pre class="language-javascript"><code class="language-javascript">// COMMON PATTERN: load from storage on startup, work with a variable, save back when it changes
 let cartCount = Number(localStorage.getItem("cartCount")) || 0;
 
 function addToCart() {
   cartCount = cartCount + 1;
   localStorage.setItem("cartCount", cartCount);
-}</code></pre>
+}
+</code></pre>
   `,
   'mental-1-9-3': `
     <ul>
@@ -1130,7 +1180,8 @@ function greet() {
 greet();
 console.log(localName);
 // ❌ ReferenceError: localName is not defined
-// localName died when greet() finished</code></pre>
+// localName died when greet() finished
+</code></pre>
     <div class="callout callout--debug">
       <div class="callout__label">Debugging clue</div>
       <div class="callout__body">If you see <strong>"ReferenceError: x is not defined"</strong>, the variable was never created OR you're trying to use it outside its scope.</div>
@@ -1170,7 +1221,8 @@ console.log(localName);
   'topics-2-0-0-1': `
 <pre class="language-javascript"><code class="language-javascript">"hello" // double quotes
 'hello' // single quotes
-\`hello\` // backticks / template literal</code></pre>
+\`hello\` // backticks / template literal
+</code></pre>
     <p>All three create strings, but they are not always used the same way.</p>
   `,
 
@@ -1181,28 +1233,32 @@ console.log(localName);
 // double quotes are useful when the text has an apostrophe
 
 const broken = 'I'm learning JavaScript';
-// wrong: the apostrophe inside I'm ends the string early</code></pre>
+// wrong: the apostrophe inside I'm ends the string early
+</code></pre>
 
     <p>Single quotes:</p>
 <pre class="language-javascript"><code class="language-javascript">const quote = 'She said "hello"';
 // single quotes are useful when the text contains double quotes
 
 const broken = "She said "hello"";
-// wrong: the inner double quotes confuse JavaScript</code></pre>
+// wrong: the inner double quotes confuse JavaScript
+</code></pre>
 
     <p>Backticks:</p>
 <pre class="language-javascript"><code class="language-javascript">const name = "Os";
 
 const message = \`Hello, \${name}\`;
 // backticks allow \${} to insert the value of name
-// result: "Hello, Os"</code></pre>
+// result: "Hello, Os"
+</code></pre>
 
     <p><code>\${}</code> interpolation:</p>
 <pre class="language-javascript"><code class="language-javascript">const name = "Os";
 
 \`Hello, \${name}\`  // correct: inserts the value stored in name
 "Hello, \${name}"  // wrong: double quotes treat \${name} as plain text
-'Hello, \${name}'  // wrong: single quotes treat \${name} as plain text</code></pre>
+'Hello, \${name}'  // wrong: single quotes treat \${name} as plain text
+</code></pre>
     <p><code>\${}</code> only works inside backticks.</p>
   `,
 
@@ -1214,7 +1270,8 @@ const message = \`Hello, \${name}\`;
 // message       → the variable name
 // =             → assigns a value
 // "Hello world" → the string value
-// ;             → ends the statement</code></pre>
+// ;             → ends the statement
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -1230,7 +1287,8 @@ const message = \`Hello, \${name}\`;
 <pre class="language-javascript"><code class="language-javascript">const username = "Os";                    // text
 const email = "os@example.com";           // text
 const buttonText = "Submit";              // text
-const errorMessage = "Email is required"; // text</code></pre>
+const errorMessage = "Email is required"; // text
+</code></pre>
     <p>Strings let JavaScript store text, compare text, combine text, and display text on the page.</p>
   `,
 
@@ -1243,7 +1301,8 @@ const searchTerm = input.value; // form input text
 
 card.classList.add("active"); // CSS class name as a string
 
-email.includes("@"); // checking if text contains something</code></pre>
+email.includes("@"); // checking if text contains something
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -1253,7 +1312,8 @@ email.includes("@"); // checking if text contains something</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const name = "Os";
 
 console.log(name);    // "Os" because name is a variable
-console.log("name");  // "name" because it is literal text</code></pre>
+console.log("name");  // "name" because it is literal text
+</code></pre>
   `,
 
   /* 1.4 Mental model */
@@ -1263,12 +1323,14 @@ console.log("name");  // "name" because it is literal text</code></pre>
 
 // c → index 0
 // a → index 1
-// t → index 2</code></pre>
+// t → index 2
+</code></pre>
     <p>So:</p>
 <pre class="language-javascript"><code class="language-javascript">word[0]; // "c" because indexes start at 0
 word[1]; // "a"
 word[2]; // "t"
-word[3]; // undefined because there is no character at index 3</code></pre>
+word[3]; // undefined because there is no character at index 3
+</code></pre>
   `,
 
   /* 1.5 Step-by-step walkthrough */
@@ -1284,7 +1346,8 @@ console.log(message);
 // Use backticks to build a template literal.
 // Find \${name}.
 // Replace it with the value "Os".
-// Log "Hello, Os".</code></pre>
+// Log "Hello, Os".
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -1297,7 +1360,8 @@ console.log(message);
 // if Os does not exist, this causes an error
 
 const name = "Os";
-// right: "Os" is text, so it must be in quotes</code></pre>
+// right: "Os" is text, so it must be in quotes
+</code></pre>
     <p>Another clue:</p>
 <pre class="language-javascript"><code class="language-javascript">const name = "Os";
 
@@ -1307,7 +1371,8 @@ console.log("Hello, \${name}");
 
 console.log(\`Hello, \${name}\`);
 // output: Hello, Os
-// fixed: backticks allow \${}</code></pre>
+// fixed: backticks allow \${}
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -1322,7 +1387,8 @@ console.log(\`Hello, \${name}\`);
 <pre class="language-javascript"><code class="language-javascript">const name = "Os";
 
 console.log(name);    // "Os" because name is a variable
-console.log("name");  // "name" because it is text</code></pre>
+console.log("name");  // "name" because it is text
+</code></pre>
 
     <p><strong>Confusion: string number vs real number</strong></p>
     <p>They look similar, but they behave differently.</p>
@@ -1330,26 +1396,32 @@ console.log("name");  // "name" because it is text</code></pre>
 25    // number
 
 "25" + 5;  // "255" because one value is a string
-25 + 5;    // 30 because both values are numbers</code></pre>
+25 + 5;    // 30 because both values are numbers
+</code></pre>
 
     <p><strong>Confusion: .length counts characters, not words</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const word = "hello";
 word.length; // 5 because there are 5 characters
 
 const sentence = "hello world";
-sentence.length; // 11 because the space counts too</code></pre>
+sentence.length; // 11 because the space counts too
+</code></pre>
   `,
 
   /* 2.3 Common mistakes */
   'topics-2-0-2-3': `
 <pre class="language-javascript"><code class="language-javascript">const name = Os;
-// wrong: forgot quotes around text</code></pre>
+// wrong: forgot quotes around text
+</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const message = "Hello, \${name}";
-// wrong: used double quotes instead of backticks</code></pre>
+// wrong: used double quotes instead of backticks
+</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const quote = "She said "hello"";
-// wrong: quote conflict</code></pre>
+// wrong: quote conflict
+</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const word = "cat";
-word[3]; // undefined because indexes start at 0</code></pre>
+word[3]; // undefined because indexes start at 0
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -1361,27 +1433,33 @@ word[3]; // undefined because indexes start at 0</code></pre>
 city.length;          // 9 because the space counts as a character
 city.toUpperCase();   // "SANTA ANA"
 city.includes("Ana"); // true
-city[0];              // "S"</code></pre>
+city[0];              // "S"
+</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const firstName = "Os";
 const role = "Developer";
 
 const intro = \`\${firstName} is a \${role}\`;
-// result: "Os is a Developer"</code></pre>
+// result: "Os is a Developer"
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
   'topics-2-0-3-1': `
     <p><strong>Example: form error message</strong></p>
-<pre class="language-javascript"><code class="language-javascript">error.textContent = "Email is required";</code></pre>
+<pre class="language-javascript"><code class="language-javascript">error.textContent = "Email is required";
+</code></pre>
 
     <p><strong>Example: button loading state</strong></p>
-<pre class="language-javascript"><code class="language-javascript">button.textContent = "Loading...";</code></pre>
+<pre class="language-javascript"><code class="language-javascript">button.textContent = "Loading...";
+</code></pre>
 
     <p><strong>Example: search input field</strong></p>
-<pre class="language-javascript"><code class="language-javascript">const searchTerm = searchInput.value.trim();</code></pre>
+<pre class="language-javascript"><code class="language-javascript">const searchTerm = searchInput.value.trim();
+</code></pre>
 
     <p><strong>Example: CSS class name</strong></p>
-<pre class="language-javascript"><code class="language-javascript">card.classList.add("active");</code></pre>
+<pre class="language-javascript"><code class="language-javascript">card.classList.add("active");
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -1430,7 +1508,8 @@ const intro = \`\${firstName} is a \${role}\`;
   'topics-0-0-0-1': `
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";   // const = container that should not change
 let score = 0;            // let = container whose value will change
-var oldStyle = "Os";      // var = the old way (still works, but not used in modern code)</code></pre>
+var oldStyle = "Os";      // var = the old way (still works, but not used in modern code)
+</code></pre>
     <p>All three create a variable. <code>const</code> and <code>let</code> are what you'll use today.</p>
     <p>You'll still see <code>var</code> in older codebases or tutorials — it works, but it has weird scoping rules that <code>let</code> and <code>const</code> were designed to fix.</p>
   `,
@@ -1439,12 +1518,14 @@ var oldStyle = "Os";      // var = the old way (still works, but not used in mod
   'topics-0-0-0-3': `
     <p>The keyword goes first:</p>
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";   // correct: const, name, =, value, semicolon
-userName = "Os";          // wrong: no keyword — JS doesn't know to create a variable</code></pre>
+userName = "Os";          // wrong: no keyword — JS doesn't know to create a variable
+</code></pre>
 
     <p>The <code>=</code> is one symbol, not two:</p>
 <pre class="language-javascript"><code class="language-javascript">const score = 10;   // correct: = means "put this value into the variable"
 const score == 10;  // wrong: == is for comparing, not assigning
-const score === 10; // wrong: === is also for comparing</code></pre>
+const score === 10; // wrong: === is also for comparing
+</code></pre>
 
     <p>You only declare the variable once:</p>
 <pre class="language-javascript"><code class="language-javascript">let count = 0;
@@ -1456,11 +1537,13 @@ count = 5;
 
 let count = 5;
 // wrong: SyntaxError — variable already exists in this scope
-// "let" means "create a new one" — but count already exists</code></pre>
+// "let" means "create a new one" — but count already exists
+</code></pre>
 
     <p>The semicolon ends the statement:</p>
 <pre class="language-javascript"><code class="language-javascript">const name = "Os";   // correct: clean ending
-const name = "Os"    // works most of the time, but always include the ;</code></pre>
+const name = "Os"    // works most of the time, but always include the ;
+</code></pre>
   `,
 
   /* 0.3 Anatomy / Breakdown */
@@ -1471,7 +1554,8 @@ const name = "Os"    // works most of the time, but always include the ;</code><
 // userName  → the variable name (also called the identifier)
 // =         → assignment operator; puts the value into the variable
 // "Os"      → the value being stored
-// ;         → ends the statement</code></pre>
+// ;         → ends the statement
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -1493,7 +1577,8 @@ console.log("See you soon, Os");
 const userName = "Os";
 console.log("Welcome, " + userName);
 console.log("Goodbye, " + userName);
-console.log("See you soon, " + userName);</code></pre>
+console.log("See you soon, " + userName);
+</code></pre>
     <p>If you need to update the name later, you change it in one place — not everywhere.</p>
   `,
 
@@ -1510,7 +1595,8 @@ const isLoggedIn = true;                          // store a boolean flag
 
 const colors = ["red", "blue", "green"];          // store a list
 
-const user = { name: "Os", age: 25 };             // store an object</code></pre>
+const user = { name: "Os", age: 25 };             // store an object
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -1519,7 +1605,8 @@ const user = { name: "Os", age: 25 };             // store an object</code></pre
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 
 // userName → the label on the jar
-// "Os"     → what's inside the jar</code></pre>
+// "Os"     → what's inside the jar
+</code></pre>
     <p>When you write the variable's name in your code, JavaScript walks over to the shelf, finds the jar with that label, and gives you back what's inside.</p>
   `,
 
@@ -1528,14 +1615,16 @@ const user = { name: "Os", age: 25 };             // store an object</code></pre
     <p>A variable is a name that points at a value.</p>
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 
-// userName  →  "Os"</code></pre>
+// userName  →  "Os"
+</code></pre>
     <p>The name doesn't <em>contain</em> the value. It <em>points at</em> it. When you reassign (with <code>let</code>), the name un-points from the old value and re-points at the new one.</p>
 <pre class="language-javascript"><code class="language-javascript">let userName = "Os";
 userName = "Sam";
 
 // before:  userName  →  "Os"
 // after:   userName  →  "Sam"
-// "Os" is no longer pointed at — JS throws it away</code></pre>
+// "Os" is no longer pointed at — JS throws it away
+</code></pre>
   `,
 
   /* 1.5 Step-by-step walkthrough */
@@ -1550,7 +1639,8 @@ console.log(userName);
 // The right side is "Os" → point userName at the value "Os".
 // Next line: see userName → look up the existing variable.
 // userName points at "Os" → give back "Os".
-// console.log("Os") → print "Os" to the console.</code></pre>
+// console.log("Os") → print "Os" to the console.
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -1560,7 +1650,8 @@ console.log(userName);
     <p>If a variable seems wrong, the first question is always: <strong>what is the actual value, right now, at this line?</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 // later in the code...
-console.log(userName);   // log it to see what's actually inside</code></pre>
+console.log(userName);   // log it to see what's actually inside
+</code></pre>
     <p>The most common variable errors:</p>
 <pre class="language-javascript"><code class="language-javascript">console.log(userName);
 const userName = "Os";
@@ -1572,7 +1663,8 @@ const userName = "Sam";
 
 userName = "Os";
 // wrong (in strict mode): ReferenceError
-// you forgot const or let — variable was never created</code></pre>
+// you forgot const or let — variable was never created
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -1587,44 +1679,53 @@ userName = "Os";
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 
 // const     → keyword (the instruction to create a variable)
-// userName  → the variable (the actual thing)</code></pre>
+// userName  → the variable (the actual thing)
+</code></pre>
     <p><code>let</code>, <code>const</code>, and <code>var</code> are keywords. The variable is the name that comes after.</p>
 
     <p><strong>Confusion: variable vs string</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const name = "Os";
 
 console.log(name);    // "Os" — the value pointed at by the variable
-console.log("name");  // "name" — literal text in quotes</code></pre>
+console.log("name");  // "name" — literal text in quotes
+</code></pre>
 
     <p><strong>Confusion: declaring vs reassigning</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let score = 0;     // declaring — first time, needs let
 score = 10;        // reassigning — just the name, no let
-let score = 10;    // wrong: re-declaring throws an error</code></pre>
+let score = 10;    // wrong: re-declaring throws an error
+</code></pre>
 
     <p><strong>Confusion: const blocks reassignment, not internal change</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
 
 user = { name: "Sam" };   // wrong: reassigning the variable — const blocks this
-user.name = "Sam";        // works: changing what's INSIDE the object is allowed</code></pre>
+user.name = "Sam";        // works: changing what's INSIDE the object is allowed
+</code></pre>
   `,
 
   /* 2.3 Common mistakes */
   'topics-0-0-2-3': `
 <pre class="language-javascript"><code class="language-javascript">userName = "Os";
-// wrong: forgot const or let — variable was never declared</code></pre>
+// wrong: forgot const or let — variable was never declared
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const = "Os";
-// wrong: const is the keyword, not the variable name</code></pre>
+// wrong: const is the keyword, not the variable name
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const user-name = "Os";
-// wrong: dashes aren't allowed in variable names</code></pre>
+// wrong: dashes aren't allowed in variable names
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const 1user = "Os";
-// wrong: variable names can't start with a number</code></pre>
+// wrong: variable names can't start with a number
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os"
 const email = "os@example.com"
-// works, but always add semicolons to end statements</code></pre>
+// works, but always add semicolons to end statements
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -1641,7 +1742,8 @@ console.log(nextAge);    // 26
 let total = 0;
 total = total + 5;
 total = total + 10;
-console.log(total);      // 15</code></pre>
+console.log(total);      // 15
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -1649,24 +1751,28 @@ console.log(total);      // 15</code></pre>
     <p><strong>Example: storing a button so you can use it anywhere</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const submitBtn = document.querySelector(".submit");
 submitBtn.addEventListener("click", handleSubmit);
-submitBtn.disabled = true;</code></pre>
+submitBtn.disabled = true;
+</code></pre>
 
     <p><strong>Example: tracking a counter that goes up</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let cartCount = 0;
 addToCartBtn.addEventListener("click", () => {
   cartCount = cartCount + 1;
   cartBadge.textContent = cartCount;
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: storing user input from a form</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const userName = nameInput.value.trim();
-const userEmail = emailInput.value.trim();</code></pre>
+const userEmail = emailInput.value.trim();
+</code></pre>
 
     <p><strong>Example: holding a flag for whether something is open</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let isMenuOpen = false;
 hamburger.addEventListener("click", () => {
   isMenuOpen = !isMenuOpen;
-});</code></pre>
+});
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -1716,7 +1822,8 @@ hamburger.addEventListener("click", () => {
   'topics-0-1-0-1': `
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";   // store the value
 console.log(userName);    // use it later by name
-console.log(userName);    // use it again</code></pre>
+console.log(userName);    // use it again
+</code></pre>
     <p>The variable is created once. After that, you just write its name to access the value.</p>
   `,
 
@@ -1728,7 +1835,8 @@ console.log(userName);    // use it again</code></pre>
 // userName  → the name you'll use to refer back to "Os"
 // =         → puts the value into the variable
 // "Os"      → the actual value being stored
-// ;         → ends the statement</code></pre>
+// ;         → ends the statement
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -1738,7 +1846,8 @@ console.log(userName);    // use it again</code></pre>
 
 console.log(userName);   // works — exact match
 console.log(username);   // wrong: lowercase 'n' — JS treats this as a different variable
-console.log(UserName);   // wrong: capital 'U' — also a different variable</code></pre>
+console.log(UserName);   // wrong: capital 'U' — also a different variable
+</code></pre>
     <p>JavaScript is case-sensitive on variable names. <code>userName</code> and <code>username</code> are two different things.</p>
   `,
 
@@ -1764,7 +1873,8 @@ const userName = "Os";
 console.log("Welcome, " + userName);
 sendEmail(userName, "welcome");
 heading.textContent = userName;
-saveToDatabase(userName);</code></pre>
+saveToDatabase(userName);
+</code></pre>
     <p>To switch from <code>"Os"</code> to <code>"Sam"</code> in the bottom version, you change one line. In the top version, you'd hunt through the whole file.</p>
   `,
 
@@ -1782,7 +1892,8 @@ if (attempts > MAX_LOGIN_ATTEMPTS) lockAccount();
 
 // Holding the result of work you did
 const userInput = nameField.value.trim();
-if (userInput.length > 0) saveName(userInput);</code></pre>
+if (userInput.length > 0) saveName(userInput);
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -1799,7 +1910,8 @@ if (userInput.length > 0) saveName(userInput);</code></pre>
 //    ^ writing in the notebook: "userName means Os"
 
 console.log(userName);
-//          ^ flipping back to find "userName" → it says "Os" → use that</code></pre>
+//          ^ flipping back to find "userName" → it says "Os" → use that
+</code></pre>
     <p>Every time you read a variable's name, JavaScript flips back through its notebook, finds the entry, and uses whatever value is written there.</p>
   `,
 
@@ -1812,7 +1924,8 @@ console.log(userName);
 // JavaScript is thinking:
 // Line 1: write down "userName means Os" in the notebook.
 // Line 2: see userName → flip to the notebook → it says "Os" → log "Os".
-// Line 3: see userName again → flip to the notebook → still "Os" → log "Os".</code></pre>
+// Line 3: see userName again → flip to the notebook → still "Os" → log "Os".
+</code></pre>
     <p>The key thing: JavaScript looks up the value <strong>every time</strong> the name is used. The variable doesn't get used up.</p>
   `,
 
@@ -1823,7 +1936,8 @@ console.log(userName);
     <p>If your code doesn't behave the way you expect, the first thing to check is: <strong>what value does the variable actually hold right now?</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 // later in the code...
-console.log(userName);   // log it to see what's actually inside</code></pre>
+console.log(userName);   // log it to see what's actually inside
+</code></pre>
     <p>Most variable bugs come from one of three things:</p>
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 
@@ -1831,7 +1945,8 @@ console.log(username);
 // wrong: typo — username (lowercase n) is a different (or undefined) variable
 
 console.log(userName);
-// works: exact name match</code></pre>
+// works: exact name match
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -1846,14 +1961,16 @@ console.log(userName);
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 console.log(userName);   // does NOT use up the value
 console.log(userName);   // still works — value is still there
-console.log(userName);   // and again — variables don't run out</code></pre>
+console.log(userName);   // and again — variables don't run out
+</code></pre>
     <p>The value isn't consumed when you use it. The name is just a pointer — you can read through it as many times as you want.</p>
 
     <p><strong>Confusion: typos make new variables (or errors)</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 
 console.log(userName);   // "Os"
-console.log(username);   // ReferenceError or different variable</code></pre>
+console.log(username);   // ReferenceError or different variable
+</code></pre>
     <p>JavaScript doesn't auto-correct typos. Different spelling = different variable.</p>
   `,
 
@@ -1861,18 +1978,22 @@ console.log(username);   // ReferenceError or different variable</code></pre>
   'topics-0-1-2-3': `
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 console.log(username);
-// wrong: typo'd the name — JS sees this as a different variable</code></pre>
+// wrong: typo'd the name — JS sees this as a different variable
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">console.log(userName);
 const userName = "Os";
-// wrong: tried to use the variable before creating it</code></pre>
+// wrong: tried to use the variable before creating it
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 userName = "Sam";
-// wrong: const can't be reassigned — use let if you need to change it</code></pre>
+// wrong: const can't be reassigned — use let if you need to change it
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const = "Os";
-// wrong: forgot to give the variable a name</code></pre>
+// wrong: forgot to give the variable a name
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -1890,7 +2011,8 @@ console.log(total);       // 21.5892
 
 let count = 0;
 count = count + 1;        // 1
-count = count + 1;        // 2 — using the current value to compute the next</code></pre>
+count = count + 1;        // 2 — using the current value to compute the next
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -1898,23 +2020,27 @@ count = count + 1;        // 2 — using the current value to compute the next</
     <p><strong>Example: configuration values you reuse all over the app</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const API_URL = "https://api.example.com";
 const APP_NAME = "MyApp";
-const VERSION = "1.0.0";</code></pre>
+const VERSION = "1.0.0";
+</code></pre>
 
     <p><strong>Example: storing what the user typed once, using it many times</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const userEmail = emailInput.value.trim();
 validateEmail(userEmail);
 saveToDatabase(userEmail);
-sendConfirmation(userEmail);</code></pre>
+sendConfirmation(userEmail);
+</code></pre>
 
     <p><strong>Example: capturing a calculation result so you don't redo it</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const totalPrice = subtotal + tax + shipping;
 priceDisplay.textContent = totalPrice;
-sendInvoice(totalPrice);</code></pre>
+sendInvoice(totalPrice);
+</code></pre>
 
     <p><strong>Example: holding a DOM element you reuse</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const submitBtn = document.querySelector(".submit");
 submitBtn.addEventListener("click", handleSubmit);
-submitBtn.disabled = false;</code></pre>
+submitBtn.disabled = false;
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -1963,7 +2089,8 @@ submitBtn.disabled = false;</code></pre>
 //    [label]    [contents]
 
 let count = 0;
-//  [label] [contents]</code></pre>
+//  [label] [contents]
+</code></pre>
     <p>The keyword creates the container. The name labels it. The <code>=</code> puts something inside.</p>
   `,
 
@@ -1975,7 +2102,8 @@ let count = 0;
 // score   → the label on the container
 // =       → puts the value into the container
 // 100     → the value being stored inside
-// ;       → ends the statement</code></pre>
+// ;       → ends the statement
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -1986,13 +2114,15 @@ let count = 0;
 //  the value is undefined until you assign something
 
 userName = "Os";
-//  now the container has "Os" inside</code></pre>
+//  now the container has "Os" inside
+</code></pre>
     <p>But you can't do this with <code>const</code> — <code>const</code> requires the container to be filled at creation:</p>
 <pre class="language-javascript"><code class="language-javascript">const userName;
 // wrong: SyntaxError — const must have a value when created
 
 const userName = "Os";
-// correct: const filled at creation</code></pre>
+// correct: const filled at creation
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -2012,7 +2142,8 @@ console.log(5 + 10 + 20);   // 35 prints, but the result isn't saved
 const total = 5 + 10 + 20;
 console.log(total);          // 35
 sendReport(total);           // can use the same value here
-saveToDatabase(total);       // and here</code></pre>
+saveToDatabase(total);       // and here
+</code></pre>
   `,
 
   /* 1.2 Where you use it */
@@ -2031,7 +2162,8 @@ const totalPrice = price + tax;
 let isLoggedIn = false;
 
 // Storing a list of things
-const colors = ["red", "blue", "green"];</code></pre>
+const colors = ["red", "blue", "green"];
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -2041,7 +2173,8 @@ const colors = ["red", "blue", "green"];</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 
 // box label:  userName
-// box holds:  "Os"</code></pre>
+// box holds:  "Os"
+</code></pre>
   `,
 
   /* 1.4 Mental model */
@@ -2053,7 +2186,8 @@ const isLoggedIn = true;
 
 // [userName]    contains: "Os"
 // [count]       contains: 0
-// [isLoggedIn]  contains: true</code></pre>
+// [isLoggedIn]  contains: true
+</code></pre>
     <p>Each variable is its own container. They don't interfere with each other. JavaScript looks up containers by name when you reference them.</p>
   `,
 
@@ -2067,7 +2201,8 @@ console.log(newScore);
 // Line 1: create a container labeled "score", put 100 inside.
 // Line 2: create a container labeled "newScore".
 //         To fill it, look up "score" → 100 → add 50 → put 150 inside.
-// Line 3: look up "newScore" → 150 → log it.</code></pre>
+// Line 3: look up "newScore" → 150 → log it.
+</code></pre>
     <p>The container holds the value. JavaScript reaches into the container any time you use the name.</p>
   `,
 
@@ -2078,7 +2213,8 @@ console.log(newScore);
     <p>If something seems off, ask: <strong>what's actually inside the container right now?</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const score = 100;
 // later, after some logic...
-console.log(score);   // peek inside the container</code></pre>
+console.log(score);   // peek inside the container
+</code></pre>
     <p>If <code>console.log</code> shows something unexpected, the bug isn't where you're using the variable — it's wherever the container got filled with the wrong thing.</p>
   `,
 
@@ -2087,7 +2223,8 @@ console.log(score);   // peek inside the container</code></pre>
     <p>Variables don't <em>do</em>. They <em>hold</em>.</p>
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 // this line doesn't DO anything visible
-// it just creates a labeled container holding "Os"</code></pre>
+// it just creates a labeled container holding "Os"
+</code></pre>
     <p>Code that <em>does</em> things (logs, displays, sends) comes later. Containers exist to be available when that code needs them.</p>
   `,
 
@@ -2097,32 +2234,38 @@ console.log(score);   // peek inside the container</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 
 console.log(userName);   // "Os" — pulls the value out of the container
-console.log("userName"); // "userName" — literal text, has nothing to do with the container</code></pre>
+console.log("userName"); // "userName" — literal text, has nothing to do with the container
+</code></pre>
     <p>The label and the contents are two different things. Quotes mean text. No quotes means "look up the container with that name."</p>
 
     <p><strong>Confusion: empty container vs missing container</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let a;             // container exists, but empty (value is undefined)
 console.log(a);    // undefined — the container is there
 
-console.log(b);    // ReferenceError — there's no container called b at all</code></pre>
+console.log(b);    // ReferenceError — there's no container called b at all
+</code></pre>
     <p>Empty container = something inside, just nothing useful. Missing container = no container at all.</p>
   `,
 
   /* 2.3 Common mistakes */
   'topics-0-2-2-3': `
 <pre class="language-javascript"><code class="language-javascript">const userName;
-// wrong: const requires a value at creation</code></pre>
+// wrong: const requires a value at creation
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">let userName = "Os";
 let userName = "Sam";
-// wrong: trying to create a second container with the same label</code></pre>
+// wrong: trying to create a second container with the same label
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">score = 100;
-// wrong: forgot to create the container with const or let first</code></pre>
+// wrong: forgot to create the container with const or let first
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 console.log(UserName);
-// wrong: looking for a container labeled "UserName" — different from "userName"</code></pre>
+// wrong: looking for a container labeled "UserName" — different from "userName"
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -2141,7 +2284,8 @@ console.log(counter);   // 2
 const items = [];
 items.push("apple");
 items.push("banana");
-console.log(items);     // ["apple", "banana"]</code></pre>
+console.log(items);     // ["apple", "banana"]
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -2149,23 +2293,27 @@ console.log(items);     // ["apple", "banana"]</code></pre>
     <p><strong>Example: storing a DOM element so you can reach it any time</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const submitBtn = document.querySelector(".submit");
 submitBtn.disabled = true;
-submitBtn.textContent = "Submitting...";</code></pre>
+submitBtn.textContent = "Submitting...";
+</code></pre>
 
     <p><strong>Example: holding what the user typed for later validation</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const userPassword = passwordInput.value;
-if (userPassword.length < 8) showError("Password too short");</code></pre>
+if (userPassword.length < 8) showError("Password too short");
+</code></pre>
 
     <p><strong>Example: keeping a running count that updates</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let unreadMessages = 0;
 function newMessageArrived() {
   unreadMessages = unreadMessages + 1;
   badge.textContent = unreadMessages;
-}</code></pre>
+}
+</code></pre>
 
     <p><strong>Example: storing config that's used everywhere</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const API_URL = "https://api.example.com";
 const TIMEOUT = 5000;
-const MAX_RETRIES = 3;</code></pre>
+const MAX_RETRIES = 3;
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -2217,7 +2365,8 @@ const MAX_RETRIES = 3;</code></pre>
 score = 10;              // change it later — no let needed
 
 let count;               // create without an initial value
-count = 5;               // assign a value later</code></pre>
+count = 5;               // assign a value later
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -2228,7 +2377,8 @@ count = 5;               // assign a value later</code></pre>
 // score   → the variable name
 // =       → assigns the value
 // 0       → the starting value
-// ;       → ends the statement</code></pre>
+// ;       → ends the statement
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -2236,7 +2386,8 @@ count = 5;               // assign a value later</code></pre>
     <p>Lowercase only. <code>let</code> is a keyword — JavaScript is case-sensitive:</p>
 <pre class="language-javascript"><code class="language-javascript">let score = 0;   // correct
 Let score = 0;   // wrong: Let is not a keyword
-LET score = 0;   // wrong: LET is not a keyword</code></pre>
+LET score = 0;   // wrong: LET is not a keyword
+</code></pre>
 
     <p>You only write <code>let</code> once — when the variable is born:</p>
 <pre class="language-javascript"><code class="language-javascript">let count = 0;
@@ -2247,13 +2398,15 @@ count = 5;
 // you can do this as many times as you want
 
 let count = 5;
-// wrong: SyntaxError — variable already exists in this scope</code></pre>
+// wrong: SyntaxError — variable already exists in this scope
+</code></pre>
 
     <p>The starting value is optional:</p>
 <pre class="language-javascript"><code class="language-javascript">let userName;            // creates the variable, value is undefined
 userName = "Os";          // assign it later
 
-let score = 0;            // creates and assigns in one line</code></pre>
+let score = 0;            // creates and assigns in one line
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -2277,7 +2430,8 @@ let isMenuOpen = false;
 let total = 0;
 
 // State trackers — change as the user does things
-let currentSlide = 0;</code></pre>
+let currentSlide = 0;
+</code></pre>
     <p>If the value won't change, use <code>const</code> instead. <code>const</code> is the default — reach for <code>let</code> only when you know reassignment is coming.</p>
   `,
 
@@ -2300,7 +2454,8 @@ message = message + "Hello";
 message = message + ", world";
 
 // Tracking a "currently selected" thing
-let selectedTab = "home";</code></pre>
+let selectedTab = "home";
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -2320,7 +2475,8 @@ let selectedTab = "home";</code></pre>
 userName = "Sam";
 
 // userName  →  "Sam"
-// "Os" is no longer pointed at — JS throws it away</code></pre>
+// "Os" is no longer pointed at — JS throws it away
+</code></pre>
   `,
 
   /* 1.5 Step-by-step walkthrough */
@@ -2335,7 +2491,8 @@ console.log(count);
 // Line 2: see count with no let → look up the existing variable.
 //         Read its current value (0), add 1 → 1. Point count at 1.
 // Line 3: same again. Read current value (1), add 1 → 2. Point count at 2.
-// Line 4: look up count → 2 → log 2.</code></pre>
+// Line 4: look up count → 2 → log 2.
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -2345,7 +2502,8 @@ console.log(count);
     <p>If a <code>let</code> variable seems wrong, the question is: <strong>what's its value at the line that's misbehaving?</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let count = 0;
 // ... lots of code that might change count ...
-console.log(count);   // see what it actually is right now</code></pre>
+console.log(count);   // see what it actually is right now
+</code></pre>
     <p>The most common <code>let</code> errors:</p>
 <pre class="language-javascript"><code class="language-javascript">let score = 0;
 let score = 10;
@@ -2359,7 +2517,8 @@ let name = "Os";
 
 score = 10;
 // ReferenceError: score is not defined
-// fix: declare it first with let or const</code></pre>
+// fix: declare it first with let or const
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -2375,42 +2534,50 @@ score = 10;
 const y = 5;   // y cannot be reassigned
 
 x = 10;        // works
-y = 10;        // wrong: TypeError — const blocks reassignment</code></pre>
+y = 10;        // wrong: TypeError — const blocks reassignment
+</code></pre>
     <p>If the value will change, use <code>let</code>. If it won't, use <code>const</code>.</p>
 
     <p><strong>Confusion: <code>let</code> vs <code>var</code></strong></p>
 <pre class="language-javascript"><code class="language-javascript">let x = 5;   // modern, block-scoped, what you should use
-var x = 5;   // old way — still works, but follows different scoping rules</code></pre>
+var x = 5;   // old way — still works, but follows different scoping rules
+</code></pre>
     <p><code>let</code> is block-scoped (only lives inside <code>{ }</code>). <code>var</code> is function-scoped and has weird hoisting behavior. Use <code>let</code>.</p>
 
     <p><strong>Confusion: reassigning isn't redeclaring</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let count = 0;
 count = 5;        // reassigning — works, no let needed
 count = 10;       // still reassigning — works
-let count = 20;   // wrong: redeclaring — already exists</code></pre>
+let count = 20;   // wrong: redeclaring — already exists
+</code></pre>
   `,
 
   /* 2.3 Common mistakes */
   'topics-0-3-2-3': `
 <pre class="language-javascript"><code class="language-javascript">let score = 0;
 let score = 10;
-// wrong: redeclaring with let in the same scope</code></pre>
+// wrong: redeclaring with let in the same scope
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">console.log(name);
 let name = "Os";
-// wrong: using a let variable before its declaration line runs</code></pre>
+// wrong: using a let variable before its declaration line runs
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">score = 10;
-// wrong: forgot to declare score with let or const first</code></pre>
+// wrong: forgot to declare score with let or const first
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">let user = document.querySelector(".user");
-// works, but should probably be const — this won't be reassigned</code></pre>
+// works, but should probably be const — this won't be reassigned
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">if (loggedIn) {
   let username = "Os";
 }
 console.log(username);
-// wrong: username only lives inside the if block</code></pre>
+// wrong: username only lives inside the if block
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -2439,7 +2606,8 @@ const prices = [10, 20, 30];
 for (const price of prices) {
   total = total + price;
 }
-console.log(total);    // 60</code></pre>
+console.log(total);    // 60
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -2449,28 +2617,32 @@ console.log(total);    // 60</code></pre>
 addToCartBtn.addEventListener("click", () => {
   cartCount = cartCount + 1;
   cartBadge.textContent = cartCount;
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: mobile menu open/closed toggle</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let isMenuOpen = false;
 hamburgerBtn.addEventListener("click", () => {
   isMenuOpen = !isMenuOpen;
   menu.classList.toggle("open");
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: carousel current slide</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let currentSlide = 0;
 nextBtn.addEventListener("click", () => {
   currentSlide = currentSlide + 1;
   showSlide(currentSlide);
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: form validation flag</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let isFormValid = false;
 nameInput.addEventListener("input", () => {
   isFormValid = nameInput.value.length > 0;
   submitBtn.disabled = !isFormValid;
-});</code></pre>
+});
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -2516,7 +2688,8 @@ nameInput.addEventListener("input", () => {
   'topics-0-4-0-1': `
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";       // create and assign in one line
 const PI = 3.14;             // can hold any value type
-const button = document.querySelector(".btn");  // commonly used for DOM elements</code></pre>
+const button = document.querySelector(".btn");  // commonly used for DOM elements
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -2527,18 +2700,21 @@ const button = document.querySelector(".btn");  // commonly used for DOM element
 // userName  → the variable name
 // =         → assigns the value
 // "Os"      → the value being stored
-// ;         → ends the statement</code></pre>
+// ;         → ends the statement
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
   'topics-0-4-0-3': `
     <p>You must give <code>const</code> a value at creation:</p>
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";   // correct
-const userName;          // wrong: SyntaxError — const requires a value</code></pre>
+const userName;          // wrong: SyntaxError — const requires a value
+</code></pre>
 
     <p>You cannot reassign it after creation:</p>
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
-userName = "Sam";        // wrong: TypeError — const can't be reassigned</code></pre>
+userName = "Sam";        // wrong: TypeError — const can't be reassigned
+</code></pre>
 
     <p>But — and this trips people up — <code>const</code> only blocks reassigning the variable itself. If the value is an object or array, you can still change what's INSIDE it:</p>
 <pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
@@ -2549,7 +2725,8 @@ user.age = 25;            // works: adding a new property — allowed
 
 const colors = ["red", "blue"];
 colors = ["green"];       // wrong: reassigning — blocked
-colors.push("green");     // works: adding to the array — allowed</code></pre>
+colors.push("green");     // works: adding to the array — allowed
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -2573,7 +2750,8 @@ const handleClick = () => { /* ... */ };
 const API_URL = "https://api.example.com";
 
 // Data you fetched and want to display
-const users = [{ name: "Os" }, { name: "Sam" }];</code></pre>
+const users = [{ name: "Os" }, { name: "Sam" }];
+</code></pre>
     <p>Most JavaScript code is <code>const</code>. <code>let</code> is the exception, used only when you specifically need to reassign.</p>
   `,
 
@@ -2594,7 +2772,8 @@ const MAX_RETRIES = 3;
 const BASE_URL = "https://api.example.com";
 
 // Function definitions
-const greet = (name) => \`Hello, \${name}\`;</code></pre>
+const greet = (name) => \`Hello, \${name}\`;
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -2622,7 +2801,8 @@ const user = { name: "Os" };
 
 user.name = "Sam";  // works: the object's contents can change
 
-// user  →  { name: "Sam" }   ← same object, different contents</code></pre>
+// user  →  { name: "Sam" }   ← same object, different contents
+</code></pre>
   `,
 
   /* 1.5 Step-by-step walkthrough */
@@ -2635,7 +2815,8 @@ console.log(newScore);
 // Line 1: see const → create a variable called score, point it at 100, lock it.
 // Line 2: see const → create a variable called newScore.
 //         To fill it, look up score → 100 → add 50 → 150. Lock newScore at 150.
-// Line 3: look up newScore → 150 → log 150.</code></pre>
+// Line 3: look up newScore → 150 → log 150.
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -2653,7 +2834,8 @@ userName = "Sam";    // works
 
 // fix 2: if you're modifying an object, use property access instead of reassignment
 const user = { name: "Os" };
-user.name = "Sam";   // works — modifying inside the object</code></pre>
+user.name = "Sam";   // works — modifying inside the object
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -2671,7 +2853,8 @@ user.name = "Sam";       // works: changing INSIDE the object
 user.age = 25;           // works: adding a new property
 delete user.name;        // works: removing a property
 
-user = { name: "Sam" };  // wrong: reassigning the variable itself</code></pre>
+user = { name: "Sam" };  // wrong: reassigning the variable itself
+</code></pre>
     <p><code>const</code> blocks reassignment. It does not freeze object contents. To freeze contents, you'd need <code>Object.freeze()</code>.</p>
 
     <p><strong>Confusion: when to use <code>const</code> vs <code>let</code></strong></p>
@@ -2679,32 +2862,38 @@ user = { name: "Sam" };  // wrong: reassigning the variable itself</code></pre>
 let clicks = 0;            // value will change → let
 
 clicks = clicks + 1;       // works
-userName = "Sam";          // wrong</code></pre>
+userName = "Sam";          // wrong
+</code></pre>
     <p>Default to <code>const</code>. Switch to <code>let</code> only when you actually need to reassign.</p>
   `,
 
   /* 2.3 Common mistakes */
   'topics-0-4-2-3': `
 <pre class="language-javascript"><code class="language-javascript">const userName;
-// wrong: const requires a value at creation</code></pre>
+// wrong: const requires a value at creation
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 userName = "Sam";
-// wrong: TypeError — const can't be reassigned</code></pre>
+// wrong: TypeError — const can't be reassigned
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 const userName = "Sam";
-// wrong: SyntaxError — variable already declared</code></pre>
+// wrong: SyntaxError — variable already declared
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">let user = document.querySelector(".user");
-// works, but should probably be const — this won't be reassigned</code></pre>
+// works, but should probably be const — this won't be reassigned
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const items = [];
 items = ["apple"];
 // wrong: reassigning the variable
 
 items.push("apple");
-// works: modifying the array's contents</code></pre>
+// works: modifying the array's contents
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -2725,7 +2914,8 @@ console.log(user.age);    // 26
 
 const colors = ["red", "blue"];
 colors.push("green");     // works: adding to the array
-console.log(colors);      // ["red", "blue", "green"]</code></pre>
+console.log(colors);      // ["red", "blue", "green"]
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -2733,22 +2923,26 @@ console.log(colors);      // ["red", "blue", "green"]</code></pre>
     <p><strong>Example: storing a DOM element you'll reuse</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const submitBtn = document.querySelector(".submit");
 submitBtn.addEventListener("click", handleSubmit);
-submitBtn.disabled = true;</code></pre>
+submitBtn.disabled = true;
+</code></pre>
 
     <p><strong>Example: defining a function</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const calculateTotal = (items) => {
   return items.reduce((sum, item) => sum + item.price, 0);
-};</code></pre>
+};
+</code></pre>
 
     <p><strong>Example: configuration constants</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const API_URL = "https://api.example.com";
 const MAX_LOGIN_ATTEMPTS = 3;
-const TIMEOUT_MS = 5000;</code></pre>
+const TIMEOUT_MS = 5000;
+</code></pre>
 
     <p><strong>Example: storing data fetched from an API</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const response = await fetch(API_URL);
 const users = await response.json();
-users.forEach(user => renderUserCard(user));</code></pre>
+users.forEach(user => renderUserCard(user));
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -2794,7 +2988,8 @@ users.forEach(user => renderUserCard(user));</code></pre>
   'topics-0-5-0-1': `
 <pre class="language-javascript"><code class="language-javascript">var userName = "Os";    // looks just like let
 var score = 0;
-var isLoggedIn = true;</code></pre>
+var isLoggedIn = true;
+</code></pre>
     <p>The syntax is identical to <code>let</code>. The differences are all in how it behaves underneath.</p>
   `,
 
@@ -2806,7 +3001,8 @@ var isLoggedIn = true;</code></pre>
 // userName  → the variable name
 // =         → assigns the value
 // "Os"      → the value being stored
-// ;         → ends the statement</code></pre>
+// ;         → ends the statement
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -2818,7 +3014,8 @@ var isLoggedIn = true;</code></pre>
 }
 
 console.log(x);   // 5 — var leaked out of the if block
-console.log(y);   // ReferenceError — let stayed inside</code></pre>
+console.log(y);   // ReferenceError — let stayed inside
+</code></pre>
 
     <p><code>var</code> allows redeclaring without error:</p>
 <pre class="language-javascript"><code class="language-javascript">var count = 0;
@@ -2826,14 +3023,16 @@ var count = 10;          // works — silently overwrites
 console.log(count);      // 10
 
 let count = 0;
-let count = 10;          // wrong: SyntaxError</code></pre>
+let count = 10;          // wrong: SyntaxError
+</code></pre>
 
     <p><code>var</code> is "hoisted" — it exists from the start of its function, but as <code>undefined</code>:</p>
 <pre class="language-javascript"><code class="language-javascript">console.log(x);   // undefined — var x exists but hasn't been assigned yet
 var x = 5;
 
 console.log(y);   // ReferenceError — let doesn't allow this
-let y = 5;</code></pre>
+let y = 5;
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -2851,7 +3050,8 @@ let y = 5;</code></pre>
 // (changing all of them at once would be a huge undertaking)
 
 // Supporting browsers from before 2015
-// (extremely rare today)</code></pre>
+// (extremely rare today)
+</code></pre>
     <p>For everything else: use <code>const</code> by default, <code>let</code> when you need to reassign. Treat <code>var</code> as a thing you read, not a thing you write.</p>
   `,
 
@@ -2867,7 +3067,8 @@ var counter = 0;
 // Legacy codebases that haven't been updated
 var config = { url: "..." };
 
-// Pre-ES6 JavaScript files</code></pre>
+// Pre-ES6 JavaScript files
+</code></pre>
     <p>If you're reading code that uses <code>var</code>, that's a hint the code is old. Be extra careful — older code often uses other outdated patterns too.</p>
   `,
 
@@ -2889,7 +3090,8 @@ var config = { url: "..." };
 
   console.log(x);  // 5
   console.log(y);  // ReferenceError
-}</code></pre>
+}
+</code></pre>
     <p>Think of <code>var</code> as climbing through walls — it ignores the room (block) it was declared in and treats the whole house (function) as fair game.</p>
   `,
 
@@ -2910,7 +3112,8 @@ var config = { url: "..." };
 //
 // Now run line by line:
 // console.log(x) → x exists, value is undefined → log undefined.
-// console.log(y) → y exists but isn't initialized → throw ReferenceError.</code></pre>
+// console.log(y) → y exists but isn't initialized → throw ReferenceError.
+</code></pre>
     <p>This "hoisting" behavior is one of the main reasons <code>var</code> was replaced. You can use a variable before declaring it and not get an error — just <code>undefined</code> — which silently hides bugs.</p>
   `,
 
@@ -2929,7 +3132,8 @@ console.log(i);   // 3 — i is still accessible here
 for (let i = 0; i < 3; i++) {
   // ...
 }
-console.log(i);   // ReferenceError — let stays inside the loop</code></pre>
+console.log(i);   // ReferenceError — let stays inside the loop
+</code></pre>
     <p>When debugging old code, mentally translating <code>var</code> to <code>let</code> often reveals scope bugs.</p>
   `,
 
@@ -2952,7 +3156,8 @@ if (true) {
 
 console.log(a);   // 1 — var leaked out
 console.log(b);   // ReferenceError
-console.log(c);   // ReferenceError</code></pre>
+console.log(c);   // ReferenceError
+</code></pre>
 
     <p><strong>Confusion: "var is just an old word for let"</strong></p>
 <pre class="language-javascript"><code class="language-javascript">// They have different rules:
@@ -2964,7 +3169,8 @@ var x = 1;
 var x = 2;     // works — silent overwrite
 
 let y = 1;
-let y = 2;     // wrong: SyntaxError</code></pre>
+let y = 2;     // wrong: SyntaxError
+</code></pre>
     <p><code>var</code> isn't "let with a different name" — they follow different rules.</p>
   `,
 
@@ -2972,7 +3178,8 @@ let y = 2;     // wrong: SyntaxError</code></pre>
   'topics-0-5-2-3': `
 <pre class="language-javascript"><code class="language-javascript">// Mistake: using var in new code
 var userName = "Os";
-// Should be: const userName = "Os";</code></pre>
+// Should be: const userName = "Os";
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">// Mistake: relying on var's hoisting
 console.log(score);   // undefined — confusing
@@ -2980,7 +3187,8 @@ var score = 100;
 
 // Better: declare before use
 var score = 100;
-console.log(score);   // 100</code></pre>
+console.log(score);   // 100
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">// Mistake: assuming var respects blocks
 for (var i = 0; i < 3; i++) {
@@ -2990,13 +3198,15 @@ console.log(i);   // 3 — leaked
 // Fix: use let
 for (let i = 0; i < 3; i++) {
   // ...
-}</code></pre>
+}
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">// Mistake: accidentally redeclaring
 var count = 0;
 // ... 100 lines later ...
 var count = 10;   // silently overwrites — bug city
-// Fix: use let or const, which throws an error</code></pre>
+// Fix: use let or const, which throws an error
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -3020,7 +3230,8 @@ console.log(count);  // 10
 
 // var is hoisted as undefined
 console.log(early);  // undefined (no error)
-var early = "now defined";</code></pre>
+var early = "now defined";
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -3032,12 +3243,14 @@ var clicked = false;
 
 $button.on("click", function() {
   clicked = true;
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: old tutorials you might come across</strong></p>
 <pre class="language-javascript"><code class="language-javascript">var name = prompt("Your name?");
 var greeting = "Hello, " + name;
-alert(greeting);</code></pre>
+alert(greeting);
+</code></pre>
 
     <p><strong>Example: legacy code you'd want to modernize</strong></p>
 <pre class="language-javascript"><code class="language-javascript">// Old:
@@ -3047,7 +3260,8 @@ for (var i = 0; i < data.length; i++) {
 }
 
 // Modern:
-const users = data.map(item => item.name);</code></pre>
+const users = data.map(item => item.name);
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -3095,7 +3309,8 @@ const userName = "Os";
 
 // Declare without assigning (let only)
 let count;
-let isReady;</code></pre>
+let isReady;
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -3110,7 +3325,8 @@ let isReady;</code></pre>
 
 // The DECLARATION is just: let score
 // The ASSIGNMENT is:        = 0
-// They're two operations doing different things on the same line</code></pre>
+// They're two operations doing different things on the same line
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -3118,18 +3334,21 @@ let isReady;</code></pre>
     <p>Declaration always needs a keyword:</p>
 <pre class="language-javascript"><code class="language-javascript">let score = 0;       // correct: let declares the variable
 const name = "Os";   // correct: const declares it
-score = 0;           // wrong: no keyword — variable was never declared</code></pre>
+score = 0;           // wrong: no keyword — variable was never declared
+</code></pre>
 
     <p>You can declare without assigning (with <code>let</code>):</p>
 <pre class="language-javascript"><code class="language-javascript">let score;           // declared, value is undefined
 let userName;        // declared, value is undefined
 
-const score;         // wrong: const requires a value at declaration</code></pre>
+const score;         // wrong: const requires a value at declaration
+</code></pre>
 
     <p>You can only declare a variable once in the same scope:</p>
 <pre class="language-javascript"><code class="language-javascript">let score = 0;
 let score = 10;
-// wrong: SyntaxError — score has already been declared</code></pre>
+// wrong: SyntaxError — score has already been declared
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -3151,7 +3370,8 @@ let cartCount = 0;
 // After declaration, you just use the names
 button.addEventListener("click", () => {
   cartCount = cartCount + 1;
-});</code></pre>
+});
+</code></pre>
     <p>The declaration is the moment of birth. After that, the variable just exists and you reference it by name.</p>
   `,
 
@@ -3174,7 +3394,8 @@ function calculateTotal(items) {
 // Inside a loop — declaring per iteration
 for (let i = 0; i < 10; i++) {
   // i is declared fresh each loop
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -3187,7 +3408,8 @@ for (let i = 0; i < 10; i++) {
 
 console.log(userName);
 //          ^^^^^^^^
-//          "You know userName, right? Good — log it."</code></pre>
+//          "You know userName, right? Good — log it."
+</code></pre>
   `,
 
   /* 1.4 Mental model */
@@ -3203,7 +3425,8 @@ score = 100;
 
 let userName = "Os";
 // declaration + assignment in one line
-// userName → "Os"</code></pre>
+// userName → "Os"
+</code></pre>
   `,
 
   /* 1.5 Step-by-step walkthrough */
@@ -3217,7 +3440,8 @@ console.log(score);
 //         No value given → set it to undefined.
 // Line 2: see score with no keyword → assignment to existing variable.
 //         Right side is 100 → assign 100 to score.
-// Line 3: look up score → 100 → log 100.</code></pre>
+// Line 3: look up score → 100 → log 100.
+</code></pre>
     <p>Notice that line 1 doesn't error even though there's no value — declaration alone is fine. Just leaves <code>score</code> as <code>undefined</code> until something is assigned.</p>
   `,
 
@@ -3229,19 +3453,22 @@ console.log(score);
 <pre class="language-javascript"><code class="language-javascript">score = 100;
 // ReferenceError: score is not defined
 // fix: declare it first with let or const
-let score = 100;</code></pre>
+let score = 100;
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">let score = 0;
 let score = 10;
 // SyntaxError: Identifier 'score' has already been declared
 // fix: declare once, then reassign without a keyword
 let score = 0;
-score = 10;</code></pre>
+score = 10;
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const score;
 // SyntaxError: Missing initializer in const declaration
 // fix: const must have a value at declaration
-const score = 0;</code></pre>
+const score = 0;
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -3256,13 +3483,15 @@ const score = 0;</code></pre>
 <pre class="language-javascript"><code class="language-javascript">let score;         // declaration — no value yet
 score = 100;       // assignment — putting a value in
 
-let count = 0;     // both at once: declaration + assignment</code></pre>
+let count = 0;     // both at once: declaration + assignment
+</code></pre>
 
     <p><strong>Confusion: declaring twice vs reassigning</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let score = 0;
 score = 10;        // reassignment — works, no keyword
 
-let score = 10;    // wrong: redeclaring — SyntaxError</code></pre>
+let score = 10;    // wrong: redeclaring — SyntaxError
+</code></pre>
     <p>The keyword <code>let</code> is what makes it a declaration. Without the keyword, it's just assignment.</p>
 
     <p><strong>Confusion: undeclared assignment creates a global (in non-strict mode)</strong></p>
@@ -3272,28 +3501,34 @@ score = 100;
 
 // In sloppy mode (old scripts):
 score = 100;
-// silently creates a global variable — usually a bug</code></pre>
+// silently creates a global variable — usually a bug
+</code></pre>
     <p>Always declare. Never rely on undeclared assignment.</p>
   `,
 
   /* 2.3 Common mistakes */
   'topics-0-6-2-3': `
 <pre class="language-javascript"><code class="language-javascript">score = 100;
-// wrong: forgot to declare with let or const</code></pre>
+// wrong: forgot to declare with let or const
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">let score = 0;
 let score = 10;
-// wrong: redeclaring — already exists</code></pre>
+// wrong: redeclaring — already exists
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const userName;
-// wrong: const must have a value at declaration</code></pre>
+// wrong: const must have a value at declaration
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">console.log(score);
 let score = 100;
-// wrong: using the variable before declaration line runs</code></pre>
+// wrong: using the variable before declaration line runs
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">let 1user = "Os";
-// wrong: variable names can't start with a number</code></pre>
+// wrong: variable names can't start with a number
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -3316,7 +3551,8 @@ let b = 2;
 let c = 3;
 
 // Or all in one line (less readable, but valid)
-let x = 1, y = 2, z = 3;</code></pre>
+let x = 1, y = 2, z = 3;
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -3326,14 +3562,16 @@ let x = 1, y = 2, z = 3;</code></pre>
 const form = document.querySelector(".signup-form");
 const emailInput = document.querySelector("#email");
 const submitBtn = document.querySelector(".submit");
-let isSubmitting = false;</code></pre>
+let isSubmitting = false;
+</code></pre>
 
     <p><strong>Example: declaring inside a function</strong></p>
 <pre class="language-javascript"><code class="language-javascript">function fetchUser(id) {
   const url = \`/api/users/\${id}\`;
   const headers = { "Content-Type": "application/json" };
   return fetch(url, { headers });
-}</code></pre>
+}
+</code></pre>
 
     <p><strong>Example: declaring without assigning, filling later</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let userData;   // declared, will be filled by API call
@@ -3342,7 +3580,8 @@ fetch("/api/me")
   .then(res => res.json())
   .then(data => {
     userData = data;   // assigned later
-  });</code></pre>
+  });
+</code></pre>
 
     <p><strong>Example: declaring inside a loop</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const items = ["apple", "banana", "cherry"];
@@ -3350,7 +3589,8 @@ fetch("/api/me")
 for (let i = 0; i < items.length; i++) {
   const item = items[i];   // declared fresh each loop
   console.log(item);
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -3407,7 +3647,8 @@ count = 5;
 const total = 10 + 5;
 
 // Assign the result of a function call
-const today = new Date();</code></pre>
+const today = new Date();
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -3418,14 +3659,16 @@ const today = new Date();</code></pre>
 // userName  → the variable being assigned to (left side)
 // =         → the assignment operator
 // "Os"      → the value being assigned (right side)
-// ;         → ends the statement</code></pre>
+// ;         → ends the statement
+</code></pre>
 <pre class="language-javascript"><code class="language-javascript">score = 100;
 
 // score   → the existing variable being assigned to
 // =       → the assignment operator
 // 100     → the value being assigned
 // ;       → ends the statement
-// (no keyword — this is reassignment, not declaration)</code></pre>
+// (no keyword — this is reassignment, not declaration)
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -3436,24 +3679,28 @@ const today = new Date();</code></pre>
 // step 2: put 15 into total
 
 const a = b = 5;
-// confusing — assignment can chain, but avoid this in real code</code></pre>
+// confusing — assignment can chain, but avoid this in real code
+</code></pre>
 
     <p>The <code>=</code> is one symbol — don't confuse it with comparison:</p>
 <pre class="language-javascript"><code class="language-javascript">let x = 5;       // assignment: put 5 into x
 if (x == 5) {}   // comparison: is x equal to 5? (loose)
-if (x === 5) {}  // comparison: is x strictly equal to 5? (use this)</code></pre>
+if (x === 5) {}  // comparison: is x strictly equal to 5? (use this)
+</code></pre>
 
     <p>You can assign a variable to itself plus something else — common in counters:</p>
 <pre class="language-javascript"><code class="language-javascript">let count = 0;
 count = count + 1;   // right side runs first: 0 + 1 = 1, then 1 goes into count
-count = count + 1;   // 1 + 1 = 2, then 2 goes into count</code></pre>
+count = count + 1;   // 1 + 1 = 2, then 2 goes into count
+</code></pre>
 
     <p>Shorthand operators combine assignment with math:</p>
 <pre class="language-javascript"><code class="language-javascript">let count = 0;
 count += 1;     // same as count = count + 1
 count -= 1;     // same as count = count - 1
 count *= 2;     // same as count = count * 2
-count++;        // same as count = count + 1 (only adds 1)</code></pre>
+count++;        // same as count = count + 1 (only adds 1)
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -3480,7 +3727,8 @@ const userEmail = emailInput.value;
 const data = await response.json();
 
 // Reassign a let to update it
-score = score + 10;</code></pre>
+score = score + 10;
+</code></pre>
   `,
 
   /* 1.2 Where you use it */
@@ -3502,7 +3750,8 @@ for (const price of prices) {
 
 // After API calls
 const response = await fetch(url);
-const users = await response.json();</code></pre>
+const users = await response.json();
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -3520,7 +3769,8 @@ const users = await response.json();</code></pre>
 // step 1 (right side):  5 + 10  → 15
 // step 2 (assignment):  total ← 15
 
-// total now holds: 15</code></pre>
+// total now holds: 15
+</code></pre>
     <p>Think of <code>=</code> as an arrow pointing left. Whatever is on the right gets <em>moved into</em> the variable on the left.</p>
   `,
 
@@ -3540,7 +3790,8 @@ console.log(total);
 // Line 3: see const → declare total.
 //         Right side: look up price (50), look up tax (4), add → 54.
 //         Put 54 into total.
-// Line 4: look up total → 54 → log 54.</code></pre>
+// Line 4: look up total → 54 → log 54.
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -3549,7 +3800,8 @@ console.log(total);
   'topics-0-7-2-0': `
     <p>If a variable holds a value you didn't expect, the bug is in whatever line did the assignment. <code>console.log</code> immediately after the assignment shows what actually got stored:</p>
 <pre class="language-javascript"><code class="language-javascript">const total = price * quantity;
-console.log(total);   // peek right after assigning to confirm</code></pre>
+console.log(total);   // peek right after assigning to confirm
+</code></pre>
 
     <p>If you see <code>NaN</code> after a math assignment, one of the values on the right side wasn't a number:</p>
 <pre class="language-javascript"><code class="language-javascript">const price = "10";       // string, not number!
@@ -3557,12 +3809,14 @@ const total = price * 2;  // 20 — JS coerced it
 const sum = price + 2;    // "102" — string concatenation, not math!
 
 // fix: convert to number first
-const total = Number(price) * 2;</code></pre>
+const total = Number(price) * 2;
+</code></pre>
 
     <p>If you see "Assignment to constant variable", you tried to reassign a <code>const</code>:</p>
 <pre class="language-javascript"><code class="language-javascript">const score = 0;
 score = 5;
-// TypeError — fix: use let if you need to reassign</code></pre>
+// TypeError — fix: use let if you need to reassign
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -3576,7 +3830,8 @@ score = 5;
     <p><strong>Confusion: <code>=</code> vs <code>==</code> vs <code>===</code></strong></p>
 <pre class="language-javascript"><code class="language-javascript">x = 5;       // assignment: put 5 into x
 x == 5;      // comparison: is x equal to 5? (loose, allows type conversion)
-x === 5;     // comparison: is x strictly equal to 5? (use this one)</code></pre>
+x === 5;     // comparison: is x strictly equal to 5? (use this one)
+</code></pre>
 
     <p><strong>Confusion: assignment in an if statement (almost always a bug)</strong></p>
 <pre class="language-javascript"><code class="language-javascript">if (x = 10) {
@@ -3586,34 +3841,41 @@ x === 5;     // comparison: is x strictly equal to 5? (use this one)</code></pre
 
 if (x === 10) {
   // correct: this checks if x equals 10
-}</code></pre>
+}
+</code></pre>
 
     <p><strong>Confusion: assignment doesn't return the variable, it returns the value</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let x;
-console.log(x = 5);   // 5 — the assignment expression evaluates to the value</code></pre>
+console.log(x = 5);   // 5 — the assignment expression evaluates to the value
+</code></pre>
   `,
 
   /* 2.3 Common mistakes */
   'topics-0-7-2-3': `
 <pre class="language-javascript"><code class="language-javascript">if (x = 5) { }
-// wrong: assigning, not comparing — meant to use ===</code></pre>
+// wrong: assigning, not comparing — meant to use ===
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">5 = x;
 // wrong: SyntaxError — can't assign to a literal value
-// the variable goes on the LEFT</code></pre>
+// the variable goes on the LEFT
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const score = 0;
 score = 5;
-// wrong: TypeError — can't reassign a const</code></pre>
+// wrong: TypeError — can't reassign a const
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const total = price + tax;
 // if price or tax is undefined, total becomes NaN
-// always confirm both values exist before assigning a calculation</code></pre>
+// always confirm both values exist before assigning a calculation
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">let total;
 console.log(total);   // undefined
 total = 100;
-// works, but easier to assign at declaration: let total = 100;</code></pre>
+// works, but easier to assign at declaration: let total = 100;
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -3636,31 +3898,37 @@ const copy = name;   // copy holds "Os"
 // Assign with shorthand
 let count = 0;
 count += 5;          // count is now 5
-count *= 2;          // count is now 10</code></pre>
+count *= 2;          // count is now 10
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
   'topics-0-7-3-1': `
     <p><strong>Example: assigning a DOM element to a variable</strong></p>
-<pre class="language-javascript"><code class="language-javascript">const submitBtn = document.querySelector(".submit");</code></pre>
+<pre class="language-javascript"><code class="language-javascript">const submitBtn = document.querySelector(".submit");
+</code></pre>
 
     <p><strong>Example: assigning what the user typed</strong></p>
-<pre class="language-javascript"><code class="language-javascript">const userEmail = emailInput.value.trim();</code></pre>
+<pre class="language-javascript"><code class="language-javascript">const userEmail = emailInput.value.trim();
+</code></pre>
 
     <p><strong>Example: assigning a calculation result</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const subtotal = items.reduce((sum, item) => sum + item.price, 0);
 const tax = subtotal * 0.08;
-const total = subtotal + tax;</code></pre>
+const total = subtotal + tax;
+</code></pre>
 
     <p><strong>Example: assigning fetched API data</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const response = await fetch(API_URL);
-const users = await response.json();</code></pre>
+const users = await response.json();
+</code></pre>
 
     <p><strong>Example: updating a counter inside an event</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let cartCount = 0;
 addToCartBtn.addEventListener("click", () => {
   cartCount = cartCount + 1;
-});</code></pre>
+});
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -3705,7 +3973,8 @@ addToCartBtn.addEventListener("click", () => {
 <pre class="language-javascript"><code class="language-javascript">let count = 0;     // declaration + first assignment
 count = 5;          // reassignment — no let, just the name
 count = 10;         // reassign again — works
-count = 100;        // and again — let allows unlimited reassignment</code></pre>
+count = 100;        // and again — let allows unlimited reassignment
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -3716,7 +3985,8 @@ count = 100;        // and again — let allows unlimited reassignment</code></p
 // =       → the assignment operator
 // 10      → the new value being assigned
 // ;       → ends the statement
-// (no keyword — that's what makes it reassignment, not declaration)</code></pre>
+// (no keyword — that's what makes it reassignment, not declaration)
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -3724,12 +3994,14 @@ count = 100;        // and again — let allows unlimited reassignment</code></p
     <p>No keyword on reassignment. Don't write <code>let</code> the second time:</p>
 <pre class="language-javascript"><code class="language-javascript">let score = 0;
 score = 5;          // correct — just the name
-let score = 5;      // wrong — SyntaxError, already declared</code></pre>
+let score = 5;      // wrong — SyntaxError, already declared
+</code></pre>
 
     <p>Reassignment replaces the old value entirely:</p>
 <pre class="language-javascript"><code class="language-javascript">let userName = "Os";
 userName = "Sam";
-console.log(userName);    // "Sam" — "Os" is gone</code></pre>
+console.log(userName);    // "Sam" — "Os" is gone
+</code></pre>
 
     <p>You can use the variable's current value to compute its new value:</p>
 <pre class="language-javascript"><code class="language-javascript">let count = 0;
@@ -3738,11 +4010,13 @@ count = count + 1;   // 1 + 1 = 2, then 2 goes into count
 
 // shorthand for the same thing:
 count += 1;          // count = count + 1
-count++;             // count = count + 1 (only adds 1)</code></pre>
+count++;             // count = count + 1 (only adds 1)
+</code></pre>
 
     <p><code>const</code> blocks reassignment:</p>
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
-userName = "Sam";    // wrong — TypeError: Assignment to constant variable</code></pre>
+userName = "Sam";    // wrong — TypeError: Assignment to constant variable
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -3770,7 +4044,8 @@ status = "done";       // work finished
 
 // Running total
 let total = 0;
-total = total + price; // accumulating</code></pre>
+total = total + price; // accumulating
+</code></pre>
   `,
 
   /* 1.2 Where you use it */
@@ -3794,7 +4069,8 @@ if (input.value.length > 0) {
 // In response to API data
 let userName = "Loading...";
 const response = await fetch(url);
-userName = await response.json();</code></pre>
+userName = await response.json();
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -3814,7 +4090,8 @@ userName = await response.json();</code></pre>
 userName = "Sam";
 
 // userName  →  "Sam"
-// "Os" is no longer pointed at — JS will eventually clean it up</code></pre>
+// "Os" is no longer pointed at — JS will eventually clean it up
+</code></pre>
     <p>The old value isn't edited or transformed. It's <em>abandoned</em>, and the variable now points somewhere new.</p>
   `,
 
@@ -3832,7 +4109,8 @@ console.log(count);
 // Line 3: reassignment again.
 //         Right side: look up count (5), add 1 → 6.
 //         Point count at 6 (5 is abandoned).
-// Line 4: look up count → 6 → log 6.</code></pre>
+// Line 4: look up count → 6 → log 6.
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -3847,7 +4125,8 @@ total = 100;
 console.log(total);   // 100
 
 total = total - bonus;
-console.log(total);   // peek here — is it what you expected?</code></pre>
+console.log(total);   // peek here — is it what you expected?
+</code></pre>
 
     <p>If you see "TypeError: Assignment to constant variable", you tried to reassign something declared with <code>const</code>. Either change the declaration to <code>let</code>, or use a different variable.</p>
 
@@ -3858,7 +4137,8 @@ function increment() {
   count = count + 1;
 }
 increment();
-console.log(count);  // still 0 — the outer count was never touched</code></pre>
+console.log(count);  // still 0 — the outer count was never touched
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -3872,7 +4152,8 @@ console.log(count);  // still 0 — the outer count was never touched</code></pr
     <p><strong>Confusion: declaring vs reassigning</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let score = 0;     // declaring (uses let)
 score = 5;          // reassigning (no let)
-let score = 5;      // wrong — already declared</code></pre>
+let score = 5;      // wrong — already declared
+</code></pre>
 
     <p><strong>Confusion: <code>count = count + 1</code> looks weird</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let count = 0;
@@ -3880,13 +4161,15 @@ count = count + 1;
 // reads right-to-left:
 // 1. calculate the right side: count + 1 → 0 + 1 = 1
 // 2. put 1 into count
-// (the old count is gone, replaced by the new one)</code></pre>
+// (the old count is gone, replaced by the new one)
+</code></pre>
 
     <p><strong>Confusion: const blocks reassignment, but not internal change</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
 
 user = { name: "Sam" };    // wrong — reassignment, blocked by const
-user.name = "Sam";          // works — modifying inside the object</code></pre>
+user.name = "Sam";          // works — modifying inside the object
+</code></pre>
   `,
 
   /* 2.3 Common mistakes */
@@ -3894,20 +4177,23 @@ user.name = "Sam";          // works — modifying inside the object</code></pre
 <pre class="language-javascript"><code class="language-javascript">let score = 0;
 let score = 5;
 // wrong: redeclaring with let — drop the second let
-score = 5;</code></pre>
+score = 5;
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const score = 0;
 score = 5;
 // wrong: TypeError — const can't be reassigned
 // fix: use let if it needs to change
 let score = 0;
-score = 5;</code></pre>
+score = 5;
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">let count = 0;
 count + 1;
 // wrong: this calculates 0 + 1 but throws the result away
 // fix: reassign the result
-count = count + 1;</code></pre>
+count = count + 1;
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">let userName = "Os";
 function update() {
@@ -3915,7 +4201,8 @@ function update() {
 }
 update();
 console.log(userName);     // "Os" — outer one wasn't touched
-// fix: drop the let inside the function to reassign the outer one</code></pre>
+// fix: drop the let inside the function to reassign the outer one
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -3941,7 +4228,8 @@ message = message + "!";          // "Hello, world!"
 let total = 100;
 total += 50;             // 150 (same as total = total + 50)
 total -= 25;             // 125
-total *= 2;              // 250</code></pre>
+total *= 2;              // 250
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -3952,7 +4240,8 @@ total *= 2;              // 250</code></pre>
 addToCartBtn.addEventListener("click", () => {
   cartCount = cartCount + 1;
   cartBadge.textContent = cartCount;
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: toggling a menu open/closed</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let isMenuOpen = false;
@@ -3960,7 +4249,8 @@ addToCartBtn.addEventListener("click", () => {
 hamburgerBtn.addEventListener("click", () => {
   isMenuOpen = !isMenuOpen;
   menu.classList.toggle("open");
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: tracking the current page in pagination</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let currentPage = 1;
@@ -3968,7 +4258,8 @@ hamburgerBtn.addEventListener("click", () => {
 nextBtn.addEventListener("click", () => {
   currentPage = currentPage + 1;
   loadPage(currentPage);
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: updating loading state</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let isLoading = true;
@@ -3976,7 +4267,8 @@ loadingSpinner.style.display = "block";
 
 const data = await fetch(url);
 isLoading = false;
-loadingSpinner.style.display = "none";</code></pre>
+loadingSpinner.style.display = "none";
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -4027,14 +4319,16 @@ user.age = 26;              // works — adding/changing properties
 user.email = "os@a.com";    // works — adding new properties
 delete user.age;            // works — removing properties
 
-user = { name: "Sam" };     // wrong — reassigning the variable, blocked by const</code></pre>
+user = { name: "Sam" };     // wrong — reassigning the variable, blocked by const
+</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const colors = ["red", "blue"];
 
 colors.push("green");       // works — adding to the array
 colors.pop();               // works — removing from the array
 colors[0] = "purple";       // works — changing an item
 
-colors = ["green"];         // wrong — reassigning the variable, blocked by const</code></pre>
+colors = ["green"];         // wrong — reassigning the variable, blocked by const
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -4048,7 +4342,8 @@ colors = ["green"];         // wrong — reassigning the variable, blocked by co
 // ;       → ends the statement
 
 // const protects:    user → (this object reference)
-// const does NOT protect:  what's inside the object</code></pre>
+// const does NOT protect:  what's inside the object
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -4058,20 +4353,23 @@ colors = ["green"];         // wrong — reassigning the variable, blocked by co
 
 user = { name: "Sam" };        // wrong — pointing at a NEW object
 user = "Os";                    // wrong — pointing at a string instead
-user = null;                    // wrong — same idea</code></pre>
+user = null;                    // wrong — same idea
+</code></pre>
 
     <p>Mutating means changing what's inside the existing object/array. That's allowed:</p>
 <pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
 
 user.name = "Sam";              // works
 user.age = 25;                  // works
-Object.assign(user, { age: 30 }); // works</code></pre>
+Object.assign(user, { age: 30 }); // works
+</code></pre>
 
     <p>If you really need to lock the contents too, use <code>Object.freeze()</code>:</p>
 <pre class="language-javascript"><code class="language-javascript">const user = Object.freeze({ name: "Os" });
 
 user.name = "Sam";              // silently fails (or throws in strict mode)
-console.log(user.name);         // still "Os"</code></pre>
+console.log(user.name);         // still "Os"
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -4094,7 +4392,8 @@ cart.push("banana");
 // Need to swap to a brand new array? Use let
 let cart = [];
 // ...
-cart = await fetchUpdatedCart();   // pointing at a totally new array</code></pre>
+cart = await fetchUpdatedCart();   // pointing at a totally new array
+</code></pre>
   `,
 
   /* 1.2 Where you use it */
@@ -4117,7 +4416,8 @@ appState.isLoggedIn = true;
 
 // Storing DOM data attributes
 const dataset = element.dataset;
-dataset.status = "active";</code></pre>
+dataset.status = "active";
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -4134,7 +4434,8 @@ dataset.status = "active";</code></pre>
 
 // userName  →  "Os"
 //           (welded — pointer can't move)
-// "Os" itself can't be modified — strings are immutable in JS</code></pre>
+// "Os" itself can't be modified — strings are immutable in JS
+</code></pre>
 
     <p>For objects and arrays, <code>const</code> only protects the pointer:</p>
 <pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
@@ -4142,7 +4443,8 @@ dataset.status = "active";</code></pre>
 // user  →  { name: "Os" }
 //       (pointer is welded — user always points at THIS specific object)
 // But the contents of the object are not welded — properties can be added,
-// changed, or removed.</code></pre>
+// changed, or removed.
+</code></pre>
   `,
 
   /* 1.5 Step-by-step walkthrough */
@@ -4161,7 +4463,8 @@ console.log(user);
 //         (const doesn't care about this — the pointer hasn't moved.)
 // Line 3: same thing — add a new property "age".
 // Line 4: look up user → still pointing at the same object →
-//         log it: { name: "Sam", age: 25 }</code></pre>
+//         log it: { name: "Sam", age: 25 }
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -4176,7 +4479,8 @@ function updateUser(u) {
 }
 
 updateUser(user);
-console.log(user.name);   // "Sam" — the original was mutated</code></pre>
+console.log(user.name);   // "Sam" — the original was mutated
+</code></pre>
     <p>If you really want a function that doesn't change the original, work with a copy:</p>
 <pre class="language-javascript"><code class="language-javascript">function updateUser(u) {
   const copy = { ...u, name: "Sam" };   // spread creates a new object
@@ -4184,7 +4488,8 @@ console.log(user.name);   // "Sam" — the original was mutated</code></pre>
 }
 
 const updated = updateUser(user);
-// user is unchanged; updated is the new version</code></pre>
+// user is unchanged; updated is the new version
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -4199,7 +4504,8 @@ const updated = updateUser(user);
 <pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
 
 user.name = "Sam";            // works — most people don't expect this
-console.log(user.name);       // "Sam"</code></pre>
+console.log(user.name);       // "Sam"
+</code></pre>
     <p><code>const</code> means "the variable can't be reassigned." The internal contents of objects and arrays are not protected.</p>
 
     <p><strong>Confusion: "I should use let if I need to change anything"</strong></p>
@@ -4210,7 +4516,8 @@ cart.push("apple");      // adding items — totally fine with const
 // Wrong instinct
 let cart = [];
 cart.push("apple");      // works, but signals "this variable will be reassigned"
-                          // and that's misleading if it never is</code></pre>
+                          // and that's misleading if it never is
+</code></pre>
     <p>Use <code>const</code> by default — even when you'll modify the contents. Use <code>let</code> only when you'll actually swap the variable to point at something new.</p>
 
     <p><strong>Confusion: <code>Object.freeze</code> vs <code>const</code></strong></p>
@@ -4219,7 +4526,8 @@ a.x = 2;                  // works — const doesn't freeze contents
 
 const b = Object.freeze({ x: 1 });
 b.x = 2;                  // silently fails — Object.freeze freezes contents
-console.log(b.x);         // still 1</code></pre>
+console.log(b.x);         // still 1
+</code></pre>
   `,
 
   /* 2.3 Common mistakes */
@@ -4228,13 +4536,15 @@ console.log(b.x);         // still 1</code></pre>
 user = { name: "Sam" };
 // wrong: TypeError — that's reassignment, blocked
 // fix: modify the existing object instead
-user.name = "Sam";</code></pre>
+user.name = "Sam";
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const colors = ["red"];
 colors = colors.concat("blue");
 // wrong: concat returns a NEW array, then you're trying to reassign
 // fix: either use push (modifies in place), or use let
-colors.push("blue");</code></pre>
+colors.push("blue");
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const config = { url: "https://example.com" };
 
@@ -4245,13 +4555,15 @@ function getConfig() {
 // fix: return a copy if you don't want to mutate
 function getConfig() {
   return { ...config, url: "/oops" };
-}</code></pre>
+}
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">// Assuming const makes the object truly immutable
 const settings = { theme: "dark" };
 Object.freeze(settings);   // NOW it's locked
 settings.theme = "light";   // silently fails
-// const alone doesn't do this — you need Object.freeze</code></pre>
+// const alone doesn't do this — you need Object.freeze
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -4272,7 +4584,8 @@ console.log(items);         // ["z", "b", "c"]
 
 // Reassignment is still blocked
 const user = { name: "Os" };
-user = { name: "Sam" };     // TypeError</code></pre>
+user = { name: "Sam" };     // TypeError
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -4284,7 +4597,8 @@ addToCartBtn.addEventListener("click", (e) => {
   const productId = e.target.dataset.id;
   cart.push(productId);
   updateCartUI(cart);
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: tracking app state in one object</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const appState = {
@@ -4296,14 +4610,16 @@ addToCartBtn.addEventListener("click", (e) => {
 loginBtn.addEventListener("click", async () => {
   appState.currentUser = await login();
   appState.isLoggedIn = true;
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: updating user profile data</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const profile = { name: "Os", email: "" };
 
 emailInput.addEventListener("input", () => {
   profile.email = emailInput.value;
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: configuration object that grows</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const config = { theme: "dark" };
@@ -4311,7 +4627,8 @@ emailInput.addEventListener("input", () => {
 if (userPreferences) {
   config.fontSize = userPreferences.fontSize;
   config.language = userPreferences.language;
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -4366,7 +4683,8 @@ const submitButton = document.querySelector(".submit");
 const x = "Os";
 const c = 0;
 const flag = false;
-const btn = document.querySelector(".submit");</code></pre>
+const btn = document.querySelector(".submit");
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -4378,7 +4696,8 @@ const btn = document.querySelector(".submit");</code></pre>
 //                    multiple words joined together,
 //                    starting lowercase, capital on each new word (camelCase)
 // =                → assignment
-// 5                → the value</code></pre>
+// 5                → the value
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -4388,19 +4707,22 @@ const btn = document.querySelector(".submit");</code></pre>
 const user1 = "Os";            // letters and numbers
 const _userName = "Os";        // underscore at the start (uncommon but legal)
 const $element = button;        // dollar sign at the start (used by some libraries)
-const userName_2 = "Sam";       // underscores in the middle</code></pre>
+const userName_2 = "Sam";       // underscores in the middle
+</code></pre>
 
     <p>What's not allowed:</p>
 <pre class="language-javascript"><code class="language-javascript">const 1user = "Os";       // wrong: can't start with a number
 const user-name = "Os";    // wrong: dashes aren't allowed
 const user name = "Os";    // wrong: spaces aren't allowed
 const class = "Os";        // wrong: "class" is a reserved keyword
-const let = "Os";          // wrong: "let" is a reserved keyword</code></pre>
+const let = "Os";          // wrong: "let" is a reserved keyword
+</code></pre>
 
     <p>Names are case-sensitive — different casing means different variables:</p>
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 const username = "Sam";    // a totally different variable
-const UserName = "Pat";    // also different</code></pre>
+const UserName = "Pat";    // also different
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -4422,7 +4744,8 @@ const t = p * 0.08;
 // Easy to read
 const today = new Date();
 const user = res.data;
-const tax = price * 0.08;</code></pre>
+const tax = price * 0.08;
+</code></pre>
     <p>The extra characters cost nothing. The clarity is worth a lot.</p>
   `,
 
@@ -4447,7 +4770,8 @@ const fetchUsers = async () => { /* ... */ };
 // Constants (config) often UPPER_CASE
 const MAX_RETRIES = 3;
 const API_URL = "https://api.example.com";
-const TIMEOUT_MS = 5000;</code></pre>
+const TIMEOUT_MS = 5000;
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -4465,7 +4789,8 @@ const x = a * b;
 // Humans read this:
 const totalPrice = quantity * pricePerItem;
 
-// Same code to JS — much clearer to humans.</code></pre>
+// Same code to JS — much clearer to humans.
+</code></pre>
   `,
 
   /* 1.5 Step-by-step walkthrough */
@@ -4481,7 +4806,8 @@ const isCartEmpty = cartItemCount === 0;
 //         Right side: look up cartItemCount (5), check if 5 === 0 → false.
 //         Assign false to isCartEmpty.
 
-// JavaScript treats names as opaque labels. The meaning is for humans.</code></pre>
+// JavaScript treats names as opaque labels. The meaning is for humans.
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -4493,14 +4819,16 @@ const isCartEmpty = cartItemCount === 0;
 console.log(userName);      // works
 console.log(username);      // wrong: lowercase n — different variable
                              // ReferenceError: username is not defined
-console.log(UserName);      // wrong: capital U — different variable</code></pre>
+console.log(UserName);      // wrong: capital U — different variable
+</code></pre>
 
     <p>If something is "not defined" but you swear you defined it, check the spelling and casing of every place the variable shows up. The fastest fix is renaming with your editor's "rename symbol" feature, which catches every reference at once.</p>
 
     <p>Reserved words used as variable names cause errors:</p>
 <pre class="language-javascript"><code class="language-javascript">const class = "Math";        // SyntaxError — "class" is reserved
 // fix: use a different name
-const className = "Math";</code></pre>
+const className = "Math";
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -4516,7 +4844,8 @@ const className = "Math";</code></pre>
 const username = "Sam";
 const UserName = "Pat";
 
-// these are THREE different variables to JavaScript</code></pre>
+// these are THREE different variables to JavaScript
+</code></pre>
 
     <p><strong>Confusion: which casing style to use</strong></p>
 <pre class="language-javascript"><code class="language-javascript">// Three common styles in JS:
@@ -4525,7 +4854,8 @@ const UserName = "Os";          // PascalCase — for classes and components
 const USER_NAME = "Os";         // UPPER_CASE — for constants/config (rare)
 
 // snake_case is rare in JavaScript
-const user_name = "Os";          // legal, but unusual — most JS uses camelCase</code></pre>
+const user_name = "Os";          // legal, but unusual — most JS uses camelCase
+</code></pre>
 
     <p><strong>Confusion: short vs descriptive names</strong></p>
 <pre class="language-javascript"><code class="language-javascript">// Short names OK in tiny scopes (loops, callbacks)
@@ -4533,34 +4863,41 @@ items.forEach(i => console.log(i));
 
 // Descriptive names better when the scope is bigger
 const cartItems = await fetchCart();
-cartItems.forEach(item => addToView(item));</code></pre>
+cartItems.forEach(item => addToView(item));
+</code></pre>
     <p>Short names like <code>i</code> or <code>x</code> are fine in tight, throwaway contexts. Anywhere else, prefer descriptive names.</p>
   `,
 
   /* 2.3 Common mistakes */
   'topics-0-10-2-3': `
 <pre class="language-javascript"><code class="language-javascript">const 1user = "Os";
-// wrong: can't start with a number</code></pre>
+// wrong: can't start with a number
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const user-name = "Os";
-// wrong: dashes mean subtraction in JS, not allowed in names</code></pre>
+// wrong: dashes mean subtraction in JS, not allowed in names
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const class = "Math";
-// wrong: "class" is a reserved keyword</code></pre>
+// wrong: "class" is a reserved keyword
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 console.log(username);
-// wrong: typo — 'username' is a different variable (or undefined)</code></pre>
+// wrong: typo — 'username' is a different variable (or undefined)
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const x = totalPrice + tax;
 // not technically wrong, but unclear
-// better: const grandTotal = totalPrice + tax;</code></pre>
+// better: const grandTotal = totalPrice + tax;
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const data = response.json();
 const data2 = response.json();
 const data3 = response.json();
 // numbered names are usually a sign you should rename for clarity
-// better: const userData, productData, orderData</code></pre>
+// better: const userData, productData, orderData
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -4582,7 +4919,8 @@ const fetchUserData = async () => { /* ... */ };
 
 // Constants in UPPER_CASE
 const MAX_FILE_SIZE = 5_000_000;
-const API_BASE = "https://api.example.com";</code></pre>
+const API_BASE = "https://api.example.com";
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -4592,24 +4930,28 @@ const API_BASE = "https://api.example.com";</code></pre>
 const subtotal = cartItems.reduce((sum, item) => sum + item.price, 0);
 const tax = subtotal * 0.08;
 const shippingCost = calculateShipping(cartItems);
-const grandTotal = subtotal + tax + shippingCost;</code></pre>
+const grandTotal = subtotal + tax + shippingCost;
+</code></pre>
 
     <p><strong>Example: clear names for DOM elements</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const submitButton = document.querySelector(".submit");
 const emailInput = document.querySelector("#email");
 const errorMessage = document.querySelector(".error");
-const loadingSpinner = document.querySelector(".spinner");</code></pre>
+const loadingSpinner = document.querySelector(".spinner");
+</code></pre>
 
     <p><strong>Example: boolean flags reading as questions</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const isMenuOpen = false;
 const hasUserAccepted = true;
 const canSubmit = email.length > 0;
-const shouldShowWarning = stockCount < 5;</code></pre>
+const shouldShowWarning = stockCount < 5;
+</code></pre>
 
     <p><strong>Example: configuration constants</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const API_URL = "https://api.example.com";
 const MAX_RETRIES = 3;
-const REQUEST_TIMEOUT_MS = 5000;</code></pre>
+const REQUEST_TIMEOUT_MS = 5000;
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -4658,7 +5000,8 @@ const cartItemCount = 5;
 const isMenuOpen = false;
 const calculateTotalPrice = () => {};
 
-// First word lowercase, capital on each new word</code></pre>
+// First word lowercase, capital on each new word
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -4671,7 +5014,8 @@ const calculateTotalPrice = () => {};
 //   |  capital on "Item" (second word)
 //   first word lowercase
 //
-// All joined together — no spaces, no underscores, no dashes</code></pre>
+// All joined together — no spaces, no underscores, no dashes
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -4680,7 +5024,8 @@ const calculateTotalPrice = () => {};
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";          // correct camelCase
 const UserName = "Os";          // PascalCase — different convention (used for classes)
 const username = "Os";          // works, but unclear when there are multiple words
-const user_name = "Os";          // snake_case — unusual in JavaScript</code></pre>
+const user_name = "Os";          // snake_case — unusual in JavaScript
+</code></pre>
 
     <p>Acronyms inside camelCase have special handling — only the first letter capitalizes:</p>
 <pre class="language-javascript"><code class="language-javascript">// One acronym in the middle:
@@ -4690,12 +5035,14 @@ const htmlContent = "...";      // not HTMLContent
 
 // Acronym at the start:
 const idLookup = {};            // not IDLookup
-const urlParser = () => {};     // not URLParser</code></pre>
+const urlParser = () => {};     // not URLParser
+</code></pre>
 
     <p>Numbers are allowed but can't start the name:</p>
 <pre class="language-javascript"><code class="language-javascript">const user1 = "Os";              // works
 const user2 = "Sam";             // works
-const 1user = "Os";              // wrong: can't start with a number</code></pre>
+const 1user = "Os";              // wrong: can't start with a number
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -4717,7 +5064,8 @@ const handleSubmit = () => {};
 // Stands out as non-standard
 const user_name = "Os";          // looks like Python
 const UserName = "Os";           // looks like a class
-const username = "Os";           // hard to read with multiple words</code></pre>
+const username = "Os";           // hard to read with multiple words
+</code></pre>
     <p>The exception: built-in classes and components use PascalCase (covered separately). Constants in some codebases use UPPER_CASE.</p>
   `,
 
@@ -4743,7 +5091,8 @@ const user = {
 // Method names (also camelCase)
 button.addEventListener("click", handleClick);
 array.forEach(callback);
-string.toUpperCase();</code></pre>
+string.toUpperCase();
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -4762,7 +5111,8 @@ const userName = "Os";
 const cartItemCount = 5;
 
 // "is menu open" → drop spaces → "is Menu Open"
-const isMenuOpen = false;</code></pre>
+const isMenuOpen = false;
+</code></pre>
     <p>The first word stays lowercase. The capital letters mark where new words begin.</p>
   `,
 
@@ -4779,7 +5129,8 @@ const isMenuOpen = false;</code></pre>
 // Step 3: Apply camelCase.
 // "user email" → drop space → "user" + "Email" → "userEmail"
 
-const userEmail = "os@example.com";</code></pre>
+const userEmail = "os@example.com";
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -4790,7 +5141,8 @@ const userEmail = "os@example.com";</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const userEmail = "os@example.com";
 console.log(useremail);          // ReferenceError — different variable name
 console.log(UserEmail);          // ReferenceError — different variable name
-console.log(userEmail);          // works</code></pre>
+console.log(userEmail);          // works
+</code></pre>
 
     <p>If you see "is not defined" but you swear you defined it, check the casing of every reference. The most common cause:</p>
 <pre class="language-javascript"><code class="language-javascript">const userId = 123;
@@ -4799,7 +5151,8 @@ console.log(userID);            // wrong — uppercase ID, but the variable was 
 // fix one or the other to match
 const userID = 123;             // and use userID everywhere
 // OR
-console.log(userId);            // matches the original</code></pre>
+console.log(userId);            // matches the original
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -4816,14 +5169,16 @@ class UserName {}           // PascalCase — classes, components
 
 // camelCase: first letter is lowercase
 // PascalCase: first letter is uppercase
-// Otherwise identical</code></pre>
+// Otherwise identical
+</code></pre>
 
     <p><strong>Confusion: camelCase vs snake_case</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";     // camelCase — JavaScript convention
 const user_name = "Os";    // snake_case — Python convention, rare in JS
 
 // Both work in JS, but mixing styles in one project looks messy.
-// JavaScript ecosystem uses camelCase.</code></pre>
+// JavaScript ecosystem uses camelCase.
+</code></pre>
 
     <p><strong>Confusion: handling acronyms</strong></p>
 <pre class="language-javascript"><code class="language-javascript">// Common debate — both styles exist:
@@ -4831,7 +5186,8 @@ const userId = 123;          // strict camelCase (most common today)
 const userID = 123;          // alternative style (older code)
 
 // Strict camelCase treats acronyms as one word.
-// Pick one style and stick with it across your project.</code></pre>
+// Pick one style and stick with it across your project.
+</code></pre>
   `,
 
   /* 2.3 Common mistakes */
@@ -4839,31 +5195,36 @@ const userID = 123;          // alternative style (older code)
 <pre class="language-javascript"><code class="language-javascript">const UserName = "Os";
 // not technically wrong, but PascalCase is for classes
 // fix: use camelCase for variables
-const userName = "Os";</code></pre>
+const userName = "Os";
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const user_name = "Os";
 // works, but JavaScript convention is camelCase
 // fix:
-const userName = "Os";</code></pre>
+const userName = "Os";
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const username = "Os";
 // works for one word, but unclear with multiple
 // "userfirstname" is hard to read
 // fix:
-const userFirstName = "Os";</code></pre>
+const userFirstName = "Os";
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 console.log(username);
 // wrong: lowercase n is a different variable
 // fix: match exact casing
-console.log(userName);</code></pre>
+console.log(userName);
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const u = "Os";
 const n = 5;
 // works, but cryptic
 // fix: use descriptive camelCase
 const userName = "Os";
-const itemCount = 5;</code></pre>
+const itemCount = 5;
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -4890,7 +5251,8 @@ const user = {
   emailAddress: "os@example.com",
   phoneNumber: "555-1234",
   preferredLanguage: "en"
-};</code></pre>
+};
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -4899,25 +5261,29 @@ const user = {
 <pre class="language-javascript"><code class="language-javascript">const emailInput = document.querySelector("#email");
 const passwordInput = document.querySelector("#password");
 const submitButton = document.querySelector(".submit");
-const errorMessage = document.querySelector(".error");</code></pre>
+const errorMessage = document.querySelector(".error");
+</code></pre>
 
     <p><strong>Example: API response handling</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const response = await fetch(API_URL);
 const userData = await response.json();
 const userId = userData.id;
-const userEmail = userData.email;</code></pre>
+const userEmail = userData.email;
+</code></pre>
 
     <p><strong>Example: state tracking</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let isLoading = false;
 let cartItemCount = 0;
 let currentPageNumber = 1;
-let lastSearchQuery = "";</code></pre>
+let lastSearchQuery = "";
+</code></pre>
 
     <p><strong>Example: event handlers</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const handleFormSubmit = (event) => {};
 const handleInputChange = (event) => {};
 const handleButtonClick = (event) => {};
-const handleWindowResize = () => {};</code></pre>
+const handleWindowResize = () => {};
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -4968,7 +5334,8 @@ const arr = ["a", "b", "c"];
 // Meaningful names — same code, way more readable
 const userAge = 50;
 const userProfile = response.json();
-const colorOptions = ["a", "b", "c"];</code></pre>
+const colorOptions = ["a", "b", "c"];
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -4981,7 +5348,8 @@ const colorOptions = ["a", "b", "c"];</code></pre>
 // = 49.99     → the actual value
 
 // The name does the work of explaining. The reader doesn't have
-// to look at surrounding code to figure out what 49.99 represents.</code></pre>
+// to look at surrounding code to figure out what 49.99 represents.
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -4996,7 +5364,8 @@ const user = userObj;
 const userProfile = userObj;
 
 // Too verbose
-const userObjectFromAPIWithFullProfileData = userObj;</code></pre>
+const userObjectFromAPIWithFullProfileData = userObj;
+</code></pre>
 
     <p>Don't include the type in the name unless it really matters:</p>
 <pre class="language-javascript"><code class="language-javascript">// Redundant — the type is obvious from how it's used
@@ -5005,7 +5374,8 @@ const nameString = "Os";
 
 // Cleaner
 const users = ["Os", "Sam"];
-const name = "Os";</code></pre>
+const name = "Os";
+</code></pre>
 
     <p>For booleans, lead with a question word so the name reads as true/false:</p>
 <pre class="language-javascript"><code class="language-javascript">// Hard to tell what's true/false
@@ -5016,7 +5386,8 @@ const menu = false;
 const isLoggedIn = true;
 const hasUnreadMessages = false;
 const canEdit = true;
-const shouldShowAlert = false;</code></pre>
+const shouldShowAlert = false;
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -5036,7 +5407,8 @@ const g = p + t;
 
 // Now it's obvious without context.
 const tax = price * 0.08;
-const grandTotal = price + tax;</code></pre>
+const grandTotal = price + tax;
+</code></pre>
     <p>Code is read way more than it's written. Optimize for the read.</p>
   `,
 
@@ -5056,7 +5428,8 @@ for (const product of products) {     // not "for (const p of products)"
 
 cartItems.forEach((item) => {          // not "forEach((i) =>"
   console.log(item.price);
-});</code></pre>
+});
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -5072,7 +5445,8 @@ cartItems.forEach((item) => {          // not "forEach((i) =>"
 const adultUsers = users.filter(u => u.age > 18);  // labeled box
 
 // Same code. The second one tells you what's inside without making
-// you look at the filter logic.</code></pre>
+// you look at the filter logic.
+</code></pre>
   `,
 
   /* 1.5 Step-by-step walkthrough */
@@ -5091,7 +5465,8 @@ const adultUsers = users.filter(u => u.age > 18);  // labeled box
 
 const inactiveUsers = users.filter(u => daysSinceLogin(u) > 30);
 
-// Now anyone reading this knows exactly what the variable holds.</code></pre>
+// Now anyone reading this knows exactly what the variable holds.
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -5107,7 +5482,8 @@ function calc(d, r, i) {
 // After — same logic, instantly readable
 function calculateTotal(daysRented, dailyRate, insuranceRate) {
   return daysRented * dailyRate * insuranceRate;
-}</code></pre>
+}
+</code></pre>
     <p>If you can't easily say what a variable holds, that's a sign the name needs to change.</p>
   `,
 
@@ -5128,7 +5504,8 @@ const e = p.email;
 // Slightly longer, way more useful
 const user = await getUser();
 const profile = user.profile;
-const email = profile.email;</code></pre>
+const email = profile.email;
+</code></pre>
     <p>Short doesn't mean clean. Clear means clean.</p>
 
     <p><strong>Confusion: when single letters are OK</strong></p>
@@ -5140,7 +5517,8 @@ for (let i = 0; i < 10; i++) {        // i = index, lives 1-2 lines
 users.forEach(u => console.log(u));    // u = user, lives 1 line — but...
 users.forEach(user => console.log(user));   // ...still better
 
-// Single letters get bad as scope grows or logic gets complex.</code></pre>
+// Single letters get bad as scope grows or logic gets complex.
+</code></pre>
 
     <p><strong>Confusion: data, info, item — vague defaults</strong></p>
 <pre class="language-javascript"><code class="language-javascript">// "data" is the universal vague name — it tells you nothing
@@ -5149,7 +5527,8 @@ const data2 = data.json();
 
 // What kind of data?
 const response = await fetch(url);
-const userList = await response.json();</code></pre>
+const userList = await response.json();
+</code></pre>
     <p>If the name could apply to almost anything, it's not meaningful.</p>
   `,
 
@@ -5158,33 +5537,39 @@ const userList = await response.json();</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const x = totalPrice * taxRate;
 // vague: x could be anything
 // fix: name it for what it is
-const tax = totalPrice * taxRate;</code></pre>
+const tax = totalPrice * taxRate;
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const data = await fetch(url);
 // vague: every API response is "data"
 // fix: name it for what it actually contains
-const userResponse = await fetch(url);</code></pre>
+const userResponse = await fetch(url);
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const arr = users.filter(u => u.active);
 // vague: it's an array, sure, but of what?
 // fix:
-const activeUsers = users.filter(u => u.active);</code></pre>
+const activeUsers = users.filter(u => u.active);
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const flag = true;
 // vague: flag for what?
 // fix: lead with a question word
-const isFormValid = true;</code></pre>
+const isFormValid = true;
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const userObjectWithFullProfileDataFromAPI = res.json();
 // too verbose: makes lines hard to read
 // fix: shorter, still meaningful
-const userProfile = res.json();</code></pre>
+const userProfile = res.json();
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const num = 5;
 // vague: what is the number?
 // fix: be specific
 const itemCount = 5;
-const cartTotal = 5;</code></pre>
+const cartTotal = 5;
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -5210,7 +5595,8 @@ const handleSubmit = (event) => {};
 // Loops with named items
 for (const product of products) {
   console.log(product.name);
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -5220,26 +5606,30 @@ for (const product of products) {
 const subtotal = cartItems.reduce((sum, item) => sum + item.price, 0);
 const taxAmount = subtotal * TAX_RATE;
 const shippingCost = calculateShipping(cartItems);
-const grandTotal = subtotal + taxAmount + shippingCost;</code></pre>
+const grandTotal = subtotal + taxAmount + shippingCost;
+</code></pre>
 
     <p><strong>Example: form validation</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const enteredEmail = emailInput.value.trim();
 const isEmailValid = /^[^@]+@[^@]+\\.[^@]+$/.test(enteredEmail);
 const enteredPassword = passwordInput.value;
 const isPasswordLongEnough = enteredPassword.length >= 8;
-const canSubmit = isEmailValid && isPasswordLongEnough;</code></pre>
+const canSubmit = isEmailValid && isPasswordLongEnough;
+</code></pre>
 
     <p><strong>Example: user-related variables</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const currentUser = await getLoggedInUser();
 const isAdmin = currentUser.role === "admin";
 const recentlyLoggedIn = currentUser.lastLogin > Date.now() - 86400000;
-const hasCompletedProfile = currentUser.profile.completed;</code></pre>
+const hasCompletedProfile = currentUser.profile.completed;
+</code></pre>
 
     <p><strong>Example: DOM elements named for what they are</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const navMenu = document.querySelector(".nav-menu");
 const searchBar = document.querySelector(".search-bar");
 const checkoutButton = document.querySelector(".checkout-btn");
-const errorBanner = document.querySelector(".error-banner");</code></pre>
+const errorBanner = document.querySelector(".error-banner");
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -5285,7 +5675,8 @@ const errorBanner = document.querySelector(".error-banner");</code></pre>
 const greeting = 'hello';            // single quotes
 const message = \`hi there\`;          // backticks (template literal)
 
-let status = "loading";              // let if it'll change later</code></pre>
+let status = "loading";              // let if it'll change later
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -5301,7 +5692,8 @@ let status = "loading";              // let if it'll change later</code></pre>
 // ;         → ends the statement
 
 // The quotes are NOT part of the value — they're just markers
-// that tell JS "everything in here is text"</code></pre>
+// that tell JS "everything in here is text"
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -5310,11 +5702,13 @@ let status = "loading";              // let if it'll change later</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const a = "Os";       // double-double — works
 const b = 'Os';       // single-single — works
 const c = "Os';       // wrong: SyntaxError — mixed quote types
-const d = "Os;        // wrong: SyntaxError — missing closing quote</code></pre>
+const d = "Os;        // wrong: SyntaxError — missing closing quote
+</code></pre>
 
     <p>Pick the quote style that doesn't conflict with what's inside:</p>
 <pre class="language-javascript"><code class="language-javascript">const greeting = "Hello, I'm Os";        // double quotes wrap an apostrophe
-const sentence = 'She said "hi"';         // single quotes wrap double quotes inside</code></pre>
+const sentence = 'She said "hi"';         // single quotes wrap double quotes inside
+</code></pre>
 
     <p>Backticks (template literals) let you embed variables with <code>\${}</code>:</p>
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
@@ -5323,12 +5717,14 @@ console.log(greeting);                    // "Hello, Os"
 
 // \${} only works inside backticks — not single or double quotes
 const wrong = "Hello, \${userName}";
-console.log(wrong);                       // literal: "Hello, \${userName}"</code></pre>
+console.log(wrong);                       // literal: "Hello, \${userName}"
+</code></pre>
 
     <p>Empty strings are valid:</p>
 <pre class="language-javascript"><code class="language-javascript">let userInput = "";       // empty string — useful as a starting value
 console.log(userInput);   // "" (nothing visible, but it IS a string)
-console.log(typeof userInput);  // "string"</code></pre>
+console.log(typeof userInput);  // "string"
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -5350,7 +5746,8 @@ heading.textContent = "Welcome to the app, " + "Os";
 const welcomeMessage = "Welcome to the app";
 const userName = "Os";
 console.log(welcomeMessage + ", " + userName);
-heading.textContent = welcomeMessage + ", " + userName;</code></pre>
+heading.textContent = welcomeMessage + ", " + userName;
+</code></pre>
     <p>Updating the welcome message later is now a one-line change instead of a hunt-and-replace through your whole file.</p>
   `,
 
@@ -5374,7 +5771,8 @@ const userEmail = emailInput.value;
 const searchQuery = searchInput.value.trim();
 
 // Status flags as text
-let appStatus = "loading";       // later: "ready" or "error"</code></pre>
+let appStatus = "loading";       // later: "ready" or "error"
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -5391,7 +5789,8 @@ let appStatus = "loading";       // later: "ready" or "error"</code></pre>
 // userName  →  Os    (the actual stored value, no quotes)
 
 console.log(userName);     // logs: Os
-console.log("userName");   // logs: userName (literal text, not the variable)</code></pre>
+console.log("userName");   // logs: userName (literal text, not the variable)
+</code></pre>
     <p>When you write the variable name with no quotes, JavaScript looks up its value. When you write quotes, JavaScript treats whatever's inside as literal text.</p>
   `,
 
@@ -5412,7 +5811,8 @@ console.log(greeting);
 //         Replace \${userName} with "Os" → "Hello, Os".
 //         Store "Hello, Os" inside greeting.
 //
-// Line 3: look up greeting → "Hello, Os" → log it.</code></pre>
+// Line 3: look up greeting → "Hello, Os" → log it.
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -5424,12 +5824,14 @@ console.log(greeting);
 // wrong: ReferenceError — without quotes, JS thinks Os is a variable name
 
 const userName = "Os";
-// works: quotes mark this as a string</code></pre>
+// works: quotes mark this as a string
+</code></pre>
 
     <p>If a string isn't combining the way you expect, watch out for the difference between text and variables:</p>
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 console.log("userName");   // "userName" — literal text, not what you wanted
-console.log(userName);     // "Os" — the actual value</code></pre>
+console.log(userName);     // "Os" — the actual value
+</code></pre>
 
     <p>If template literals aren't substituting the variable, check that you used backticks (not regular quotes):</p>
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
@@ -5450,14 +5852,16 @@ console.log(\`Hello, \${userName}\`);    // "Hello, Os" — backticks
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 
 console.log(userName);     // "Os" — looks up the variable
-console.log("userName");   // "userName" — literal text</code></pre>
+console.log("userName");   // "userName" — literal text
+</code></pre>
 
     <p><strong>Confusion: numbers in quotes are strings, not numbers</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const a = "5";        // string "5" — can't do math with it normally
 const b = 5;          // number 5 — can do math
 
 console.log(a + 1);   // "51" — string concatenation, not addition
-console.log(b + 1);   // 6 — number addition</code></pre>
+console.log(b + 1);   // 6 — number addition
+</code></pre>
 
     <p><strong>Confusion: which quote type to use</strong></p>
 <pre class="language-javascript"><code class="language-javascript">// All three create a string — pick the one that fits the situation:
@@ -5465,7 +5869,8 @@ const a = "hello";    // double — most common in many style guides
 const b = 'hello';    // single — common in others
 const c = \`hello\`;    // backticks — only when you need \${} or multi-line
 
-// All three are strings. Be consistent within a project.</code></pre>
+// All three are strings. Be consistent within a project.
+</code></pre>
   `,
 
   /* 2.3 Common mistakes */
@@ -5473,30 +5878,35 @@ const c = \`hello\`;    // backticks — only when you need \${} or multi-line
 <pre class="language-javascript"><code class="language-javascript">const userName = Os;
 // wrong: forgot quotes — JS thinks Os is a variable
 // fix:
-const userName = "Os";</code></pre>
+const userName = "Os";
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const greeting = "Hello, \${userName}";
 // wrong: \${} only works inside backticks
 // fix:
-const greeting = \`Hello, \${userName}\`;</code></pre>
+const greeting = \`Hello, \${userName}\`;
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const sentence = "She said "hi"";
 // wrong: quote conflict — inner quotes close the string early
 // fix: use single quotes outside, or escape:
 const sentence = 'She said "hi"';
-const sentence2 = "She said \\"hi\\"";</code></pre>
+const sentence2 = "She said \\"hi\\"";
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const a = "5";
 const b = "10";
 console.log(a + b);    // "510" — string concat, not 15
 // fix: convert to number if you want math
-console.log(Number(a) + Number(b));   // 15</code></pre>
+console.log(Number(a) + Number(b));   // 15
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const message = 'It's a test';
 // wrong: apostrophe ends the single-quoted string early
 // fix: use double quotes or escape
 const message = "It's a test";
-const message2 = 'It\\'s a test';</code></pre>
+const message2 = 'It\\'s a test';
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -5525,7 +5935,8 @@ console.log(status);               // "ready"
 
 // String length
 const name = "Os";
-console.log(name.length);          // 2 (number of characters)</code></pre>
+console.log(name.length);          // 2 (number of characters)
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -5536,28 +5947,32 @@ const userPassword = passwordInput.value;
 
 if (userEmail.length === 0) {
   showError("Email is required");
-}</code></pre>
+}
+</code></pre>
 
     <p><strong>Example: storing UI text labels</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const SUBMIT_LABEL = "Submit";
 const LOADING_LABEL = "Submitting...";
 const SUCCESS_LABEL = "Submitted!";
 
-submitBtn.textContent = LOADING_LABEL;</code></pre>
+submitBtn.textContent = LOADING_LABEL;
+</code></pre>
 
     <p><strong>Example: storing CSS class names</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const ACTIVE_CLASS = "is-active";
 const HIDDEN_CLASS = "is-hidden";
 
 card.classList.add(ACTIVE_CLASS);
-modal.classList.remove(HIDDEN_CLASS);</code></pre>
+modal.classList.remove(HIDDEN_CLASS);
+</code></pre>
 
     <p><strong>Example: storing API URLs</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const API_BASE = "https://api.example.com";
 const USERS_ENDPOINT = \`\${API_BASE}/users\`;
 const PRODUCTS_ENDPOINT = \`\${API_BASE}/products\`;
 
-const response = await fetch(USERS_ENDPOINT);</code></pre>
+const response = await fetch(USERS_ENDPOINT);
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -5605,7 +6020,8 @@ const price = 19.99;        // decimal
 const temperature = -5;     // negative
 const total = 0;            // zero is a number too
 
-let count = 0;              // let if it'll change later</code></pre>
+let count = 0;              // let if it'll change later
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -5618,32 +6034,38 @@ let count = 0;              // let if it'll change later</code></pre>
 // 19.99   → the number value (no quotes!)
 // ;       → ends the statement
 
-// No quotes around 19.99 — that's how JS knows it's a number, not a string.</code></pre>
+// No quotes around 19.99 — that's how JS knows it's a number, not a string.
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
   'topics-0-14-0-3': `
     <p>No quotes — that's the key difference from strings:</p>
 <pre class="language-javascript"><code class="language-javascript">const age = 25;       // number
-const age = "25";     // string — looks the same, behaves very differently</code></pre>
+const age = "25";     // string — looks the same, behaves very differently
+</code></pre>
 
     <p>Decimals use a period, never a comma:</p>
 <pre class="language-javascript"><code class="language-javascript">const price = 19.99;   // correct
-const price = 19,99;   // wrong: comma creates two values, not a decimal</code></pre>
+const price = 19,99;   // wrong: comma creates two values, not a decimal
+</code></pre>
 
     <p>You can use underscores as visual separators in big numbers (ignored by JS):</p>
 <pre class="language-javascript"><code class="language-javascript">const million = 1_000_000;     // 1000000 — easier to read
-const distance = 384_400;       // 384400</code></pre>
+const distance = 384_400;       // 384400
+</code></pre>
 
     <p>Numbers can be the result of math:</p>
 <pre class="language-javascript"><code class="language-javascript">const total = 10 + 5;          // right side runs first → 15 stored
 const tax = price * 0.08;      // calculation, then stored
-const remaining = 100 - used;  // mixed literal and variable</code></pre>
+const remaining = 100 - used;  // mixed literal and variable
+</code></pre>
 
     <p>JavaScript has special number-like values you'll occasionally see:</p>
 <pre class="language-javascript"><code class="language-javascript">const inf = Infinity;          // mathematical infinity
 const tiny = -Infinity;        // negative infinity
-const broken = NaN;             // "Not a Number" — result of bad math like 0/0</code></pre>
+const broken = NaN;             // "Not a Number" — result of bad math like 0/0
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -5671,7 +6093,8 @@ const firstIndex = 0;
 
 // Times
 const timeoutMs = 5000;
-const dayInMs = 86_400_000;</code></pre>
+const dayInMs = 86_400_000;
+</code></pre>
     <p>If you'll only display it as text and never compute anything with it (like a phone number or zip code), strings might be a better choice — leading zeros disappear in numbers.</p>
   `,
 
@@ -5697,7 +6120,8 @@ const userAge = Number(ageInput.value);
 
 // Math operations
 const angle = 90;
-const radians = angle * (Math.PI / 180);</code></pre>
+const radians = angle * (Math.PI / 180);
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -5716,7 +6140,8 @@ a + 1;       // 6   (number addition)
 b + 1;       // "51"  (string concatenation — JS converts 1 to "1" and joins)
 
 a + a;       // 10
-b + b;       // "55"</code></pre>
+b + b;       // "55"
+</code></pre>
     <p>Numbers behave like math. Strings behave like text. Don't mix them up.</p>
   `,
 
@@ -5734,7 +6159,8 @@ console.log(total);
 //         Result: 1.5992. Store in tax.
 // Line 3: declare total. Right side: look up price (19.99), look up tax (1.5992).
 //         Add them: 21.5892. Store in total.
-// Line 4: look up total → 21.5892 → log it.</code></pre>
+// Line 4: look up total → 21.5892 → log it.
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -5749,7 +6175,8 @@ console.log(total);        // "105" — JS concatenated instead of adding
 // fix: convert to number first
 const price = Number("10");
 const total = price + 5;
-console.log(total);        // 15</code></pre>
+console.log(total);        // 15
+</code></pre>
 
     <p>Form inputs are always strings, even if they hold numbers:</p>
 <pre class="language-javascript"><code class="language-javascript">const userAge = ageInput.value;
@@ -5757,14 +6184,16 @@ console.log(userAge + 1);     // "251" if user typed "25" — string concat
 
 // fix: convert before doing math
 const userAge = Number(ageInput.value);
-console.log(userAge + 1);     // 26</code></pre>
+console.log(userAge + 1);     // 26
+</code></pre>
 
     <p>If you see <code>NaN</code> ("Not a Number"), one of the values in your math wasn't a valid number:</p>
 <pre class="language-javascript"><code class="language-javascript">const total = "abc" * 2;
 console.log(total);            // NaN — can't multiply text by a number
 
 const broken = undefined + 5;
-console.log(broken);           // NaN — undefined isn't a number</code></pre>
+console.log(broken);           // NaN — undefined isn't a number
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -5782,12 +6211,14 @@ const b = "25";   // string that looks like a number — careful
 a + 1;            // 26
 b + 1;            // "251"  (string concat)
 a * 2;            // 50
-b * 2;            // 50  (JS coerces b to number for *, but not for +)</code></pre>
+b * 2;            // 50  (JS coerces b to number for *, but not for +)
+</code></pre>
 
     <p><strong>Confusion: form input is always a string</strong></p>
 <pre class="language-javascript"><code class="language-javascript">// Even &lt;input type="number"&gt; returns a string
 const userAge = ageInput.value;       // "25" (string)
-const userAge = Number(ageInput.value);  // 25 (number)</code></pre>
+const userAge = Number(ageInput.value);  // 25 (number)
+</code></pre>
 
     <p><strong>Confusion: floating-point math is sometimes weird</strong></p>
 <pre class="language-javascript"><code class="language-javascript">console.log(0.1 + 0.2);    // 0.30000000000000004 — not 0.3!
@@ -5795,7 +6226,8 @@ const userAge = Number(ageInput.value);  // 25 (number)</code></pre>
 // This is a quirk of how computers store decimals.
 // For money or anything that needs precision, work with cents (integers):
 const price = 1999;          // $19.99 stored as cents
-console.log(price + 50);     // 2049 cents = $20.49</code></pre>
+console.log(price + 50);     // 2049 cents = $20.49
+</code></pre>
   `,
 
   /* 2.3 Common mistakes */
@@ -5803,27 +6235,32 @@ console.log(price + 50);     // 2049 cents = $20.49</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const age = "25";
 console.log(age + 1);     // "251"
 // fix: store as a number, not a string
-const age = 25;</code></pre>
+const age = 25;
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const price = 19,99;
 // wrong: comma creates a different expression in JS
 // fix: use a period for decimals
-const price = 19.99;</code></pre>
+const price = 19.99;
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const userAge = ageInput.value;
 console.log(userAge + 5);  // string concat, not math
 // fix: convert from form input
-const userAge = Number(ageInput.value);</code></pre>
+const userAge = Number(ageInput.value);
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const total = 0.1 + 0.2;
 if (total === 0.3) {}     // wrong: 0.1 + 0.2 isn't exactly 0.3 in JS
-// fix: compare with a tolerance, or use integers (cents)</code></pre>
+// fix: compare with a tolerance, or use integers (cents)
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const phone = 5551234567;
 const zip = 02134;        // wrong: leading 0 makes JS think it's octal
 // fix: store as strings if you don't need to do math
 const phone = "555-123-4567";
-const zip = "02134";</code></pre>
+const zip = "02134";
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -5854,7 +6291,8 @@ console.log(score);        // 15
 
 // Underscores for readability
 const million = 1_000_000;
-console.log(million);      // 1000000</code></pre>
+console.log(million);      // 1000000
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -5864,7 +6302,8 @@ console.log(million);      // 1000000</code></pre>
 const quantity = 3;
 const subtotal = itemPrice * quantity;
 const tax = subtotal * 0.08;
-const total = subtotal + tax;</code></pre>
+const total = subtotal + tax;
+</code></pre>
 
     <p><strong>Example: tracking a counter</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let cartCount = 0;
@@ -5872,19 +6311,22 @@ const total = subtotal + tax;</code></pre>
 addToCartBtn.addEventListener("click", () => {
   cartCount = cartCount + 1;
   cartBadge.textContent = cartCount;
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: configuration constants</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const MAX_LOGIN_ATTEMPTS = 3;
 const SESSION_TIMEOUT_MS = 1_800_000;   // 30 min in ms
-const TAX_RATE = 0.08;</code></pre>
+const TAX_RATE = 0.08;
+</code></pre>
 
     <p><strong>Example: converting form input to do math</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const enteredAge = Number(ageInput.value);
 
 if (enteredAge < 18) {
   showError("Must be 18 or older");
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -5933,7 +6375,8 @@ const isMenuOpen = false;
 const hasUnreadMessages = true;
 const canEdit = false;
 
-let isLoading = true;          // let if it'll flip later</code></pre>
+let isLoading = true;          // let if it'll flip later
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -5946,19 +6389,22 @@ let isLoading = true;          // let if it'll flip later</code></pre>
 // true         → the boolean value (no quotes!)
 // ;            → ends the statement
 
-// true and false are keywords in JS — not strings, not variables.</code></pre>
+// true and false are keywords in JS — not strings, not variables.
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
   'topics-0-15-0-3': `
     <p>No quotes around <code>true</code> or <code>false</code>:</p>
 <pre class="language-javascript"><code class="language-javascript">const isOpen = true;       // boolean — what you want
-const isOpen = "true";     // string — looks similar, behaves very differently</code></pre>
+const isOpen = "true";     // string — looks similar, behaves very differently
+</code></pre>
 
     <p>Lowercase only — <code>true</code> and <code>false</code> are keywords:</p>
 <pre class="language-javascript"><code class="language-javascript">const isOpen = true;       // correct
 const isOpen = True;       // wrong: ReferenceError — True isn't defined
-const isOpen = TRUE;       // wrong: same reason</code></pre>
+const isOpen = TRUE;       // wrong: same reason
+</code></pre>
 
     <p>You can store the result of a comparison directly:</p>
 <pre class="language-javascript"><code class="language-javascript">const age = 25;
@@ -5966,12 +6412,14 @@ const canVote = age >= 18;       // comparison evaluates to true or false
 console.log(canVote);             // true
 
 const isMatching = "Os" === "Sam";   // false
-console.log(isMatching);              // false</code></pre>
+console.log(isMatching);              // false
+</code></pre>
 
     <p>Use <code>!</code> to flip a boolean:</p>
 <pre class="language-javascript"><code class="language-javascript">let isOpen = false;
 isOpen = !isOpen;        // flips false to true
-isOpen = !isOpen;        // flips true to false</code></pre>
+isOpen = !isOpen;        // flips true to false
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -6000,7 +6448,8 @@ let hasErrors = false;
 
 // Permissions
 const canEdit = true;
-const canDelete = false;</code></pre>
+const canDelete = false;
+</code></pre>
     <p>Booleans are the natural type for any "is this true?" question. They're what every <code>if</code> statement actually evaluates.</p>
   `,
 
@@ -6029,7 +6478,8 @@ submitBtn.disabled = !isFormValid;
 // Permission checks
 if (canEditProfile) {
   showEditButton();
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -6044,7 +6494,8 @@ if (canEditProfile) {
 <pre class="language-javascript"><code class="language-javascript">let isMenuOpen = false;       // switch is OFF
 isMenuOpen = true;             // switch is ON
 isMenuOpen = !isMenuOpen;      // flip it (now OFF)
-isMenuOpen = !isMenuOpen;      // flip it again (now ON)</code></pre>
+isMenuOpen = !isMenuOpen;      // flip it again (now ON)
+</code></pre>
     <p>Whenever you need to track a state with exactly two possibilities, you reach for a boolean.</p>
   `,
 
@@ -6063,7 +6514,8 @@ if (canVote) {
 //         Store true in canVote.
 // Line 3: see if (canVote) → look up canVote → true.
 //         The condition is true, run the block.
-// Line 4: log "You can vote".</code></pre>
+// Line 4: log "You can vote".
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -6074,7 +6526,8 @@ if (canVote) {
 <pre class="language-javascript"><code class="language-javascript">let isLoggedIn = false;
 // some logic happens...
 console.log(isLoggedIn);   // peek to verify
-console.log(typeof isLoggedIn);  // "boolean" — confirms it's a real boolean</code></pre>
+console.log(typeof isLoggedIn);  // "boolean" — confirms it's a real boolean
+</code></pre>
 
     <p>The most common boolean trap: a string that <em>looks</em> like a boolean. Strings are always truthy, even <code>"false"</code>:</p>
 <pre class="language-javascript"><code class="language-javascript">const isOpen = "false";   // string, not boolean!
@@ -6084,7 +6537,8 @@ if (isOpen) {
 
 // fix: store an actual boolean
 const isOpen = false;
-if (isOpen) { /* doesn't run */ }</code></pre>
+if (isOpen) { /* doesn't run */ }
+</code></pre>
 
     <p>If you're using <code>localStorage</code> values as booleans, remember they come back as strings:</p>
 <pre class="language-javascript"><code class="language-javascript">localStorage.setItem("darkMode", true);
@@ -6092,7 +6546,8 @@ const darkMode = localStorage.getItem("darkMode");
 console.log(typeof darkMode);     // "string" — it's "true" not true
 
 // fix: parse back to a boolean
-const darkMode = localStorage.getItem("darkMode") === "true";</code></pre>
+const darkMode = localStorage.getItem("darkMode") === "true";
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -6108,7 +6563,8 @@ const darkMode = localStorage.getItem("darkMode") === "true";</code></pre>
 const b = "false";      // string — truthy! (any non-empty string is truthy)
 
 if (a) { /* doesn't run */ }
-if (b) { /* RUNS! — confusing */ }</code></pre>
+if (b) { /* RUNS! — confusing */ }
+</code></pre>
 
     <p><strong>Confusion: truthy vs true</strong></p>
 <pre class="language-javascript"><code class="language-javascript">// Many values aren't booleans but BEHAVE like booleans in if statements:
@@ -6119,7 +6575,8 @@ if ([]) { }           // runs — arrays are truthy (even empty ones!)
 if ("") { }           // doesn't run — empty string is falsy
 if (0) { }            // doesn't run — zero is falsy
 if (null) { }         // doesn't run — null is falsy
-if (undefined) { }    // doesn't run — undefined is falsy</code></pre>
+if (undefined) { }    // doesn't run — undefined is falsy
+</code></pre>
     <p>Truthy/falsy is a separate concept — values that <em>act like</em> booleans without being booleans.</p>
 
     <p><strong>Confusion: storing comparisons</strong></p>
@@ -6132,7 +6589,8 @@ if (age >= 18) {
 }
 
 // You can store the comparison result directly:
-const isOver18 = age >= 18;   // shorter, same result</code></pre>
+const isOver18 = age >= 18;   // shorter, same result
+</code></pre>
   `,
 
   /* 2.3 Common mistakes */
@@ -6140,12 +6598,14 @@ const isOver18 = age >= 18;   // shorter, same result</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const isOpen = "true";
 // wrong: this is a string, not a boolean
 // fix: drop the quotes
-const isOpen = true;</code></pre>
+const isOpen = true;
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const isOpen = True;
 // wrong: True (capitalized) isn't a keyword in JS
 // fix: lowercase
-const isOpen = true;</code></pre>
+const isOpen = true;
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">if (isOpen = true) { }
 // wrong: this ASSIGNS true to isOpen, then checks if true is truthy (it is)
@@ -6153,7 +6613,8 @@ const isOpen = true;</code></pre>
 // fix: use ===
 if (isOpen === true) { }
 // even better — booleans don't need ===, just check the variable
-if (isOpen) { }</code></pre>
+if (isOpen) { }
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">localStorage.setItem("darkMode", true);
 const darkMode = localStorage.getItem("darkMode");
@@ -6161,7 +6622,8 @@ if (darkMode) { }
 // wrong: localStorage stores "true" as a string, and any non-empty string is truthy
 // even if it was "false", this if would run
 // fix: convert back to a boolean
-const darkMode = localStorage.getItem("darkMode") === "true";</code></pre>
+const darkMode = localStorage.getItem("darkMode") === "true";
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -6190,7 +6652,8 @@ if (isLoggedIn) {
 // Combined with logical operators
 const isAdmin = true;
 const isPremium = false;
-const hasAccess = isAdmin || isPremium;   // true (either one)</code></pre>
+const hasAccess = isAdmin || isPremium;   // true (either one)
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -6201,7 +6664,8 @@ const hasAccess = isAdmin || isPremium;   // true (either one)</code></pre>
 hamburgerBtn.addEventListener("click", () => {
   isMenuOpen = !isMenuOpen;
   menu.classList.toggle("open");
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: form validation flag</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let isFormValid = false;
@@ -6209,7 +6673,8 @@ hamburgerBtn.addEventListener("click", () => {
 emailInput.addEventListener("input", () => {
   isFormValid = emailInput.value.includes("@");
   submitBtn.disabled = !isFormValid;
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: loading state</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let isLoading = true;
@@ -6217,7 +6682,8 @@ spinner.style.display = "block";
 
 const data = await fetch(url);
 isLoading = false;
-spinner.style.display = "none";</code></pre>
+spinner.style.display = "none";
+</code></pre>
 
     <p><strong>Example: permission flags</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const isAdmin = currentUser.role === "admin";
@@ -6225,7 +6691,8 @@ const canEditPost = isAdmin || post.authorId === currentUser.id;
 
 if (canEditPost) {
   showEditButton();
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -6273,7 +6740,8 @@ if (canEditPost) {
 const numbers = [1, 2, 3, 4, 5];
 const empty = [];
 
-let scores = [10, 20, 30];        // let if the array variable will be reassigned</code></pre>
+let scores = [10, 20, 30];        // let if the array variable will be reassigned
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -6286,7 +6754,8 @@ let scores = [10, 20, 30];        // let if the array variable will be reassigne
 // [                               → opening bracket — starts the array
 // "red", "blue", "green"          → items, separated by commas
 // ]                               → closing bracket — ends the array
-// ;                               → ends the statement</code></pre>
+// ;                               → ends the statement
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -6294,18 +6763,21 @@ let scores = [10, 20, 30];        // let if the array variable will be reassigne
     <p>Square brackets create the array. Items are comma-separated:</p>
 <pre class="language-javascript"><code class="language-javascript">const a = ["red", "blue"];      // correct
 const a = ["red" "blue"];        // wrong: missing comma
-const a = ("red", "blue");       // wrong: those are parens, not array brackets</code></pre>
+const a = ("red", "blue");       // wrong: those are parens, not array brackets
+</code></pre>
 
     <p>Items can be any type, even mixed:</p>
 <pre class="language-javascript"><code class="language-javascript">const mixed = [1, "two", true, null, [3, 4]];
-// numbers, strings, booleans, null, even other arrays — all valid</code></pre>
+// numbers, strings, booleans, null, even other arrays — all valid
+</code></pre>
 
     <p>Trailing commas are allowed (and actually nice in long arrays):</p>
 <pre class="language-javascript"><code class="language-javascript">const items = [
   "apple",
   "banana",
   "cherry",       // ← trailing comma is fine
-];</code></pre>
+];
+</code></pre>
 
     <p>Access items by index — starts at 0, not 1:</p>
 <pre class="language-javascript"><code class="language-javascript">const colors = ["red", "blue", "green"];
@@ -6313,7 +6785,8 @@ const a = ("red", "blue");       // wrong: those are parens, not array brackets<
 colors[0];      // "red"   — first item
 colors[1];      // "blue"  — second item
 colors[2];      // "green" — third item
-colors[3];      // undefined — no item at that position</code></pre>
+colors[3];      // undefined — no item at that position
+</code></pre>
 
     <p><code>const</code> doesn't freeze array contents — items can still be changed:</p>
 <pre class="language-javascript"><code class="language-javascript">const colors = ["red", "blue"];
@@ -6321,7 +6794,8 @@ colors[3];      // undefined — no item at that position</code></pre>
 colors.push("green");      // works — modifying the array
 colors[0] = "purple";       // works — changing an item
 
-colors = ["yellow"];        // wrong: TypeError — reassigning, blocked by const</code></pre>
+colors = ["yellow"];        // wrong: TypeError — reassigning, blocked by const
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -6346,7 +6820,8 @@ const users = [user1, user2, user3];
 const steps = ["enter email", "verify", "set password"];
 
 // Items rendered to a page
-const tasks = ["buy milk", "walk dog", "send email"];</code></pre>
+const tasks = ["buy milk", "walk dog", "send email"];
+</code></pre>
   `,
 
   /* 1.2 Where you use it */
@@ -6371,7 +6846,8 @@ const allButtons = document.querySelectorAll(".btn");
 // (technically a NodeList, but you treat it like an array)
 
 // Tracking selections
-const selectedTags = ["javascript", "html"];</code></pre>
+const selectedTags = ["javascript", "html"];
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -6390,7 +6866,8 @@ const selectedTags = ["javascript", "html"];</code></pre>
 //
 // colors.length     → 3
 // colors[0]         → "red"
-// colors[colors.length - 1]  → last item ("green")</code></pre>
+// colors[colors.length - 1]  → last item ("green")
+</code></pre>
     <p>The whole array is one value pointed at by the variable. Items inside are accessed by number.</p>
   `,
 
@@ -6409,7 +6886,8 @@ console.log(cart);
 //         Array is now ["apple"].
 // Line 3: same idea — push "banana".
 //         Array is now ["apple", "banana"].
-// Line 4: log the array → ["apple", "banana"]</code></pre>
+// Line 4: log the array → ["apple", "banana"]
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -6419,12 +6897,14 @@ console.log(cart);
     <p>If you're getting <code>undefined</code> from an array index, the index is probably out of range:</p>
 <pre class="language-javascript"><code class="language-javascript">const colors = ["red", "blue", "green"];
 console.log(colors[3]);    // undefined — there's no item at index 3
-console.log(colors.length);  // 3 — last valid index is 2</code></pre>
+console.log(colors.length);  // 3 — last valid index is 2
+</code></pre>
 
     <p>Off-by-one errors happen because indexes start at 0:</p>
 <pre class="language-javascript"><code class="language-javascript">const colors = ["red", "blue", "green"];
 const lastColor = colors[colors.length - 1];     // correct: "green"
-const lastColor2 = colors[colors.length];        // wrong: undefined</code></pre>
+const lastColor2 = colors[colors.length];        // wrong: undefined
+</code></pre>
 
     <p>If <code>console.log</code> shows the array changing when you didn't expect it to, something somewhere is mutating it. Arrays are passed by reference, so a function can modify the original:</p>
 <pre class="language-javascript"><code class="language-javascript">const items = ["a", "b"];
@@ -6438,7 +6918,8 @@ console.log(items);     // ["a", "b", "c"] — surprise!
 function modify(arr) {
   const copy = [...arr, "c"];
   return copy;
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -6455,7 +6936,8 @@ function modify(arr) {
 colors[0];     // "red"   — FIRST item
 colors[1];     // "blue"  — second
 colors[2];     // "green" — third (LAST item, since length is 3)
-colors[3];     // undefined</code></pre>
+colors[3];     // undefined
+</code></pre>
 
     <p><strong>Confusion: <code>const</code> doesn't make the array immutable</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const colors = ["red"];
@@ -6463,7 +6945,8 @@ colors[3];     // undefined</code></pre>
 colors.push("blue");      // works — modifying the array
 colors[0] = "green";       // works — changing an item
 
-colors = ["yellow"];       // wrong: reassigning, blocked by const</code></pre>
+colors = ["yellow"];       // wrong: reassigning, blocked by const
+</code></pre>
 
     <p><strong>Confusion: <code>length</code> is one bigger than the last index</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const items = ["a", "b", "c"];
@@ -6471,14 +6954,16 @@ colors = ["yellow"];       // wrong: reassigning, blocked by const</code></pre>
 items.length;           // 3 (count of items)
 items[2];               // "c" (last item, at index 2)
 items[items.length];    // undefined (one past the end)
-items[items.length - 1]; // "c" (correct way to get last)</code></pre>
+items[items.length - 1]; // "c" (correct way to get last)
+</code></pre>
 
     <p><strong>Confusion: arrays vs objects</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const arr = ["red", "blue"];        // array — items by NUMBER (index)
 const obj = { color: "red" };       // object — items by NAME (key)
 
 arr[0];           // "red"
-obj.color;        // "red"</code></pre>
+obj.color;        // "red"
+</code></pre>
   `,
 
   /* 2.3 Common mistakes */
@@ -6486,20 +6971,23 @@ obj.color;        // "red"</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const colors = ["red" "blue"];
 // wrong: missing comma between items
 // fix:
-const colors = ["red", "blue"];</code></pre>
+const colors = ["red", "blue"];
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const colors = ["red", "blue", "green"];
 const last = colors[3];
 // wrong: index 3 doesn't exist (length is 3, indexes go 0-2)
 // fix:
-const last = colors[colors.length - 1];</code></pre>
+const last = colors[colors.length - 1];
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const items = [];
 items = ["a", "b"];
 // wrong: reassigning a const array
 // fix: use push, or use let if you really need to swap
 items.push("a");
-items.push("b");</code></pre>
+items.push("b");
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const colors = ["red", "blue"];
 const copy = colors;
@@ -6509,14 +6997,16 @@ console.log(colors);   // ["red", "blue", "green"] — original got mutated!
 // fix: spread to make a real copy
 const copy = [...colors];
 copy.push("green");
-console.log(colors);   // ["red", "blue"] — unchanged</code></pre>
+console.log(colors);   // ["red", "blue"] — unchanged
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const cart = ["apple", "banana"];
 cart[5] = "cherry";
 console.log(cart.length);   // 6 — JS fills the gaps with empty slots
 console.log(cart[3]);        // undefined
 // fix: use push instead of skipping indexes
-cart.push("cherry");</code></pre>
+cart.push("cherry");
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -6546,7 +7036,8 @@ for (const n of numbers) {
 
 // Last item
 const items = ["a", "b", "c"];
-console.log(items[items.length - 1]);   // "c"</code></pre>
+console.log(items[items.length - 1]);   // "c"
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -6558,7 +7049,8 @@ addToCartBtn.addEventListener("click", (e) => {
   const productId = e.target.dataset.id;
   cart.push(productId);
   updateCartUI(cart);
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: rendering a list of items</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const tasks = ["buy milk", "walk dog", "send email"];
@@ -6567,14 +7059,16 @@ tasks.forEach((task) => {
   const li = document.createElement("li");
   li.textContent = task;
   taskList.appendChild(li);
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: storing API data</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const response = await fetch("/api/users");
 const users = await response.json();
 // users is now an array of user objects
 
-users.forEach(user => renderUserCard(user));</code></pre>
+users.forEach(user => renderUserCard(user));
+</code></pre>
 
     <p><strong>Example: tracking multi-select tags</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const selectedTags = [];
@@ -6583,7 +7077,8 @@ tagBtn.addEventListener("click", (e) => {
   const tag = e.target.dataset.tag;
   selectedTags.push(tag);
   updateFilters(selectedTags);
-});</code></pre>
+});
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -6636,7 +7131,8 @@ tagBtn.addEventListener("click", (e) => {
 
 const empty = {};
 
-let settings = { theme: "dark" };       // let if you'll reassign the variable</code></pre>
+let settings = { theme: "dark" };       // let if you'll reassign the variable
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -6651,7 +7147,8 @@ let settings = { theme: "dark" };       // let if you'll reassign the variable</
 // ,              → comma separates properties
 // age: 25        → another property: key "age", value 25
 // }              → closing curly brace — ends the object
-// ;              → ends the statement</code></pre>
+// ;              → ends the statement
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -6661,14 +7158,16 @@ let settings = { theme: "dark" };       // let if you'll reassign the variable</
   name: "Os",        // property: key, colon, value, comma
   age: 25,
   email: "os@a.com"  // last property — comma optional
-};</code></pre>
+};
+</code></pre>
 
     <p>Keys are usually unquoted strings. Quotes are needed only if the key has weird characters:</p>
 <pre class="language-javascript"><code class="language-javascript">const user = {
   name: "Os",          // unquoted key — most common
   "first-name": "Os",  // quoted: needed because of the dash
   "1st": "first"       // quoted: needed because keys can't start with a digit unquoted
-};</code></pre>
+};
+</code></pre>
 
     <p>Access properties with dot notation or bracket notation:</p>
 <pre class="language-javascript"><code class="language-javascript">const user = { name: "Os", age: 25 };
@@ -6679,7 +7178,8 @@ user.email;       // undefined — no such property
 
 // Bracket notation is needed when the key is in a variable:
 const key = "name";
-user[key];        // "Os"</code></pre>
+user[key];        // "Os"
+</code></pre>
 
     <p><code>const</code> doesn't freeze object contents — properties can still change:</p>
 <pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
@@ -6688,7 +7188,8 @@ user.name = "Sam";        // works — modifying the object
 user.age = 25;             // works — adding a new property
 delete user.name;          // works — removing a property
 
-user = { name: "Sam" };    // wrong: TypeError — reassigning, blocked by const</code></pre>
+user = { name: "Sam" };    // wrong: TypeError — reassigning, blocked by const
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -6728,7 +7229,8 @@ const response = {
   status: 200,
   message: "OK",
   data: [/* ... */]
-};</code></pre>
+};
+</code></pre>
   `,
 
   /* 1.2 Where you use it */
@@ -6761,7 +7263,8 @@ const products = [
 function createUser({ name, email, age }) {
   // ...
 }
-createUser({ name: "Os", email: "os@a.com", age: 25 });</code></pre>
+createUser({ name: "Os", email: "os@a.com", age: 25 });
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -6779,7 +7282,8 @@ createUser({ name: "Os", email: "os@a.com", age: 25 });</code></pre>
 //
 // user.name   → "Os"
 // user.age    → 25
-// user.email  → "os@a.com"</code></pre>
+// user.email  → "os@a.com"
+</code></pre>
     <p>The variable points at the whole bundle. Dot or bracket notation reaches into the bundle and grabs a specific value by its label.</p>
   `,
 
@@ -6795,7 +7299,8 @@ console.log(user);
 // Line 2: look up user → the object.
 //         user.age = 25 → add (or set) the property "age" with value 25.
 //         (const doesn't block this — we're modifying contents, not reassigning.)
-// Line 3: log user → { name: "Os", age: 25 }</code></pre>
+// Line 3: log user → { name: "Os", age: 25 }
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -6807,7 +7312,8 @@ console.log(user);
 
 user.email;       // undefined — no such property
 user.Name;        // undefined — typo, capital N (case-sensitive)
-user.name;        // "Os" — correct</code></pre>
+user.name;        // "Os" — correct
+</code></pre>
 
     <p>If you get <code>"Cannot read properties of undefined (reading 'X')"</code>, something earlier was undefined and you're trying to access a property on it:</p>
 <pre class="language-javascript"><code class="language-javascript">const user = await fetchUser();
@@ -6816,7 +7322,8 @@ console.log(user.profile.email);
 // (user.profile was undefined)
 
 // fix: optional chaining
-console.log(user.profile?.email);   // undefined instead of throwing</code></pre>
+console.log(user.profile?.email);   // undefined instead of throwing
+</code></pre>
 
     <p>If <code>console.log</code> shows the object changing unexpectedly, something is mutating it. Objects are passed by reference:</p>
 <pre class="language-javascript"><code class="language-javascript">const original = { name: "Os" };
@@ -6831,7 +7338,8 @@ console.log(original.name);   // "Sam"
 // fix: spread to make a copy
 function updateName(u) {
   return { ...u, name: "Sam" };
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -6850,7 +7358,8 @@ user["name"];     // bracket — same thing, just verbose
 
 const key = "name";
 user.key;         // undefined — looks for a literal "key" property
-user[key];        // "Os" — uses the value of the key variable</code></pre>
+user[key];        // "Os" — uses the value of the key variable
+</code></pre>
     <p>Use dot when the key is a fixed name. Use brackets when the key is in a variable, or has special characters.</p>
 
     <p><strong>Confusion: <code>const</code> doesn't freeze object contents</strong></p>
@@ -6859,13 +7368,15 @@ user[key];        // "Os" — uses the value of the key variable</code></pre>
 user.name = "Sam";       // works — changing properties is allowed
 user.age = 25;            // works — adding new properties is allowed
 
-user = { name: "Sam" };   // wrong: reassigning, blocked by const</code></pre>
+user = { name: "Sam" };   // wrong: reassigning, blocked by const
+</code></pre>
 
     <p><strong>Confusion: missing properties return <code>undefined</code></strong></p>
 <pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
 
 user.email;       // undefined — no error, no warning, just undefined
-user.profile.x;   // TypeError — can't read .x of undefined</code></pre>
+user.profile.x;   // TypeError — can't read .x of undefined
+</code></pre>
     <p>Accessing a missing property returns <code>undefined</code>. But trying to access a property OF that <code>undefined</code> throws an error.</p>
   `,
 
@@ -6880,18 +7391,21 @@ user.profile.x;   // TypeError — can't read .x of undefined</code></pre>
 const user = {
   name: "Os",
   age: 25
-};</code></pre>
+};
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
 user = { name: "Sam" };
 // wrong: reassigning, blocked by const
 // fix: modify properties, don't reassign
-user.name = "Sam";</code></pre>
+user.name = "Sam";
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
 console.log(user.Name);   // undefined — capital N is wrong
 // fix: keys are case-sensitive
-console.log(user.name);</code></pre>
+console.log(user.name);
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const original = { name: "Os" };
 const copy = original;
@@ -6899,13 +7413,15 @@ copy.name = "Sam";
 console.log(original.name);   // "Sam" — original mutated too!
 // objects are shared by reference
 // fix: spread for a real copy
-const copy = { ...original };</code></pre>
+const copy = { ...original };
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const user = { "first name": "Os" };
 console.log(user.first name);
 // wrong: SyntaxError — dot notation can't have spaces
 // fix: bracket notation
-console.log(user["first name"]);</code></pre>
+console.log(user["first name"]);
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -6939,7 +7455,8 @@ console.log(products[0].name);    // "Mug"
 // Bracket notation for dynamic keys
 const key = "name";
 const user2 = { name: "Sam" };
-console.log(user2[key]);          // "Sam"</code></pre>
+console.log(user2[key]);          // "Sam"
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -6955,7 +7472,8 @@ console.log(user2[key]);          // "Sam"</code></pre>
 loginBtn.addEventListener("click", async () => {
   appState.currentUser = await login();
   appState.isLoggedIn = true;
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: storing user profile data</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const profile = {
@@ -6964,7 +7482,8 @@ loginBtn.addEventListener("click", async () => {
   age: Number(ageInput.value)
 };
 
-await saveProfile(profile);</code></pre>
+await saveProfile(profile);
+</code></pre>
 
     <p><strong>Example: configuration</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const config = {
@@ -6972,7 +7491,8 @@ await saveProfile(profile);</code></pre>
   timeout: 5000,
   retries: 3,
   debug: false
-};</code></pre>
+};
+</code></pre>
 
     <p><strong>Example: rendering a list of objects from an API</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const response = await fetch("/api/products");
@@ -6984,7 +7504,8 @@ products.forEach(product => {
   const card = document.createElement("div");
   card.textContent = \`\${product.name} - \$\${product.price}\`;
   productList.appendChild(card);
-});</code></pre>
+});
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -7038,7 +7559,8 @@ const firstLink = document.querySelector("a");
 
 // Multiple elements (returns a NodeList — like an array)
 const allButtons = document.querySelectorAll("button");
-const navLinks = document.querySelectorAll(".nav-link");</code></pre>
+const navLinks = document.querySelectorAll(".nav-link");
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -7052,7 +7574,8 @@ const navLinks = document.querySelectorAll(".nav-link");</code></pre>
 // ".submit"                       → CSS selector (class with a dot prefix)
 // ;                               → ends the statement
 
-// The variable now holds a reference to the actual button on the page.</code></pre>
+// The variable now holds a reference to the actual button on the page.
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -7062,23 +7585,27 @@ const navLinks = document.querySelectorAll(".nav-link");</code></pre>
 document.querySelector("#main");        // id — needs the hash
 document.querySelector("button");       // tag — no prefix
 document.querySelector(".form .btn");   // descendant — space between
-document.querySelector("[data-id]");    // attribute selector</code></pre>
+document.querySelector("[data-id]");    // attribute selector
+</code></pre>
 
     <p>Use <code>const</code> — almost always. The selected element doesn't change once stored:</p>
 <pre class="language-javascript"><code class="language-javascript">const button = document.querySelector(".btn");      // correct — won't be reassigned
 let button = document.querySelector(".btn");         // works, but signals it'll change
-                                                       // — misleading if it never does</code></pre>
+                                                       // — misleading if it never does
+</code></pre>
 
     <p><code>querySelector</code> returns the FIRST match. <code>querySelectorAll</code> returns ALL matches:</p>
 <pre class="language-javascript"><code class="language-javascript">document.querySelector(".item");        // first .item element
-document.querySelectorAll(".item");      // all .item elements (a NodeList)</code></pre>
+document.querySelectorAll(".item");      // all .item elements (a NodeList)
+</code></pre>
 
     <p>If no element matches, <code>querySelector</code> returns <code>null</code>:</p>
 <pre class="language-javascript"><code class="language-javascript">const ghost = document.querySelector(".does-not-exist");
 console.log(ghost);                                   // null
 
 ghost.textContent = "hello";
-// TypeError: Cannot set properties of null (setting 'textContent')</code></pre>
+// TypeError: Cannot set properties of null (setting 'textContent')
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -7103,7 +7630,8 @@ const btn = document.querySelector(".btn");
 btn.textContent = "Click";
 btn.classList.add("ready");
 btn.addEventListener("click", handle);
-btn.disabled = false;</code></pre>
+btn.disabled = false;
+</code></pre>
     <p>Same code, but cleaner and faster. The page is only searched one time.</p>
   `,
 
@@ -7132,7 +7660,8 @@ function setupCard(card) {
   const title = card.querySelector(".title");
   const button = card.querySelector(".btn");
   // ...
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -7150,7 +7679,8 @@ function setupCard(card) {
 //
 // Anything you do through btn affects the real button:
 btn.textContent = "Hello";       // changes the real button's text
-btn.classList.add("active");      // adds the class to the real button</code></pre>
+btn.classList.add("active");      // adds the class to the real button
+</code></pre>
     <p>If the page updates the element somehow (its text changes, its class changes), the variable still points at it. The variable just holds the reference.</p>
   `,
 
@@ -7172,7 +7702,8 @@ btn.addEventListener("click", () => {
 //         Set its textContent to "Click me" — the page updates.
 //
 // Line 3-5: look up btn → the button.
-//         Attach a click listener. When clicked, run the callback.</code></pre>
+//         Attach a click listener. When clicked, run the callback.
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -7185,7 +7716,8 @@ btn.textContent = "Click";
 // TypeError: Cannot read properties of null (setting 'textContent')
 
 // fix: check the selector
-const btn = document.querySelector(".submit");</code></pre>
+const btn = document.querySelector(".submit");
+</code></pre>
 
     <p>If the selector returns nothing but the element IS in your HTML, the script might be running before the page is loaded:</p>
 <pre class="language-javascript"><code class="language-javascript">// HTML loads from top to bottom.
@@ -7194,11 +7726,13 @@ const btn = document.querySelector(".btn");
 console.log(btn);     // null — element doesn't exist yet
 
 // fix: put your &lt;script&gt; before the closing &lt;/body&gt;
-// or use the defer attribute: &lt;script src="..." defer&gt;&lt;/script&gt;</code></pre>
+// or use the defer attribute: &lt;script src="..." defer&gt;&lt;/script&gt;
+</code></pre>
 
     <p>Always check the selector with <code>console.log</code> right after selecting:</p>
 <pre class="language-javascript"><code class="language-javascript">const btn = document.querySelector(".btn");
-console.log(btn);     // confirm: is it the element, or null?</code></pre>
+console.log(btn);     // confirm: is it the element, or null?
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -7218,7 +7752,8 @@ oneBtn.textContent = "Click";            // works — it's a single element
 
 const allBtns = document.querySelectorAll(".btn");
 allBtns.textContent = "Click";           // wrong — NodeList doesn't have textContent
-allBtns.forEach(btn => btn.textContent = "Click");   // correct</code></pre>
+allBtns.forEach(btn => btn.textContent = "Click");   // correct
+</code></pre>
 
     <p><strong>Confusion: NodeList vs Array</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const btns = document.querySelectorAll(".btn");
@@ -7230,7 +7765,8 @@ btns[0];           // works — NodeList supports indexing
 
 // fix: convert to a real array if you need full array methods
 const arr = [...btns];
-arr.map(...);      // works now</code></pre>
+arr.map(...);      // works now
+</code></pre>
 
     <p><strong>Confusion: searching from <code>document</code> vs searching from an element</strong></p>
 <pre class="language-javascript"><code class="language-javascript">// document.querySelector searches the WHOLE page
@@ -7238,7 +7774,8 @@ const allBtns = document.querySelectorAll(".btn");
 
 // element.querySelector searches inside that element
 const card = document.querySelector(".card");
-const cardBtn = card.querySelector(".btn");   // only the .btn inside this card</code></pre>
+const cardBtn = card.querySelector(".btn");   // only the .btn inside this card
+</code></pre>
   `,
 
   /* 2.3 Common mistakes */
@@ -7246,7 +7783,8 @@ const cardBtn = card.querySelector(".btn");   // only the .btn inside this card<
 <pre class="language-javascript"><code class="language-javascript">const btn = document.querySelector("submit");
 // wrong: forgot the dot — querySelector now looks for a &lt;submit&gt; tag, which doesn't exist
 // fix:
-const btn = document.querySelector(".submit");</code></pre>
+const btn = document.querySelector(".submit");
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const btn = document.querySelector(".btn");
 btn.textContent = "Click";
@@ -7254,22 +7792,26 @@ btn.textContent = "Click";
 // fix: guard against null
 if (btn) {
   btn.textContent = "Click";
-}</code></pre>
+}
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">// In &lt;head&gt; before HTML loads:
 const btn = document.querySelector(".btn");   // null — page isn't ready
-// fix: load script at end of body, or use defer</code></pre>
+// fix: load script at end of body, or use defer
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const allBtns = document.querySelectorAll(".btn");
 allBtns.textContent = "Click";
 // wrong: querySelectorAll returns a NodeList, not a single element
 // fix: loop through them
-allBtns.forEach(btn => btn.textContent = "Click");</code></pre>
+allBtns.forEach(btn => btn.textContent = "Click");
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">let btn = document.querySelector(".btn");
 // works, but should probably be const — won't be reassigned
 // fix:
-const btn = document.querySelector(".btn");</code></pre>
+const btn = document.querySelector(".btn");
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -7298,7 +7840,8 @@ btn.addEventListener("click", () => {
 
 // Search inside a parent
 const card = document.querySelector(".card");
-const cardTitle = card.querySelector(".title");</code></pre>
+const cardTitle = card.querySelector(".title");
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -7308,7 +7851,8 @@ const cardTitle = card.querySelector(".title");</code></pre>
 const nameInput = document.querySelector("#name");
 const emailInput = document.querySelector("#email");
 const submitBtn = document.querySelector(".submit");
-const errorMsg = document.querySelector(".error");</code></pre>
+const errorMsg = document.querySelector(".error");
+</code></pre>
 
     <p><strong>Example: attaching a click listener</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const hamburgerBtn = document.querySelector(".hamburger");
@@ -7316,7 +7860,8 @@ const menu = document.querySelector(".mobile-menu");
 
 hamburgerBtn.addEventListener("click", () => {
   menu.classList.toggle("open");
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: looping over a list of elements</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const tabButtons = document.querySelectorAll(".tab-btn");
@@ -7325,7 +7870,8 @@ tabButtons.forEach((btn) => {
   btn.addEventListener("click", () => {
     activateTab(btn.dataset.tab);
   });
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: updating text and styles dynamically</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const cartBadge = document.querySelector(".cart-count");
@@ -7336,7 +7882,8 @@ addToCartBtn.addEventListener("click", () => {
   cartCount = cartCount + 1;
   cartBadge.textContent = cartCount;
   cartIcon.classList.add("bounce");
-});</code></pre>
+});
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -7391,7 +7938,8 @@ console.log(result);                // 10
 // Inline / one-line examples
 const upperName = "os".toUpperCase();    // "OS"
 const today = new Date();                 // current date object
-const random = Math.random();             // random number 0–1</code></pre>
+const random = Math.random();             // random number 0–1
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -7405,7 +7953,8 @@ const random = Math.random();             // random number 0–1</code></pre>
 // (5)       → the argument passed in (parentheses with the input)
 // ;         → ends the statement
 
-// JS calls double(5) first, gets 10 back, then puts 10 into result.</code></pre>
+// JS calls double(5) first, gets 10 back, then puts 10 into result.
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -7417,7 +7966,8 @@ const random = Math.random();             // random number 0–1</code></pre>
 
 const a = double(5);     // 10 — called the function, stored the result
 const b = double;         // (the function itself) — stored the function reference
-const c = double();       // NaN — called with no argument, num is undefined</code></pre>
+const c = double();       // NaN — called with no argument, num is undefined
+</code></pre>
 
     <p>If a function has no <code>return</code>, you get <code>undefined</code>:</p>
 <pre class="language-javascript"><code class="language-javascript">function greet(name) {
@@ -7425,7 +7975,8 @@ const c = double();       // NaN — called with no argument, num is undefined</
 }
 
 const message = greet("Os");      // "Hi Os" gets logged
-console.log(message);             // undefined — nothing was returned</code></pre>
+console.log(message);             // undefined — nothing was returned
+</code></pre>
 
     <p>Method chaining means storing the result of one method, then calling another on it. JavaScript lets you skip the intermediate variable:</p>
 <pre class="language-javascript"><code class="language-javascript">// Step by step
@@ -7433,11 +7984,13 @@ const trimmed = "  Os  ".trim();        // "Os"
 const upper = trimmed.toUpperCase();    // "OS"
 
 // Chained — same result, less code
-const upper = "  Os  ".trim().toUpperCase();   // "OS"</code></pre>
+const upper = "  Os  ".trim().toUpperCase();   // "OS"
+</code></pre>
 
     <p>Async functions return a Promise. To get the actual value, use <code>await</code>:</p>
 <pre class="language-javascript"><code class="language-javascript">const data = fetch("/api/users");        // a Promise, not the data!
-const data = await fetch("/api/users");   // the actual response — but only inside an async function</code></pre>
+const data = await fetch("/api/users");   // the actual response — but only inside an async function
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -7458,7 +8011,8 @@ sendInvoice(price + calculateTax(price));   // tax computed again
 // With storing — calculate once, reuse
 const tax = calculateTax(price);
 console.log(tax);
-sendInvoice(price + tax);</code></pre>
+sendInvoice(price + tax);
+</code></pre>
     <p>Storing also makes the code easier to read — the variable's name explains what the result is.</p>
   `,
 
@@ -7482,7 +8036,8 @@ const isValid = validateEmail(emailInput.value);
 
 // Date / time
 const now = new Date();
-const timestamp = Date.now();</code></pre>
+const timestamp = Date.now();
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -7502,7 +8057,8 @@ const timestamp = Date.now();</code></pre>
 //
 // Step 2 (left side): JS puts the returned 10 into result
 //
-// Final state: result → 10</code></pre>
+// Final state: result → 10
+</code></pre>
     <p>The function does its work, returns a value, and that value is what gets stored. The variable doesn't store the function — it stores the function's output.</p>
   `,
 
@@ -7524,7 +8080,8 @@ console.log(sum);
 //         The function gives back 5.
 //         Store 5 in sum.
 //
-// Line 6: look up sum → 5 → log 5.</code></pre>
+// Line 6: look up sum → 5 → log 5.
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -7537,7 +8094,8 @@ console.log(sum);
 }
 
 const result = double(5);
-console.log(result);    // undefined — no return statement</code></pre>
+console.log(result);    // undefined — no return statement
+</code></pre>
 
     <p>If you accidentally stored the function instead of calling it, your variable holds a function — not a value:</p>
 <pre class="language-javascript"><code class="language-javascript">function getName() {
@@ -7549,11 +8107,13 @@ console.log(name);           // [Function: getName]
 console.log(typeof name);    // "function"
 
 // fix: call the function
-const name = getName();      // "Os"</code></pre>
+const name = getName();      // "Os"
+</code></pre>
 
     <p>If you're working with async functions and your variable is a <code>Promise</code> instead of the value, you forgot <code>await</code>:</p>
 <pre class="language-javascript"><code class="language-javascript">const data = fetch("/api");           // Promise, not the response
-const data = await fetch("/api");      // the actual response</code></pre>
+const data = await fetch("/api");      // the actual response
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -7572,7 +8132,8 @@ const b = getName();     // stored the RESULT ("Os")
 
 a;       // [Function]
 a();     // "Os" — call it later
-b;       // "Os"</code></pre>
+b;       // "Os"
+</code></pre>
 
     <p><strong>Confusion: <code>console.log</code> doesn't return anything</strong></p>
 <pre class="language-javascript"><code class="language-javascript">function showName(name) {
@@ -7583,7 +8144,8 @@ const x = showName("Os");
 console.log(x);           // undefined — function didn't return
 
 // console.log is for HUMANS to see.
-// return is for the rest of your code to USE.</code></pre>
+// return is for the rest of your code to USE.
+</code></pre>
 
     <p><strong>Confusion: async functions return Promises, not values</strong></p>
 <pre class="language-javascript"><code class="language-javascript">async function getUsers() {
@@ -7592,7 +8154,8 @@ console.log(x);           // undefined — function didn't return
 }
 
 const users = getUsers();          // Promise, not users!
-const users = await getUsers();    // actual users (only inside another async fn)</code></pre>
+const users = await getUsers();    // actual users (only inside another async fn)
+</code></pre>
   `,
 
   /* 2.3 Common mistakes */
@@ -7605,12 +8168,14 @@ console.log(result);   // undefined
 // fix: add return
 function double(num) {
   return num * 2;
-}</code></pre>
+}
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const result = double;     // missing parens
 // stores the function itself, not the result
 // fix:
-const result = double(5);</code></pre>
+const result = double(5);
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">function greet(name) {
   console.log("Hi " + name);
@@ -7620,17 +8185,20 @@ const msg = greet("Os");
 // fix: console.log shows, return hands back
 function greet(name) {
   return "Hi " + name;
-}</code></pre>
+}
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const data = fetch("/api/users");
 console.log(data);     // a Promise — not the data
 // fix: await it (and put it inside an async function)
-const data = await fetch("/api/users");</code></pre>
+const data = await fetch("/api/users");
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const a = double 5;
 // wrong: missing parentheses around the argument
 // fix:
-const a = double(5);</code></pre>
+const a = double(5);
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -7658,7 +8226,8 @@ const rounded = Math.round(4.7);   // 5
 
 // Async with await (inside an async function)
 const response = await fetch("/api");
-const data = await response.json();</code></pre>
+const data = await response.json();
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -7667,19 +8236,22 @@ const data = await response.json();</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const subtotal = calculateSubtotal(cartItems);
 const tax = calculateTax(subtotal);
 const total = subtotal + tax;
-displayCheckout(total);</code></pre>
+displayCheckout(total);
+</code></pre>
 
     <p><strong>Example: storing API data</strong></p>
 <pre class="language-javascript"><code class="language-javascript">async function loadUsers() {
   const response = await fetch("/api/users");
   const users = await response.json();
   renderUserList(users);
-}</code></pre>
+}
+</code></pre>
 
     <p><strong>Example: cleaning up form input</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const cleanEmail = emailInput.value.trim().toLowerCase();
 const cleanName = nameInput.value.trim();
-saveUser({ email: cleanEmail, name: cleanName });</code></pre>
+saveUser({ email: cleanEmail, name: cleanName });
+</code></pre>
 
     <p><strong>Example: storing validation results</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const isEmailValid = validateEmail(emailInput.value);
@@ -7687,7 +8259,8 @@ const isPasswordStrong = checkPasswordStrength(passwordInput.value);
 
 if (isEmailValid && isPasswordStrong) {
   submitForm();
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -7737,7 +8310,8 @@ const user = { name: "Os" };
 console.log(user.email);   // undefined — no email property exists
 
 function greet() {}        // no return statement
-console.log(greet());      // undefined — function returned nothing</code></pre>
+console.log(greet());      // undefined — function returned nothing
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -7753,7 +8327,8 @@ console.log(userName);
 // console.log(userName) → prints whatever's inside → undefined
 
 // undefined isn't a string. It's a special built-in value
-// that means "this slot is empty because nothing has filled it yet."</code></pre>
+// that means "this slot is empty because nothing has filled it yet."
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -7771,14 +8346,16 @@ console.log(obj.email);    // undefined
 
 // 3. Function with no return
 function silent() {}
-console.log(silent());     // undefined</code></pre>
+console.log(silent());     // undefined
+</code></pre>
 
     <p><code>undefined</code> is its own type:</p>
 <pre class="language-javascript"><code class="language-javascript">let x;
 console.log(typeof x);     // "undefined"
 
 const y = undefined;
-console.log(typeof y);     // "undefined"</code></pre>
+console.log(typeof y);     // "undefined"
+</code></pre>
 
     <p>Comparing with <code>===</code> is the safe way to check for it:</p>
 <pre class="language-javascript"><code class="language-javascript">let userName;
@@ -7789,7 +8366,8 @@ if (userName === undefined) {
 
 if (typeof userName === "undefined") {
   console.log("also works");         // runs — useful if variable might not exist at all
-}</code></pre>
+}
+</code></pre>
 
     <p><code>undefined</code> is NOT the same as <code>null</code>:</p>
 <pre class="language-javascript"><code class="language-javascript">let a;
@@ -7797,7 +8375,8 @@ let b = null;
 
 console.log(a === null);        // false — undefined isn't null
 console.log(a === undefined);   // true
-console.log(a == null);          // true (loose check, treats null and undefined as equal)</code></pre>
+console.log(a == null);          // true (loose check, treats null and undefined as equal)
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -7823,7 +8402,8 @@ console.log(user.Name);       // undefined — wrong casing
 function calculate() {
   // forgot to write: return result
 }
-const result = calculate();   // undefined</code></pre>
+const result = calculate();   // undefined
+</code></pre>
     <p>If you see <code>undefined</code> where you expected a real value, work backwards to find where the value was supposed to come from.</p>
   `,
 
@@ -7850,7 +8430,8 @@ function greet(name = "friend") {
 
 // Optional chaining for missing properties
 const user = {};
-const email = user.profile?.email;   // undefined (no error)</code></pre>
+const email = user.profile?.email;   // undefined (no error)
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -7869,7 +8450,8 @@ a = 5;
 // a  →  5  (now it has a value)
 
 console.log(b);
-// ReferenceError — b doesn't exist at all (not even undefined)</code></pre>
+// ReferenceError — b doesn't exist at all (not even undefined)
+</code></pre>
     <p>There's a difference between <strong>"empty container"</strong> (undefined) and <strong>"no container"</strong> (ReferenceError). Both feel like "nothing," but they mean different things.</p>
   `,
 
@@ -7894,7 +8476,8 @@ console.log(greet());
 // Line 4: look up user.email → no such property → return undefined → log undefined.
 //
 // Line 5-7: declare greet. It logs "hi" but doesn't return anything.
-// Line 8: call greet() → logs "hi" → function returns nothing → undefined → log undefined.</code></pre>
+// Line 8: call greet() → logs "hi" → function returns nothing → undefined → log undefined.
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -7929,7 +8512,8 @@ function greet(name) {
 async function getUser() { return { name: "Os" }; }
 const user = getUser();      // Promise, not the user
 console.log(user.name);       // undefined (because user is a Promise)
-// fix: await it</code></pre>
+// fix: await it
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -7951,23 +8535,27 @@ let b = null;
 console.log(a);              // undefined
 console.log(b);              // null
 console.log(a == b);          // true (loose equality treats them as equal)
-console.log(a === b);         // false (strict equality keeps them apart)</code></pre>
+console.log(a === b);         // false (strict equality keeps them apart)
+</code></pre>
 
     <p><strong>Confusion: <code>undefined</code> vs not declared</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let a;
 console.log(a);              // undefined — variable EXISTS, no value
-console.log(b);              // ReferenceError — variable doesn't exist at all</code></pre>
+console.log(b);              // ReferenceError — variable doesn't exist at all
+</code></pre>
 
     <p><strong>Confusion: <code>undefined</code> as a string</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let a;
 console.log(a);                // undefined (the value)
 console.log("undefined");      // "undefined" (the string)
-console.log(a === "undefined"); // false — totally different things</code></pre>
+console.log(a === "undefined"); // false — totally different things
+</code></pre>
 
     <p><strong>Confusion: <code>typeof undefined</code> is the string <code>"undefined"</code></strong></p>
 <pre class="language-javascript"><code class="language-javascript">let a;
 console.log(typeof a);              // "undefined" — string!
-console.log(typeof a === "undefined");   // true</code></pre>
+console.log(typeof a === "undefined");   // true
+</code></pre>
   `,
 
   /* 2.3 Common mistakes */
@@ -7976,7 +8564,8 @@ console.log(typeof a === "undefined");   // true</code></pre>
 if (userName == "undefined") { }
 // wrong: comparing to the STRING "undefined"
 // fix: compare to the actual value
-if (userName === undefined) { }</code></pre>
+if (userName === undefined) { }
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">function getName() {
   // forgot return
@@ -7984,23 +8573,27 @@ if (userName === undefined) { }</code></pre>
 const name = getName();
 console.log(name.toUpperCase());
 // TypeError: Cannot read properties of undefined (reading 'toUpperCase')
-// fix: return from the function, or check for undefined before using</code></pre>
+// fix: return from the function, or check for undefined before using
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const user = {};
 console.log(user.profile.email);
 // TypeError — user.profile is undefined, can't read .email of undefined
 // fix: optional chaining
-console.log(user.profile?.email);   // undefined, no error</code></pre>
+console.log(user.profile?.email);   // undefined, no error
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">let result = undefined;
 // works, but unusual — you almost never need to write undefined yourself
-// fix: leave the variable empty (let result;) or use null intentionally</code></pre>
+// fix: leave the variable empty (let result;) or use null intentionally
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">if (cartTotal) { }
 // wrong if cartTotal could be 0 — 0 is falsy AND undefined is falsy
 // the if doesn't run for either
 // fix: check explicitly
-if (cartTotal !== undefined) { }</code></pre>
+if (cartTotal !== undefined) { }
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -8030,7 +8623,8 @@ console.log(cartTotal);               // 0
 function greet(name = "friend") {
   return "Hi " + name;
 }
-console.log(greet());                 // "Hi friend"</code></pre>
+console.log(greet());                 // "Hi friend"
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -8043,7 +8637,8 @@ console.log(greet());                 // "Hi friend"</code></pre>
 }
 
 showAlert("Saved!");           // type → "info"
-showAlert("Error", "danger");  // type → "danger"</code></pre>
+showAlert("Error", "danger");  // type → "danger"
+</code></pre>
 
     <p><strong>Example: safely accessing nested data from an API</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const response = await fetch("/api/user");
@@ -8054,7 +8649,8 @@ const email = user.profile?.email;
 
 if (email !== undefined) {
   emailInput.value = email;
-}</code></pre>
+}
+</code></pre>
 
     <p><strong>Example: checking if a function returned</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const cached = getCachedValue("user");
@@ -8064,14 +8660,16 @@ if (cached === undefined) {
   const fresh = await fetch("/api/user");
   return fresh;
 }
-return cached;</code></pre>
+return cached;
+</code></pre>
 
     <p><strong>Example: handling form fields the user might leave blank</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const phoneInput = document.querySelector("#phone");
 
 const phone = phoneInput.value || undefined;
 // empty string becomes undefined — useful for optional API fields
-saveContact({ name, email, phone });</code></pre>
+saveContact({ name, email, phone });
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -8123,7 +8721,8 @@ saveContact({ name, email, phone });</code></pre>
 
 const result = calculatePrice({ price: 100 });
 console.log(result);     // 108
-console.log(tax);        // ReferenceError — tax doesn't exist out here</code></pre>
+console.log(tax);        // ReferenceError — tax doesn't exist out here
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -8143,7 +8742,8 @@ console.log(tax);        // ReferenceError — tax doesn't exist out here</code>
 //
 //   return greeting;
 //   ↑ value goes out, but the variable itself doesn't survive
-// }</code></pre>
+// }
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -8155,7 +8755,8 @@ console.log(tax);        // ReferenceError — tax doesn't exist out here</code>
 }
 
 example();
-console.log(local);          // ReferenceError — local doesn't exist here</code></pre>
+console.log(local);          // ReferenceError — local doesn't exist here
+</code></pre>
 
     <p>Each function call creates fresh variables — they don't carry over between calls:</p>
 <pre class="language-javascript"><code class="language-javascript">function counter() {
@@ -8166,7 +8767,8 @@ console.log(local);          // ReferenceError — local doesn't exist here</cod
 
 counter();    // 1
 counter();    // 1 — fresh count each time
-counter();    // 1 — still fresh</code></pre>
+counter();    // 1 — still fresh
+</code></pre>
 
     <p>Function parameters are also local variables:</p>
 <pre class="language-javascript"><code class="language-javascript">function greet(name) {
@@ -8175,7 +8777,8 @@ counter();    // 1 — still fresh</code></pre>
 }
 
 greet("Os");
-console.log(name);          // ReferenceError or window.name — not the parameter</code></pre>
+console.log(name);          // ReferenceError or window.name — not the parameter
+</code></pre>
 
     <p>Inner functions can see outer variables, but not the other way around:</p>
 <pre class="language-javascript"><code class="language-javascript">const outer = "outer value";
@@ -8186,7 +8789,8 @@ function example() {
   console.log(inner);       // works
 }
 
-console.log(inner);         // ReferenceError — outer can't see inner</code></pre>
+console.log(inner);         // ReferenceError — outer can't see inner
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -8210,7 +8814,8 @@ function calculate() {
 function calculate(price, quantity) {
   const total = price * quantity;
   return total;
-}</code></pre>
+}
+</code></pre>
     <p>If a function needs a value from outside, take it as a parameter. If it needs to send something out, return it. That's how functions communicate cleanly.</p>
   `,
 
@@ -8243,7 +8848,8 @@ function validateEmail(input) {
   const trimmed = input.trim();
   const isValid = trimmed.includes("@");
   return isValid;
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -8264,7 +8870,8 @@ greet("Os");      // call 1: creates message="Hi Os", returns it, message destro
 greet("Sam");     // call 2: creates a NEW message="Hi Sam", returns it, destroyed
 greet("Pat");     // call 3: again, brand new message variable
 
-// Each call's variables are completely independent.</code></pre>
+// Each call's variables are completely independent.
+</code></pre>
   `,
 
   /* 1.5 Step-by-step walkthrough */
@@ -8290,7 +8897,8 @@ console.log(tax);
 //   - 108 lands in result.
 //
 // Line 8: log result → 108.
-// Line 9: log tax → ReferenceError — tax was destroyed when the function finished.</code></pre>
+// Line 9: log tax → ReferenceError — tax was destroyed when the function finished.
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -8317,7 +8925,8 @@ console.log(total);
 let total;
 function calculate() {
   total = 100;
-}</code></pre>
+}
+</code></pre>
 
     <p>If a function isn't seeing changes you expect, you might be accidentally creating a NEW local variable instead of updating the outer one:</p>
 <pre class="language-javascript"><code class="language-javascript">let count = 0;
@@ -8332,7 +8941,8 @@ console.log(count);           // 0 — outer count never changed
 // fix: drop the let — assign to the outer count
 function increment() {
   count = count + 1;
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -8350,7 +8960,8 @@ function increment() {
 }
 
 greet("Os");
-console.log(name);    // not the parameter — ReferenceError or unrelated</code></pre>
+console.log(name);    // not the parameter — ReferenceError or unrelated
+</code></pre>
 
     <p><strong>Confusion: variables don't carry between calls</strong></p>
 <pre class="language-javascript"><code class="language-javascript">function counter() {
@@ -8371,7 +8982,8 @@ function counter() {
 }
 counter();    // 1
 counter();    // 2
-counter();    // 3</code></pre>
+counter();    // 3
+</code></pre>
 
     <p><strong>Confusion: inner functions CAN see outer variables (closures)</strong></p>
 <pre class="language-javascript"><code class="language-javascript">function outer() {
@@ -8383,7 +8995,8 @@ counter();    // 3</code></pre>
 
   inner();
 }
-outer();   // "from outer"</code></pre>
+outer();   // "from outer"
+</code></pre>
   `,
 
   /* 2.3 Common mistakes */
@@ -8398,7 +9011,8 @@ console.log(total);
 function calculate() {
   return 100;
 }
-const total = calculate();</code></pre>
+const total = calculate();
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">let count = 0;
 function increment() {
@@ -8408,7 +9022,8 @@ function increment() {
 // fix: drop the let
 function increment() {
   count = count + 1;
-}</code></pre>
+}
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">function greet() {
   message = "hi";    // forgot let/const — creates a global by accident
@@ -8419,7 +9034,8 @@ console.log(message);    // "hi" — leaked into global scope
 function greet() {
   const message = "hi";
   return message;
-}</code></pre>
+}
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">function counter() {
   let count = 0;
@@ -8433,7 +9049,8 @@ let count = 0;
 function counter() {
   count++;
   return count;
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -8471,7 +9088,8 @@ function outer() {
   }
   return inner();
 }
-outer();    // 20</code></pre>
+outer();    // 20
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -8485,7 +9103,8 @@ outer();    // 20</code></pre>
   const isPasswordLong = password.length >= 8;
 
   return isEmailValid && isPasswordLong;
-}</code></pre>
+}
+</code></pre>
 
     <p><strong>Example: event handler with local state</strong></p>
 <pre class="language-javascript"><code class="language-javascript">submitBtn.addEventListener("click", () => {
@@ -8494,7 +9113,8 @@ outer();    // 20</code></pre>
   const email = formData.get("email");
 
   saveUser({ name, email });
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: data transformation</strong></p>
 <pre class="language-javascript"><code class="language-javascript">function buildUserCard(user) {
@@ -8507,7 +9127,8 @@ outer();    // 20</code></pre>
     &lt;/div&gt;
   \`;
   return html;
-}</code></pre>
+}
+</code></pre>
 
     <p><strong>Example: each call totally independent</strong></p>
 <pre class="language-javascript"><code class="language-javascript">function calculateOrder(items) {
@@ -8518,7 +9139,8 @@ outer();    // 20</code></pre>
 }
 
 calculateOrder(cart1);   // its own subtotal, tax, total
-calculateOrder(cart2);   // completely separate</code></pre>
+calculateOrder(cart2);   // completely separate
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -8572,7 +9194,8 @@ function addToCart() {
 }
 
 addToCart();
-console.log(cartCount);             // 1 — accessible here too</code></pre>
+console.log(cartCount);             // 1 — accessible here too
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -8585,7 +9208,8 @@ let cartCount = 0;
 // = "..."         → value
 //
 // Because the declaration is OUTSIDE any function or block,
-// the variable is "top-level" — visible to every function below.</code></pre>
+// the variable is "top-level" — visible to every function below.
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -8599,7 +9223,8 @@ function fetchUsers() {
 
 function fetchProducts() {
   console.log(API_URL);     // also works
-}</code></pre>
+}
+</code></pre>
 
     <p>Functions can both read and write top-level variables:</p>
 <pre class="language-javascript"><code class="language-javascript">let cartCount = 0;
@@ -8610,7 +9235,8 @@ function addToCart() {
 
 addToCart();
 addToCart();
-console.log(cartCount);          // 2 — changes persist</code></pre>
+console.log(cartCount);          // 2 — changes persist
+</code></pre>
 
     <p>Order matters — a function can only see variables declared <em>before</em> the function runs:</p>
 <pre class="language-javascript"><code class="language-javascript">function showName() {
@@ -8619,7 +9245,8 @@ console.log(cartCount);          // 2 — changes persist</code></pre>
 
 showName();              // ReferenceError if userName not yet declared
 const userName = "Os";
-showName();              // "Os" — now works</code></pre>
+showName();              // "Os" — now works
+</code></pre>
 
     <p>If you forget <code>const</code>/<code>let</code>/<code>var</code>, you accidentally create a global — bad practice:</p>
 <pre class="language-javascript"><code class="language-javascript">function setup() {
@@ -8633,7 +9260,8 @@ console.log(config);                  // accessible — but unintended
 function setup() {
   const config = { theme: "dark" };
   return config;
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -8663,7 +9291,8 @@ const errorMsg = document.querySelector(".error");
 function login() {
   isLoggedIn = true;             // updates shared state
   submitBtn.disabled = false;    // uses shared element
-}</code></pre>
+}
+</code></pre>
     <p>If a value is only used inside one function, declare it <em>inside</em> that function instead. Don't pollute the top of your file with things that don't need to be shared.</p>
   `,
 
@@ -8691,7 +9320,8 @@ function addToCart(item) {
 
 submitBtn.addEventListener("click", () => {
   // can use isLoggedIn, cartItems, BASE_URL — all top-level
-});</code></pre>
+});
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -8713,7 +9343,8 @@ function room1() {
 function room2() {
   console.log(sharedConfig);     // works — same shelf
   console.log(localToRoom1);     // ReferenceError — that's in room1, not here
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 1.5 Step-by-step walkthrough */
@@ -8741,7 +9372,8 @@ console.log(cartCount);
 //   - Look up cartCount → 1 (still the same top-level variable).
 //   - Add 1 → 2. Update cartCount to 2.
 //
-// Line 9: log cartCount → 2.</code></pre>
+// Line 9: log cartCount → 2.
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -8761,7 +9393,8 @@ console.log(count);              // 0 — outer count never changed
 // fix: drop the let to use the outer one
 function increment() {
   count = count + 1;
-}</code></pre>
+}
+</code></pre>
 
     <p>If you accidentally created a global by forgetting <code>let</code>/<code>const</code>, you'll get strange behavior — something is updating that variable from places you don't expect:</p>
 <pre class="language-javascript"><code class="language-javascript">function setup() {
@@ -8775,7 +9408,8 @@ console.log(config);              // unexpectedly accessible
 function setup() {
   const config = { theme: "dark" };
   return config;
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -8795,7 +9429,8 @@ function reset() {
 }
 
 reset();
-console.log(count);     // 0 — outer count untouched</code></pre>
+console.log(count);     // 0 — outer count untouched
+</code></pre>
 
     <p><strong>Confusion: order of declaration</strong></p>
 <pre class="language-javascript"><code class="language-javascript">function showName() {
@@ -8805,14 +9440,16 @@ console.log(count);     // 0 — outer count untouched</code></pre>
 showName();                  // ReferenceError — userName not declared yet
 const userName = "Os";
 
-// Fix: declare top-level variables BEFORE functions that use them.</code></pre>
+// Fix: declare top-level variables BEFORE functions that use them.
+</code></pre>
 
     <p><strong>Confusion: global vs module-level</strong></p>
 <pre class="language-javascript"><code class="language-javascript">// In an old script tag — top-level variables become global (window.x)
 // In a module (&lt;script type="module"&gt;) — top-level is module-scoped, not global
 
 const API_URL = "...";    // module-level, only this file can use it (in modules)
-                           // global, anywhere in the page (in old scripts)</code></pre>
+                           // global, anywhere in the page (in old scripts)
+</code></pre>
 
     <p><strong>Confusion: shared vs duplicated</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let cartCount = 0;
@@ -8821,7 +9458,8 @@ function add1() { cartCount = cartCount + 1; }
 function add2() { cartCount = cartCount + 1; }
 
 add1();    // cartCount → 1
-add2();    // cartCount → 2 — same variable, both functions saw the update</code></pre>
+add2();    // cartCount → 2 — same variable, both functions saw the update
+</code></pre>
   `,
 
   /* 2.3 Common mistakes */
@@ -8834,7 +9472,8 @@ function increment() {
 // fix: drop the let
 function increment() {
   count = count + 1;
-}</code></pre>
+}
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">function setup() {
   config = { theme: "dark" };
@@ -8844,7 +9483,8 @@ function increment() {
 function setup() {
   const config = { theme: "dark" };
   return config;
-}</code></pre>
+}
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">function fetch() {
   console.log(API_URL);
@@ -8852,7 +9492,8 @@ function setup() {
 fetch();
 const API_URL = "...";
 // wrong: API_URL not yet declared when fetch ran
-// fix: declare top-level vars BEFORE functions that use them</code></pre>
+// fix: declare top-level vars BEFORE functions that use them
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">// Cluttering the top with one-time-use variables
 const tempData = items.filter(i => i.active);
@@ -8862,7 +9503,8 @@ const finalResult = sortedTemp.slice(0, 5);
 // fix: bundle them inside a function
 function getTopFive(items) {
   return items.filter(i => i.active).sort().slice(0, 5);
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -8889,7 +9531,8 @@ const message = document.querySelector(".msg");
 
 button.addEventListener("click", () => {
   message.textContent = "Clicked!";
-});</code></pre>
+});
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -8911,7 +9554,8 @@ async function fetchProducts() {
 
 function calculateTotal(price) {
   return price + price * TAX_RATE;
-}</code></pre>
+}
+</code></pre>
 
     <p><strong>Example: app state that multiple functions update</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let isMenuOpen = false;
@@ -8929,7 +9573,8 @@ addToCartBtn.addEventListener("click", (e) => {
 
 loginBtn.addEventListener("click", async () => {
   currentUser = await login();
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: DOM references at the top</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const form = document.querySelector(".signup");
@@ -8949,7 +9594,8 @@ function validate() {
 
 function submit() {
   // ...
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -9002,7 +9648,8 @@ function greet() {
 
 greet();
 console.log(globalName);     // works — top-level
-console.log(localName);      // ReferenceError — out of scope here</code></pre>
+console.log(localName);      // ReferenceError — out of scope here
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -9021,7 +9668,8 @@ console.log(localName);      // ReferenceError — out of scope here</code></pre
 
 // Each set of { } creates a new scope.
 // Variables declared inside that { } only live inside it.
-// Code OUTSIDE the { } can't reach them.</code></pre>
+// Code OUTSIDE the { } can't reach them.
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -9032,7 +9680,8 @@ console.log(localName);      // ReferenceError — out of scope here</code></pre
   const y = 10;
 }
 console.log(x);    // ReferenceError — out of scope
-console.log(y);    // ReferenceError — out of scope</code></pre>
+console.log(y);    // ReferenceError — out of scope
+</code></pre>
 
     <p>Functions create their own scope every time they run:</p>
 <pre class="language-javascript"><code class="language-javascript">function greet() {
@@ -9040,13 +9689,15 @@ console.log(y);    // ReferenceError — out of scope</code></pre>
 }
 
 greet();
-console.log(message);    // ReferenceError</code></pre>
+console.log(message);    // ReferenceError
+</code></pre>
 
     <p>Loops create a fresh scope for each iteration when you use <code>let</code>:</p>
 <pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
   // i exists only inside this loop
 }
-console.log(i);    // ReferenceError</code></pre>
+console.log(i);    // ReferenceError
+</code></pre>
 
     <p>Inner scopes can see outer scopes, but not the other way around:</p>
 <pre class="language-javascript"><code class="language-javascript">const outer = "outer";
@@ -9058,7 +9709,8 @@ function example() {
 }
 
 console.log(outer);       // works
-console.log(inner);       // ReferenceError — outer can't see inner</code></pre>
+console.log(inner);       // ReferenceError — outer can't see inner
+</code></pre>
 
     <p><code>var</code> ignores blocks — it's function-scoped, not block-scoped:</p>
 <pre class="language-javascript"><code class="language-javascript">if (true) {
@@ -9066,7 +9718,8 @@ console.log(inner);       // ReferenceError — outer can't see inner</code></pr
   let y = 10;
 }
 console.log(x);    // 5 — var leaked out
-console.log(y);    // ReferenceError — let stayed inside</code></pre>
+console.log(y);    // ReferenceError — let stayed inside
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -9100,7 +9753,8 @@ function buildCart() {
   const items = [];        // private to this function
   // ...
   return items;
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 1.2 Where you use it */
@@ -9129,7 +9783,8 @@ for (let i = 0; i < 5; i++) {
 const API_URL = "https://api.example.com";
 function fetchUsers() {
   console.log(API_URL);   // visible everywhere in this file
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -9155,7 +9810,8 @@ function outer() {
   // here: a and b visible, c is gone
 }
 
-// here: only a is visible</code></pre>
+// here: only a is visible
+</code></pre>
     <p>Each level can see itself and everything wrapping it. Each level CANNOT see things nested inside it.</p>
   `,
 
@@ -9185,7 +9841,8 @@ console.log(localX);
 //   - Function ends, function scope is destroyed (localX gone).
 //
 // Line 10: log globalX → still in top-level scope → "global".
-// Line 11: log localX → not in any active scope → ReferenceError.</code></pre>
+// Line 11: log localX → not in any active scope → ReferenceError.
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -9205,7 +9862,8 @@ function setup() {
   const config = { theme: "dark" };
   return config;
 }
-const config = setup();</code></pre>
+const config = setup();
+</code></pre>
 
     <p>If a value is wrong, check whether you accidentally created a NEW variable with the same name in a smaller scope:</p>
 <pre class="language-javascript"><code class="language-javascript">let count = 0;
@@ -9221,7 +9879,8 @@ console.log(count);    // 0
 // fix: drop the inner let
 function increment() {
   count = count + 1;
-}</code></pre>
+}
+</code></pre>
 
     <p>Block-scoped variables in loops can surprise you if you expect them to leak out:</p>
 <pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 5; i++) {
@@ -9234,7 +9893,8 @@ let i;
 for (i = 0; i < 5; i++) {
   // ...
 }
-console.log(i);     // 5</code></pre>
+console.log(i);     // 5
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -9254,7 +9914,8 @@ console.log(i);     // 5</code></pre>
 
 console.log(a);    // ReferenceError
 console.log(b);    // ReferenceError
-console.log(c);    // 3 — var leaked out</code></pre>
+console.log(c);    // 3 — var leaked out
+</code></pre>
 
     <p><strong>Confusion: same name in different scopes</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const x = "outer";
@@ -9267,7 +9928,8 @@ function example() {
 example();
 console.log(x);             // "outer" — outer x is unchanged
 
-// This is called "variable shadowing" — the inner x shadows the outer one.</code></pre>
+// This is called "variable shadowing" — the inner x shadows the outer one.
+</code></pre>
 
     <p><strong>Confusion: function calls don't share scope</strong></p>
 <pre class="language-javascript"><code class="language-javascript">function counter() {
@@ -9277,7 +9939,8 @@ console.log(x);             // "outer" — outer x is unchanged
 }
 
 counter();    // 1
-counter();    // 1 — fresh n each call (NOT 2)</code></pre>
+counter();    // 1 — fresh n each call (NOT 2)
+</code></pre>
 
     <p><strong>Confusion: loops with <code>let</code> create a new scope per iteration</strong></p>
 <pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
@@ -9288,7 +9951,8 @@ counter();    // 1 — fresh n each call (NOT 2)</code></pre>
 for (var i = 0; i < 3; i++) {
   setTimeout(() => console.log(i), 100);
 }
-// logs 3, 3, 3 — var has one shared i</code></pre>
+// logs 3, 3, 3 — var has one shared i
+</code></pre>
   `,
 
   /* 2.3 Common mistakes */
@@ -9303,7 +9967,8 @@ let userName = "";
 if (loggedIn) {
   userName = "Os";
 }
-console.log(userName);</code></pre>
+console.log(userName);
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">function setup() {
   const config = { theme: "dark" };
@@ -9314,7 +9979,8 @@ console.log(config);
 function setup() {
   return { theme: "dark" };
 }
-const config = setup();</code></pre>
+const config = setup();
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">let count = 0;
 function increment() {
@@ -9324,7 +9990,8 @@ function increment() {
 // fix: drop the let
 function increment() {
   count = count + 1;
-}</code></pre>
+}
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 5; i++) {}
 console.log(i);
@@ -9332,7 +9999,8 @@ console.log(i);
 // fix: declare i outside if you need it after
 let i;
 for (i = 0; i < 5; i++) {}
-console.log(i);   // 5</code></pre>
+console.log(i);   // 5
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">function setup() {
   config = { theme: "dark" };
@@ -9342,7 +10010,8 @@ console.log(i);   // 5</code></pre>
 function setup() {
   const config = { theme: "dark" };
   return config;
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -9383,7 +10052,8 @@ function inner() {
   console.log(x);    // "inner" — closer one wins
 }
 inner();
-console.log(x);      // "outer"</code></pre>
+console.log(x);      // "outer"
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -9396,7 +10066,8 @@ console.log(x);      // "outer"</code></pre>
   return total;
 }
 
-// subtotal, tax, total are all local — no global pollution</code></pre>
+// subtotal, tax, total are all local — no global pollution
+</code></pre>
 
     <p><strong>Example: each event handler with its own scope</strong></p>
 <pre class="language-javascript"><code class="language-javascript">submitBtn.addEventListener("click", (e) => {
@@ -9404,7 +10075,8 @@ console.log(x);      // "outer"</code></pre>
   const userInput = formData.get("name");
   // formData and userInput are local to this handler
   saveUser(userInput);
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: loop counter contained to the loop</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const items = ["apple", "banana", "cherry"];
@@ -9414,7 +10086,8 @@ for (let i = 0; i < items.length; i++) {
   renderItem(item);
 }
 
-// i and item are gone — no chance of reusing them by mistake</code></pre>
+// i and item are gone — no chance of reusing them by mistake
+</code></pre>
 
     <p><strong>Example: hiding implementation in a function</strong></p>
 <pre class="language-javascript"><code class="language-javascript">function buildCard(user) {
@@ -9424,7 +10097,8 @@ for (let i = 0; i < items.length; i++) {
   return html;
 }
 
-// initials, fullName, html — all local. The function only exposes its return value.</code></pre>
+// initials, fullName, html — all local. The function only exposes its return value.
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -9495,7 +10169,8 @@ if (x = 10) {}                       // assigns instead of comparing
 
 // 7. Forgetting that const allows internal mutation
 const user = { name: "Os" };
-user.name = "Sam";                   // this WORKS — surprises some beginners</code></pre>
+user.name = "Sam";                   // this WORKS — surprises some beginners
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -9514,7 +10189,8 @@ const score = 100;
 // 100       → value
 // ;         → ends the statement
 
-// The keyword is what distinguishes a declaration from an accidental global.</code></pre>
+// The keyword is what distinguishes a declaration from an accidental global.
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -9522,23 +10198,27 @@ const score = 100;
     <p>Always start with a keyword. No exceptions:</p>
 <pre class="language-javascript"><code class="language-javascript">score = 100;            // wrong — no keyword
 const score = 100;       // correct
-let score = 100;          // correct (if you'll reassign)</code></pre>
+let score = 100;          // correct (if you'll reassign)
+</code></pre>
 
     <p>Use <code>===</code> for comparing, <code>=</code> for assigning. They're easy to mix up:</p>
 <pre class="language-javascript"><code class="language-javascript">if (x === 10) { }       // correct: comparing
-if (x = 10) { }          // wrong: assigning, then checking truthiness</code></pre>
+if (x = 10) { }          // wrong: assigning, then checking truthiness
+</code></pre>
 
     <p>Match casing exactly. <code>userName</code> is not the same as <code>username</code> or <code>UserName</code>:</p>
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 
 console.log(userName);      // works
 console.log(username);      // ReferenceError
-console.log(UserName);      // ReferenceError</code></pre>
+console.log(UserName);      // ReferenceError
+</code></pre>
 
     <p><code>const</code> protects the variable, not its contents. Modifying object/array contents is allowed:</p>
 <pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
 user.name = "Sam";          // allowed — changing INSIDE the object
-user = { name: "Sam" };      // wrong — reassigning the variable</code></pre>
+user = { name: "Sam" };      // wrong — reassigning the variable
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -9568,7 +10248,8 @@ if (x = 10) { }                    // always true!
 
 // Pattern 5: using before declaring
 console.log(name);
-const name = "Os";                 // ReferenceError</code></pre>
+const name = "Os";                 // ReferenceError
+</code></pre>
   `,
 
   /* 1.2 Where you use it */
@@ -9593,7 +10274,8 @@ config.theme = "light";       // works, even though const
 
 // Using API data — typing properties wrong
 const user = { firstName: "Os" };
-console.log(user.firstname);  // undefined — case mismatch</code></pre>
+console.log(user.firstname);  // undefined — case mismatch
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -9622,7 +10304,8 @@ console.log(username);    // typo → ReferenceError or undefined
 // "I broke a rule about when/how a variable can change."
 
 const x = 5;
-x = 10;                    // can't reassign const</code></pre>
+x = 10;                    // can't reassign const
+</code></pre>
     <p>If you can sort your bug into one of those themes, you're 80% of the way to fixing it.</p>
   `,
 
@@ -9647,7 +10330,8 @@ console.log(usernameValue);
 //   You have userName — close but different.
 
 // Step 4: fix the typo.
-console.log(userName);   // works</code></pre>
+console.log(userName);   // works
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -9657,7 +10341,8 @@ console.log(userName);   // works</code></pre>
     <p>The fastest way to debug a variable issue: <code>console.log</code> the variable AND its <code>typeof</code>:</p>
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 console.log(userName);              // see the value
-console.log(typeof userName);       // see the type</code></pre>
+console.log(typeof userName);       // see the type
+</code></pre>
 
     <p>Read errors literally. They almost always point straight at the problem:</p>
 <pre class="language-javascript"><code class="language-javascript">// "ReferenceError: x is not defined"
@@ -9670,7 +10355,8 @@ console.log(typeof userName);       // see the type</code></pre>
 // → already declared in this scope, drop the second let/const
 
 // "Cannot access 'x' before initialization"
-// → using a let/const before its declaration line ran</code></pre>
+// → using a let/const before its declaration line ran
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -9684,22 +10370,26 @@ console.log(typeof userName);       // see the type</code></pre>
     <p><strong>Confusion: ReferenceError vs undefined</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let a;
 console.log(a);    // undefined — variable EXISTS, no value
-console.log(b);    // ReferenceError — variable doesn't exist at all</code></pre>
+console.log(b);    // ReferenceError — variable doesn't exist at all
+</code></pre>
 
     <p><strong>Confusion: const blocks reassignment, not internal change</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const obj = { x: 1 };
 obj.x = 2;             // works — modifying inside
-obj = { x: 2 };        // wrong — reassigning the variable</code></pre>
+obj = { x: 2 };        // wrong — reassigning the variable
+</code></pre>
 
     <p><strong>Confusion: redeclaring vs reassigning</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let count = 0;
 let count = 5;       // wrong — redeclaring
-count = 5;           // right — reassigning</code></pre>
+count = 5;           // right — reassigning
+</code></pre>
 
     <p><strong>Confusion: <code>=</code> vs <code>==</code> vs <code>===</code></strong></p>
 <pre class="language-javascript"><code class="language-javascript">x = 5;        // assigns
 x == 5;       // compares (loose, type-coercing)
-x === 5;      // compares (strict — what you usually want)</code></pre>
+x === 5;      // compares (strict — what you usually want)
+</code></pre>
   `,
 
   /* 2.3 Common mistakes */
@@ -9707,44 +10397,51 @@ x === 5;      // compares (strict — what you usually want)</code></pre>
 <pre class="language-javascript"><code class="language-javascript">score = 100;
 // wrong: no const/let — accidental global
 // fix:
-const score = 100;</code></pre>
+const score = 100;
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const x = 5;
 x = 10;
 // wrong: TypeError — can't reassign const
 // fix: use let if it needs to change
 let x = 5;
-x = 10;</code></pre>
+x = 10;
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">let count = 0;
 let count = 5;
 // wrong: SyntaxError — already declared
 // fix: drop the second let
-count = 5;</code></pre>
+count = 5;
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const userName = "Os";
 console.log(username);
 // wrong: typo — different variable
 // fix: match the exact name
-console.log(userName);</code></pre>
+console.log(userName);
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">console.log(name);
 let name = "Os";
 // wrong: using before declaring
 // fix: declare first
 let name = "Os";
-console.log(name);</code></pre>
+console.log(name);
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">if (x = 10) { }
 // wrong: this assigns, doesn't compare
 // fix:
-if (x === 10) { }</code></pre>
+if (x === 10) { }
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const user = { name: "Os" };
 user = { name: "Sam" };
 // wrong: reassigning a const
 // fix: modify properties or use let
-user.name = "Sam";</code></pre>
+user.name = "Sam";
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -9770,7 +10467,8 @@ console.log(userName);          // right
 
 // = instead of ===
 if (x = 10) {}                 // wrong
-if (x === 10) {}               // right</code></pre>
+if (x === 10) {}               // right
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -9783,7 +10481,8 @@ console.log(emailinput.value);
 // ReferenceError: emailinput is not defined
 
 // Fix: match exact casing
-console.log(emailInput.value);</code></pre>
+console.log(emailInput.value);
+</code></pre>
 
     <p><strong>Example: trying to reassign a const that holds a DOM element</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const button = document.querySelector(".btn");
@@ -9793,7 +10492,8 @@ button = document.querySelector(".other-btn");
 // TypeError: Assignment to constant variable
 
 // Fix: use a different variable name
-const otherButton = document.querySelector(".other-btn");</code></pre>
+const otherButton = document.querySelector(".other-btn");
+</code></pre>
 
     <p><strong>Example: <code>=</code> vs <code>===</code> in an if</strong></p>
 <pre class="language-javascript"><code class="language-javascript">// Bug: assignment inside if always runs the block
@@ -9804,7 +10504,8 @@ if (status = "active") {
 // Fix:
 if (status === "active") {
   // runs only when status is actually "active"
-}</code></pre>
+}
+</code></pre>
 
     <p><strong>Example: forgetting <code>const</code> in an event handler</strong></p>
 <pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", () => {
@@ -9815,7 +10516,8 @@ if (status === "active") {
 let count = 0;
 btn.addEventListener("click", () => {
   count = count + 1;
-});</code></pre>
+});
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -9867,7 +10569,8 @@ console.log(typeof myVariable);            // see the type
 console.log(myVariable, typeof myVariable);
 
 // Label your logs so you know which one is which
-console.log("at line 42, score is:", score);</code></pre>
+console.log("at line 42, score is:", score);
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -9881,14 +10584,16 @@ console.log("at line 42, score is:", score);</code></pre>
 // → output: "score: 100"
 
 // Adding a label is critical when you have multiple logs.
-// Without one, "100" by itself doesn't tell you which variable that was.</code></pre>
+// Without one, "100" by itself doesn't tell you which variable that was.
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
   'topics-0-25-0-3': `
     <p><code>console.log</code> can take multiple arguments — useful for showing related values together:</p>
 <pre class="language-javascript"><code class="language-javascript">console.log("name:", userName, "age:", userAge);
-// output: name: Os age: 25</code></pre>
+// output: name: Os age: 25
+</code></pre>
 
     <p><code>console.log</code> with an object shows everything inside:</p>
 <pre class="language-javascript"><code class="language-javascript">const user = { name: "Os", age: 25 };
@@ -9896,7 +10601,8 @@ console.log(user);
 // output: { name: "Os", age: 25 }
 
 console.log(user.profile);
-// undefined — the property doesn't exist</code></pre>
+// undefined — the property doesn't exist
+</code></pre>
 
     <p><code>typeof</code> tells you what KIND of value the variable holds:</p>
 <pre class="language-javascript"><code class="language-javascript">console.log(typeof "Os");          // "string"
@@ -9906,7 +10612,8 @@ console.log(typeof undefined);      // "undefined"
 console.log(typeof null);           // "object" (a famous JS quirk)
 console.log(typeof []);             // "object" (arrays are objects)
 console.log(typeof {});             // "object"
-console.log(typeof function(){});   // "function"</code></pre>
+console.log(typeof function(){});   // "function"
+</code></pre>
 
     <p>Use <code>console.table</code> for arrays of objects:</p>
 <pre class="language-javascript"><code class="language-javascript">const users = [
@@ -9914,7 +10621,8 @@ console.log(typeof function(){});   // "function"</code></pre>
   { name: "Sam", age: 30 }
 ];
 console.table(users);
-// renders a clean table in the dev console</code></pre>
+// renders a clean table in the dev console
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -9935,7 +10643,8 @@ console.log("price:", price, "tax:", tax, "total:", total);
 // Now you can see if any of these are not what you expected:
 //   - is price a string instead of a number?
 //   - did tax come back as undefined?
-//   - is total NaN?</code></pre>
+//   - is total NaN?
+</code></pre>
     <p>Bonus: when you find the bug, you can leave the log there to confirm the fix works.</p>
   `,
 
@@ -9962,7 +10671,8 @@ for (let i = 0; i < items.length; i++) {
 
 // Right before a calculation that might be wrong
 console.log("about to compute total. price:", price, "qty:", quantity);
-const total = price * quantity;</code></pre>
+const total = price * quantity;
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -9986,7 +10696,8 @@ const total = price + tax;
 console.log("step 3 — total:", total);
 // "100.8" — string concat instead of math!
 
-// Now you've found it: + with a string and number = string concat.</code></pre>
+// Now you've found it: + with a string and number = string concat.
+</code></pre>
     <p>Each log is a footprint. The bug is wherever the values stop making sense.</p>
   `,
 
@@ -10011,7 +10722,8 @@ console.log("total:", total, typeof total);          // 50 number (* coerced)
 // Step 3: fix proactively
 const price = Number(priceInput.value);
 const quantity = Number(qtyInput.value);
-const total = price * quantity;</code></pre>
+const total = price * quantity;
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -10023,7 +10735,8 @@ const total = price * quantity;</code></pre>
 // "10" string  → ah, that's why my math is wrong
 // 10 number    → math should work
 // undefined "undefined"  → variable was never assigned
-// null "object" → set to null somewhere</code></pre>
+// null "object" → set to null somewhere
+</code></pre>
 
     <p>If a variable seems to vanish, you might be in the wrong scope. Try logging from where you DECLARED it:</p>
 <pre class="language-javascript"><code class="language-javascript">function setup() {
@@ -10031,7 +10744,8 @@ const total = price * quantity;</code></pre>
   console.log("inside setup:", config);   // works — config exists here
 }
 setup();
-console.log("outside setup:", config);    // ReferenceError — out of scope</code></pre>
+console.log("outside setup:", config);    // ReferenceError — out of scope
+</code></pre>
 
     <p>If you have many logs, label them so the output is readable:</p>
 <pre class="language-javascript"><code class="language-javascript">// Hard to read
@@ -10047,7 +10761,8 @@ console.log("total:", total);
 // output:
 // price: 10
 // quantity: 5
-// total: 50</code></pre>
+// total: 50
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -10066,20 +10781,23 @@ user.name = "Sam";
 // the earlier console.log now shows { name: "Sam" } if you expand it!
 
 // fix: log a copy if you need a snapshot
-console.log({ ...user });</code></pre>
+console.log({ ...user });
+</code></pre>
 
     <p><strong>Confusion: <code>console.log</code> doesn't return anything</strong></p>
 <pre class="language-javascript"><code class="language-javascript">function getName() {
   console.log("Os");        // logs but doesn't return
 }
 const name = getName();
-console.log(name);           // undefined</code></pre>
+console.log(name);           // undefined
+</code></pre>
 
     <p><strong>Confusion: <code>typeof null</code> is <code>"object"</code></strong></p>
 <pre class="language-javascript"><code class="language-javascript">console.log(typeof null);    // "object" — historical JS quirk
 
 // to check for null specifically:
-if (value === null) { }</code></pre>
+if (value === null) { }
+</code></pre>
 
     <p><strong>Confusion: which variable is which</strong></p>
 <pre class="language-javascript"><code class="language-javascript">// Without labels — confusing
@@ -10092,7 +10810,8 @@ console.log("score:", score);
 console.log("level:", level);
 // output:
 // score: 10
-// level: 3</code></pre>
+// level: 3
+</code></pre>
   `,
 
   /* 2.3 Common mistakes */
@@ -10104,12 +10823,14 @@ console.log(total);
 // fix: label them
 console.log("score:", score);
 console.log("level:", level);
-console.log("total:", total);</code></pre>
+console.log("total:", total);
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">console.log("everything is fine");
 // no actual variable inspection — useless for debugging
 // fix: log the variables involved
-console.log("price:", price, "quantity:", quantity);</code></pre>
+console.log("price:", price, "quantity:", quantity);
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">// Logging an object that changes later
 const user = { name: "Os" };
@@ -10117,18 +10838,21 @@ console.log(user);
 user.name = "Sam";
 // the log might show "Sam" depending on the browser
 // fix: log a copy
-console.log({ ...user });</code></pre>
+console.log({ ...user });
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">// Logging just the value when type is the actual issue
 const score = "10";
 console.log(score);          // "10" — looks fine
 console.log(score + 5);      // "105" — string concat!
 // fix: also log the type
-console.log(score, typeof score);   // "10" string — caught it</code></pre>
+console.log(score, typeof score);   // "10" string — caught it
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">// Leaving lots of debug logs in production code
 // fix: delete them once the bug is fixed,
-// or use a logger that can be turned off</code></pre>
+// or use a logger that can be turned off
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -10152,7 +10876,8 @@ console.log(user);                // { name: "Os" }
 
 // Array of objects
 const users = [{ name: "Os" }, { name: "Sam" }];
-console.table(users);             // shown as a table in dev tools</code></pre>
+console.table(users);             // shown as a table in dev tools
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -10165,7 +10890,8 @@ console.table(users);             // shown as a table in dev tools</code></pre>
   if (!email.includes("@")) {
     showError("Invalid email");
   }
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: tracking a state variable as it changes</strong></p>
 <pre class="language-javascript"><code class="language-javascript">let cartCount = 0;
@@ -10174,14 +10900,16 @@ addToCartBtn.addEventListener("click", () => {
   cartCount = cartCount + 1;
   console.log("cartCount:", cartCount);
   updateBadge(cartCount);
-});</code></pre>
+});
+</code></pre>
 
     <p><strong>Example: peeking at API data structure</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const response = await fetch(url);
 const data = await response.json();
 console.log("API response:", data);
 // look in the dev console to see what shape the data has
-// before writing code that uses it</code></pre>
+// before writing code that uses it
+</code></pre>
 
     <p><strong>Example: walking through a multi-step calculation</strong></p>
 <pre class="language-javascript"><code class="language-javascript">function checkout(items) {
@@ -10195,7 +10923,8 @@ console.log("API response:", data);
   console.log("total:", total);
 
   return total;
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -10256,7 +10985,8 @@ undefined              // undefined
 
 // Rare types you'll mostly only see in advanced code:
 Symbol("id")           // symbol
-9999999999999999n      // bigint (notice the trailing "n")</code></pre>
+9999999999999999n      // bigint (notice the trailing "n")
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -10270,7 +11000,8 @@ const isLoggedIn = true;
 // true        → boolean (just true or false)
 
 // The type isn't something you declare separately —
-// it's determined by HOW the value is written.</code></pre>
+// it's determined by HOW the value is written.
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -10287,7 +11018,8 @@ typeof function(){};   // "function"
 
 // Rare types:
 typeof Symbol("id");   // "symbol"
-typeof 99n;            // "bigint"</code></pre>
+typeof 99n;            // "bigint"
+</code></pre>
 
     <p>Each type has its own way of being written:</p>
 <pre class="language-javascript"><code class="language-javascript">"hello"           // string — quotes
@@ -10297,7 +11029,8 @@ true               // boolean — keyword
 { x: 1 }           // object — curly braces
 function(){}       // function — function keyword (or arrow syntax)
 null               // null — keyword
-undefined          // undefined — keyword (rarely written by hand)</code></pre>
+undefined          // undefined — keyword (rarely written by hand)
+</code></pre>
 
     <p>Same-looking values can be different types — and behave very differently:</p>
 <pre class="language-javascript"><code class="language-javascript">const a = 25;        // number
@@ -10307,7 +11040,8 @@ a + 1;                // 26  — number addition
 b + 1;                // "251"  — string concatenation
 
 typeof a;             // "number"
-typeof b;             // "string"</code></pre>
+typeof b;             // "string"
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -10336,7 +11070,8 @@ if (typeof value === "string") {
 
 // 3. Convert between types when needed
 const userInput = inputBox.value;       // always a string
-const userAge = Number(userInput);      // convert to number for math</code></pre>
+const userAge = Number(userInput);      // convert to number for math
+</code></pre>
   `,
 
   /* 1.2 Where you use it */
@@ -10362,7 +11097,8 @@ const age = Number(ageInput);              // number for math
 
 // Reading API data — usually objects and arrays
 const response = await fetch("/api/users");
-const users = await response.json();      // typically an array of objects</code></pre>
+const users = await response.json();      // typically an array of objects
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -10378,7 +11114,8 @@ const users = await response.json();      // typically an array of objects</code
 25         // identity: number  → can be added, multiplied, compared
 true       // identity: boolean → used in if statements, &&, ||
 [1, 2]     // identity: array   → can be looped, length checked, etc.
-{ x: 1 }   // identity: object  → has named properties to access</code></pre>
+{ x: 1 }   // identity: object  → has named properties to access
+</code></pre>
     <p>Knowing the type tells you what's possible. Using a method that doesn't fit the type throws an error or gives weird results.</p>
   `,
 
@@ -10404,7 +11141,8 @@ console.log(b + 1);
 //   - + with two numbers means ADDITION.
 //   - 25 + 1 → 26. Log 26.
 
-// Same operator, different behavior — driven by the types.</code></pre>
+// Same operator, different behavior — driven by the types.
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -10418,7 +11156,8 @@ console.log(score + 5);        // "1005" — string concat, not addition
 
 // fix: convert to number
 const score = Number("100");   // 100 (number)
-console.log(score + 5);         // 105</code></pre>
+console.log(score + 5);         // 105
+</code></pre>
 
     <p>The most common type-related bugs:</p>
 <pre class="language-javascript"><code class="language-javascript">// 1. Form input as string instead of number
@@ -10432,7 +11171,8 @@ const newAge = age + 1;             // "251" — concat, not math
 // 3. Type confusion in if checks
 const status = "0";
 if (status) { /* runs! "0" is truthy because it's a non-empty string */ }
-if (status === 0) { /* doesn't run — "0" string ≠ 0 number */ }</code></pre>
+if (status === 0) { /* doesn't run — "0" string ≠ 0 number */ }
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -10451,20 +11191,23 @@ if (status === 0) { /* doesn't run — "0" string ≠ 0 number */ }</code></pre>
 25 == "25";     // true (loose equality coerces)
 
 // Use === to keep types separate.
-// Loose == can hide type bugs.</code></pre>
+// Loose == can hide type bugs.
+</code></pre>
 
     <p><strong>Confusion: <code>typeof null</code> is "object"</strong></p>
 <pre class="language-javascript"><code class="language-javascript">typeof null;    // "object"  ← historical JS bug, never fixed
 
 // To check for null specifically:
-if (value === null) { }</code></pre>
+if (value === null) { }
+</code></pre>
 
     <p><strong>Confusion: arrays are technically objects</strong></p>
 <pre class="language-javascript"><code class="language-javascript">typeof [1, 2, 3];    // "object" — arrays are objects under the hood
 
 // To specifically check for an array:
 Array.isArray([1, 2, 3]);    // true
-Array.isArray({ x: 1 });      // false</code></pre>
+Array.isArray({ x: 1 });      // false
+</code></pre>
 
     <p><strong>Confusion: primitive vs reference types</strong></p>
 <pre class="language-javascript"><code class="language-javascript">// Primitives — copied by value
@@ -10477,7 +11220,8 @@ console.log(a);     // 5 — unaffected
 let x = { count: 5 };
 let y = x;
 y.count = 10;
-console.log(x.count);   // 10 — same object!</code></pre>
+console.log(x.count);   // 10 — same object!
+</code></pre>
   `,
 
   /* 2.3 Common mistakes */
@@ -10485,29 +11229,34 @@ console.log(x.count);   // 10 — same object!</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const age = ageInput.value + 5;
 // wrong: ageInput.value is a string — concatenation, not math
 // fix: convert first
-const age = Number(ageInput.value) + 5;</code></pre>
+const age = Number(ageInput.value) + 5;
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">if (typeof user == "object") { /* matches arrays AND null too */ }
 // risky: too broad
 // fix: be specific
-if (user !== null && !Array.isArray(user) && typeof user === "object") { }</code></pre>
+if (user !== null && !Array.isArray(user) && typeof user === "object") { }
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">25 == "25";    // true (loose equality)
 // risky: hides type bugs
 // fix: use strict equality
-25 === "25";   // false (strict)</code></pre>
+25 === "25";   // false (strict)
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">if (typeof null === "object") {
   // null passes the "is object" check — surprise
 }
 // fix: check for null first
-if (value !== null && typeof value === "object") { }</code></pre>
+if (value !== null && typeof value === "object") { }
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const items = [];
 typeof items === "array";
 // wrong: typeof returns "object" for arrays
 // fix:
-Array.isArray(items);   // true</code></pre>
+Array.isArray(items);   // true
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -10532,7 +11281,8 @@ console.log(typeof user);        // "object"
 
 // Different types behave differently with +
 "5" + 5;        // "55" — string concat
-5 + 5;          // 10 — number add</code></pre>
+5 + 5;          // 10 — number add
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -10543,7 +11293,8 @@ const age = Number(ageInput.value);    // string → number for math
 
 if (age >= 18) {
   enableSignup();
-}</code></pre>
+}
+</code></pre>
 
     <p><strong>Example: checking the shape of API data before using it</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const response = await fetch("/api/user");
@@ -10553,7 +11304,8 @@ if (Array.isArray(data)) {
   data.forEach(renderUser);
 } else if (typeof data === "object" && data !== null) {
   renderUser(data);
-}</code></pre>
+}
+</code></pre>
 
     <p><strong>Example: type-aware validation</strong></p>
 <pre class="language-javascript"><code class="language-javascript">function validatePrice(price) {
@@ -10564,7 +11316,8 @@ if (Array.isArray(data)) {
     return "Price cannot be negative";
   }
   return null;   // valid
-}</code></pre>
+}
+</code></pre>
 
     <p><strong>Example: protecting against unexpected types from external code</strong></p>
 <pre class="language-javascript"><code class="language-javascript">function greet(name) {
@@ -10572,7 +11325,8 @@ if (Array.isArray(data)) {
     name = String(name);    // convert to string as fallback
   }
   return "Hi " + name;
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -10634,7 +11388,8 @@ if (Array.isArray(data)) {
 // Other operators behave more consistently
 "5" * 5;        // 25 (JS coerces "5" to a number for *)
 "5" - 5;        // 0  (same)
-"5" / 5;        // 1  (same)</code></pre>
+"5" / 5;        // 1  (same)
+</code></pre>
   `,
 
   /* 0.2 Anatomy / Breakdown */
@@ -10648,7 +11403,8 @@ a * b;             // 25
 b * a;             // 25
 
 // Same values, different types, totally different behavior with +.
-// The TYPE is what tells JS which version of + to use.</code></pre>
+// The TYPE is what tells JS which version of + to use.
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -10656,14 +11412,16 @@ b * a;             // 25
     <p>The <code>+</code> operator is the most type-sensitive. With strings, it joins. With numbers, it adds. Mix them, and JavaScript silently converts to a string:</p>
 <pre class="language-javascript"><code class="language-javascript">5 + 5;        // 10
 "5" + 5;      // "55"  — JS converted 5 to "5" and joined
-5 + "5";      // "55"  — same thing</code></pre>
+5 + "5";      // "55"  — same thing
+</code></pre>
 
     <p>Other math operators auto-convert strings to numbers:</p>
 <pre class="language-javascript"><code class="language-javascript">"5" * 2;      // 10  — JS converted "5" to 5
 "5" - 2;      // 3
 "5" / 2;      // 2.5
 
-// But "+" is special — it prefers concat when ANY side is a string.</code></pre>
+// But "+" is special — it prefers concat when ANY side is a string.
+</code></pre>
 
     <p>Comparison operators also behave differently for different types:</p>
 <pre class="language-javascript"><code class="language-javascript">"100" > 50;   // true — JS coerces "100" to 100, then compares
@@ -10671,14 +11429,16 @@ b * a;             // 25
 
 // Lexicographic vs numeric:
 "10" > "9";   // false — string comparison, "1" < "9"
-10 > 9;       // true  — number comparison</code></pre>
+10 > 9;       // true  — number comparison
+</code></pre>
 
     <p>Methods only work on the right type:</p>
 <pre class="language-javascript"><code class="language-javascript">"hello".toUpperCase();    // "HELLO" — string method works
 (5).toUpperCase();          // TypeError — numbers don't have this method
 
 [1, 2, 3].push(4);         // works — arrays have push
-"hello".push("!");          // TypeError — strings don't</code></pre>
+"hello".push("!");          // TypeError — strings don't
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -10698,7 +11458,8 @@ const total = priceInput.value + taxInput.value;
 
 // Fix: convert to numbers first
 const total = Number(priceInput.value) + Number(taxInput.value);
-// 15</code></pre>
+// 15
+</code></pre>
     <p>Anywhere data comes from outside your code (form input, APIs, localStorage), you'll often need to convert types before working with it.</p>
   `,
 
@@ -10720,7 +11481,8 @@ const data = await response.json();    // already objects/arrays/etc
 
 // JSON — convert between text and structured data
 const text = JSON.stringify(user);    // object → string
-const obj = JSON.parse(text);          // string → object</code></pre>
+const obj = JSON.parse(text);          // string → object
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -10745,7 +11507,8 @@ const obj = JSON.parse(text);          // string → object</code></pre>
 
 5 * "5"
 // * sees a number and a string → MULTIPLICATION
-// (* coerces the string to a number) → 25</code></pre>
+// (* coerces the string to a number) → 25
+</code></pre>
     <p>The operator behavior changes based on what's on either side. Same code, different result.</p>
   `,
 
@@ -10774,7 +11537,8 @@ console.log(message);
 // Line 5: log "Total: 50".
 
 // Multiplication coerced strings to numbers (helpful).
-// + between string and number coerced to string (could be a bug if unintended).</code></pre>
+// + between string and number coerced to string (could be a bug if unintended).
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -10785,7 +11549,8 @@ console.log(message);
 <pre class="language-javascript"><code class="language-javascript">const result = a + b;
 console.log(a, typeof a, b, typeof b, result);
 
-// If a is "10" string and b is 5 number, result is "105" — that's the bug.</code></pre>
+// If a is "10" string and b is 5 number, result is "105" — that's the bug.
+</code></pre>
 
     <p>Common type-related symptoms and what they mean:</p>
 <pre class="language-javascript"><code class="language-javascript">// Symptom: "105" instead of 15
@@ -10802,7 +11567,8 @@ console.log(a, typeof a, b, typeof b, result);
 
 // Symptom: comparison giving weird results
 // Cause: comparing strings vs numbers, or strings lexicographically
-// Fix: convert to a consistent type before comparing</code></pre>
+// Fix: convert to a consistent type before comparing
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -10819,23 +11585,27 @@ console.log(a, typeof a, b, typeof b, result);
 "5" * 5;     // 25
 "5" / 5;     // 1
 
-// Only + is "string-aware." Others coerce to numbers.</code></pre>
+// Only + is "string-aware." Others coerce to numbers.
+</code></pre>
 
     <p><strong>Confusion: form input is always a string</strong></p>
 <pre class="language-javascript"><code class="language-javascript">// Even &lt;input type="number"&gt; gives you a string
 const ageInput = document.querySelector("#age");
-typeof ageInput.value;     // "string" — even if user typed digits</code></pre>
+typeof ageInput.value;     // "string" — even if user typed digits
+</code></pre>
 
     <p><strong>Confusion: <code>"0"</code> is truthy but <code>0</code> is falsy</strong></p>
 <pre class="language-javascript"><code class="language-javascript">if ("0") {  /* runs — non-empty string is truthy */ }
 if (0)   {  /* doesn't run — 0 is falsy */ }
 "0" === 0    // false (different types)
-"0" == 0     // true (loose, type-coercing)</code></pre>
+"0" == 0     // true (loose, type-coercing)
+</code></pre>
 
     <p><strong>Confusion: comparing strings does lexicographic compare</strong></p>
 <pre class="language-javascript"><code class="language-javascript">"10" > "9";    // false  ← string compare: "1" < "9"
 10 > 9;        // true   ← number compare: 10 > 9
-"10" > 9;      // true   ← coerced "10" → 10, then number compare</code></pre>
+"10" > 9;      // true   ← coerced "10" → 10, then number compare
+</code></pre>
   `,
 
   /* 2.3 Common mistakes */
@@ -10843,28 +11613,33 @@ if (0)   {  /* doesn't run — 0 is falsy */ }
 <pre class="language-javascript"><code class="language-javascript">const total = priceInput.value + 5;
 // wrong: input is a string, + with string = concat
 // fix:
-const total = Number(priceInput.value) + 5;</code></pre>
+const total = Number(priceInput.value) + 5;
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const isOpen = localStorage.getItem("menu") || false;
 // wrong: getItem returns a string or null. "false" string is truthy.
 // fix:
-const isOpen = localStorage.getItem("menu") === "true";</code></pre>
+const isOpen = localStorage.getItem("menu") === "true";
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">if (count == "0") { }
 // wrong (loose): coerces — true even if count is 0 number
 // fix: use strict equality
-if (count === 0) { }</code></pre>
+if (count === 0) { }
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const sorted = ["10", "9", "1"].sort();
 // wrong: lexicographic — sorts as ["1", "10", "9"]
 // fix: provide a numeric compare function
-const sorted = [10, 9, 1].sort((a, b) => a - b);</code></pre>
+const sorted = [10, 9, 1].sort((a, b) => a - b);
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">const x = "5" * 2;      // 10 — sometimes works
 const y = "abc" * 2;    // NaN — but only if it's a clean number string
 // fix: validate before doing math
 const num = Number("abc");
-if (isNaN(num)) { /* handle bad input */ }</code></pre>
+if (isNaN(num)) { /* handle bad input */ }
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -10892,7 +11667,8 @@ if (isNaN(num)) { /* handle bad input */ }</code></pre>
 // typeof reveals what's actually there
 typeof 25;          // "number"
 typeof "25";        // "string"
-typeof true;        // "boolean"</code></pre>
+typeof true;        // "boolean"
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -10901,7 +11677,8 @@ typeof true;        // "boolean"</code></pre>
 <pre class="language-javascript"><code class="language-javascript">const price = Number(priceInput.value);
 const quantity = Number(qtyInput.value);
 const total = price * quantity;
-totalDisplay.textContent = total;</code></pre>
+totalDisplay.textContent = total;
+</code></pre>
 
     <p><strong>Example: parsing booleans from localStorage</strong></p>
 <pre class="language-javascript"><code class="language-javascript">// Save
@@ -10912,7 +11689,8 @@ const darkMode = localStorage.getItem("darkMode") === "true";
 
 if (darkMode) {
   document.body.classList.add("dark");
-}</code></pre>
+}
+</code></pre>
 
     <p><strong>Example: comparing API values consistently</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const userId = currentUser.id;             // could be number or string
@@ -10920,7 +11698,8 @@ const requestedId = Number(requestedIdParam);
 
 if (userId === requestedId) {
   // matches only if BOTH are number
-}</code></pre>
+}
+</code></pre>
 
     <p><strong>Example: validating type before using a method</strong></p>
 <pre class="language-javascript"><code class="language-javascript">function showName(name) {
@@ -10928,7 +11707,8 @@ if (userId === requestedId) {
     return;   // bail out early
   }
   console.log(name.toUpperCase());
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -10978,7 +11758,8 @@ if (userId === requestedId) {
 
 greet();   // run the function — prints "Hello"
 greet();   // run it again — prints "Hello" again
-greet();   // and again</code></pre>
+greet();   // and again
+</code></pre>
     <p>The function is <em>defined</em> once. It can be <em>called</em> as many times as you want.</p>
   `,
 
@@ -10988,12 +11769,16 @@ greet();   // and again</code></pre>
   console.log("Hello, " + name);
 }
 
+greet("OS")
+
 // function       → keyword that creates a function
 // greet          → the function name
 // (name)         → the parameter list — placeholder inputs
 // { ... }        → the function body — the code that runs
 // console.log()  → the work the function does
-// greet("Os")    → calling the function with the argument "Os"</code></pre>
+// greet("Os")    → calling the function with the argument "Os"
+// Output         → Hello, OS"
+</code></pre>
   `,
 
   /* 0.3 Syntax Details That Matter */
@@ -11005,12 +11790,14 @@ greet();   // and again</code></pre>
 
 function sayHi {       // wrong: SyntaxError — missing ()
   console.log("hi");
-}</code></pre>
+}
+</code></pre>
 
     <p>The curly braces hold the function's code:</p>
 <pre class="language-javascript"><code class="language-javascript">function add(a, b) {
   return a + b;        // everything between { and } is the function body
-}</code></pre>
+}
+</code></pre>
 
     <p>Defining is not the same as calling:</p>
 <pre class="language-javascript"><code class="language-javascript">function greet() {
@@ -11018,7 +11805,8 @@ function sayHi {       // wrong: SyntaxError — missing ()
 }
 
 greet;     // wrong: just the name — does NOT run the function
-greet();   // correct: the () actually runs it</code></pre>
+greet();   // correct: the () actually runs it
+</code></pre>
     <p>That trailing <code>()</code> is the part that makes the function actually do its work. Without it, you're just <em>referring</em> to the function, not running it.</p>
   `,
 
@@ -11050,7 +11838,8 @@ function formatPrice(price) {
 
 console.log(formatPrice(19.99));
 console.log(formatPrice(5.50));
-console.log(formatPrice(100));</code></pre>
+console.log(formatPrice(100));
+</code></pre>
     <p>If the formatting needs to change later — say, adding a comma for thousands — you change it in one place.</p>
   `,
 
@@ -11075,7 +11864,8 @@ function renderProduct(product) {         // building DOM
 async function loadUsers() {              // fetching API data
   const response = await fetch("/api/users");
   return response.json();
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -11090,7 +11880,8 @@ async function loadUsers() {              // fetching API data
 <pre class="language-javascript"><code class="language-javascript">function greet() { ... }
 
 // greet    →  the action of greeting
-// greet()  →  actually do the greeting now</code></pre>
+// greet()  →  actually do the greeting now
+</code></pre>
     <p>The name points at the action. The <code>()</code> runs the action.</p>
   `,
 
@@ -11108,7 +11899,8 @@ console.log(result);
 // Line 2: read the body — don't run it yet, just store it as part of the function.
 // Line 3: end of function definition.
 // Line 5: see double(5) → look up the function, call it with 5 as x, run the body, get 10 back, store it in result.
-// Line 6: look up result → 10 → log 10.</code></pre>
+// Line 6: look up result → 10 → log 10.
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -11122,7 +11914,8 @@ console.log(result);
 }
 
 const result = double(5);
-console.log("returned:", result); // what came out?</code></pre>
+console.log("returned:", result); // what came out?
+</code></pre>
     <p>The most common function errors:</p>
 <pre class="language-javascript"><code class="language-javascript">function greet() { console.log("hi"); }
 greet;
@@ -11135,7 +11928,8 @@ function greet() { console.log("hi"); }
 
 function add(a, b) { a + b; }
 const sum = add(2, 3);
-// wrong: forgot return — sum is undefined</code></pre>
+// wrong: forgot return — sum is undefined
+</code></pre>
   `,
 
   /* 2.1 The part that makes it click */
@@ -11153,7 +11947,8 @@ const sum = add(2, 3);
 }
 
 console.log(greet);    // logs the function itself (the recipe card)
-console.log(greet());  // logs "hello" (the result of running it)</code></pre>
+console.log(greet());  // logs "hello" (the result of running it)
+</code></pre>
     <p>Without <code>()</code>, you're holding the function as a value. With <code>()</code>, you're running it.</p>
 
     <p><strong>Confusion: parameters vs arguments</strong></p>
@@ -11161,7 +11956,8 @@ console.log(greet());  // logs "hello" (the result of running it)</code></pre>
   return a + b;
 }
 
-add(5, 3);                // 5 and 3 are arguments — actual values</code></pre>
+add(5, 3);                // 5 and 3 are arguments — actual values
+</code></pre>
     <p>Parameters are written when you define the function. Arguments are passed when you call it.</p>
 
     <p><strong>Confusion: <code>console.log()</code> vs <code>return</code></strong></p>
@@ -11174,7 +11970,8 @@ function doubleB(x) {
 }
 
 const a = doubleA(5);   // logs 10, but a is undefined
-const b = doubleB(5);   // b is 10</code></pre>
+const b = doubleB(5);   // b is 10
+</code></pre>
     <p><code>console.log</code> shows. <code>return</code> hands back.</p>
   `,
 
@@ -11182,29 +11979,34 @@ const b = doubleB(5);   // b is 10</code></pre>
   'topics-8-0-2-3': `
 <pre class="language-javascript"><code class="language-javascript">function greet() { console.log("hi"); }
 greet;
-// wrong: missing () — function is referenced but not called</code></pre>
+// wrong: missing () — function is referenced but not called
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">function add(a, b) {
   a + b;
 }
 const sum = add(2, 3);
-// wrong: forgot the return — sum is undefined</code></pre>
+// wrong: forgot the return — sum is undefined
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">function greet(name) {
   console.log("hi, " + name);
 }
 greet();
-// works, but name is undefined → "hi, undefined"</code></pre>
+// works, but name is undefined → "hi, undefined"
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">function getUser() {
   return { name: "Os" };
 }
 console.log(getUser.name);
 // wrong: getUser is the function, not the returned object
-// fix: getUser().name</code></pre>
+// fix: getUser().name
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">function function() { ... }
-// wrong: 'function' is a reserved keyword, not a valid name</code></pre>
+// wrong: 'function' is a reserved keyword, not a valid name
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -11233,7 +12035,8 @@ const result = double(7);   // 14
 function add(a, b) {
   return a + b;
 }
-const sum = add(5, 3);      // 8</code></pre>
+const sum = add(5, 3);      // 8
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -11243,7 +12046,8 @@ const sum = add(5, 3);      // 8</code></pre>
   cartCount = cartCount + 1;
   cartBadge.textContent = cartCount;
 }
-addBtn.addEventListener("click", handleAddToCart);</code></pre>
+addBtn.addEventListener("click", handleAddToCart);
+</code></pre>
 
     <p><strong>Example: form validation helper</strong></p>
 <pre class="language-javascript"><code class="language-javascript">function isValidEmail(email) {
@@ -11252,7 +12056,8 @@ addBtn.addEventListener("click", handleAddToCart);</code></pre>
 
 if (isValidEmail(emailInput.value)) {
   submitForm();
-}</code></pre>
+}
+</code></pre>
 
     <p><strong>Example: building a product card</strong></p>
 <pre class="language-javascript"><code class="language-javascript">function buildProductCard(product) {
@@ -11263,14 +12068,16 @@ if (isValidEmail(emailInput.value)) {
 }
 
 const card = buildProductCard({ name: "Hat" });
-document.body.appendChild(card);</code></pre>
+document.body.appendChild(card);
+</code></pre>
 
     <p><strong>Example: formatting a price</strong></p>
 <pre class="language-javascript"><code class="language-javascript">function formatPrice(price) {
   return "$" + price.toFixed(2);
 }
 
-priceLabel.textContent = formatPrice(19.99);   // "$19.99"</code></pre>
+priceLabel.textContent = formatPrice(19.99);   // "$19.99"
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -11330,22 +12137,30 @@ function welcome(name) {
 
 welcome("Os");
 welcome("Sam");
-welcome("Alex");</code></pre>
+welcome("Alex");
+</code></pre>
     <p>Both versions do the same thing. The second one is shorter, easier to update, and easier to reuse later.</p>
   `,
 
   /* 0.2 Anatomy / Breakdown */
   'topics-8-1-0-2': `
-<pre class="language-javascript"><code class="language-javascript">function welcome(name) {
-  console.log("Welcome, " + name);
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {
+  console.log("Hello, " + name);
 }
 
-// function       → keyword that creates the reusable block
-// welcome        → the name you'll reuse later
-// (name)         → the input that changes each time you call it
-// { ... }        → the steps that get reused on every call
-// welcome("Os")  → using the block — running it with a specific input</code></pre>
+greet("OS")
+greet("Sam")
+greet ("Alex")
+
+// function       → keyword that starts the declaration
+// greet          → the name of the function
+// (name)         → the parameter list
+// { ... }        → the function body
+// greet("name")  → calls the name
+// no = sign  → declarations don't assign to a variable, they create a named function directly
+// no = sign  → explained on function expressions</code></pre>
   `,
+
 
   /* 0.3 Syntax Details That Matter */
   'topics-8-1-0-3': `
@@ -11355,7 +12170,8 @@ welcome("Alex");</code></pre>
 }
 
 welcome;             // wrong: just the name — no reuse, nothing runs
-welcome("Os");       // correct: the () runs the function</code></pre>
+welcome("Os");       // correct: the () runs the function
+</code></pre>
 
     <p>The input slot is what makes a function reusable across different values:</p>
 <pre class="language-javascript"><code class="language-javascript">function welcome(name) {     // name is a placeholder for whatever comes in
@@ -11363,7 +12179,8 @@ welcome("Os");       // correct: the () runs the function</code></pre>
 }
 
 welcome("Os");      // name is "Os" this time
-welcome("Sam");     // name is "Sam" this time</code></pre>
+welcome("Sam");     // name is "Sam" this time
+</code></pre>
     <p>Without the parameter, the function would only ever do one fixed thing.</p>
 
     <p>Define before you call:</p>
@@ -11373,7 +12190,8 @@ welcome("Sam");     // name is "Sam" this time</code></pre>
 welcome("Os");        // correct: defined first, called after
 
 // Calling before defining can work due to hoisting,
-// but it's much harder to read — keep define-then-call as the habit.</code></pre>
+// but it's much harder to read — keep define-then-call as the habit.
+</code></pre>
   `,
 
   /* --- Chunk 1: Why & When --- */
@@ -11403,7 +12221,8 @@ function isValidEmail(email) {
 
 if (isValidEmail(nameInput.value)) {
   submitForm();
-}</code></pre>
+}
+</code></pre>
     <p>The second version reads almost like a sentence. <em>"If the email is valid, submit the form."</em> That's the real win — functions don't just save lines, they make code understandable.</p>
   `,
 
@@ -11435,7 +12254,8 @@ function isOnSale(product) {
 
 if (isOnSale(product)) {
   showSaleBadge();
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -11454,7 +12274,8 @@ if (isOnSale(product)) {
 // With a function — the work lives in one place
 [work]
   ↑    ↑    ↑    ↑
-call call call call</code></pre>
+call call call call
+</code></pre>
     <p>Defining a function is like building a tool. Calling it is like picking up the tool and using it. The same tool can be used a hundred times, in a hundred places, without rebuilding it.</p>
   `,
 
@@ -11472,7 +12293,8 @@ welcome("Sam");
 // Line 2: read the body — don't run it yet, just store it as part of the function.
 // Line 3: end of function definition.
 // Line 5: see welcome("Os") → look up the function, call it with "Os" as name, run the body, prints "Welcome, Os".
-// Line 6: see welcome("Sam") → same function, called again with "Sam" as name, prints "Welcome, Sam".</code></pre>
+// Line 6: see welcome("Sam") → same function, called again with "Sam" as name, prints "Welcome, Sam".
+</code></pre>
   `,
 
   /* --- Chunk 2: The Click --- */
@@ -11492,7 +12314,8 @@ function welcome(name) {
   console.log("Welcome, " + name);
 }
 welcome("Os");
-welcome("Sam");</code></pre>
+welcome("Sam");
+</code></pre>
     <p>The other common smell: copy-pasting the same logic in multiple places when a function would do. If you're editing several places to make the same change, that's the signal — extract a function.</p>
   `,
 
@@ -11515,7 +12338,8 @@ function setupPage() {
 
 setupPage();
 // the name "setupPage" tells you what's happening here
-// without it, you'd have three unlabeled function calls in a row</code></pre>
+// without it, you'd have three unlabeled function calls in a row
+</code></pre>
 
     <p><strong>Confusion: functions vs variables</strong></p>
 <pre class="language-javascript"><code class="language-javascript">const message = "Welcome, Os";       // a value — frozen text
@@ -11525,7 +12349,8 @@ function getMessage(name) {            // a recipe — produces text on demand
 
 console.log(message);          // always the same
 console.log(getMessage("Os"));  // depends on what you pass in
-console.log(getMessage("Sam")); // different result, same recipe</code></pre>
+console.log(getMessage("Sam")); // different result, same recipe
+</code></pre>
     <p>Variables hold values. Functions hold steps that <em>produce</em> values when run.</p>
 
     <p><strong>Confusion: copying code vs calling a function</strong></p>
@@ -11545,7 +12370,8 @@ function addToCart() {
   cartBadge.textContent = cartCount;
 }
 button1.addEventListener("click", addToCart);
-button2.addEventListener("click", addToCart);</code></pre>
+button2.addEventListener("click", addToCart);
+</code></pre>
     <p>Update the logic in the function version once, and both buttons get the change.</p>
   `,
 
@@ -11558,28 +12384,33 @@ welcome();
 welcome();
 welcome();
 // works, but defeats the point — the name "Os" is hardcoded
-// fix: use a parameter so each call can be different</code></pre>
+// fix: use a parameter so each call can be different
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">function calculateTotal() {
   return 50 + (50 * 0.08);
 }
 // wrong: works for one specific case, can't be reused
-// fix: take price and tax as parameters</code></pre>
+// fix: take price and tax as parameters
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">function doStuff() {
   // 200 lines of code doing five different things
 }
 // wrong: the name doesn't describe one job
-// fix: split into smaller functions, each with a clear name</code></pre>
+// fix: split into smaller functions, each with a clear name
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">function a(x) { return x * 2; }
 function b(y) { return y * 2; }
 function c(z) { return z * 2; }
 // wrong: three functions doing the same thing
-// fix: one function, called three times</code></pre>
+// fix: one function, called three times
+</code></pre>
 
 <pre class="language-javascript"><code class="language-javascript">// Same code copied four times into four event handlers
-// fix: extract one function and pass it as the handler each time</code></pre>
+// fix: extract one function and pass it as the handler each time
+</code></pre>
   `,
 
   /* --- Chunk 3: In Practice --- */
@@ -11614,7 +12445,8 @@ function isValidName(name)   { return name.length > 0; }
 
 function isFormValid(email, name) {
   return isValidEmail(email) && isValidName(name);
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -11628,7 +12460,8 @@ function isFormValid(email, name) {
 closeBtn.addEventListener("click", closeModal);
 overlay.addEventListener("click", closeModal);
 escapeKey.addEventListener("keydown", closeModal);
-// one function, three places that use it</code></pre>
+// one function, three places that use it
+</code></pre>
 
     <p><strong>Example: turning messy code into a readable sentence</strong></p>
 <pre class="language-javascript"><code class="language-javascript">function isCheckoutReady() {
@@ -11640,7 +12473,8 @@ escapeKey.addEventListener("keydown", closeModal);
 if (isCheckoutReady()) {
   showCheckoutButton();
 }
-// reads almost like English: if checkout is ready, show the button</code></pre>
+// reads almost like English: if checkout is ready, show the button
+</code></pre>
 
     <p><strong>Example: changing the rule in one place</strong></p>
 <pre class="language-javascript"><code class="language-javascript">function getDiscount(user) {
@@ -11650,14 +12484,16 @@ if (isCheckoutReady()) {
 const total1 = price1 * (1 - getDiscount(user));
 const total2 = price2 * (1 - getDiscount(user));
 const total3 = price3 * (1 - getDiscount(user));
-// add a "premium" tier later — only getDiscount() needs to change</code></pre>
+// add a "premium" tier later — only getDiscount() needs to change
+</code></pre>
 
     <p><strong>Example: small functions building bigger ones</strong></p>
 <pre class="language-javascript"><code class="language-javascript">function getCartItems()  { return JSON.parse(localStorage.getItem("cart")) || []; }
 function getCartTotal()  { return getCartItems().reduce((sum, i) => sum + i.price, 0); }
 function renderCart()    {
   cartTotalLabel.textContent = formatPrice(getCartTotal());
-}</code></pre>
+}
+</code></pre>
   `,
 
   /* 3.2 Connects to */
@@ -11684,6 +12520,1406 @@ function renderCart()    {
       <li>Callback functions</li>
       <li>Refactoring</li>
       <li>DRY (Don't Repeat Yourself)</li>
+    </ul>
+  `,
+
+
+  /* ===== Sub-lesson: 3.9 Functions → reusable actions =====
+     Path: topics-8-2-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-2-0-0': `
+    <p>A function is a reusable action — a piece of work you've packaged under a name so you can trigger it again and again, from anywhere, without rewriting the steps.</p>
+    <p>The mental model is simple: a function is a <em>verb</em> in your program. It's a thing that does something. Once you've named it, the rest of your code can just say "do that" by calling the name.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-2-0-1': `
+<pre class="language-javascript"><code class="language-javascript">function showError(message) {
+  errorBox.textContent = message;
+  errorBox.classList.add("visible");
+}
+
+// the same action, triggered in different places, with different inputs
+showError("Email required");
+showError("Password too short");
+showError("Network failed");
+</code></pre>
+    <p>The function defines the action once. Each call <em>triggers</em> the action with whatever input you give it.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-2-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function showError(message) {
+  errorBox.textContent = message;
+  errorBox.classList.add("visible");
+}
+
+// showError      → the name of the action
+// (message)      → what the action needs to do its work
+// { ... }        → the steps the action performs
+// showError(...) → triggering the action — making it actually happen
+</code></pre>
+    <p>Think of the name as the verb, the parameter as what the verb operates on, and the body as how the verb actually gets done.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-2-0-3': `
+    <p>The function exists as soon as you define it, but the action only happens when you call it:</p>
+<pre class="language-javascript"><code class="language-javascript">function showError(message) {
+  errorBox.textContent = message;
+}
+// nothing on the page changed yet — the action exists but hasn't been triggered
+
+showError("Email required");
+// now the action runs — the page updates
+</code></pre>
+
+    <p>The same action can be triggered any number of times:</p>
+<pre class="language-javascript"><code class="language-javascript">function logVisit() {
+  console.log("page visited at " + Date.now());
+}
+
+logVisit();    // triggers once
+logVisit();    // triggers again — same action, fresh run
+logVisit();    // and again
+</code></pre>
+    <p>Each call is a separate run. The function doesn't "remember" previous calls unless you build that in.</p>
+
+    <p>You can pass the action around as a value, separate from triggering it:</p>
+<pre class="language-javascript"><code class="language-javascript">function showError(message) {
+  errorBox.textContent = message;
+}
+
+// pass the action itself — don't trigger it yet
+button.addEventListener("click", showError);
+
+// trigger it directly
+showError("now");
+</code></pre>
+    <p>Without <code>()</code>, you're handing over the action. With <code>()</code>, you're performing it.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-2-1-0': `
+    <p>Programs need to do the same kinds of things over and over — show messages, validate input, update the page, react to clicks. Without a way to package those actions, every place that needs the action has to write it out from scratch.</p>
+    <p>The "reusable actions" model solves this: instead of code being a long script of every step, code becomes a collection of named actions that can be triggered when needed. That's how real apps stay manageable as they grow.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-2-1-1': `
+    <p>Treat a chunk of code as a reusable action whenever it does <em>one clear job</em> — even if you only call it from one place right now. The naming alone makes the surrounding code easier to read, and reuse becomes free if you need it later.</p>
+<pre class="language-javascript"><code class="language-javascript">// Without a reusable action — every spot does the work itself
+errorBox.textContent = "Email required";
+errorBox.classList.add("visible");
+// ... 50 lines later ...
+errorBox.textContent = "Password too short";
+errorBox.classList.add("visible");
+// ... 100 lines later ...
+errorBox.textContent = "Network failed";
+errorBox.classList.add("visible");
+
+// With a reusable action — one place, three triggers
+function showError(message) {
+  errorBox.textContent = message;
+  errorBox.classList.add("visible");
+}
+
+showError("Email required");
+showError("Password too short");
+showError("Network failed");
+</code></pre>
+    <p>Now if the design changes — say errors should fade in, or log to analytics — you change <code>showError</code> once and every caller picks it up.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-2-1-2': `
+    <p>Almost every piece of behavior in a real app is a reusable action with a name.</p>
+<pre class="language-javascript"><code class="language-javascript">function openModal()       { modal.classList.add("open"); }
+function closeModal()      { modal.classList.remove("open"); }
+function toggleSidebar()   { sidebar.classList.toggle("open"); }
+function clearForm()       { form.reset(); }
+function showSpinner()     { spinner.classList.add("visible"); }
+function hideSpinner()     { spinner.classList.remove("visible"); }
+function scrollToTop()     { window.scrollTo({ top: 0, behavior: "smooth" }); }
+
+// triggered wherever they're needed
+openBtn.addEventListener("click", openModal);
+closeBtn.addEventListener("click", closeModal);
+menuBtn.addEventListener("click", toggleSidebar);
+</code></pre>
+    <p>Each one is a verb. Each one can be triggered from anywhere. The app becomes a vocabulary of actions instead of a wall of code.</p>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-2-1-3': `
+    <p>Think of functions like the buttons on a microwave. Each button is labeled with what it does — popcorn, defrost, reheat. You don't rewire the microwave every time you want popcorn. You just press the popcorn button.</p>
+    <p>A function is the same idea. The name is the label. The body is the wiring. Calling the function is pressing the button. The wiring stays the same. Pressing the button makes the action happen.</p>
+    <p>Building an app is mostly building your own custom buttons — your own actions, named for what they do — and then pressing them when needed.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-2-1-4': `
+    <p>A function is a <strong>verb</strong> with a name. Variables are nouns; functions are verbs.</p>
+<pre class="language-javascript"><code class="language-javascript">// Nouns — things your program has
+const user        = { name: "Os" };
+const cartItems   = [];
+const isLoggedIn  = true;
+
+// Verbs — things your program does
+function login()           { /* ... */ }
+function addToCart(item)   { /* ... */ }
+function checkout()        { /* ... */ }
+</code></pre>
+    <p>Good function names start with a verb: <code>show</code>, <code>get</code>, <code>build</code>, <code>send</code>, <code>toggle</code>, <code>render</code>, <code>handle</code>. If you can't think of a verb for a function, that's usually a sign it's doing too many things.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-2-1-5': `
+<pre class="language-javascript"><code class="language-javascript">function showError(message) {
+  errorBox.textContent = message;
+  errorBox.classList.add("visible");
+}
+
+showError("Email required");
+showError("Network failed");
+
+// JavaScript is thinking:
+// Line 1: see function showError → register a reusable action called showError, remember its parameter list.
+// Line 2: read the body — don't run it yet, just store it as the action's steps.
+// Line 3: still part of the body — store this step too.
+// Line 4: end of action definition.
+// Line 6: see showError("Email required") → trigger the action with message = "Email required", run the body, error box updates.
+// Line 7: see showError("Network failed") → trigger the same action again with message = "Network failed", run the body fresh, error box updates again.
+</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-2-2-0': `
+    <p>If you can't describe a function with a clear verb phrase ("show error", "get cart total", "validate email"), the function is doing too much or doesn't have a clear job. That's a debugging clue at the design level — not about the code being broken, but about it being unclear.</p>
+<pre class="language-javascript"><code class="language-javascript">function doStuff() {
+  // validate the form
+  // submit the data
+  // show a success message
+  // redirect the user
+}
+// no clear verb — this is four actions wearing one name
+// fix: split into validateForm, submitData, showSuccess, redirect
+</code></pre>
+    <p>Every reusable action should answer one question: "what does this do?" — in one short sentence.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-2-2-1': `
+    <p>A function isn't just code that runs. It's a <strong>named action</strong> in your app's vocabulary.</p>
+    <p>Once you start thinking this way, building an app stops feeling like writing one giant script and starts feeling like teaching the program a list of things it can do — and then telling it when to do them.</p>
+    <p>Naming is the act of designing. The name is what other code uses. The body is the implementation that can change later.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-2-2-2': `
+    <p><strong>Confusion: function name vs what the function does</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function user() {              // wrong: noun — sounds like a thing
+  return { name: "Os" };
+}
+
+function getUser() {           // right: verb — sounds like an action
+  return { name: "Os" };
+}
+</code></pre>
+    <p>The name is the label on the button. It should describe what happens when you press it.</p>
+
+    <p><strong>Confusion: defining the action vs triggering it</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function logVisit() {
+  console.log("visited");
+}
+// the action exists now — but nothing has been logged yet
+
+logVisit();
+// only now does the action actually run
+</code></pre>
+    <p>Defining is making the button. Calling is pressing it.</p>
+
+    <p><strong>Confusion: one big action vs several small ones</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Less reusable — one giant action
+function handleSubmit() {
+  // 40 lines doing many things
+}
+
+// More reusable — several named actions
+function validateForm()  { /* ... */ }
+function submitData()    { /* ... */ }
+function showSuccess()   { /* ... */ }
+
+function handleSubmit() {
+  if (!validateForm()) return;
+  submitData();
+  showSuccess();
+}
+</code></pre>
+    <p>Small actions can be reused on their own. A giant action can only be triggered as one block.</p>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-2-2-3': `
+<pre class="language-javascript"><code class="language-javascript">function thing()   { /* ... */ }
+function stuff()   { /* ... */ }
+function helper()  { /* ... */ }
+// wrong: vague names — no idea what action they perform
+// fix: name the verb — showError, getCartTotal, formatPrice
+</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function processUser(user) {
+  // validates the user
+  // saves to the database
+  // sends an email
+  // updates the UI
+}
+// wrong: one function doing four jobs
+// fix: split into four named actions, then call them in order
+</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function showError() {
+  errorBox.textContent = "Email required";
+}
+// wrong: hardcoded message — only works for one specific error
+// fix: take message as a parameter so the action is actually reusable
+</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function show() { /* ... */ }
+function show() { /* ... */ }
+// wrong: same name for two different actions — second one overwrites the first
+// fix: name each action for what it specifically does
+</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Same logic copy-pasted into three different event handlers
+btn1.addEventListener("click", () => { /* same 5 lines */ });
+btn2.addEventListener("click", () => { /* same 5 lines */ });
+btn3.addEventListener("click", () => { /* same 5 lines */ });
+// wrong: the action isn't reusable when it lives inline
+// fix: extract one named function, pass it as the handler each time
+</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-2-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// One named action, triggered many times
+function greet(name) {
+  console.log("Hello, " + name);
+}
+greet("Os");
+greet("Sam");
+greet("Alex");
+
+// Action with no input — same effect every time
+function clearScreen() {
+  document.body.innerHTML = "";
+}
+clearScreen();
+
+// Action that produces a value
+function getRandomColor() {
+  const colors = ["red", "blue", "green"];
+  return colors[Math.floor(Math.random() * 3)];
+}
+console.log(getRandomColor());
+console.log(getRandomColor());
+
+// Small actions combined into a bigger action
+function showSpinner() { spinner.classList.add("visible"); }
+function hideSpinner() { spinner.classList.remove("visible"); }
+
+async function loadData() {
+  showSpinner();
+  await fetch("/api/data");
+  hideSpinner();
+}
+</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-2-3-1': `
+    <p><strong>Example: a small vocabulary of UI actions</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function openModal()    { modal.classList.add("open"); }
+function closeModal()   { modal.classList.remove("open"); }
+function showSpinner()  { spinner.classList.add("visible"); }
+function hideSpinner()  { spinner.classList.remove("visible"); }
+
+openBtn.addEventListener("click", openModal);
+closeBtn.addEventListener("click", closeModal);
+overlay.addEventListener("click", closeModal);
+</code></pre>
+
+    <p><strong>Example: same action, many triggers</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function addToCart(product) {
+  cart.push(product);
+  cartBadge.textContent = cart.length;
+}
+
+product1Btn.addEventListener("click", () => addToCart(product1));
+product2Btn.addEventListener("click", () => addToCart(product2));
+product3Btn.addEventListener("click", () => addToCart(product3));
+// one action, used by every "Add" button on the page
+</code></pre>
+
+    <p><strong>Example: building bigger actions out of smaller ones</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function clearForm()      { form.reset(); }
+function closeModal()     { modal.classList.remove("open"); }
+function showSuccess()    { toast.textContent = "Saved!"; toast.classList.add("visible"); }
+
+function handleSaveSuccess() {
+  clearForm();
+  closeModal();
+  showSuccess();
+}
+// each small action is reusable on its own
+// handleSaveSuccess composes them into the after-save flow
+</code></pre>
+
+    <p><strong>Example: the action as a value</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function logout() {
+  user = null;
+  redirectTo("/login");
+}
+
+logoutBtn.addEventListener("click", logout);
+window.addEventListener("beforeunload", logout);
+sessionTimer.addEventListener("expired", logout);
+// the same action, handed to three different listeners
+</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-2-3-2': `
+    <ul>
+      <li><strong>Function declaration</strong> → the most common way to define a reusable action</li>
+      <li><strong>Parameters</strong> → what the action needs to do its work</li>
+      <li><strong>Return values</strong> → what the action hands back to whoever triggered it</li>
+      <li><strong>Naming</strong> → start with a verb to describe what the action does</li>
+      <li><strong>Events</strong> → events trigger named actions</li>
+      <li><strong>Callbacks</strong> → passing an action as a value to be triggered later</li>
+      <li><strong>Composition</strong> → small actions called by larger actions</li>
+      <li><strong>Single responsibility</strong> → each action should do one clear job</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-2-3-3': `
+    <ul>
+      <li>What functions are</li>
+      <li>Why functions exist</li>
+      <li>Function declaration</li>
+      <li>Function naming</li>
+      <li>Verbs vs nouns in code</li>
+      <li>Single-responsibility functions</li>
+      <li>Callback functions</li>
+      <li>Composing small functions</li>
+    </ul>
+  `,
+
+
+  /* ===== Sub-lesson: 3.9 Functions → function declaration =====
+     Path: topics-8-3-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-3-0-0': `
+    <p>A function declaration is the standard way to create a function in JavaScript. It starts with the <code>function</code> keyword, followed by a name, parameters in parentheses, and a body in curly braces.</p>
+    <p>It's the most common form you'll see, and the one most beginners learn first.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-3-0-1': `
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {
+  console.log("Hello, " + name);
+}
+
+greet("Os");   // prints "Hello, Os"
+</code></pre>
+    <p>Once declared, the function can be called by its name as many times as you want.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-3-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {
+  console.log("Hello, " + name);
+}
+
+// function   → keyword that starts the declaration
+// greet      → the name of the function
+// (name)     → the parameter list
+// { ... }    → the function body
+// no = sign  → declarations don't assign to a variable, they create a named function directly
+// no = sign  → explained on function expressions</code></pre>
+</code></pre>
+    <p>The whole thing is one statement. No semicolon is needed at the end of the closing brace, though some people add one — both work.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-3-0-3': `
+    <p>The name comes right after <code>function</code>, with no <code>=</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">function greet() { ... }       // correct: declaration
+const greet = function() {};   // different — that's a function expression
+</code></pre>
+
+    <p>Parentheses are required, even with no parameters:</p>
+<pre class="language-javascript"><code class="language-javascript">function sayHi() { ... }       // correct
+function sayHi { ... }         // wrong: SyntaxError
+</code></pre>
+
+    <p>Function declarations are <strong>hoisted</strong>, meaning JavaScript reads them before running any code. You can call them before they appear in the file:</p>
+<pre class="language-javascript"><code class="language-javascript">greet("Os");                   // works! prints "Hello, Os"
+
+function greet(name) {
+  console.log("Hello, " + name);
+}
+</code></pre>
+    <p>This works only for declarations, not for expressions. (More on that in the next lesson.)</p>
+
+    <p>Declarations create a function name in the surrounding scope:</p>
+<pre class="language-javascript"><code class="language-javascript">function greet() { ... }
+console.log(greet);     // logs the function itself
+console.log(greet());   // logs whatever greet returns
+</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-3-1-0': `
+    <p>You need a way to create a named, reusable action in your code. Function declarations are the most direct way: one statement that creates a function and gives it a name in one step.</p>
+    <p>Because they're hoisted, you don't have to worry about the order they appear in the file. You can call <code>greet()</code> at the top and define <code>greet</code> at the bottom — JavaScript handles it.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-3-1-1': `
+    <p>Use a function declaration when you want a clearly named function that can be called from anywhere in the same scope. It's the default form — reach for it unless you have a specific reason to use an expression or arrow function.</p>
+<pre class="language-javascript"><code class="language-javascript">// Good fit for declaration: a named utility you'll use throughout the file
+function formatPrice(price) {
+  return "$" + price.toFixed(2);
+}
+
+function isValidEmail(email) {
+  return email.includes("@") && email.length > 3;
+}
+
+function showError(message) {
+  errorBox.textContent = message;
+}
+</code></pre>
+    <p>Each one reads like its own little tool. The name appears in stack traces and error messages, which makes debugging easier.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-3-1-2': `
+    <p>Function declarations are common at the top level of files, inside other functions, and as helpers throughout an app.</p>
+<pre class="language-javascript"><code class="language-javascript">// Top-level utilities
+function getCart()       { return JSON.parse(localStorage.getItem("cart")) || []; }
+function saveCart(cart)  { localStorage.setItem("cart", JSON.stringify(cart)); }
+
+// Event handlers
+function handleClick(event) {
+  event.preventDefault();
+  console.log("clicked");
+}
+button.addEventListener("click", handleClick);
+
+// Helpers inside other functions
+function setupPage() {
+  function attachListeners() {
+    button.addEventListener("click", handleClick);
+  }
+  attachListeners();
+}
+</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-3-1-3': `
+    <p>A function declaration is the long-form way of saying "make a function and name it." You write the word <code>function</code>, give it a name, and write what it does.</p>
+    <p>Because JavaScript reads all declarations first before running any code, declared functions are available everywhere in their scope — even above the line where you wrote them. It's like JavaScript scans the file once to learn all the function names, then runs through the file to do the actual work.</p>
+    <p>This is why declarations feel "stable" — they don't depend on where they appear in the file.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-3-1-4': `
+    <p>A function declaration is a name + steps, written as one self-contained statement.</p>
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {
+  console.log("Hello, " + name);
+}
+
+//   name      parameters     body
+//    ↓            ↓            ↓
+// function  greet  (name)  { console.log(...) }
+</code></pre>
+    <p>Think of declarations as the "headlines" of your file. JavaScript reads all the headlines first, then runs the body of the program. By the time any code runs, every declared function is already defined and ready to call.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-3-1-5': `
+<pre class="language-javascript"><code class="language-javascript">greet("Os");
+
+function greet(name) {
+  console.log("Hello, " + name);
+}
+
+// JavaScript is thinking:
+// First pass (hoisting): scan the file, find function greet → register it before any code runs.
+// Line 1: see greet("Os") → look up greet (already registered), call it with "Os" as name.
+// Line 3: jump into the body — name is "Os", run the steps.
+// Line 4: log "Hello, Os".
+// Line 5: end of body, return to caller (no return value).
+</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-3-2-0': `
+    <p>If you get <code>TypeError: greet is not a function</code> on a declaration, the issue is almost always one of three things: the name is misspelled, the function isn't in scope, or you're shadowing it with a variable of the same name.</p>
+<pre class="language-javascript"><code class="language-javascript">function greet() { console.log("hi"); }
+const greet = "hello";
+greet();
+// wrong: TypeError — greet is now a string, not a function
+// fix: don't reuse the same name for a variable
+</code></pre>
+
+    <p>If you get <code>ReferenceError: greet is not defined</code>, the function declaration is in a different scope (inside another function or block) than where you're calling it.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-3-2-1': `
+    <p>A declaration is a complete, named statement — no <code>=</code>, no variable being assigned, just <code>function name() { ... }</code>.</p>
+    <p>That single difference (no assignment) is what makes it hoisted. JavaScript can lift the whole thing to the top of its scope because there's no expression that needs to be evaluated first — the function and the name come into existence together as one unit.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-3-2-2': `
+    <p><strong>Confusion: declaration vs expression</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function greet() { ... }              // declaration — name comes from "function NAME"
+const greet = function() { ... };     // expression — name comes from the variable
+const greet = () => { ... };          // arrow expression — same idea, shorter syntax
+</code></pre>
+    <p>Declarations are hoisted. Expressions and arrows are not — you can only call them after the line that creates them.</p>
+
+    <p><strong>Confusion: hoisting</strong></p>
+<pre class="language-javascript"><code class="language-javascript">greet();                       // works due to hoisting
+function greet() { console.log("hi"); }
+
+sayHi();                       // wrong: ReferenceError
+const sayHi = function() { console.log("hi"); };
+</code></pre>
+    <p>Even though it's allowed, calling a function before its declaration appears in the file can be confusing to read. The convention is still to define before you call.</p>
+
+    <p><strong>Confusion: declaration inside an <code>if</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">if (condition) {
+  function greet() { console.log("hi"); }
+}
+greet();
+// behavior is inconsistent across browsers and strict mode
+// fix: assign to a variable instead, or hoist the declaration to the top of the function
+</code></pre>
+    <p>Declarations work cleanly at the top level of a file or function. Putting them inside <code>if</code> blocks or loops is technically legal but unreliable.</p>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-3-2-3': `
+<pre class="language-javascript"><code class="language-javascript">function 1stGreet() { ... }
+// wrong: function names can't start with a number
+// fix: rename to firstGreet or greetOne
+</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function greet name() { ... }
+// wrong: extra word — name should be inside parentheses as a parameter
+// fix: function greet(name) { ... }
+</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function greet => () { ... }
+// wrong: mixing declaration syntax with arrow syntax
+// fix: pick one — function greet() { ... } or const greet = () => { ... }
+</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function greet { ... }
+// wrong: missing parentheses — they're required even with no parameters
+// fix: function greet() { ... }
+</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function greet() { ... };
+function greet() { ... };
+// works, but the second one silently overwrites the first
+// fix: don't reuse function names in the same scope
+</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-3-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// No parameters, no return
+function sayHi() {
+  console.log("hi");
+}
+
+// One parameter, no return
+function logName(name) {
+  console.log(name);
+}
+
+// Multiple parameters, returns a value
+function add(a, b) {
+  return a + b;
+}
+
+// No parameters, returns a value
+function getNow() {
+  return Date.now();
+}
+
+// Default parameter (defaults to "friend" if no name passed)
+function greet(name = "friend") {
+  console.log("Hello, " + name);
+}
+greet();         // "Hello, friend"
+greet("Os");     // "Hello, Os"
+</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-3-3-1': `
+    <p><strong>Example: utility helpers at the top of a file</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function $(selector)      { return document.querySelector(selector); }
+function $$(selector)     { return document.querySelectorAll(selector); }
+function on(el, ev, fn)   { el.addEventListener(ev, fn); }
+
+// the rest of the file uses these throughout
+on($("#submitBtn"), "click", handleSubmit);
+</code></pre>
+
+    <p><strong>Example: named event handler</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function handleSubmit(event) {
+  event.preventDefault();
+  const data = collectFormData();
+  sendToServer(data);
+}
+
+form.addEventListener("submit", handleSubmit);
+// the named function shows up in stack traces, easier to debug than an inline arrow
+</code></pre>
+
+    <p><strong>Example: declarations grouped at top of file</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// All declarations at the top — hoisting means order doesn't matter
+function init()              { /* setup logic */ }
+function loadProducts()      { /* fetch products */ }
+function renderProducts(p)   { /* build the DOM */ }
+
+// Main flow at the bottom
+init();
+loadProducts().then(renderProducts);
+</code></pre>
+
+    <p><strong>Example: factory-style helper</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function makeButton(label, onClick) {
+  const btn = document.createElement("button");
+  btn.textContent = label;
+  btn.addEventListener("click", onClick);
+  return btn;
+}
+
+const saveBtn = makeButton("Save", handleSave);
+const cancelBtn = makeButton("Cancel", handleCancel);
+document.body.append(saveBtn, cancelBtn);
+</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-3-3-2': `
+    <ul>
+      <li><strong>Function expression</strong> → the alternative form, assigned to a variable</li>
+      <li><strong>Arrow function</strong> → an even shorter expression syntax</li>
+      <li><strong>Hoisting</strong> → why declarations work before the line they appear on</li>
+      <li><strong>Scope</strong> → declarations create their name in the enclosing function or file</li>
+      <li><strong>Naming</strong> → the name shows up in error messages and stack traces</li>
+      <li><strong>Parameters</strong> → the input slots inside the parentheses</li>
+      <li><strong>Return values</strong> → what the function hands back</li>
+      <li><strong>Function body</strong> → the code inside the curly braces</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-3-3-3': `
+    <ul>
+      <li>Function expression</li>
+      <li>Arrow function</li>
+      <li>Hoisting</li>
+      <li>Function name</li>
+      <li>Function body</li>
+      <li>Parameters and arguments</li>
+      <li>Return values</li>
+      <li>Scope</li>
+    </ul>
+  `,
+
+
+  /* ===== Sub-lesson: 3.9 Functions → function expression =====
+     Path: topics-8-4-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-4-0-0': `
+    <p>A function expression is a function that's created as a value and assigned to a variable, instead of being declared with the standard <code>function name() {}</code> syntax.</p>
+    <p>You write <code>const greet = function() { ... }</code> — and now <code>greet</code> holds the function. You call it the same way: <code>greet()</code>.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-4-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const greet = function(name) {
+  console.log("Hello, " + name);
+};
+
+greet("Os");   // prints "Hello, Os"</code></pre>
+    <p>The function on the right is the <em>value</em>. The variable on the left is the <em>name</em> you'll use to call it.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-4-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const greet = function(name) {
+  console.log("Hello, " + name);
+};
+
+// const greet  → variable that will hold the function
+// =            → assignment — the function on the right gets stored in greet
+// function     → keyword creating the function value
+// (no name)    → the function itself has no name (anonymous)
+// (name)       → the parameter list
+// { ... }      → the function body
+// ;            → semicolon — required because this is an assignment statement</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-4-0-3': `
+    <p>The <code>=</code> sign is what makes this an expression instead of a declaration:</p>
+<pre class="language-javascript"><code class="language-javascript">function greet() { ... }              // declaration — no =
+const greet = function() { ... };     // expression — has =</code></pre>
+
+    <p>The function on the right doesn't need a name (it's anonymous). The variable name is what you use to call it:</p>
+<pre class="language-javascript"><code class="language-javascript">const greet = function() { console.log("hi"); };
+greet();    // call it through the variable</code></pre>
+
+    <p>Function expressions are <strong>not hoisted</strong>. You can't call them before the line that creates them:</p>
+<pre class="language-javascript"><code class="language-javascript">greet();                              // wrong: ReferenceError
+const greet = function() { ... };
+
+// vs declarations, which DO work:
+sayHi();                              // works due to hoisting
+function sayHi() { ... }</code></pre>
+
+    <p>The semicolon at the end is required, because the whole line is one assignment statement:</p>
+<pre class="language-javascript"><code class="language-javascript">const greet = function() {
+  console.log("hi");
+};   // ← semicolon belongs here
+
+function greet() {
+  console.log("hi");
+}    // ← no semicolon needed (declaration)</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-4-1-0': `
+    <p>Sometimes you want to treat a function like any other value — store it in a variable, pass it as an argument, return it from another function. Function expressions make that natural, because the function literally <em>is</em> a value on the right-hand side of an <code>=</code>.</p>
+    <p>They also let you control when a function becomes available. Because expressions aren't hoisted, the function only exists from that line forward — useful when you want predictable, top-down code flow.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-4-1-1': `
+    <p>Use a function expression when you want a function as a value: stored in a variable, passed to another function, or returned from one.</p>
+<pre class="language-javascript"><code class="language-javascript">// Storing a function in a variable
+const formatPrice = function(price) {
+  return "$" + price.toFixed(2);
+};
+
+// Passing a function as an argument
+button.addEventListener("click", function() {
+  console.log("clicked");
+});
+
+// Returning a function from a function
+function makeMultiplier(n) {
+  return function(x) {
+    return x * n;
+  };
+}
+const double = makeMultiplier(2);
+console.log(double(5));   // 10</code></pre>
+    <p>Anywhere you'd use a value, you can use a function expression in its place.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-4-1-2': `
+    <p>Function expressions show up everywhere functions are used as values — callbacks, event handlers, array methods, factory functions.</p>
+<pre class="language-javascript"><code class="language-javascript">// As a callback for setTimeout
+setTimeout(function() {
+  console.log("3 seconds passed");
+}, 3000);
+
+// As a callback for an array method
+const numbers = [1, 2, 3];
+const doubled = numbers.map(function(n) {
+  return n * 2;
+});
+
+// Returned from a factory
+function createCounter() {
+  let count = 0;
+  return function() {
+    count = count + 1;
+    return count;
+  };
+}
+const counter = createCounter();
+counter();   // 1
+counter();   // 2</code></pre>
+    <p>In modern code, most of these spots use arrow functions instead — but the underlying idea is the same: a function as a value.</p>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-4-1-3': `
+    <p>A function expression treats a function the same way you'd treat a number or a string. You can put it in a variable. You can hand it to other code. You can build it on the fly when you need one.</p>
+    <p>The difference from a declaration is mostly about <em>how</em> the function comes into existence. A declaration says "make a function with this name." An expression says "make a function value, and I'll decide what to do with it" — usually by assigning it to a variable.</p>
+    <p>Both end up giving you something you can call. The path to get there is just different.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-4-1-4': `
+    <p>A function expression is a function being treated as a value, like any other.</p>
+<pre class="language-javascript"><code class="language-javascript">const num   = 5;                              // value: a number
+const text  = "hello";                        // value: a string
+const greet = function() { console.log("hi"); }; // value: a function
+
+// all three are stored in variables the same way</code></pre>
+    <p>The function isn't special. It's just a value sitting on the right side of an <code>=</code>, like any other value. The variable is the handle you use to call it later.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-4-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const greet = function(name) {
+  console.log("Hello, " + name);
+};
+
+greet("Os");
+
+// JavaScript is thinking:
+// Line 1: see const greet = function(...) → create the function value, then assign it to greet.
+// Line 2: still part of the function value — store this step as part of the body.
+// Line 3: end of function value, end of assignment.
+// Line 5: see greet("Os") → look up greet, find the function, call it with "Os" as name, run the body, prints "Hello, Os".</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-4-2-0': `
+    <p>The most common bug with function expressions is <strong>calling them before they're defined</strong>. Because they're not hoisted, calling them too early throws an error.</p>
+<pre class="language-javascript"><code class="language-javascript">greet("Os");
+const greet = function(name) {
+  console.log("Hello, " + name);
+};
+// wrong: ReferenceError — greet doesn't exist yet on line 1
+// fix: move the call below the assignment</code></pre>
+
+    <p>If you switch from a declaration to an expression and suddenly things break, this is usually why. Declarations were silently saving you from the ordering problem.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-4-2-1': `
+    <p>A function expression is just <strong>a function value being assigned to a variable</strong>. Nothing more.</p>
+    <p>The <code>function() {}</code> on the right is the function. The <code>const greet =</code> on the left is the storage. They're separate operations: create the value, then store it.</p>
+    <p>Once you see it that way, everything follows. The reason it isn't hoisted: the assignment hasn't run yet. The reason the semicolon is needed: it's an assignment statement. The reason you can pass functions around: they're values.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-4-2-2': `
+    <p><strong>Confusion: declaration vs expression</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function greet() { ... }              // declaration
+const greet = function() { ... };     // expression
+
+greet();
+// both are called the same way once they exist</code></pre>
+    <p>The difference is how they're created and when they're available, not how you call them.</p>
+
+    <p><strong>Confusion: anonymous vs named function expression</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const greet = function() { ... };           // anonymous expression
+const greet = function greetFn() { ... };    // named expression
+
+// the inner name "greetFn" is mostly useful for debugging stack traces
+// in practice, the anonymous form is far more common</code></pre>
+
+    <p><strong>Confusion: expression vs arrow function</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const greet = function(name) {
+  return "Hello, " + name;
+};
+
+const greet = (name) => {
+  return "Hello, " + name;
+};
+// same idea — both create a function and assign it to a variable
+// arrow functions are a shorter syntax with a few behavioral differences</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-4-2-3': `
+<pre class="language-javascript"><code class="language-javascript">const greet = function() {
+  console.log("hi");
+}
+greet();
+// works, but missing the semicolon after the closing brace
+// fix: add ; after } since this is an assignment</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">greet();
+const greet = function() { console.log("hi"); };
+// wrong: ReferenceError — expression not hoisted, called before defined
+// fix: define before calling</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const greet = function greet() { ... };
+greet();
+// works, but reusing the same name for the variable and the inner function name is confusing
+// fix: const greet = function() { ... };  // anonymous</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const greet = function() { return "hi"; }
+const result = greet;
+// wrong: result holds the function itself, not "hi"
+// fix: const result = greet();  // call it with ()</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">let greet = function() { console.log("v1"); };
+greet = function() { console.log("v2"); };
+greet();   // "v2"
+// works — but reassigning a function variable is rare and easy to lose track of
+// fix: usually use const for function expressions</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-4-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Anonymous expression assigned to a variable
+const sayHi = function() {
+  console.log("hi");
+};
+sayHi();
+
+// Expression with parameters and a return
+const add = function(a, b) {
+  return a + b;
+};
+console.log(add(2, 3));   // 5
+
+// Expression passed directly as a callback
+setTimeout(function() {
+  console.log("done");
+}, 1000);
+
+// Expression returned from another function
+function makeGreeter(greeting) {
+  return function(name) {
+    return greeting + ", " + name;
+  };
+}
+const hello = makeGreeter("Hello");
+console.log(hello("Os"));   // "Hello, Os"</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-4-3-1': `
+    <p><strong>Example: inline event handler</strong></p>
+<pre class="language-javascript"><code class="language-javascript">button.addEventListener("click", function(event) {
+  event.preventDefault();
+  console.log("clicked");
+});
+// the function is created right where it's needed, no separate declaration</code></pre>
+
+    <p><strong>Example: array method callback</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const prices = [10, 20, 30];
+const withTax = prices.map(function(price) {
+  return price * 1.08;
+});
+// each price is passed into the function, the result becomes the new array</code></pre>
+
+    <p><strong>Example: assigning a function based on a condition</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const log = isDevelopment
+  ? function(msg) { console.log("[DEV]", msg); }
+  : function(msg) { /* silent in production */ };
+
+log("user logged in");
+// the variable holds whichever function fits the environment</code></pre>
+
+    <p><strong>Example: a factory that returns a function</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function createValidator(minLength) {
+  return function(value) {
+    return value.length >= minLength;
+  };
+}
+
+const isLongEnough = createValidator(8);
+console.log(isLongEnough("hello"));      // false
+console.log(isLongEnough("hello world")); // true</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-4-3-2': `
+    <ul>
+      <li><strong>Function declaration</strong> → the alternative form, with hoisting</li>
+      <li><strong>Arrow function</strong> → a shorter expression syntax</li>
+      <li><strong>Hoisting</strong> → why expressions can't be called before they're defined</li>
+      <li><strong>Variables</strong> → expressions are stored in variables like any other value</li>
+      <li><strong>Callbacks</strong> → most callbacks are function expressions or arrows</li>
+      <li><strong>Higher-order functions</strong> → functions that take or return other functions</li>
+      <li><strong>Closures</strong> → returned function expressions often "remember" outer variables</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-4-3-3': `
+    <ul>
+      <li>Function declaration</li>
+      <li>Arrow function</li>
+      <li>Anonymous functions</li>
+      <li>Named function expressions</li>
+      <li>Hoisting</li>
+      <li>Callback functions</li>
+      <li>Higher-order functions</li>
+      <li>Closures</li>
+    </ul>
+  `,
+
+
+  /* ===== Sub-lesson: 3.9 Functions → arrow function =====
+     Path: topics-8-5-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-5-0-0': `
+    <p>An arrow function is a shorter way to write a function expression. Instead of <code>function() {}</code>, you write <code>() => {}</code>.</p>
+    <p>It's the modern syntax most JavaScript code uses today, especially for callbacks and short helpers. The arrow (<code>=&gt;</code>) is what gives it the name.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-5-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const greet = (name) => {
+  console.log("Hello, " + name);
+};
+
+greet("Os");   // prints "Hello, Os"</code></pre>
+    <p>Same idea as a function expression — a function value assigned to a variable. The <code>function</code> keyword is gone, replaced by the arrow.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-5-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const greet = (name) => {
+  console.log("Hello, " + name);
+};
+
+// const greet  → variable that will hold the function
+// =            → assignment
+// (name)       → the parameter list
+// =>           → the arrow — replaces the "function" keyword
+// { ... }      → the function body
+// ;            → semicolon — required because this is an assignment statement</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-5-0-3': `
+    <p>If there's exactly one parameter, the parentheses are optional:</p>
+<pre class="language-javascript"><code class="language-javascript">const greet = (name) => { ... };    // with parens
+const greet = name => { ... };       // without parens — same thing
+
+// but with zero or two+ parameters, parens are required:
+const sayHi = () => { ... };          // empty list — parens required
+const add = (a, b) => { ... };        // two parameters — parens required</code></pre>
+
+    <p>If the body is a single expression, you can drop the braces and the <code>return</code> keyword — the value is returned automatically:</p>
+<pre class="language-javascript"><code class="language-javascript">const double = (n) => n * 2;            // implicit return
+const double = (n) => { return n * 2; }; // same thing, longer form
+
+console.log(double(5));   // 10</code></pre>
+
+    <p>This shortcut is called <strong>implicit return</strong>. It only works when the body is one expression.</p>
+
+    <p>Arrow functions are <strong>not hoisted</strong>, just like regular function expressions:</p>
+<pre class="language-javascript"><code class="language-javascript">greet("Os");                          // wrong: ReferenceError
+const greet = (name) => { ... };
+
+// fix: define before calling</code></pre>
+
+    <p>To return an object directly, wrap it in parentheses so JavaScript doesn't read the <code>{}</code> as a function body:</p>
+<pre class="language-javascript"><code class="language-javascript">const makeUser = (name) => ({ name: name });   // correct: returns an object
+const makeUser = (name) => { name: name };     // wrong: reads as a body, returns undefined</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-5-1-0': `
+    <p>Function expressions work, but they're verbose — especially as one-line callbacks. Writing <code>function(item) { return item.price; }</code> over and over gets noisy.</p>
+    <p>Arrow functions trim away the parts that don't add meaning: the <code>function</code> keyword, the braces (when not needed), and the <code>return</code> keyword (when the body is one expression). What's left reads almost like a math formula: <code>item =&gt; item.price</code>.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-5-1-1': `
+    <p>Use an arrow function when you want a short, lightweight function — especially for callbacks and array methods. The shorter syntax makes the surrounding code easier to read.</p>
+<pre class="language-javascript"><code class="language-javascript">const prices = [10, 20, 30];
+
+// Function expression — works, but noisy
+const doubled1 = prices.map(function(p) { return p * 2; });
+
+// Arrow function — cleaner, same result
+const doubled2 = prices.map((p) => p * 2);
+
+// Arrow function with implicit return and no parens
+const doubled3 = prices.map(p => p * 2);</code></pre>
+    <p>For one-liners like this, arrows are the standard choice in modern JavaScript.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-5-1-2': `
+    <p>Arrow functions are everywhere callbacks live: array methods, event handlers, promises, timers, and short utility functions.</p>
+<pre class="language-javascript"><code class="language-javascript">// Array methods
+const totals = items.map(item => item.price * item.quantity);
+const inStock = products.filter(p => p.stock > 0);
+const total = numbers.reduce((sum, n) => sum + n, 0);
+
+// Event handlers
+button.addEventListener("click", () => {
+  console.log("clicked");
+});
+
+// Promises
+fetch("/api/data")
+  .then(response => response.json())
+  .then(data => console.log(data));
+
+// Timers
+setTimeout(() => console.log("done"), 1000);
+
+// Short utilities
+const isEven = n => n % 2 === 0;
+const formatPrice = price => "$" + price.toFixed(2);</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-5-1-3': `
+    <p>An arrow function is the same idea as a regular function — inputs come in, work happens, a value comes out — just written with less ceremony.</p>
+    <p>The arrow itself (<code>=&gt;</code>) is the visual cue. Anything to the left of the arrow is the input. Anything to the right is the work. If the work is a single expression, that expression is also the output.</p>
+    <p>Most arrow functions you'll write are tiny — one line, one job, used right where they're created. That's exactly what they're shaped for.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-5-1-4': `
+    <p>An arrow function is "input arrow output" — read it left to right.</p>
+<pre class="language-javascript"><code class="language-javascript">const double = n => n * 2;
+
+//   input    →    output
+//     ↓             ↓
+//     n     =>    n * 2</code></pre>
+    <p>For longer functions, the body in <code>{ ... }</code> is the work, and you use <code>return</code> like normal. But the short form — <code>input =&gt; output</code> — is what makes arrows feel different from regular functions.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-5-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const double = n => n * 2;
+
+const result = double(5);
+console.log(result);
+
+// JavaScript is thinking:
+// Line 1: see const double = (...) => → create the arrow function value, assign it to double.
+// Line 3: see double(5) → look up double, call it with 5 as n, run the body, get 10 back, store it in result.
+// Line 4: look up result → 10 → log 10.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-5-2-0': `
+    <p>The most common arrow function bug is forgetting that <strong>implicit return only works without braces</strong>. If you add braces, you also need <code>return</code>.</p>
+<pre class="language-javascript"><code class="language-javascript">const double = n => n * 2;            // implicit return — works
+const double = n => { n * 2; };       // wrong: returns undefined (no return statement)
+const double = n => { return n * 2; };// works — explicit return
+
+// rule: if you use { }, you must use return</code></pre>
+
+    <p>The other common bug is returning an object literal without parens around it:</p>
+<pre class="language-javascript"><code class="language-javascript">const makeUser = name => { name: name };    // wrong: returns undefined
+const makeUser = name => ({ name: name });   // correct: returns the object
+
+// the parens tell JS: this is an object, not a function body</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-5-2-1': `
+    <p>An arrow function is a function expression with the boilerplate stripped away. <code>function</code> becomes <code>=&gt;</code>. Single-expression bodies skip <code>{}</code> and <code>return</code>. Single parameters skip the parens.</p>
+    <p>Everything else — calling it, passing it around, storing it in a variable — works exactly the same as a regular function expression.</p>
+    <p>Arrows aren't a new <em>kind</em> of function. They're a shorter way to write one.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-5-2-2': `
+    <p><strong>Confusion: when do I need parens around the parameter?</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const a = ()         => "hi";          // no parameters — parens required
+const b = name       => "hi " + name;   // one parameter — parens optional
+const c = (name)     => "hi " + name;   // one parameter with parens — also fine
+const d = (a, b)     => a + b;          // two parameters — parens required</code></pre>
+
+    <p><strong>Confusion: implicit return vs explicit return</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const double = n => n * 2;             // no braces → returns the expression
+const double = n => { return n * 2; }; // with braces → must use return
+const double = n => { n * 2; };        // with braces, no return → returns undefined</code></pre>
+    <p>Braces switch off implicit return. The moment you add <code>{}</code>, you need <code>return</code> to send a value back.</p>
+
+    <p><strong>Confusion: arrow function vs regular function</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// For most everyday uses, these are interchangeable:
+const add1 = function(a, b) { return a + b; };
+const add2 = (a, b) => a + b;
+
+// They behave differently around 'this', but that's an advanced topic
+// covered in its own lesson. For now: arrows are a shorter syntax.</code></pre>
+
+    <p><strong>Confusion: returning an object</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const wrong = name => { name: name };    // wrong: { } reads as body, returns undefined
+const right = name => ({ name: name });   // correct: ( ) wraps the object</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-5-2-3': `
+<pre class="language-javascript"><code class="language-javascript">const double = n => { n * 2; };
+console.log(double(5));   // undefined
+// wrong: braces with no return — function returns undefined
+// fix: drop the braces, OR add return inside them</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const makeUser = name => { name: name };
+// wrong: { } is read as a function body, name: name is a label statement
+// fix: const makeUser = name => ({ name: name });</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const add = a, b => a + b;
+// wrong: missing parens around two parameters
+// fix: const add = (a, b) => a + b;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">double(5);
+const double = n => n * 2;
+// wrong: ReferenceError — arrows aren't hoisted
+// fix: define before calling</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const greet = name => 
+console.log("hi, " + name);
+greet("Os");
+// works, but reads as: greet returns the result of console.log (which is undefined)
+// fix: if you only want the side effect, that's fine
+//      if you want the function to return a value, that's not what this does</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-5-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// No parameters
+const sayHi = () => console.log("hi");
+sayHi();
+
+// One parameter, implicit return, 
+// NOTE: Single parameter do not require ()
+const double = n => n * 2;
+console.log(double(5));   // 10
+
+// Multiple parameters
+const add = (a, b) => a + b;
+console.log(add(2, 3));   // 5
+
+// Multi-line body — needs braces and return
+const greet = (name) => {
+  const message = "Hello, " + name;
+  return message;
+};
+console.log(greet("Os"));   // "Hello, Os"
+
+// Returning an object — wrap in parens
+const makeUser = (name, age) => ({ name: name, age: age });
+console.log(makeUser("Os", 30));   // { name: "Os", age: 30 }</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-5-3-1': `
+    <p><strong>Example: array methods</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const products = [
+  { name: "Hat",   price: 20 },
+  { name: "Shirt", price: 30 },
+  { name: "Shoes", price: 80 },
+];
+
+const names    = products.map(p => p.name);
+const cheap    = products.filter(p => p.price < 50);
+const total    = products.reduce((sum, p) => sum + p.price, 0);
+// each callback is a tiny arrow function — perfect fit for one-liners</code></pre>
+
+    <p><strong>Example: event handler</strong></p>
+<pre class="language-javascript"><code class="language-javascript">button.addEventListener("click", () => {
+  console.log("clicked");
+  cartCount = cartCount + 1;
+});</code></pre>
+
+    <p><strong>Example: chaining promises</strong></p>
+<pre class="language-javascript"><code class="language-javascript">fetch("/api/users")
+  .then(response => response.json())
+  .then(users => users.filter(u => u.active))
+  .then(activeUsers => console.log(activeUsers));
+// each step is a short arrow — keeps the chain readable</code></pre>
+
+    <p><strong>Example: tiny named utilities</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const isAdult       = age => age >= 18;
+const formatPrice   = price => "$" + price.toFixed(2);
+const capitalize    = str => str[0].toUpperCase() + str.slice(1);
+const isEmptyString = str => str.trim().length === 0;
+// each helper is a single line that does one job</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-5-3-2': `
+    <ul>
+      <li><strong>Function expression</strong> → arrows are a shorter version of the same idea</li>
+      <li><strong>Implicit return</strong> → single-expression bodies return automatically</li>
+      <li><strong>Callback functions</strong> → arrows are the most common callback syntax</li>
+      <li><strong>Array methods</strong> → <code>map</code>, <code>filter</code>, <code>reduce</code> are arrow-heavy</li>
+      <li><strong>Promises</strong> → <code>.then()</code> chains usually use arrows</li>
+      <li><strong>Hoisting</strong> → arrows aren't hoisted, just like regular expressions</li>
+      <li><strong>this binding</strong> → arrows handle <code>this</code> differently (advanced)</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-5-3-3': `
+    <ul>
+      <li>Function expression</li>
+      <li>Function declaration</li>
+      <li>Implicit return</li>
+      <li>Returning an object literal</li>
+      <li>Callback functions</li>
+      <li>Array methods (<code>map</code>, <code>filter</code>, <code>reduce</code>)</li>
+      <li>Hoisting</li>
+      <li>Arrow functions and <code>this</code></li>
     </ul>
   `,
 
