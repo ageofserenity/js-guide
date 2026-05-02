@@ -11303,4 +11303,388 @@ priceLabel.textContent = formatPrice(19.99);   // "$19.99"</code></pre>
     </ul>
   `,
 
+
+  /* ===== Sub-lesson: 3.9 Functions → why functions exist =====
+     Path: topics-8-1-{chunkIndex}-{pieceIndex}
+  */
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-1-0-0': `
+    <p>Functions exist so you can write a piece of code once and reuse it from anywhere, instead of repeating the same lines every time you need them.</p>
+    <p>They're how JavaScript lets you package work into a name — and a name is something you can use, share, and update in one place.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-1-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// Without a function — three near-identical blocks
+console.log("Welcome, Os");
+console.log("Welcome, Sam");
+console.log("Welcome, Alex");
+
+// With a function — one block, called three times
+function welcome(name) {
+  console.log("Welcome, " + name);
+}
+
+welcome("Os");
+welcome("Sam");
+welcome("Alex");</code></pre>
+    <p>Both versions do the same thing. The second one is shorter, easier to update, and easier to reuse later.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-1-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function welcome(name) {
+  console.log("Welcome, " + name);
+}
+
+// function       → keyword that creates the reusable block
+// welcome        → the name you'll reuse later
+// (name)         → the input that changes each time you call it
+// { ... }        → the steps that get reused on every call
+// welcome("Os")  → using the block — running it with a specific input</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-1-0-3': `
+    <p>Reuse only happens when you actually call the function:</p>
+<pre class="language-javascript"><code class="language-javascript">function welcome(name) {
+  console.log("Welcome, " + name);
+}
+
+welcome;             // wrong: just the name — no reuse, nothing runs
+welcome("Os");       // correct: the () runs the function</code></pre>
+
+    <p>The input slot is what makes a function reusable across different values:</p>
+<pre class="language-javascript"><code class="language-javascript">function welcome(name) {     // name is a placeholder for whatever comes in
+  console.log("Welcome, " + name);
+}
+
+welcome("Os");      // name is "Os" this time
+welcome("Sam");     // name is "Sam" this time</code></pre>
+    <p>Without the parameter, the function would only ever do one fixed thing.</p>
+
+    <p>Define before you call:</p>
+<pre class="language-javascript"><code class="language-javascript">function welcome(name) {
+  console.log("Welcome, " + name);
+}
+welcome("Os");        // correct: defined first, called after
+
+// Calling before defining can work due to hoisting,
+// but it's much harder to read — keep define-then-call as the habit.</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-1-1-0': `
+    <p>Real code does the same kinds of work over and over — formatting, validating, updating the page, reacting to clicks. Without functions, that work would be copy-pasted everywhere it's needed.</p>
+    <p>Copy-paste creates two big problems: the same logic shows up in many places, and when you need to change it, you have to change every copy. Miss one and the bug ships.</p>
+    <p>Functions solve this by giving the work a name. The work lives in one place. Everywhere else just calls the name.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-1-1-1': `
+    <p>Use functions whenever code is doing one clear job — even if it only happens once. The name itself becomes documentation.</p>
+<pre class="language-javascript"><code class="language-javascript">// Without a function — a wall of code with no labels
+const trimmed = nameInput.value.trim();
+const lower = trimmed.toLowerCase();
+if (lower.includes("@") && lower.length > 3) {
+  submitForm();
+}
+
+// With a function — the job has a name
+function isValidEmail(email) {
+  const cleaned = email.trim().toLowerCase();
+  return cleaned.includes("@") && cleaned.length > 3;
+}
+
+if (isValidEmail(nameInput.value)) {
+  submitForm();
+}</code></pre>
+    <p>The second version reads almost like a sentence. <em>"If the email is valid, submit the form."</em> That's the real win — functions don't just save lines, they make code understandable.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-1-1-2': `
+    <p>Anywhere code does a task that has a clear name, a function fits.</p>
+<pre class="language-javascript"><code class="language-javascript">// Reusing the same DOM update everywhere
+function showMessage(text) {
+  messageBox.textContent = text;
+  messageBox.classList.add("visible");
+}
+
+showMessage("Saved!");
+showMessage("Form submitted");
+showMessage("Loading...");
+
+// Wrapping a calculation that's used in several places
+function calculateTotal(price, tax) {
+  return price + (price * tax);
+}
+
+const cartTotal = calculateTotal(50, 0.08);
+const productTotal = calculateTotal(20, 0.08);
+
+// Naming a piece of logic so the code reads clearly
+function isOnSale(product) {
+  return product.discount > 0;
+}
+
+if (isOnSale(product)) {
+  showSaleBadge();
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-1-1-3': `
+    <p>Functions exist because programmers got tired of writing the same code over and over.</p>
+    <p>Imagine writing a how-to guide. You don't repeat the full instructions every time someone asks "how do I do this?" — you write it once and hand them the guide. The guide becomes a tool. Anyone can use it. If the steps change, you update the guide once and everyone gets the new version.</p>
+    <p>Functions are that guide. They let you give a piece of work a name so the rest of your code can just say <em>"do that thing"</em> instead of writing out the steps every time.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-1-1-4': `
+    <p>A function is a piece of work, packaged under a name, that you can run from anywhere.</p>
+<pre class="language-javascript"><code class="language-javascript">// Without a function — the work lives many places
+[work][work][work][work]
+
+// With a function — the work lives in one place
+[work]
+  ↑    ↑    ↑    ↑
+call call call call</code></pre>
+    <p>Defining a function is like building a tool. Calling it is like picking up the tool and using it. The same tool can be used a hundred times, in a hundred places, without rebuilding it.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-1-1-5': `
+<pre class="language-javascript"><code class="language-javascript">function welcome(name) {
+  console.log("Welcome, " + name);
+}
+
+welcome("Os");
+welcome("Sam");
+
+// JavaScript is thinking:
+// Line 1: see function welcome → register a function called welcome, remember its parameter list.
+// Line 2: read the body — don't run it yet, just store it as part of the function.
+// Line 3: end of function definition.
+// Line 5: see welcome("Os") → look up the function, call it with "Os" as name, run the body, prints "Welcome, Os".
+// Line 6: see welcome("Sam") → same function, called again with "Sam" as name, prints "Welcome, Sam".</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-1-2-0': `
+    <p>If a function doesn't seem to be saving you any work — check whether it's <strong>actually being reused</strong>. A function called from one place isn't a reuse problem; it's just a labeling choice.</p>
+<pre class="language-javascript"><code class="language-javascript">// Smell: function defined but called only once, with hardcoded inputs
+function showOsWelcome() {
+  console.log("Welcome, Os");
+}
+showOsWelcome();
+// not really reusable — the name "Os" is locked in
+
+// Better: parameter makes it actually reusable
+function welcome(name) {
+  console.log("Welcome, " + name);
+}
+welcome("Os");
+welcome("Sam");</code></pre>
+    <p>The other common smell: copy-pasting the same logic in multiple places when a function would do. If you're editing several places to make the same change, that's the signal — extract a function.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-1-2-1': `
+    <p>Functions exist for two reasons, in this order: <strong>naming</strong> first, <strong>reuse</strong> second.</p>
+    <p>Naming is the bigger one. A well-named function turns a wall of code into a sentence. <code>if (isValidEmail(input)) submitForm();</code> reads itself.</p>
+    <p>Reuse is the bonus. Once you've named the work, calling it from many places comes for free.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-1-2-2': `
+    <p><strong>Confusion: "I only use it once, so why bother?"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Used once, no parameters — but the name itself is the value
+function setupPage() {
+  loadHeader();
+  loadSidebar();
+  attachEventListeners();
+}
+
+setupPage();
+// the name "setupPage" tells you what's happening here
+// without it, you'd have three unlabeled function calls in a row</code></pre>
+
+    <p><strong>Confusion: functions vs variables</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const message = "Welcome, Os";       // a value — frozen text
+function getMessage(name) {            // a recipe — produces text on demand
+  return "Welcome, " + name;
+}
+
+console.log(message);          // always the same
+console.log(getMessage("Os"));  // depends on what you pass in
+console.log(getMessage("Sam")); // different result, same recipe</code></pre>
+    <p>Variables hold values. Functions hold steps that <em>produce</em> values when run.</p>
+
+    <p><strong>Confusion: copying code vs calling a function</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Copy-paste: two separate copies of the logic
+button1.addEventListener("click", () => {
+  cartCount = cartCount + 1;
+  cartBadge.textContent = cartCount;
+});
+button2.addEventListener("click", () => {
+  cartCount = cartCount + 1;
+  cartBadge.textContent = cartCount;
+});
+
+// Function: one copy, called from both places
+function addToCart() {
+  cartCount = cartCount + 1;
+  cartBadge.textContent = cartCount;
+}
+button1.addEventListener("click", addToCart);
+button2.addEventListener("click", addToCart);</code></pre>
+    <p>Update the logic in the function version once, and both buttons get the change.</p>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-1-2-3': `
+<pre class="language-javascript"><code class="language-javascript">function welcome() {
+  console.log("Welcome, Os");
+}
+welcome();
+welcome();
+welcome();
+// works, but defeats the point — the name "Os" is hardcoded
+// fix: use a parameter so each call can be different</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function calculateTotal() {
+  return 50 + (50 * 0.08);
+}
+// wrong: works for one specific case, can't be reused
+// fix: take price and tax as parameters</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function doStuff() {
+  // 200 lines of code doing five different things
+}
+// wrong: the name doesn't describe one job
+// fix: split into smaller functions, each with a clear name</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function a(x) { return x * 2; }
+function b(y) { return y * 2; }
+function c(z) { return z * 2; }
+// wrong: three functions doing the same thing
+// fix: one function, called three times</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Same code copied four times into four event handlers
+// fix: extract one function and pass it as the handler each time</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-1-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Reuse — same function, different inputs
+function double(n) {
+  return n * 2;
+}
+console.log(double(5));    // 10
+console.log(double(10));   // 20
+console.log(double(100));  // 200
+
+// Naming — the function name tells you what's happening
+function isAdult(age) {
+  return age >= 18;
+}
+if (isAdult(user.age)) {
+  showAdultContent();
+}
+
+// One change, everywhere — update logic in one place
+function formatPrice(price) {
+  return "$" + price.toFixed(2);
+}
+// Want commas later? Update this one function.
+
+// Combining small functions into bigger work
+function isValidEmail(email) { return email.includes("@"); }
+function isValidName(name)   { return name.length > 0; }
+
+function isFormValid(email, name) {
+  return isValidEmail(email) && isValidName(name);
+}</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-1-3-1': `
+    <p><strong>Example: same logic, three buttons</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function closeModal() {
+  modal.classList.remove("open");
+  overlay.classList.remove("visible");
+}
+
+closeBtn.addEventListener("click", closeModal);
+overlay.addEventListener("click", closeModal);
+escapeKey.addEventListener("keydown", closeModal);
+// one function, three places that use it</code></pre>
+
+    <p><strong>Example: turning messy code into a readable sentence</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function isCheckoutReady() {
+  return cart.length > 0
+      && user.isLoggedIn
+      && shippingAddress !== null;
+}
+
+if (isCheckoutReady()) {
+  showCheckoutButton();
+}
+// reads almost like English: if checkout is ready, show the button</code></pre>
+
+    <p><strong>Example: changing the rule in one place</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getDiscount(user) {
+  return user.isMember ? 0.10 : 0;
+}
+
+const total1 = price1 * (1 - getDiscount(user));
+const total2 = price2 * (1 - getDiscount(user));
+const total3 = price3 * (1 - getDiscount(user));
+// add a "premium" tier later — only getDiscount() needs to change</code></pre>
+
+    <p><strong>Example: small functions building bigger ones</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getCartItems()  { return JSON.parse(localStorage.getItem("cart")) || []; }
+function getCartTotal()  { return getCartItems().reduce((sum, i) => sum + i.price, 0); }
+function renderCart()    {
+  cartTotalLabel.textContent = formatPrice(getCartTotal());
+}</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-1-3-2': `
+    <ul>
+      <li><strong>Parameters</strong> → what makes a function reusable across different inputs</li>
+      <li><strong>Return values</strong> → how a function hands its result back so other code can use it</li>
+      <li><strong>Naming variables</strong> → the same naming skill applies to functions</li>
+      <li><strong>Events</strong> → the same handler function can be reused across many listeners</li>
+      <li><strong>DOM updates</strong> → wrapping page changes in named functions makes them clearer</li>
+      <li><strong>Validation</strong> → form rules become readable when each rule is its own function</li>
+      <li><strong>Refactoring</strong> → extracting a function is the most common refactor in JavaScript</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-1-3-3': `
+    <ul>
+      <li>Reusable actions</li>
+      <li>Function declaration</li>
+      <li>Parameters</li>
+      <li>Return values</li>
+      <li>Naming variables</li>
+      <li>Callback functions</li>
+      <li>Refactoring</li>
+      <li>DRY (Don't Repeat Yourself)</li>
+    </ul>
+  `,
+
 };
