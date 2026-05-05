@@ -12737,4 +12737,2929 @@ const isEmptyString = str => str.trim().length === 0;
       <li>Arrow functions and <code>this</code></li>
     </ul>
   `,
+  'topics-8-5-3-3': `
+    <ul>
+      <li>Function expression</li>
+      <li>Function declaration</li>
+      <li>Implicit return</li>
+      <li>Returning an object literal</li>
+      <li>Callback functions</li>
+      <li>Array methods (<code>map</code>, <code>filter</code>, <code>reduce</code>)</li>
+      <li>Hoisting</li>
+      <li>Arrow functions and <code>this</code></li>
+    </ul>
+  `,
+
+
+  /* ========================================================= 
+   Sub-lesson: 3.9.7 Functions → function name
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-6-0-0': `
+    <p>The function name is the label you use to call the function. It's how the rest of your code refers to that piece of work.</p>
+    <p>Whether you write a declaration or an expression, every callable function has a name attached to it somewhere — either after the <code>function</code> keyword, or as the variable holding the function value.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-6-0-1': `
+<pre class="language-javascript"><code class="language-javascript">function greet() { ... }              // name comes after "function" → greet
+const greet = function() { ... };     // name comes from the variable → greet
+const greet = () => { ... };          // name comes from the variable → greet
+
+greet();   // all three are called the same way</code></pre>
+    <p>The name is what you write to <em>run</em> the function. Without a name, you couldn't call it from somewhere else in your code.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-6-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function calculateTotal(price, tax) {
+  return price + (price * tax);
+}
+
+calculateTotal(50, 0.08);
+
+// calculateTotal      → the function's name
+// (price, tax)        → its parameters (not part of the name)
+// { ... }             → its body (not part of the name)
+// calculateTotal(...) → using the name to call the function</code></pre>
+    <p>The name and the function are two separate things. The name is just a label pointing at the function value.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-6-0-3': `
+    <p>Function names follow the same rules as variable names:</p>
+<pre class="language-javascript"><code class="language-javascript">function greet()      { ... }    // correct: starts with a letter
+function _helper()    { ... }    // correct: starts with underscore
+function $(selector)  { ... }    // correct: starts with $
+function 1stGreet()   { ... }    // wrong: can't start with a number
+function my-func()    { ... }    // wrong: hyphens not allowed
+function function()   { ... }    // wrong: "function" is a reserved keyword</code></pre>
+
+    <p>Names are case-sensitive:</p>
+<pre class="language-javascript"><code class="language-javascript">function greet() { console.log("hi"); }
+Greet();    // wrong: ReferenceError — Greet is not the same as greet
+greet();    // correct</code></pre>
+
+    <p>Anonymous functions have no name of their own — they get one only by being assigned:</p>
+<pre class="language-javascript"><code class="language-javascript">const greet = function() { ... };   // function value has no inner name
+                                      // but greet (the variable) is what you call
+
+setTimeout(function() { ... }, 1000); // truly nameless — passed inline, never reused</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-6-1-0': `
+    <p>Code needs a way to refer back to a function after it's defined. Without a name, the function would exist for one moment and then be lost — there'd be no way to say "run that work again."</p>
+    <p>The name is the handle. Once you have a name, you can call the function from anywhere in scope, pass it to other functions, or hook it up as an event handler.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-6-1-1': `
+    <p>A good function name tells you what the function does without having to read its body. The name is the first piece of documentation anyone reads.</p>
+<pre class="language-javascript"><code class="language-javascript">// Bad name — tells you nothing
+function doIt(user) { ... }
+
+// Good name — describes the action
+function sendWelcomeEmail(user) { ... }
+
+// Bad name — too generic
+function process(data) { ... }
+
+// Good name — specific to the job
+function validateOrderData(data) { ... }</code></pre>
+    <p>Names are also what show up in error messages and stack traces. A clear name makes debugging much easier — "Error in <code>sendWelcomeEmail</code>" is a lot more useful than "Error in <code>doIt</code>".</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-6-1-2': `
+    <p>Function names appear everywhere a function is created, called, or referenced.</p>
+<pre class="language-javascript"><code class="language-javascript">// At creation
+function calculateTotal(price, tax) { ... }
+
+// When calling
+calculateTotal(50, 0.08);
+
+// When passing as a value
+button.addEventListener("click", handleClick);
+
+// When checking what a function is
+console.log(calculateTotal.name);   // "calculateTotal"
+
+// In error messages and stack traces
+// "Uncaught TypeError in calculateTotal at line 12"</code></pre>
+    <p>The name follows the function around. Even tools like the browser's debugger use it to label functions in the call stack.</p>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-6-1-3': `
+    <p>The function name is like the title of a recipe. The recipe contains all the steps, but the title is how you find it, share it, and refer to it.</p>
+    <p>If you wrote a recipe with no title, you'd still have a recipe — but no one could ask for it by name. Same with a function. Without a name, the work exists, but you can't call on it later.</p>
+    <p>A good function name is short, descriptive, and starts with a verb. It tells anyone reading the code what kind of work happens when this function runs.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-6-1-4': `
+    <p>The function name is a label pointing at the function. The function is the thing that actually does the work; the name is just how you reach it.</p>
+<pre class="language-javascript"><code class="language-javascript">function greet() {
+  console.log("Hello");
+}
+
+// "greet"  →  [the function: console.log("Hello")]
+//
+// the name on the left is just a pointer
+// the actual work lives on the right</code></pre>
+    <p>You can have multiple names pointing at the same function:</p>
+<pre class="language-javascript"><code class="language-javascript">function greet() { console.log("hi"); }
+const sayHello = greet;   // sayHello now points at the same function
+
+greet();      // "hi"
+sayHello();   // "hi" — same function, different name</code></pre>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-6-1-5': `
+<pre class="language-javascript"><code class="language-javascript">function double(n) {
+  return n * 2;
+}
+
+const result = double(5);
+
+// JavaScript is thinking:
+// Line 1: see function double → register the name "double" pointing at this function value.
+// Line 2: read the body — store it as part of the function.
+// Line 3: end of function definition.
+// Line 5: see double(5) → look up the name "double", find the function it points at, call it with 5 as n, run the body, get 10 back, store it in result.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-6-2-0': `
+    <p>If you get <code>ReferenceError: someName is not defined</code>, the function name doesn't exist in this scope — it's misspelled, in a different file, or in a different function.</p>
+<pre class="language-javascript"><code class="language-javascript">function calculateTotal() { ... }
+calclateTotal();
+// wrong: ReferenceError — typo in the name
+// fix: spell it the same as the definition</code></pre>
+
+    <p>If you get <code>TypeError: someName is not a function</code>, the name exists but it points at something that isn't a function — usually because a variable with the same name overwrote it.</p>
+<pre class="language-javascript"><code class="language-javascript">function greet() { console.log("hi"); }
+const greet = "hello";
+greet();
+// wrong: TypeError — greet is now a string
+// fix: don't reuse function names as variable names</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-6-2-1': `
+    <p>The function name is <strong>not the function itself</strong>. The name is just a pointer.</p>
+    <p>The function is the value — the steps, the parameters, the body. The name is a label that lets you find the value later. Two names can point at the same function. The same name can be reassigned to point at something else.</p>
+    <p>Once you separate "the work" from "the label," function expressions and arrow functions stop feeling weird — they're just labels (variables) pointing at function values.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-6-2-2': `
+    <p><strong>Confusion: name vs body</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function greet() {            // greet is the name
+  console.log("Hello");       // this line is the body, NOT the name
+}
+
+console.log(greet);           // logs the entire function (name + body)
+console.log(greet.name);      // logs just "greet"</code></pre>
+    <p>The name is the label. The body is the work. They're separate.</p>
+
+    <p><strong>Confusion: declaration name vs variable name</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function greet() { ... }              // name is "greet" (from declaration)
+const greet = function() { ... };     // name is "greet" (from variable)
+const greet = function inner() { ... }; // variable is "greet", inner name is "inner"
+
+greet();    // works
+inner();    // wrong: "inner" only exists inside the function itself</code></pre>
+
+    <p><strong>Confusion: anonymous functions</strong></p>
+<pre class="language-javascript"><code class="language-javascript">setTimeout(function() { ... }, 1000);
+// the function itself has no name
+// but JS isn't bothered — it runs once and is gone
+
+const handler = function() { ... };
+// the function has no inner name, but the variable "handler" gives it a label</code></pre>
+
+    <p><strong>Confusion: calling vs referencing</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function greet() { return "hi"; }
+
+console.log(greet);     // logs the function (uses the name to find it)
+console.log(greet());   // logs "hi" (uses the name to call it)
+button.addEventListener("click", greet);    // passes the function (no parens — don't call yet)
+button.addEventListener("click", greet());  // wrong: calls greet immediately, passes "hi"</code></pre>
+    <p>The name alone <em>refers</em>. The name with <code>()</code> <em>runs</em>.</p>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-6-2-3': `
+<pre class="language-javascript"><code class="language-javascript">function 1stTotal() { ... }
+// wrong: can't start a name with a number
+// fix: rename to firstTotal or totalOne</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function my-func() { ... }
+// wrong: hyphens aren't allowed in function names
+// fix: use camelCase → myFunc</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function function() { ... }
+// wrong: "function" is a reserved keyword
+// fix: pick a descriptive name → runFunction, executeStep</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function doStuff() { ... }
+function process() { ... }
+function thing() { ... }
+// works, but vague names tell you nothing about what they do
+// fix: name the action → sendEmail, validateForm, formatPrice</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function calculateOrderTotalIncludingTaxAndShippingAndDiscounts() { ... }
+// works, but unreadable
+// fix: shorter name, let the function do less → calculateOrderTotal</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function User() { ... }
+function user() { ... }
+// works in JS (case-sensitive), but easy to misread and confuse
+// fix: pick distinct names</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-6-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Verb-based names — describe an action
+function sendEmail(to, subject) { ... }
+function validateForm() { ... }
+function calculateTotal(items) { ... }
+
+// "is" / "has" prefix — for functions that return true/false
+function isLoggedIn(user) { return user.token !== null; }
+function hasPermission(user, action) { ... }
+
+// "get" prefix — for retrieving values
+function getCart() { return JSON.parse(localStorage.getItem("cart")); }
+function getCurrentUser() { ... }
+
+// "handle" prefix — for event handlers
+function handleClick(event) { ... }
+function handleSubmit(event) { ... }
+
+// short helpers — fine when the meaning is obvious in context
+function $(selector) { return document.querySelector(selector); }</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-6-3-1': `
+    <p><strong>Example: name shows up in stack traces</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function loadUserProfile(userId) {
+  return fetch("/api/users/" + userId).then(r => r.json());
+}
+
+loadUserProfile(123);
+// if this throws, the error says "in loadUserProfile" — easy to find
+// vs an anonymous arrow, where the trace might just say "anonymous"</code></pre>
+
+    <p><strong>Example: passing a named function as a handler</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function handleAddToCart(event) {
+  cartCount = cartCount + 1;
+  cartBadge.textContent = cartCount;
+}
+
+addBtn.addEventListener("click", handleAddToCart);
+// the name handleAddToCart describes what the click does
+// also: the same handler can be removed later by name</code></pre>
+
+    <p><strong>Example: same function, multiple names</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function showError(message) { ... }
+
+const reportProblem = showError;   // alias — same function, different name
+
+showError("Network failed");      // works
+reportProblem("Network failed");  // also works — both call the same function</code></pre>
+
+    <p><strong>Example: <code>.name</code> property</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function greet() { ... }
+console.log(greet.name);          // "greet"
+
+const sayHi = function() { ... };
+console.log(sayHi.name);          // "sayHi" (taken from the variable)
+
+const arrow = () => { ... };
+console.log(arrow.name);          // "arrow" (also from the variable)
+// useful when debugging or logging which function ran</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-6-3-2': `
+    <ul>
+      <li><strong>Function declaration</strong> → name comes after the <code>function</code> keyword</li>
+      <li><strong>Function expression</strong> → name comes from the variable holding the function</li>
+      <li><strong>Arrow function</strong> → also gets its name from the variable</li>
+      <li><strong>Variables</strong> → function names follow the same naming rules as variables</li>
+      <li><strong>camelCase</strong> → the standard convention for function names</li>
+      <li><strong>Reserved keywords</strong> → words like <code>function</code>, <code>return</code>, <code>if</code> can't be names</li>
+      <li><strong>Stack traces</strong> → function names appear in error messages</li>
+      <li><strong>Naming conventions</strong> → start with a verb to describe the action</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-6-3-3': `
+    <ul>
+      <li>Function declaration</li>
+      <li>Function expression</li>
+      <li>Arrow function</li>
+      <li>Variable naming rules</li>
+      <li>camelCase</li>
+      <li>Reserved keywords</li>
+      <li>Anonymous functions</li>
+      <li>Function naming conventions (verbs, "is", "get", "handle")</li>
+    </ul>
+  `,
+
+
+  /* ========================================================= 
+   Sub-lesson: 3.9.8 Functions → function body
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-7-0-0': `
+    <p>The function body is the code inside the curly braces — the actual work the function does when you call it.</p>
+    <p>The name and parameters tell you <em>what</em> the function is. The body tells you <em>how</em> it does its job. Everything between the opening <code>{</code> and the closing <code>}</code> is the body.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-7-0-1': `
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {
+  const message = "Hello, " + name;
+  console.log(message);
+  return message;
+}
+
+// everything between { and } is the body</code></pre>
+    <p>The body can be one line or hundreds. JavaScript runs the lines in order from top to bottom, every time the function is called.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-7-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function calculateTotal(price, tax) {
+  const taxAmount = price * tax;
+  const total = price + taxAmount;
+  return total;
+}
+
+// {                  → body starts here
+// const taxAmount    → first step (declares a variable)
+// const total        → second step (uses the previous one)
+// return total       → final step (sends the value back)
+// }                  → body ends here</code></pre>
+    <p>Inside the body, you write code like you would anywhere else — declaring variables, calling other functions, using <code>if</code> statements, looping, and so on. The body is just normal JavaScript.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-7-0-3': `
+    <p>The braces are required for a function body, even if it's empty:</p>
+<pre class="language-javascript"><code class="language-javascript">function doNothing() {}      // correct: empty body, but braces are still there
+function doNothing() return; // wrong: SyntaxError</code></pre>
+
+    <p>Code inside the body runs only when the function is called, not when it's defined:</p>
+<pre class="language-javascript"><code class="language-javascript">function greet() {
+  console.log("Hello");
+}
+// nothing has been logged yet — the body hasn't run
+
+greet();
+// now the body runs → "Hello"</code></pre>
+
+    <p>Variables declared in the body only exist inside it:</p>
+<pre class="language-javascript"><code class="language-javascript">function greet() {
+  const message = "Hello";
+  console.log(message);   // works — message exists here
+}
+
+console.log(message);     // wrong: ReferenceError — message doesn't exist out here</code></pre>
+
+    <p>Arrow functions can skip the braces if the body is one expression:</p>
+<pre class="language-javascript"><code class="language-javascript">const double = (n) => { return n * 2; };  // full body with braces
+const double = (n) => n * 2;                // implicit return — no braces, no return needed</code></pre>
+    <p>For declarations and regular function expressions, the braces are always required.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-7-1-0': `
+    <p>Functions need a clear boundary between "what's part of this function" and "what isn't." The curly braces draw that line.</p>
+    <p>Everything inside the braces is the function's work. Everything outside is somewhere else — another function, the top of the file, a different scope. Without that boundary, JavaScript wouldn't know where the function's logic ended.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-7-1-1': `
+    <p>The body is where the actual logic lives. A clear, focused body — one that does one job well — makes the function easy to read and reuse.</p>
+<pre class="language-javascript"><code class="language-javascript">// Body does one clear job
+function formatPrice(price) {
+  return "$" + price.toFixed(2);
+}
+
+// Body does too many things — harder to name, test, and reuse
+function handleEverything(data) {
+  const cleaned = data.trim().toLowerCase();
+  const parts = cleaned.split(",");
+  const result = parts.map(p => p * 2);
+  document.body.innerHTML = result.join(", ");
+  fetch("/api/save", { method: "POST", body: JSON.stringify(result) });
+  alert("done");
+}</code></pre>
+    <p>A short, focused body is one of the strongest signals of good code. If the body is doing five different jobs, that's usually a sign it should be split into smaller functions.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-7-1-2': `
+    <p>The body is where every operation happens — calculations, DOM updates, conditional logic, loops, calls to other functions.</p>
+<pre class="language-javascript"><code class="language-javascript">function isValidEmail(email) {
+  // body uses conditional logic
+  if (typeof email !== "string") return false;
+  return email.includes("@") && email.length > 3;
+}
+
+function renderProducts(products) {
+  // body uses a loop
+  for (const product of products) {
+    const card = document.createElement("div");
+    card.textContent = product.name;
+    document.body.appendChild(card);
+  }
+}
+
+function getCartTotal(cart) {
+  // body uses other functions
+  return cart.reduce((sum, item) => sum + item.price, 0);
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-7-1-3': `
+    <p>The function body is the steps of the recipe. The name is the title, the parameters are the ingredients, and the body is the actual instructions: do this, then this, then this.</p>
+    <p>When you call the function, JavaScript walks through those steps from top to bottom, one line at a time, until it either reaches a <code>return</code> statement or hits the closing brace.</p>
+    <p>The body is also a private space. Variables you create inside the body only exist while the function runs — they're cleaned up the moment the function finishes.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-7-1-4': `
+    <p>The body is a sealed room. Code outside the function can't reach in to peek at what's happening, and variables inside can't be seen from outside.</p>
+<pre class="language-javascript"><code class="language-javascript">function calculate() {
+  // ┌─────────────────────────┐
+  // │  inside the body:       │
+  // │  variables live here    │
+  // │  steps run here         │
+  // │  the work happens here  │
+  // └─────────────────────────┘
+}
+
+// out here, you can't see what's inside the body
+// you can only call the function and use what it returns</code></pre>
+    <p>The only way information gets in is through parameters. The only way information gets out is through <code>return</code> (or side effects like updating the page).</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-7-1-5': `
+<pre class="language-javascript"><code class="language-javascript">function calculateTotal(price, tax) {
+  const taxAmount = price * tax;
+  const total = price + taxAmount;
+  return total;
+}
+
+const result = calculateTotal(50, 0.08);
+
+// JavaScript is thinking:
+// Line 1: see function calculateTotal → register the function name and remember its parameters and body. Don't run the body yet.
+// Line 7: see calculateTotal(50, 0.08) → look up the function, set price = 50 and tax = 0.08, jump into the body.
+// Line 2: run the first step of the body → taxAmount = 50 * 0.08 = 4.
+// Line 3: run the next step → total = 50 + 4 = 54.
+// Line 4: run return total → exit the body and hand 54 back to the caller.
+// Line 7: store 54 in result.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-7-2-0': `
+    <p>If a function isn't doing what you expect, the body is where you investigate. Add a <code>console.log</code> at the top, in the middle, and right before the <code>return</code> — see where the values stop matching what you thought.</p>
+<pre class="language-javascript"><code class="language-javascript">function calculateTotal(price, tax) {
+  console.log("got:", price, tax);          // top of body — what came in
+  const taxAmount = price * tax;
+  console.log("tax amount:", taxAmount);    // middle — intermediate values
+  const total = price + taxAmount;
+  console.log("returning:", total);         // before return — what's going out
+  return total;
+}</code></pre>
+
+    <p>If a variable is "undefined" inside a body, it's almost always one of: the parameter wasn't passed, the variable was used before it was assigned, or the name is misspelled. The body is the only place these problems can hide — it's also the only place to find them.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-7-2-1': `
+    <p>The body is the function. Everything else — the name, the parameters, the parentheses — is just framing.</p>
+    <p>The name is how you call it. The parameters are the inputs. But the body is the work. When people say "what does this function do?", the answer is in the body.</p>
+    <p>The body also has its own private scope. Variables you create inside it don't pollute the outside world, and they're freshly recreated every time the function is called.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-7-2-2': `
+    <p><strong>Confusion: variables inside vs outside the body</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function greet() {
+  const message = "Hello";
+  console.log(message);   // works — message is inside the body
+}
+
+console.log(message);     // wrong: ReferenceError — message doesn't exist out here</code></pre>
+    <p>Variables in the body are private. They only exist while the function is running.</p>
+
+    <p><strong>Confusion: when the body actually runs</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function greet() {
+  console.log("Hello");   // this line is NOT running yet
+}
+// the function is defined, but nothing has been logged
+
+greet();
+// NOW the body runs → "Hello"</code></pre>
+
+    <p><strong>Confusion: <code>return</code> vs end of body</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function add(a, b) {
+  return a + b;
+  console.log("done");    // never runs — return exits the body immediately
+}
+
+function add(a, b) {
+  const sum = a + b;
+  // no return → function returns undefined when the body ends
+}</code></pre>
+    <p><code>return</code> ends the body early and hands a value back. Reaching the closing brace also ends the body — but with no value (returns <code>undefined</code>).</p>
+
+    <p><strong>Confusion: empty body</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function placeholder() {}
+// valid — empty body
+// runs, does nothing, returns undefined
+// useful as a default callback or a stub during development</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-7-2-3': `
+<pre class="language-javascript"><code class="language-javascript">function greet()
+  console.log("hi");
+// wrong: missing braces — body must be wrapped in { }
+// fix: function greet() { console.log("hi"); }</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function calculate() {
+  const result = 10 * 2;
+}
+const total = calculate();
+// works, but total is undefined
+// fix: add return result; before the closing brace</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function add(a, b) {
+  return;
+  a + b;
+}
+// wrong: return on its own line ends the body immediately, ignoring a + b
+// fix: return a + b;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function greet() {
+  const message = "Hello";
+}
+console.log(message);
+// wrong: message only exists inside the body
+// fix: return message from the function, then use what comes back</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function doEverything() {
+  // 200 lines of mixed logic doing five different jobs
+}
+// works, but the body is too big — hard to read, hard to debug
+// fix: split into smaller functions, each with a focused body</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-7-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Empty body
+function placeholder() {}
+
+// Single-line body
+function greet() {
+  console.log("hi");
+}
+
+// Body with a return
+function double(n) {
+  return n * 2;
+}
+
+// Body with multiple steps
+function calculateTotal(price, tax) {
+  const taxAmount = price * tax;
+  const total = price + taxAmount;
+  return total;
+}
+
+// Body with conditional logic
+function getDiscount(user) {
+  if (user.isMember) {
+    return 0.10;
+  }
+  return 0;
+}
+
+// Body with a loop
+function sumAll(numbers) {
+  let total = 0;
+  for (const n of numbers) {
+    total = total + n;
+  }
+  return total;
+}</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-7-3-1': `
+    <p><strong>Example: a body that updates the DOM</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function showError(message) {
+  errorBox.textContent = message;
+  errorBox.classList.add("visible");
+  setTimeout(() => errorBox.classList.remove("visible"), 3000);
+}
+// body has three steps that work together to show and auto-hide an error</code></pre>
+
+    <p><strong>Example: a body with early return</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function isValidEmail(email) {
+  if (typeof email !== "string") return false;
+  if (email.length < 3) return false;
+  if (!email.includes("@")) return false;
+  return true;
+}
+// body uses early returns to bail out as soon as a check fails</code></pre>
+
+    <p><strong>Example: body using helper functions</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function checkout() {
+  if (!isCartValid())   return;
+  if (!isUserLoggedIn()) return;
+  const total = getCartTotal();
+  submitOrder(total);
+  showSuccessMessage();
+}
+// body is a clear sequence of steps, each delegated to a focused helper</code></pre>
+
+    <p><strong>Example: body with a loop building HTML</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function renderProducts(products) {
+  productList.innerHTML = "";
+  for (const product of products) {
+    const card = document.createElement("div");
+    card.className = "product";
+    card.textContent = product.name;
+    productList.appendChild(card);
+  }
+}
+// body clears the list, then loops to build a card for each product</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-7-3-2': `
+    <ul>
+      <li><strong>Curly braces</strong> → mark the start and end of the body</li>
+      <li><strong>Parameters</strong> → variables that exist inside the body</li>
+      <li><strong>Return</strong> → exits the body and sends a value back</li>
+      <li><strong>Scope</strong> → variables in the body are private to that function</li>
+      <li><strong>Statements</strong> → the body is a sequence of statements that run in order</li>
+      <li><strong>Conditionals and loops</strong> → control how the body's steps run</li>
+      <li><strong>Implicit return (arrows)</strong> → arrow functions can skip braces and <code>return</code> for one-line bodies</li>
+      <li><strong>Single responsibility</strong> → a focused body does one job well</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-7-3-3': `
+    <ul>
+      <li>Curly braces / blocks</li>
+      <li>Parameters and arguments</li>
+      <li>Return values</li>
+      <li>Scope and closures</li>
+      <li>Statements and expressions</li>
+      <li>Implicit return (arrow functions)</li>
+      <li>Early return pattern</li>
+      <li>Single-responsibility functions</li>
+    </ul>
+  `,
+
+
+  /* ========================================================= 
+   Sub-lesson: 3.9.9 Functions → calling a function
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-8-0-0': `
+    <p>Calling a function means actually running its body. You write the function's name, then add parentheses <code>()</code> after it. That's the signal to JavaScript: "run this now."</p>
+    <p>Without the parentheses, you're just <em>referring</em> to the function, not running it.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-8-0-1': `
+<pre class="language-javascript"><code class="language-javascript">function greet() {
+  console.log("Hello");
+}
+
+greet();   // call the function — runs the body, prints "Hello"</code></pre>
+    <p>The <code>()</code> at the end is what makes the function actually do its work. The function can be called as many times as you want — each call runs the body fresh.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-8-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {
+  console.log("Hello, " + name);
+}
+
+greet("Os");
+
+// greet      → the name of the function being called
+// (          → opening paren — start of the call
+// "Os"       → the argument being passed in
+// )          → closing paren — end of the call
+// ;          → end of statement</code></pre>
+    <p>The whole <code>greet("Os")</code> piece is called a "function call." It's an expression — it produces a value (whatever the function returns).</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-8-0-3': `
+    <p>The parentheses are required, even with no arguments:</p>
+<pre class="language-javascript"><code class="language-javascript">greet();         // correct: empty parens still call the function
+greet;           // wrong: this just refers to the function, doesn't run it</code></pre>
+
+    <p>Arguments go inside the parens, separated by commas:</p>
+<pre class="language-javascript"><code class="language-javascript">add(2, 3);                 // two arguments
+formatPrice(19.99);        // one argument
+log();                     // no arguments</code></pre>
+
+    <p>You can chain a call directly off another call:</p>
+<pre class="language-javascript"><code class="language-javascript">function getGreeting() { return "Hello"; }
+
+getGreeting();            // returns "Hello"
+getGreeting().toUpperCase();   // call getGreeting, then call toUpperCase on the result → "HELLO"</code></pre>
+
+    <p>Each call is independent — variables inside the body are recreated every time:</p>
+<pre class="language-javascript"><code class="language-javascript">function counter() {
+  let count = 0;
+  count = count + 1;
+  console.log(count);
+}
+
+counter();   // 1
+counter();   // 1 (not 2 — fresh count each call)
+counter();   // 1</code></pre>
+    <p>Each call is its own run. The function doesn't remember the previous call unless you store the value somewhere outside the body.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-8-1-0': `
+    <p>Defining a function isn't enough — JavaScript needs an explicit signal to actually run the code inside. That signal is the <code>()</code> after the function's name.</p>
+    <p>Without that signal, defined functions would either run automatically (which would be chaos) or never run at all (which would be useless). Calling is the explicit "do it now" trigger.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-8-1-1': `
+    <p>You call a function whenever you want its work to happen. That's the entire point of having a function — define once, call when needed.</p>
+<pre class="language-javascript"><code class="language-javascript">function showError(message) {
+  errorBox.textContent = message;
+}
+
+// call it when an error happens
+showError("Email is required");
+
+// call it again later, with a different argument
+showError("Network failed");
+
+// call it from inside another function
+function handleSubmit() {
+  if (!isValid) {
+    showError("Please fix the form");
+  }
+}</code></pre>
+    <p>Each call is a separate run. The same function can be called from many different places, with different arguments, doing different work each time.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-8-1-2': `
+    <p>Function calls happen everywhere — directly in your code, inside other functions, as event responses, inside conditionals and loops.</p>
+<pre class="language-javascript"><code class="language-javascript">// Direct call in a script
+init();
+
+// Call inside another function's body
+function setup() {
+  loadConfig();
+  attachListeners();
+}
+
+// Call as a response to an event
+button.addEventListener("click", () => {
+  saveData();
+});
+
+// Call inside a conditional
+if (user.isLoggedIn) {
+  showDashboard();
+}
+
+// Call inside a loop
+for (const item of items) {
+  renderItem(item);
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-8-1-3': `
+    <p>Calling a function is like pressing the button on a microwave. The microwave itself just sits there — it has all the wiring, all the timers, all the logic. But nothing happens until you press the button.</p>
+    <p>The function's name is the button's label. The parentheses are the press. Without the press, you've got a labeled button that never does anything.</p>
+    <p>You can press the same button as many times as you want. Each press is a fresh run — the microwave doesn't remember whether you used it ten seconds ago or ten years ago.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-8-1-4': `
+    <p>The name points at the function. The <code>()</code> runs it.</p>
+<pre class="language-javascript"><code class="language-javascript">greet         //  →  the function (a value sitting in memory)
+greet()       //  →  RUN it now, give me the result</code></pre>
+    <p>Think of it like this: the name is the door, and <code>()</code> is opening the door and walking through. Without opening it, you can stand there pointing at the door — but nothing inside actually happens.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-8-1-5': `
+<pre class="language-javascript"><code class="language-javascript">function double(n) {
+  return n * 2;
+}
+
+const a = double(5);
+const b = double(10);
+
+// JavaScript is thinking:
+// Line 1: see function double → register the name pointing at the function value.
+// Line 5: see double(5) → look up double, jump into the body with n = 5, run return n * 2 → 10. Store 10 in a.
+// Line 6: see double(10) → look up the SAME function again, jump into the body fresh with n = 10, run return n * 2 → 20. Store 20 in b.
+// each call is its own independent run of the body.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-8-2-0': `
+    <p>If a function isn't running, the most common cause is forgetting the <code>()</code>. The code looks "right" — the name is there — but nothing happens.</p>
+<pre class="language-javascript"><code class="language-javascript">function startTimer() {
+  console.log("timer started");
+}
+
+startTimer;
+// nothing happens — the line refers to the function but doesn't call it
+// fix: startTimer();</code></pre>
+
+    <p>Another common bug: <strong>calling when you meant to reference</strong>. This shows up most with event listeners.</p>
+<pre class="language-javascript"><code class="language-javascript">button.addEventListener("click", handleClick());
+// wrong: handleClick() runs immediately, the result is passed to addEventListener
+// fix: button.addEventListener("click", handleClick);  // pass the function, don't call it</code></pre>
+    <p>If a click handler runs once on page load and then never again, that's almost always this mistake.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-8-2-1': `
+    <p>The <code>()</code> is everything. It's not punctuation — it's the actual operation that runs the function.</p>
+    <p>Without parens, the function name is just a value, like a number or a string. <code>greet</code> is the function value. <code>greet()</code> is "run greet, give me what it returns." Two completely different things.</p>
+    <p>This is why you can pass functions around as values, store them in variables, and put them in arrays — without <code>()</code>, you're handling the function itself, not running it.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-8-2-2': `
+    <p><strong>Confusion: <code>greet</code> vs <code>greet()</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">function greet() { return "hello"; }
+
+console.log(greet);     // logs the entire function (the recipe card)
+console.log(greet());   // logs "hello" (the result of running it)</code></pre>
+    <p>Without <code>()</code>, you have the function itself. With <code>()</code>, you have its result.</p>
+
+    <p><strong>Confusion: passing a function vs calling it</strong></p>
+<pre class="language-javascript"><code class="language-javascript">setTimeout(handleClick, 1000);     // pass it — JS will call it later
+setTimeout(handleClick(), 1000);   // call it now — pass the result to setTimeout</code></pre>
+    <p>When something else will call the function later (event listeners, timers, array methods), pass the name without <code>()</code>.</p>
+
+    <p><strong>Confusion: where return values come from</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function add(a, b) { return a + b; }
+
+const sum = add(2, 3);    // 5 — the call gives back what return produced
+const fn  = add;          // the function itself, not 5
+const x   = add;          // also the function — no parens means no call</code></pre>
+
+    <p><strong>Confusion: calling vs executing the body</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function setupListener() {
+  console.log("setting up");
+  button.addEventListener("click", () => console.log("clicked"));
+}
+
+setupListener();
+// "setting up" prints right away — that line ran inside the body
+// "clicked" prints later, only when the button is clicked</code></pre>
+    <p>Calling the function runs its body. The body might <em>register</em> code to run later, but that's a separate thing from the call itself.</p>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-8-2-3': `
+<pre class="language-javascript"><code class="language-javascript">function startTimer() { ... }
+startTimer;
+// wrong: missing () — function is referenced, never called
+// fix: startTimer();</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">button.addEventListener("click", handleClick());
+// wrong: handleClick() runs immediately, its return value is passed to addEventListener
+// fix: button.addEventListener("click", handleClick);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function add(a, b) { return a + b; }
+const result = add 2, 3;
+// wrong: missing parens around the arguments
+// fix: const result = add(2, 3);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function greet(name) { console.log("hi, " + name); }
+greet;
+greet ();
+greet( );
+// only the second and third actually call the function
+// the spaces don't matter — but missing parens entirely (line 2) means no call</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function calculate() { return 42; }
+const x = calculate;
+console.log(x);     // logs the function, not 42
+// fix: const x = calculate();  // call it to get the return value</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">setTimeout(() => sendData(), 1000);
+// works, but the arrow wrapper is unnecessary
+// simpler: setTimeout(sendData, 1000);
+// (only wrap if you need to pass arguments: setTimeout(() => sendData(payload), 1000))</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-8-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// No arguments
+function sayHi() { console.log("hi"); }
+sayHi();
+
+// One argument
+function greet(name) { console.log("Hello, " + name); }
+greet("Os");
+
+// Multiple arguments
+function add(a, b) { return a + b; }
+add(2, 3);
+
+// Calling and using the return value
+const total = add(50, 25);
+console.log(total);   // 75
+
+// Calling inside an expression
+const message = "Total: " + add(50, 25);
+
+// Calling inside another call
+console.log(add(10, 20));     // 30
+
+// Chained calls
+function getName() { return "  Os  "; }
+getName().trim().toUpperCase();   // "OS"</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-8-3-1': `
+    <p><strong>Example: calling on page load</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function initApp() {
+  loadUser();
+  loadProducts();
+  attachEventListeners();
+}
+
+initApp();
+// the script ends, but initApp() set everything up</code></pre>
+
+    <p><strong>Example: calling from an event</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function handleClick() {
+  console.log("button was clicked");
+}
+
+button.addEventListener("click", handleClick);
+// pass handleClick (no parens) — the browser will call it for you on each click</code></pre>
+
+    <p><strong>Example: calling another function from inside one</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function handleSubmit(event) {
+  event.preventDefault();
+  if (!validateForm()) return;
+  const data = collectFormData();
+  sendToServer(data);
+  showSuccessMessage();
+}
+// each line is a function call doing one focused job</code></pre>
+
+    <p><strong>Example: calling inside a loop</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function renderProduct(product) {
+  const card = document.createElement("div");
+  card.textContent = product.name;
+  productList.appendChild(card);
+}
+
+for (const product of products) {
+  renderProduct(product);   // called once per product
+}</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-8-3-2': `
+    <ul>
+      <li><strong>Function definition</strong> → you can only call functions that have been defined</li>
+      <li><strong>Parentheses</strong> → the <code>()</code> is what triggers the call</li>
+      <li><strong>Arguments</strong> → the values passed in between the parens</li>
+      <li><strong>Parameters</strong> → the placeholders the arguments fill in</li>
+      <li><strong>Return</strong> → what the call gives back to the caller</li>
+      <li><strong>Function as value</strong> → without <code>()</code>, the name is just a value</li>
+      <li><strong>Events</strong> → event listeners call functions when something happens</li>
+      <li><strong>Stack trace</strong> → calls form a stack that shows up in errors</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-8-3-3': `
+    <ul>
+      <li>Referencing without calling</li>
+      <li>Parentheses when calling</li>
+      <li>Arguments and parameters</li>
+      <li>Return values</li>
+      <li>Function as a value</li>
+      <li>Callback functions</li>
+      <li>Event listeners</li>
+      <li>Call stack</li>
+    </ul>
+  `,
+
+
+  /* ========================================================= 
+   Sub-lesson: 3.9.10 Functions → referencing without calling
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-9-0-0': `
+    <p>Referencing a function means using its name <em>without</em> the parentheses. You're pointing at the function as a value — not running it.</p>
+    <p>Instead of "do this work now," you're saying "here's the function — somebody else will run it later."</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-9-0-1': `
+<pre class="language-javascript"><code class="language-javascript">function handleClick() {
+  console.log("clicked");
+}
+
+handleClick();    // calling — runs the body now
+handleClick;      // referencing — points at the function, doesn't run it
+
+button.addEventListener("click", handleClick);
+// passing the reference — the browser will call it later, on each click</code></pre>
+    <p>The same name does both jobs. Adding <code>()</code> calls. Leaving them off references.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-9-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function handleClick() {
+  console.log("clicked");
+}
+
+handleClick;
+
+button.addEventListener("click", handleClick);
+
+// handleClick;       → reference on its own — the function as a value, doesn't run
+// button             → the element
+// .addEventListener  → the method being called
+// (                  → opens its argument list
+// "click"            → first argument (the event name)
+// handleClick        → second argument — a reference to the function (no parens, no call)
+// )                  → closes the argument list
+// ;                  → ends the statement</code></pre>
+    <p>The key piece is <code>handleClick</code> with no <code>()</code> after it. That's a reference — the function being passed as a value. The browser stores it and calls it later, on each click. If you wrote <code>handleClick()</code> here, the function would run immediately and the click listener would get its return value instead of the function itself.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-9-0-3': `
+    <p>The presence of <code>()</code> is the difference between a reference and a call:</p>
+<pre class="language-javascript"><code class="language-javascript">handleClick      // reference — value, doesn't run
+handleClick()    // call — runs the body</code></pre>
+
+    <p>You can store a reference in another variable:</p>
+<pre class="language-javascript"><code class="language-javascript">function greet() { console.log("hi"); }
+
+const sayHi = greet;    // sayHi now references the same function
+sayHi();                // works — calls the function through its new name
+greet();                // also works — both names point at the same function</code></pre>
+
+    <p>You can put references in arrays or objects:</p>
+<pre class="language-javascript"><code class="language-javascript">function doA() { console.log("A"); }
+function doB() { console.log("B"); }
+
+const actions = [doA, doB];        // array of function references
+actions[0]();                       // calls doA → "A"
+
+const handlers = { open: doA, close: doB };
+handlers.close();                   // calls doB → "B"</code></pre>
+
+    <p>References are how you pass functions to other code (callbacks, event listeners, array methods):</p>
+<pre class="language-javascript"><code class="language-javascript">[1, 2, 3].map(double);             // pass the reference, map calls it for each item
+fetch("/api").then(handleResponse); // pass the reference, .then calls it when the fetch resolves</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-9-1-0': `
+    <p>Sometimes you don't want to run a function <em>now</em> — you want something else to run it later. Maybe when a button is clicked, when a timer fires, when a fetch finishes, or once for each item in an array.</p>
+    <p>Referencing without calling is how you hand the function over to that other code. You're not running it yourself — you're giving the function to someone else and saying "you decide when to call this."</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-9-1-1': `
+    <p>Reference (no parens) when something else will call the function later. Call (with parens) when you want the work to happen right now.</p>
+<pre class="language-javascript"><code class="language-javascript">function handleSave() {
+  console.log("saving...");
+}
+
+// Reference — addEventListener will call it on each click
+saveBtn.addEventListener("click", handleSave);
+
+// Call — runs the function right now, once
+handleSave();
+
+// Reference — setTimeout will call it after 1 second
+setTimeout(handleSave, 1000);
+
+// Call — passes the result of handleSave (undefined) to setTimeout, which runs nothing useful
+setTimeout(handleSave(), 1000);   // wrong — common mistake</code></pre>
+    <p>The rule: if the surrounding code is going to call the function for you, hand over the reference, not the result.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-9-1-2': `
+    <p>References show up everywhere callbacks are used.</p>
+<pre class="language-javascript"><code class="language-javascript">// Event listeners
+button.addEventListener("click", handleClick);
+
+// Timers
+setTimeout(handleTimeout, 2000);
+setInterval(updateClock, 1000);
+
+// Promises
+fetch("/api/data").then(handleResponse);
+
+// Array methods
+[1, 2, 3].map(double);
+items.filter(isInStock);
+items.forEach(renderItem);
+
+// Object properties (storing actions)
+const handlers = {
+  click: handleClick,
+  hover: handleHover,
+};
+
+// Conditional handler selection
+const handler = isAdmin ? handleAdminClick : handleUserClick;
+button.addEventListener("click", handler);</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-9-1-3': `
+    <p>Think of a function as a tool — like a hammer. Calling the function is picking up the hammer and using it. Referencing the function is handing the hammer to someone else, saying "use this when you need it."</p>
+    <p>If you give someone the hammer, they decide when to use it. If you use the hammer yourself, the work happens right now.</p>
+    <p>The parentheses are the difference between using the tool and handing it over. With <code>()</code>, you swing it. Without <code>()</code>, you pass it.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-9-1-4': `
+    <p>The function name is the function as a value. The parens are the action of running it.</p>
+<pre class="language-javascript"><code class="language-javascript">handleClick    →  the function itself (a value)
+handleClick()  →  run the function NOW, give me the result</code></pre>
+    <p>When you pass a reference, you're handing over the function — the receiver decides when (and if) to call it. When you call, the work happens immediately and what you're passing is the <em>result</em>, not the function.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-9-1-5': `
+<pre class="language-javascript"><code class="language-javascript">function handleClick() {
+  console.log("clicked");
+}
+
+button.addEventListener("click", handleClick);
+
+// JavaScript is thinking:
+// Line 1: see function handleClick → register the name pointing at the function value.
+// Line 5: see button.addEventListener("click", handleClick) → call addEventListener, pass it the string "click" and the function value (no () means don't run it now). The browser stores the reference and will call it on every click later.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-9-2-0': `
+    <p>If an event handler fires once on page load instead of when the user clicks, you almost certainly added <code>()</code> when you shouldn't have.</p>
+<pre class="language-javascript"><code class="language-javascript">button.addEventListener("click", handleClick());
+// wrong: handleClick() runs immediately on this line
+// addEventListener gets the RETURN value (probably undefined)
+// the click never fires the function
+
+button.addEventListener("click", handleClick);
+// correct: pass the reference; the browser calls it on each click</code></pre>
+
+    <p>Same bug with <code>setTimeout</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">setTimeout(showAlert(), 1000);   // wrong — runs immediately, no delay
+setTimeout(showAlert, 1000);     // correct — runs after 1 second</code></pre>
+    <p>Rule of thumb: if the surrounding code is in charge of calling the function, leave off the parens.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-9-2-1': `
+    <p>A function is a value. Like a number or a string, it can be stored, passed around, or replaced.</p>
+    <p>The name is just a label. By itself, the label refers to the value. Adding <code>()</code> is a separate operation that says "take this function value and run it."</p>
+    <p>Once you see this clearly, callbacks stop feeling weird: they're just function values being handed off so other code can call them at the right moment.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-9-2-2': `
+    <p><strong>Confusion: passing vs invoking</strong></p>
+<pre class="language-javascript"><code class="language-javascript">setTimeout(handleTimeout, 1000);    // pass the reference — runs after 1s
+setTimeout(handleTimeout(), 1000);   // call now — pass the result to setTimeout</code></pre>
+    <p>If you want something to happen <em>later</em>, pass the reference. If you call it now, you're running it now and only handing over the result.</p>
+
+    <p><strong>Confusion: when you DO want to call inline</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Sometimes calling inside the listener IS what you want
+button.addEventListener("click", () => sendData(payload));
+// the arrow function is the reference — sendData(payload) only runs on click
+// this is how you pass arguments to the eventual call</code></pre>
+
+    <p><strong>Confusion: function reference vs function call result</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getNumber() { return 42; }
+
+const a = getNumber;     // a is the function itself
+const b = getNumber();   // b is 42 — the result of calling
+
+a();    // 42
+b();    // wrong: TypeError — b is just the number 42, not a function</code></pre>
+
+    <p><strong>Confusion: removing event listeners</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Adding an inline arrow — no way to remove later
+button.addEventListener("click", () => doStuff());
+
+// Adding a named reference — can be removed
+button.addEventListener("click", handleClick);
+button.removeEventListener("click", handleClick);   // works because we have the same reference</code></pre>
+    <p>This is one of the strongest reasons to use named references: you can refer to the same function later.</p>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-9-2-3': `
+<pre class="language-javascript"><code class="language-javascript">button.addEventListener("click", handleClick());
+// wrong: () runs handleClick immediately on this line
+// fix: button.addEventListener("click", handleClick);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">setTimeout(showAlert(), 2000);
+// wrong: showAlert runs now, setTimeout gets undefined
+// fix: setTimeout(showAlert, 2000);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const action = handleSave();
+// wrong: action holds the RESULT of handleSave (probably undefined)
+// fix: const action = handleSave;  // store the function reference instead</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">[1, 2, 3].map(double());
+// wrong: double() runs once with no argument, map gets the return value
+// fix: [1, 2, 3].map(double);  // pass the reference, map calls it per item</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">button.addEventListener("click", () => handleClick);
+// wrong: arrow function returns the reference but never calls it
+// fix: button.addEventListener("click", handleClick);
+// or:  button.addEventListener("click", () => handleClick());  // if you need the wrapper</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-9-3-0': `
+<pre class="language-javascript"><code class="language-javascript">function double(n) { return n * 2; }
+
+// Storing a reference
+const fn = double;
+fn(5);          // 10 — calling through the new name
+
+// Passing a reference to an array method
+[1, 2, 3].map(double);    // [2, 4, 6]
+
+// Passing a reference to an event listener
+btn.addEventListener("click", handleClick);
+
+// Picking a reference based on a condition
+const handler = isAdmin ? adminHandler : userHandler;
+btn.addEventListener("click", handler);
+
+// Storing references in an object
+const actions = {
+  open:  openModal,
+  close: closeModal,
+};
+actions.open();    // calls openModal
+
+// Calling vs referencing — same name, different intent
+console.log(double);     // function
+console.log(double(5));  // 10</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-9-3-1': `
+    <p><strong>Example: same handler reused</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function closeModal() {
+  modal.classList.remove("open");
+}
+
+closeBtn.addEventListener("click", closeModal);
+overlay.addEventListener("click", closeModal);
+window.addEventListener("keydown", closeModal);
+// one reference, three places that use it</code></pre>
+
+    <p><strong>Example: removing a listener later</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function handleScroll() {
+  console.log(window.scrollY);
+}
+
+window.addEventListener("scroll", handleScroll);
+
+// later, when we want to stop listening:
+window.removeEventListener("scroll", handleScroll);
+// works because both calls reference the SAME function</code></pre>
+
+    <p><strong>Example: array method callbacks</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function isInStock(product)  { return product.stock > 0; }
+function getName(product)    { return product.name; }
+
+const available = products.filter(isInStock);
+const names = available.map(getName);
+// pass references — filter and map call them once per item</code></pre>
+
+    <p><strong>Example: command map</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const commands = {
+  save:   saveDocument,
+  open:   openFile,
+  close:  closeFile,
+  print:  printDocument,
+};
+
+function runCommand(name) {
+  const fn = commands[name];
+  if (fn) fn();
+}
+
+runCommand("save");
+runCommand("print");
+// each command is a reference, looked up by name and called when needed</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-9-3-2': `
+    <ul>
+      <li><strong>Calling a function</strong> → the opposite — referencing is about NOT calling</li>
+      <li><strong>Function as a value</strong> → references are how you treat functions like values</li>
+      <li><strong>Callbacks</strong> → callbacks are function references passed to other code</li>
+      <li><strong>Event listeners</strong> → expect references, not calls</li>
+      <li><strong>Timers</strong> → <code>setTimeout</code> and <code>setInterval</code> take references</li>
+      <li><strong>Array methods</strong> → <code>map</code>, <code>filter</code>, <code>reduce</code> take references</li>
+      <li><strong>Higher-order functions</strong> → functions that accept references as arguments</li>
+      <li><strong><code>removeEventListener</code></strong> → only works when you pass the same reference</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-9-3-3': `
+    <ul>
+      <li>Calling a function</li>
+      <li>Function as a value</li>
+      <li>Callback functions</li>
+      <li>Event listeners</li>
+      <li>setTimeout and setInterval</li>
+      <li>Array methods (<code>map</code>, <code>filter</code>, <code>forEach</code>)</li>
+      <li>Higher-order functions</li>
+      <li>Removing event listeners</li>
+    </ul>
+  `,
+
+
+  /* ========================================================= 
+   Sub-lesson: 3.9.11 Functions → parentheses when calling
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-10-0-0': `
+    <p>The parentheses <code>()</code> are what actually call a function. They're not optional, not decoration — they're the operation that runs the function's body.</p>
+    <p>No <code>()</code>, no call. The function exists, but the work doesn't happen.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-10-0-1': `
+<pre class="language-javascript"><code class="language-javascript">function greet() {
+  console.log("Hello");
+}
+
+greet();    // parens → call → "Hello" prints
+greet;      // no parens → just refers to the function, nothing happens</code></pre>
+    <p>The parens are required even when the function takes no arguments. An empty <code>()</code> still counts as a call.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-10-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function add(a, b) {
+  return a + b;
+}
+
+add(2, 3);
+
+// add    → the function being called
+// (      → opens the argument list — start of the call
+// 2, 3   → arguments, separated by a comma
+// )      → closes the argument list — end of the call
+// ;      → ends the statement</code></pre>
+    <p>The pair of parens is sometimes called the "call operator." When JavaScript sees a value followed by <code>()</code>, it tries to call that value as a function — whether you put arguments inside or leave them empty.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-10-0-3': `
+    <p>Empty parens are still required for no-argument functions:</p>
+<pre class="language-javascript"><code class="language-javascript">function sayHi() { console.log("hi"); }
+
+sayHi();     // correct
+sayHi;       // wrong — no call happens</code></pre>
+
+    <p>Arguments go inside the parens, separated by commas:</p>
+<pre class="language-javascript"><code class="language-javascript">add(2, 3);                 // two arguments
+formatPrice(19.99);        // one argument
+log();                     // no arguments — empty parens</code></pre>
+
+    <p>Whitespace around the parens is allowed but doesn't change anything:</p>
+<pre class="language-javascript"><code class="language-javascript">greet();          // standard
+greet ();         // works, but unusual style
+greet( "Os" );    // also works — extra spaces are fine</code></pre>
+
+    <p>Trying to call a non-function throws an error:</p>
+<pre class="language-javascript"><code class="language-javascript">const x = 5;
+x();      // wrong: TypeError — x is not a function
+
+const greet = "hello";
+greet();  // wrong: TypeError — greet is a string, not a function</code></pre>
+
+    <p>You can call directly on a returned value:</p>
+<pre class="language-javascript"><code class="language-javascript">function getGreeter() {
+  return function() { console.log("hi"); };
+}
+
+getGreeter()();     // first () calls getGreeter, second () calls the returned function
+// equivalent to:
+const fn = getGreeter();
+fn();</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-10-1-0': `
+    <p>JavaScript needs an explicit signal to actually run a function. Without that signal, the language can't tell whether you're trying to <em>use</em> the function as a value (referencing it) or <em>run</em> it (calling it).</p>
+    <p>The parentheses are that signal. They're how you say, unambiguously, "execute this function, right now."</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-10-1-1': `
+    <p>Use parens whenever you want the function's body to run. Anywhere you want a result from a function, or a side effect (like updating the page), you need <code>()</code>.</p>
+<pre class="language-javascript"><code class="language-javascript">// Use parens when you want the work to happen
+console.log("start");
+init();
+showWelcome();
+console.log("end");
+
+// Use parens when you want the return value
+const total = calculateTotal(50, 0.08);
+const valid = isValidEmail(input.value);
+
+// Use parens when you want to use the result inline
+if (isLoggedIn()) {
+  showDashboard();
+}
+
+const greeting = "Hello, " + getCurrentUser();</code></pre>
+    <p>If a function takes arguments, they go inside the parens. If it doesn't, the parens are still required — empty.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-10-1-2': `
+    <p>Parens are everywhere a function actually runs.</p>
+<pre class="language-javascript"><code class="language-javascript">// Direct call
+init();
+
+// Call to get a value
+const total = sum(items);
+
+// Call as a condition
+if (isReady()) {
+  start();
+}
+
+// Call inside another expression
+console.log("Result: " + format(value));
+
+// Method call (parens still required)
+"Hello".toUpperCase();
+[1, 2, 3].push(4);
+products.map(p => p.name);
+
+// Chained call
+getName().trim().toUpperCase();</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-10-1-3': `
+    <p>The parentheses are the "go" button. The function's name tells JavaScript which function you mean. The parens tell it to actually run.</p>
+    <p>Even if the function takes no inputs, you still need empty parens — like pressing a button that has no settings. The press is what makes anything happen.</p>
+    <p>Without the parens, you're not calling the function. You're just naming it. The function sits there, defined, ready, but unused.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-10-1-4': `
+    <p>The parens are an operator — like <code>+</code> for addition or <code>===</code> for comparison. They take a function value on the left and produce a result by running it.</p>
+<pre class="language-javascript"><code class="language-javascript">2 + 3        // + operator → produces 5
+greet()      // () operator → runs greet, produces its return value</code></pre>
+    <p>The arguments inside the parens are inputs to the operation. Empty parens mean "run, no inputs."</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-10-1-5': `
+<pre class="language-javascript"><code class="language-javascript">function add(a, b) {
+  return a + b;
+}
+
+const result = add(2, 3);
+console.log(result);
+
+// JavaScript is thinking:
+// Line 1: see function add → register the name pointing at the function value.
+// Line 5: see add(2, 3) → look up add (got the function value), see () to its right → call it. Set a = 2, b = 3, run the body, return 5. Store 5 in result.
+// Line 6: see console.log(result) → look up console.log, see () → call it with result (5). Logs 5.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-10-2-0': `
+    <p>"My function isn't running" is almost always one of two things: missing parens, or trying to call something that isn't a function.</p>
+<pre class="language-javascript"><code class="language-javascript">init;
+// nothing happens — missing parens
+// fix: init();
+
+const greeting = "hello";
+greeting();
+// TypeError — greeting is a string, not a function
+// you can't call a non-function value</code></pre>
+
+    <p>If you see <code>TypeError: X is not a function</code>, check what <code>X</code> actually is — usually it's been overwritten with another value, or it was never a function in the first place.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-10-2-1': `
+    <p>The parens are the call. They're a separate, deliberate action from naming the function.</p>
+    <p>Once you see <code>()</code> as an operator — something that <em>does</em> work, not just punctuation — function syntax stops feeling fiddly. Every time you write <code>()</code>, you're running the value to its left. Every time you don't, you're leaving it as a value.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-10-2-2': `
+    <p><strong>Confusion: empty parens still count as a call</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function init() { console.log("ready"); }
+
+init;       // not a call — nothing logs
+init();     // call — "ready" logs
+// the parens are required even with no arguments</code></pre>
+
+    <p><strong>Confusion: parens around the args, not the function</strong></p>
+<pre class="language-javascript"><code class="language-javascript">add(2, 3);     // correct: name first, then ( args )
+(add)(2, 3);   // works, but the extra parens around add are pointless
+add (2, 3);    // works, but unusual style — the space doesn't matter</code></pre>
+
+    <p><strong>Confusion: parens in definition vs parens in call</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {     // parens here = parameter list (definition)
+  console.log("hi, " + name);
+}
+
+greet("Os");                // parens here = argument list (call)
+// same syntax, different roles</code></pre>
+    <p>In the definition, the parens introduce the parameters. In the call, they introduce the arguments.</p>
+
+    <p><strong>Confusion: methods need parens too</strong></p>
+<pre class="language-javascript"><code class="language-javascript">"hello".toUpperCase;       // refers to the method, doesn't run it
+"hello".toUpperCase();     // calls it — returns "HELLO"
+
+[1, 2].length;              // property — no parens, no call
+[1, 2].push(3);             // method — parens to call</code></pre>
+    <p>Methods are functions stored on objects. They follow the same rule: <code>()</code> calls them, no <code>()</code> doesn't.</p>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-10-2-3': `
+<pre class="language-javascript"><code class="language-javascript">init;
+// wrong: missing () — function never runs
+// fix: init();</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const greeting = "hello";
+greeting();
+// wrong: TypeError — greeting is a string, not a function
+// fix: don't call non-function values</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">add 2, 3;
+// wrong: missing parens — JS doesn't know what to do
+// fix: add(2, 3);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function getValue() { return 42; }
+const x = getValue;
+console.log(x);     // logs the function, not 42
+// fix: const x = getValue();   // call it to get 42</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">"hello".toUpperCase;
+// wrong: refers to the method but doesn't run it
+// fix: "hello".toUpperCase();   // returns "HELLO"</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">setTimeout(handleTimeout(), 1000);
+// wrong: handleTimeout() runs immediately — setTimeout gets the result, not the function
+// fix: setTimeout(handleTimeout, 1000);</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-10-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// No arguments — empty parens
+function ping() { console.log("ping"); }
+ping();
+
+// One argument
+function greet(name) { console.log("hi, " + name); }
+greet("Os");
+
+// Multiple arguments
+function add(a, b) { return a + b; }
+add(2, 3);
+
+// Method call
+const arr = [1, 2, 3];
+arr.push(4);
+arr.pop();
+
+// Chained calls
+"  hello  ".trim().toUpperCase();    // "HELLO"
+
+// Call directly on a returned function
+function makeGreeter() { return () => console.log("hi"); }
+makeGreeter()();    // first () gets the inner function, second () calls it
+
+// Call inside another call
+console.log(add(2, 3));    // 5</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-10-3-1': `
+    <p><strong>Example: parens to actually run setup</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function init() {
+  loadConfig();
+  attachListeners();
+  renderUI();
+}
+
+init();
+// without these parens, init never runs and the app does nothing</code></pre>
+
+    <p><strong>Example: parens on every method</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const cleanedEmail = userInput.trim().toLowerCase();
+const itemNames = products.map(p => p.name);
+const total = prices.reduce((sum, p) => sum + p, 0);
+// every method call has its own ()</code></pre>
+
+    <p><strong>Example: call the result of a call</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function createCounter() {
+  let count = 0;
+  return function() {
+    count = count + 1;
+    return count;
+  };
+}
+
+const counter = createCounter();
+counter();    // 1
+counter();    // 2
+counter();    // 3
+// createCounter() runs once and returns a function — counter() calls that function</code></pre>
+
+    <p><strong>Example: parens inside conditions</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function isLoggedIn() { return user.token !== null; }
+function hasPermission(action) { return user.permissions.includes(action); }
+
+if (isLoggedIn() && hasPermission("edit")) {
+  showEditButton();
+}
+// each function call uses parens to run and produce its return value</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-10-3-2': `
+    <ul>
+      <li><strong>Calling a function</strong> → parens are how you call</li>
+      <li><strong>Referencing without calling</strong> → no parens means no call</li>
+      <li><strong>Arguments</strong> → values passed inside the parens</li>
+      <li><strong>Parameters</strong> → placeholders defined inside the parens at definition time</li>
+      <li><strong>Return values</strong> → the call expression evaluates to whatever the function returns</li>
+      <li><strong>Method calls</strong> → methods need parens just like regular functions</li>
+      <li><strong>Chaining</strong> → calls can be linked together with <code>.</code></li>
+      <li><strong>Call expression</strong> → the whole <code>name(...)</code> is one expression that produces a value</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-10-3-3': `
+    <ul>
+      <li>Calling a function</li>
+      <li>Referencing without calling</li>
+      <li>Arguments and parameters</li>
+      <li>Return values</li>
+      <li>Method calls</li>
+      <li>Chained calls</li>
+      <li>Call expressions</li>
+      <li>"X is not a function" errors</li>
+    </ul>
+  `,
+
+
+  /* ========================================================= 
+   Sub-lesson: 3.9.12 Functions → parameters
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-11-0-0': `
+    <p>A parameter is a placeholder name for a value that will be passed in when the function is called. You write parameters between the parentheses when defining the function.</p>
+    <p>Inside the body, the parameter behaves like a regular variable — but its value isn't decided until someone calls the function and supplies it.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-11-0-1': `
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {        // "name" is a parameter
+  console.log("Hello, " + name);
+}
+
+greet("Os");      // "Os" fills in the parameter — name is "Os" inside the body
+greet("Sam");     // different call — name is "Sam"</code></pre>
+    <p>The parameter is the slot. Each call decides what goes into the slot.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-11-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function welcome(firstName, lastName) {
+  console.log("Welcome, " + firstName + " " + lastName);
+}
+
+welcome("Os", "Garcia");
+// prints: Welcome, Os Garcia
+
+welcome("Sam", "Lee");
+// prints: Welcome, Sam Lee
+
+// function              → keyword that starts the declaration
+// welcome               → the function name
+// (                     → opens the parameter list
+// firstName, lastName   → parameters — placeholder names for incoming values
+// )                     → closes the parameter list
+// { ... }               → the function body — uses the parameters as variables
+// "Os", "Garcia"        → arguments fill the parameters in order on each call</code></pre>
+    <p>The parameters <code>firstName</code> and <code>lastName</code> are written once in the definition. Each call fills them with different values — that's how the same function produces different output.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-11-0-3': `
+    <p>Multiple parameters are separated by commas:</p>
+<pre class="language-javascript"><code class="language-javascript">function add(a, b)         { return a + b; }
+function greet(first, last) { console.log(first + " " + last); }
+function log()              { console.log("hi"); }   // no parameters — empty parens</code></pre>
+
+    <p>Parameter names follow the same rules as variable names — letters, digits, <code>_</code>, <code>$</code>, no starting digit, no reserved keywords:</p>
+<pre class="language-javascript"><code class="language-javascript">function process(userId) { ... }     // correct
+function process(user_id) { ... }    // correct (but camelCase is conventional)
+function process(1stUser) { ... }    // wrong — can't start with a digit
+function process(class) { ... }      // wrong — reserved keyword</code></pre>
+
+    <p>Parameters are local to the function — they don't exist outside the body:</p>
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {
+  console.log(name);   // works — name exists inside the body
+}
+
+console.log(name);     // wrong: ReferenceError — name is local to greet</code></pre>
+
+    <p>You can give a parameter a default value with <code>=</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">function greet(name = "friend") {
+  console.log("Hello, " + name);
+}
+
+greet();         // "Hello, friend" — uses the default
+greet("Os");     // "Hello, Os" — overrides the default</code></pre>
+    <p>Defaults kick in when the argument is missing or <code>undefined</code>.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-11-1-0': `
+    <p>A function without parameters can only ever do one fixed thing. With parameters, the same function can do its job on different inputs each time.</p>
+    <p>Parameters are what make functions <em>reusable across different values</em>. They turn a one-off block of code into a tool you can apply anywhere.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-11-1-1': `
+    <p>Use parameters whenever a function needs information from the outside to do its job. If you find yourself hardcoding a value inside a function and writing near-duplicate copies for different cases, that's a sign the value should be a parameter.</p>
+<pre class="language-javascript"><code class="language-javascript">// Without parameters — three separate functions doing the same job
+function greetOs()  { console.log("Hello, Os"); }
+function greetSam() { console.log("Hello, Sam"); }
+function greetAlex(){ console.log("Hello, Alex"); }
+
+// With a parameter — one function, used three different ways
+function greet(name) {
+  console.log("Hello, " + name);
+}
+greet("Os");
+greet("Sam");
+greet("Alex");</code></pre>
+    <p>The parameter is the difference between "does this exact thing" and "does this kind of thing."</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-11-1-2': `
+    <p>Almost every reusable function has at least one parameter — the value it operates on.</p>
+<pre class="language-javascript"><code class="language-javascript">function isAdult(age)              { return age >= 18; }
+function formatPrice(price)        { return "$" + price.toFixed(2); }
+function showError(message)        { errorBox.textContent = message; }
+function calculateTax(price, rate) { return price * rate; }
+
+function buildCard(product) {
+  const card = document.createElement("div");
+  card.textContent = product.name;
+  return card;
+}
+
+function handleClick(event) {       // event handlers receive the event as a parameter
+  event.preventDefault();
+}</code></pre>
+    <p>Even built-in functions take parameters: <code>console.log(value)</code>, <code>setTimeout(fn, ms)</code>, <code>arr.map(callback)</code>. The parameter is how you tell them what to work on.</p>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-11-1-3': `
+    <p>Think of a parameter like a blank in a form. The function template says "fill in this part with a name" — and every time someone calls the function, they fill in the blank with whatever name they want.</p>
+    <p>The form itself stays the same. The blank is where the customization happens. That's why one function can serve many different uses: the body is the form, and the parameters are the blanks that get filled differently each time.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-11-1-4': `
+    <p>A parameter is a local variable that exists only while the function is running, and it's automatically assigned its value from the call.</p>
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {
+  // it's like JS does this for you on each call:
+  // const name = (whatever was passed in);
+  console.log("Hello, " + name);
+}
+
+greet("Os");
+// behaves as if: const name = "Os"; then runs the body</code></pre>
+    <p>Once the function finishes, the parameter is gone. The next call creates a fresh one.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-11-1-5': `
+<pre class="language-javascript"><code class="language-javascript">function add(a, b) {
+  return a + b;
+}
+
+const result = add(2, 3);
+
+// JavaScript is thinking:
+// Line 1: see function add → register it with two parameters: a and b. Don't run the body yet.
+// Line 5: see add(2, 3) → look up add, jump into the body, set a = 2 and b = 3 (the parameters get their values from the call).
+// Line 2: run return a + b → 2 + 3 = 5, exit the body, hand 5 back to the caller.
+// Line 5: store 5 in result. The local a and b are now gone.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-11-2-0': `
+    <p>If a parameter is <code>undefined</code> inside the body, the call didn't pass a value for it.</p>
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {
+  console.log("hi, " + name);
+}
+
+greet();
+// prints "hi, undefined" — the parameter exists but no argument was passed
+// fix: greet("Os"); — or set a default: function greet(name = "friend")</code></pre>
+
+    <p>If you get unexpected results, log the parameter at the top of the body to see what actually came in:</p>
+<pre class="language-javascript"><code class="language-javascript">function calculateTotal(price, tax) {
+  console.log("got:", price, tax);   // see what was passed in
+  return price + (price * tax);
+}</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-11-2-1': `
+    <p>The parameter is just a variable. It happens to get its value from the function call instead of from a regular <code>const</code> or <code>let</code> — but inside the body, it acts the same as any other variable.</p>
+    <p>That's the whole trick: parameters are how the outside world hands data to a function. Once the data is inside, it's a local variable. When the function ends, that variable disappears.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-11-2-2': `
+    <p><strong>Confusion: parameters vs arguments</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function add(a, b) {     // a and b are PARAMETERS — placeholders defined here
+  return a + b;
+}
+
+add(5, 3);                // 5 and 3 are ARGUMENTS — actual values passed in</code></pre>
+    <p>Parameters are written when defining. Arguments are passed when calling. Same idea from two sides.</p>
+
+    <p><strong>Confusion: parameters are local</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {
+  console.log(name);    // works — name exists in the body
+}
+
+console.log(name);      // wrong: ReferenceError — name doesn't exist out here</code></pre>
+    <p>Parameters live and die with the function call. Outside the body, they don't exist.</p>
+
+    <p><strong>Confusion: same name as outer variable</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const name = "outer";
+
+function greet(name) {       // parameter "name" shadows the outer one
+  console.log(name);         // logs whatever was passed in, NOT "outer"
+}
+
+greet("Os");                 // "Os"
+console.log(name);           // "outer" — the outer variable is unchanged</code></pre>
+
+    <p><strong>Confusion: order matters</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function divide(a, b) { return a / b; }
+
+divide(10, 2);    // 5 — a is 10, b is 2
+divide(2, 10);    // 0.2 — different result, same parameters
+// arguments fill parameters in the order they appear</code></pre>
+
+    <p><strong>Confusion: too many or too few arguments</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function add(a, b) { return a + b; }
+
+add(2);           // b is undefined → 2 + undefined → NaN
+add(2, 3, 4, 5);  // 4 and 5 are ignored — not an error</code></pre>
+    <p>JavaScript doesn't enforce that the right number of arguments was passed. Missing values become <code>undefined</code>; extras are silently ignored.</p>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-11-2-3': `
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {
+  console.log("hi, " + name);
+}
+greet();
+// works, but prints "hi, undefined" — no argument passed
+// fix: greet("Os"); — or set a default: function greet(name = "friend")</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function divide(a, b) { return a / b; }
+divide(2, 10);
+// works, but result might not be what you wanted
+// fix: pass arguments in the right order — divide(10, 2)</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function greet name { ... }
+// wrong: parameter must be inside parens
+// fix: function greet(name) { ... }</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function process(1stUser) { ... }
+// wrong: parameter names can't start with a digit
+// fix: function process(firstUser) { ... }</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function greet(name) { ... }
+console.log(name);
+// wrong: name doesn't exist outside the function
+// fix: only use parameters inside the body</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function add(a, b, c, d, e, f, g) { ... }
+// works, but too many parameters is hard to read and easy to mess up
+// fix: take an object instead — function add({a, b, c, d}) { ... }</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-11-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// No parameters
+function ping() { console.log("ping"); }
+
+// One parameter
+function double(n) { return n * 2; }
+
+// Multiple parameters
+function add(a, b) { return a + b; }
+function fullName(first, last) { return first + " " + last; }
+
+// Default parameter
+function greet(name = "friend") {
+  console.log("hi, " + name);
+}
+greet();         // "hi, friend"
+greet("Os");     // "hi, Os"
+
+// Object as a parameter — useful when there are many fields
+function createUser({ name, age, email }) {
+  console.log(name, age, email);
+}
+createUser({ name: "Os", age: 30, email: "os@example.com" });</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-11-3-1': `
+    <p><strong>Example: parameter that decides what gets shown</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function showError(message) {
+  errorBox.textContent = message;
+  errorBox.classList.add("visible");
+}
+
+showError("Email is required");
+showError("Network failed");
+// the parameter "message" lets the same function display any error text</code></pre>
+
+    <p><strong>Example: event parameter</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function handleClick(event) {
+  event.preventDefault();
+  console.log("clicked at", event.clientX, event.clientY);
+}
+
+button.addEventListener("click", handleClick);
+// the browser calls handleClick and passes the event as the argument
+// "event" is the parameter that catches it</code></pre>
+
+    <p><strong>Example: parameter for the data being processed</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function buildProductCard(product) {
+  const card = document.createElement("div");
+  card.className = "card";
+  card.textContent = product.name;
+  return card;
+}
+
+const card1 = buildProductCard({ name: "Hat" });
+const card2 = buildProductCard({ name: "Shirt" });
+// same function, different products, different cards</code></pre>
+
+    <p><strong>Example: defaults for optional behavior</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function fetchUsers(limit = 10, offset = 0) {
+  return fetch("/api/users?limit=" + limit + "&offset=" + offset);
+}
+
+fetchUsers();           // uses defaults — limit=10, offset=0
+fetchUsers(50);         // limit=50, offset=0 (default)
+fetchUsers(50, 100);    // limit=50, offset=100</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-11-3-2': `
+    <ul>
+      <li><strong>Arguments</strong> → the actual values that fill in the parameters when calling</li>
+      <li><strong>Function body</strong> → where parameters are used as variables</li>
+      <li><strong>Scope</strong> → parameters are local to the function</li>
+      <li><strong>Default parameters</strong> → fallback values when an argument isn't passed</li>
+      <li><strong>Destructuring</strong> → unpacking object or array parameters into named pieces</li>
+      <li><strong>Variables</strong> → parameters follow the same naming rules</li>
+      <li><strong>Reusability</strong> → parameters are what make a function reusable across different values</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-11-3-3': `
+    <ul>
+      <li>Arguments</li>
+      <li>Default parameters</li>
+      <li>Rest parameters (<code>...args</code>)</li>
+      <li>Destructured parameters</li>
+      <li>Function body</li>
+      <li>Local scope</li>
+      <li>Variable shadowing</li>
+      <li>Variable naming rules</li>
+    </ul>
+  `,
+
+
+  /* ========================================================= 
+   Sub-lesson: 3.9.13 Functions → arguments
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-12-0-0': `
+    <p>An argument is the actual value you pass in when you call a function. It fills in the parameter slot.</p>
+    <p>Parameters are the placeholders defined with the function. Arguments are the real values handed over each time the function is called.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-12-0-1': `
+<pre class="language-javascript"><code class="language-javascript">function double(n) {
+  return n * 2;
+}
+
+double(5);     // 5 is the argument → returns 10
+double(7);     // 7 is the argument → returns 14
+double(100);   // 100 is the argument → returns 200</code></pre>
+    <p>Every time you call the function, the argument inside the parens is what fills the parameter for that call. Different argument, different result.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-12-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function buildEmail(to, subject) {
+  return "To: " + to + "\\nSubject: " + subject;
+}
+
+buildEmail("os@example.com", "Welcome!");
+// returns: "To: os@example.com\\nSubject: Welcome!"
+
+// buildEmail            → the function being called
+// (                     → opens the argument list
+// "os@example.com"      → first argument — fills the "to" parameter
+// ,                     → separator
+// "Welcome!"            → second argument — fills the "subject" parameter
+// )                     → closes the argument list
+// ;                     → ends the statement</code></pre>
+    <p>Arguments are matched to parameters in order. The first argument fills the first parameter, the second fills the second, and so on.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-12-0-3': `
+    <p>Arguments can be any value — numbers, strings, booleans, objects, arrays, even other functions:</p>
+<pre class="language-javascript"><code class="language-javascript">log(42);                       // number argument
+log("hello");                  // string argument
+log(true);                     // boolean argument
+log([1, 2, 3]);                // array argument
+log({ name: "Os" });           // object argument
+log(getCurrentUser);           // function argument (passed as a reference)</code></pre>
+
+    <p>Arguments can also be expressions — JavaScript evaluates them before passing the result:</p>
+<pre class="language-javascript"><code class="language-javascript">double(2 + 3);                 // 2 + 3 evaluates to 5 → double(5) → 10
+double(getNumber());           // getNumber() runs first, its return value becomes the argument
+double(price * 1.08);          // expression evaluated first, then passed</code></pre>
+
+    <p>If you pass too few arguments, missing parameters are <code>undefined</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">function greet(first, last) {
+  console.log("hi, " + first + " " + last);
+}
+
+greet("Os");
+// prints: "hi, Os undefined" — last got no argument</code></pre>
+
+    <p>If you pass too many, the extras are silently ignored:</p>
+<pre class="language-javascript"><code class="language-javascript">function add(a, b) { return a + b; }
+add(1, 2, 3, 4, 5);
+// returns 3 — only a and b are used, the rest are dropped</code></pre>
+
+    <p>JavaScript doesn't enforce argument count. Missing values become <code>undefined</code>; extras are ignored without warning.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-12-1-0': `
+    <p>A function with parameters needs a way to receive actual values. Arguments are how the call supplies those values.</p>
+    <p>Without arguments, the parameters in the function would always be <code>undefined</code> — the function would have placeholder slots but nothing in them. Arguments are the bridge between the call site and the function's body.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-12-1-1': `
+    <p>You pass arguments any time you want a function to do its work on specific values. Each call can pass different arguments to get different results from the same function.</p>
+<pre class="language-javascript"><code class="language-javascript">function formatPrice(amount) {
+  return "$" + amount.toFixed(2);
+}
+
+formatPrice(19.99);    // returns "$19.99"
+formatPrice(5);        // returns "$5.00"
+formatPrice(1000);     // returns "$1000.00"
+
+// the function is the same — the arguments make each call different</code></pre>
+    <p>Arguments are how a single function handles many situations. Without them, you'd need a separate function for every possible input.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-12-1-2': `
+    <p>Arguments appear at every function call — your own, built-in functions, and third-party libraries.</p>
+<pre class="language-javascript"><code class="language-javascript">// Built-in functions
+console.log("hello");                      // "hello" is the argument
+parseInt("42");                            // "42" is the argument
+setTimeout(showMessage, 1000);             // two arguments: a function reference and a number
+
+// String methods
+"hello world".indexOf("world");            // "world" is the argument
+
+// Array methods
+[1, 2, 3].push(4);                          // 4 is the argument
+[1, 2, 3].includes(2);                      // 2 is the argument
+[1, 2, 3].map(n => n * 2);                  // an arrow function is the argument
+
+// Your own functions
+showError("Email is required");
+calculateTax(50, 0.08);
+buildCard({ name: "Hat", price: 20 });</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-12-1-3': `
+    <p>If a parameter is a blank in a form, an argument is what you write into that blank. The form (the function) stays the same. The blanks (parameters) stay the same. What changes each time is what you fill in (the arguments).</p>
+    <p>Every time a function is called, the arguments are what give the parameters their values for that one run. The next call gets fresh arguments, fresh parameters, fresh result.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-12-1-4': `
+    <p>Arguments flow from the call site into the parameters, in order.</p>
+<pre class="language-javascript"><code class="language-javascript">function greet(first, last) { ... }
+//              ↑      ↑
+//          parameter  parameter
+
+greet("Os", "Garcia");
+//      ↓     ↓
+//   argument argument
+
+// inside the body:
+// first  = "Os"
+// last   = "Garcia"</code></pre>
+    <p>The first argument fills the first parameter, the second fills the second, and so on. Position is what matches them up — not name.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-12-1-5': `
+<pre class="language-javascript"><code class="language-javascript">function multiply(x, y) {
+  return x * y;
+}
+
+const result = multiply(4, 6);
+console.log(result);
+// prints: 24
+
+// JavaScript is thinking:
+// Line 1: see function multiply → register it with two parameters: x and y. Don't run the body yet.
+// Line 5: see multiply(4, 6) → evaluate the arguments (4 and 6 are already values), look up multiply, jump into the body. Set x = 4, y = 6.
+// Line 2: run return x * y → 4 * 6 = 24, exit the body, hand 24 back to the caller.
+// Line 5: store 24 in result.
+// Line 6: log result → 24.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-12-2-0': `
+    <p>If a function returns the wrong result, the most common cause is wrong arguments — wrong values, wrong order, or wrong types. Log the arguments at the top of the body to see what actually came in.</p>
+<pre class="language-javascript"><code class="language-javascript">function divide(a, b) {
+  console.log("got:", a, b);
+  return a / b;
+}
+
+divide(2, 10);
+// prints: got: 2 10
+// returns: 0.2 — probably not what you wanted
+// you passed (2, 10), but the function expects (top, bottom) → meant divide(10, 2)</code></pre>
+
+    <p>If a parameter shows up as <code>undefined</code>, the call didn't pass an argument for it. Check the call site — and consider adding a default in the parameter list.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-12-2-1': `
+    <p>Arguments and parameters are the same idea, named from two sides:</p>
+    <ul>
+      <li>From the function's side, they're <strong>parameters</strong> — slots waiting to be filled.</li>
+      <li>From the caller's side, they're <strong>arguments</strong> — values being handed over.</li>
+    </ul>
+    <p>The same data, just named differently depending on whether you're writing the function or calling it.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-12-2-2': `
+    <p><strong>Confusion: parameters vs arguments</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function add(a, b) {     // a, b are PARAMETERS — defined here
+  return a + b;
+}
+
+add(5, 3);                // 5, 3 are ARGUMENTS — passed here</code></pre>
+    <p>Parameters are written when defining. Arguments are passed when calling.</p>
+
+    <p><strong>Confusion: order matters, names don't</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function divide(top, bottom) {
+  return top / bottom;
+}
+
+divide(10, 2);    // top = 10, bottom = 2 → 5
+divide(2, 10);    // top = 2, bottom = 10 → 0.2
+
+// the variable names you use at the call site don't matter:
+const a = 10, b = 2;
+divide(a, b);     // top = 10 (value of a), bottom = 2 (value of b)</code></pre>
+    <p>JavaScript matches arguments to parameters by position, not name.</p>
+
+    <p><strong>Confusion: passing values vs passing references</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function changeIt(arr) {
+  arr.push(99);
+}
+
+const numbers = [1, 2, 3];
+changeIt(numbers);
+console.log(numbers);
+// prints: [1, 2, 3, 99] — the array WAS modified
+// objects and arrays are passed by reference — changes inside the function affect the original</code></pre>
+
+    <p><strong>Confusion: extra arguments don't error</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function add(a, b) { return a + b; }
+
+add(1, 2, 3, 4);
+// returns 3 — extras are silently ignored, no error
+// JS doesn't check argument count — be careful, typos won't be caught</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-12-2-3': `
+<pre class="language-javascript"><code class="language-javascript">function divide(top, bottom) { return top / bottom; }
+divide(2, 10);
+// returns 0.2 — arguments in wrong order
+// fix: divide(10, 2);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function greet(first, last) {
+  console.log("hi, " + first + " " + last);
+}
+greet("Os");
+// prints: "hi, Os undefined" — missing second argument
+// fix: greet("Os", "Garcia");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function double(n) { return n * 2; }
+double("5");
+// returns "55" — string "5" + string "5", not 10
+// fix: double(5); — pass a number, not a string</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function showUser(name age) { ... }
+// wrong: missing comma between arguments
+// fix: showUser("Os", 30);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function process(data) { ... }
+process();
+// works, but data is undefined inside the body
+// fix: process(actualData); — or set a default: function process(data = []) { ... }</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function logName(name) { console.log(name); }
+logName(getName);
+// passes the FUNCTION getName as the argument, not its return value
+// fix: logName(getName()); — call it to get the name</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-12-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Single value argument
+function square(n) { return n * n; }
+square(5);
+// returns: 25
+
+// Multiple arguments
+function fullName(first, last) { return first + " " + last; }
+fullName("Os", "Garcia");
+// returns: "Os Garcia"
+
+// Argument is an expression — evaluated first
+function double(n) { return n * 2; }
+double(3 + 4);
+// 3 + 4 → 7 → double(7) → returns 14
+
+// Argument is a variable
+const price = 19.99;
+function format(p) { return "$" + p.toFixed(2); }
+format(price);
+// returns: "$19.99"
+
+// Argument is the result of another function
+function getAge() { return 30; }
+function isAdult(age) { return age >= 18; }
+isAdult(getAge());
+// getAge() → 30 → isAdult(30) → returns true
+
+// Argument is an object or array
+function showProduct(product) { return product.name; }
+showProduct({ name: "Hat", price: 20 });
+// returns: "Hat"</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-12-3-1': `
+    <p><strong>Example: passing the event object</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function handleSubmit(event) {
+  event.preventDefault();
+  console.log("form submitted");
+}
+
+form.addEventListener("submit", handleSubmit);
+// the browser calls handleSubmit and passes the event as the argument
+// you didn't pass it manually — the event listener system did</code></pre>
+
+    <p><strong>Example: arguments built dynamically</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function showWelcome(name) {
+  alert("Welcome, " + name + "!");
+}
+
+const userName = nameInput.value;
+showWelcome(userName);
+// the argument comes from a form input — different each time the user types something different</code></pre>
+
+    <p><strong>Example: passing data through callbacks</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function logItem(item) {
+  console.log("processing:", item);
+}
+
+const items = ["a", "b", "c"];
+items.forEach(logItem);
+// forEach calls logItem three times, passing each item as the argument
+// prints:
+//   processing: a
+//   processing: b
+//   processing: c</code></pre>
+
+    <p><strong>Example: arguments mixed from many sources</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function calculateTotal(price, taxRate, discount) {
+  const taxed = price + (price * taxRate);
+  return taxed - discount;
+}
+
+const total = calculateTotal(
+  product.price,         // from a product object
+  REGION_TAX_RATE,       // from a constant
+  user.couponDiscount    // from the user
+);
+// each argument comes from a different place, all combined into one call</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-12-3-2': `
+    <ul>
+      <li><strong>Parameters</strong> → the placeholders that arguments fill</li>
+      <li><strong>Calling a function</strong> → arguments go inside the call's parens</li>
+      <li><strong>Default parameters</strong> → fallback values when no argument is passed</li>
+      <li><strong>Pass by value vs reference</strong> → primitives copy, objects share</li>
+      <li><strong>Expressions</strong> → arguments can be expressions, evaluated before the call</li>
+      <li><strong>Argument order</strong> → matched to parameters by position, not name</li>
+      <li><strong>Function references</strong> → functions can themselves be arguments</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-12-3-3': `
+    <ul>
+      <li>Parameters</li>
+      <li>Default parameters</li>
+      <li>Rest parameters (<code>...args</code>)</li>
+      <li>Spread syntax (<code>...</code>)</li>
+      <li>Pass by value vs pass by reference</li>
+      <li>Function as argument (callbacks)</li>
+      <li>Argument expressions</li>
+    </ul>
+  `,
+
+
+  /* ========================================================= 
+   Sub-lesson: 3.9.14 Functions → return values
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-13-0-0': `
+    <p>A return value is the value a function hands back to whoever called it. You use the <code>return</code> keyword inside the body to send a value out.</p>
+    <p>Think of arguments as data going <em>into</em> the function and the return value as data coming <em>out</em>.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-13-0-1': `
+<pre class="language-javascript"><code class="language-javascript">function square(n) {
+  return n * n;
+}
+
+const result = square(4);
+console.log(result);
+// prints: 16</code></pre>
+    <p>The <code>return</code> statement does two things at once: it ends the function and hands a value back. The caller catches that value and can use it like any other.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-13-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function getDiscountedPrice(price) {
+  const discount = price * 0.10;
+  return price - discount;
+}
+
+const finalPrice = getDiscountedPrice(50);
+console.log(finalPrice);
+// prints: 45
+
+// function              → keyword starting the declaration
+// getDiscountedPrice    → the function name
+// (price)               → parameter
+// const discount        → local variable used inside the body
+// return                → keyword that ends the function and hands a value back
+// price - discount      → the value being returned
+// const finalPrice      → catches the returned value at the call site</code></pre>
+    <p>Without <code>return</code>, the function still runs — but it doesn't hand anything back. The caller would just get <code>undefined</code>.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-13-0-3': `
+    <p><code>return</code> immediately ends the function — anything after it is unreachable:</p>
+<pre class="language-javascript"><code class="language-javascript">function check() {
+  return "done";
+  console.log("never runs");   // dead code — return already exited
+}</code></pre>
+
+    <p>If you don't write <code>return</code>, the function returns <code>undefined</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">function noReturn() {
+  const x = 5;
+}
+
+const result = noReturn();
+console.log(result);
+// prints: undefined</code></pre>
+
+    <p><code>return</code> with no value also gives <code>undefined</code> — useful for ending a function early:</p>
+<pre class="language-javascript"><code class="language-javascript">function processUser(user) {
+  if (!user) return;       // bail out early — returns undefined
+  console.log(user.name);
+}</code></pre>
+
+    <p>You can return any value: a number, string, boolean, object, array, or even another function:</p>
+<pre class="language-javascript"><code class="language-javascript">function getNumber()  { return 42; }
+function getName()    { return "Os"; }
+function getActive()  { return true; }
+function getUser()    { return { name: "Os", age: 30 }; }
+function getItems()   { return [1, 2, 3]; }
+function getGreeter() { return function() { return "hi"; }; }</code></pre>
+
+    <p>A function call is an expression — the call itself produces the returned value, so you can use it inline:</p>
+<pre class="language-javascript"><code class="language-javascript">function add(a, b) { return a + b; }
+
+const total = add(2, 3) * 10;             // 5 * 10 → 50
+console.log("Sum: " + add(2, 3));         // "Sum: 5"
+if (add(2, 3) > 4) { ... }                // 5 > 4 → true</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-13-1-0': `
+    <p>Functions often need to give something back — a calculated number, a formatted string, a fetched user, a yes/no answer. Without a way to send a value out, the work would happen but never reach the rest of your code.</p>
+    <p><code>return</code> is how a function shares its result. The caller catches it and uses it however they need to.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-13-1-1': `
+    <p>Use <code>return</code> when the function produces a value that the rest of your code needs. Use it whenever the function answers a question or transforms data.</p>
+<pre class="language-javascript"><code class="language-javascript">// Functions that compute and return a value
+function calculateTax(price, rate) { return price * rate; }
+function formatPrice(amount)       { return "$" + amount.toFixed(2); }
+function isAdult(age)              { return age >= 18; }
+
+// Used at the call site
+const tax = calculateTax(100, 0.08);
+console.log(formatPrice(tax));
+// prints: "$8.00"
+
+if (isAdult(user.age)) {
+  showAdultContent();
+}</code></pre>
+    <p>If a function only causes side effects (like updating the DOM), it usually doesn't need to return anything. If it produces information, it almost always should.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-13-1-2': `
+    <p>Return values appear anywhere a function produces a result you need to use.</p>
+<pre class="language-javascript"><code class="language-javascript">// Built-in methods all return values
+"hello".toUpperCase();           // returns "HELLO"
+[1, 2, 3].includes(2);           // returns true
+Math.max(5, 9, 3);               // returns 9
+JSON.parse('{"a":1}');           // returns { a: 1 }
+
+// Your own functions
+function getCart() {
+  return JSON.parse(localStorage.getItem("cart")) || [];
+}
+
+function getCartTotal(cart) {
+  return cart.reduce((sum, item) => sum + item.price, 0);
+}
+
+const cart = getCart();
+const total = getCartTotal(cart);
+console.log("Total: $" + total);</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-13-1-3': `
+    <p>If calling a function is like asking someone to do a task, the return value is their answer.</p>
+    <p>You hand them inputs (arguments). They do the work (the body). When they're done, they hand back a result (the return value). If they don't hand anything back, you get <code>undefined</code> — the equivalent of a shrug.</p>
+    <p>The return value is how a function's work flows out into the rest of your code. Without it, the work happens but nobody gets to use the result.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-13-1-4': `
+    <p>A function call is an expression that evaluates to whatever the function returns.</p>
+<pre class="language-javascript"><code class="language-javascript">function add(a, b) { return a + b; }
+
+add(2, 3)
+// JS sees: call add with 2, 3
+// inside: return 2 + 3 → 5
+// the WHOLE expression "add(2, 3)" becomes 5
+// from the outside, calling add(2, 3) is the same as writing 5</code></pre>
+    <p>That's why you can use a function call anywhere you'd use a value: in math, in conditionals, as an argument to another function. The call <em>is</em> a value, once it's been run.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-13-1-5': `
+<pre class="language-javascript"><code class="language-javascript">function getDouble(n) {
+  const result = n * 2;
+  return result;
+}
+
+const x = getDouble(7);
+console.log(x);
+// prints: 14
+
+// JavaScript is thinking:
+// Line 1: see function getDouble → register it. Don't run the body yet.
+// Line 6: see getDouble(7) → look up getDouble, jump into the body, set n = 7.
+// Line 2: run const result = 7 * 2 → result is 14.
+// Line 3: run return result → exit the body, hand 14 back to the caller.
+// Line 6: store 14 in x.
+// Line 7: log x → 14.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-13-2-0': `
+    <p>If you call a function and the result is <code>undefined</code> when you expected something else, the function probably forgot to <code>return</code>.</p>
+<pre class="language-javascript"><code class="language-javascript">function calculateTotal(price, tax) {
+  const total = price + (price * tax);
+  // forgot return!
+}
+
+const t = calculateTotal(50, 0.08);
+console.log(t);
+// prints: undefined — the function ran, but never returned</code></pre>
+
+    <p>The other common bug: <code>return</code> with nothing on it accidentally ending the function early.</p>
+<pre class="language-javascript"><code class="language-javascript">function add(a, b) {
+  return;
+  a + b;
+}
+const sum = add(2, 3);
+// returns undefined — return on its own line ends the function immediately
+// fix: return a + b;</code></pre>
+    <p>If a function should produce a value but doesn't, check that <code>return</code> is there and that the value is on the same line.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-13-2-1': `
+    <p>A function call <em>becomes</em> its return value. Once it runs, the call expression and the returned value are interchangeable in the surrounding code.</p>
+    <p><code>add(2, 3)</code> becomes <code>5</code>. <code>getName()</code> becomes <code>"Os"</code>. <code>isAdult(20)</code> becomes <code>true</code>. The function disappears, the value remains.</p>
+    <p>This is why functions can be combined like building blocks — the output of one becomes the input of the next.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-13-2-2': `
+    <p><strong>Confusion: <code>return</code> vs <code>console.log</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">function showA(n) {
+  console.log(n * 2);    // prints to console, but doesn't hand back
+}
+
+function returnA(n) {
+  return n * 2;          // hands the value back to the caller
+}
+
+const a = showA(5);      // logs 10, but a is undefined
+const b = returnA(5);    // b is 10</code></pre>
+    <p><code>console.log</code> shows. <code>return</code> hands back. They look similar but do completely different jobs.</p>
+
+    <p><strong>Confusion: return ends the function</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function process(value) {
+  if (!value) return;       // bail out early
+  console.log("processing:", value);
+  return "done";            // ends the function with "done"
+  console.log("never runs");  // dead code
+}</code></pre>
+    <p>Whatever line <code>return</code> runs on, the function exits there. Code after it is ignored.</p>
+
+    <p><strong>Confusion: returning undefined vs returning nothing</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function a() { }                  // returns undefined (no return)
+function b() { return; }          // returns undefined (return with no value)
+function c() { return undefined; } // returns undefined (explicit)
+// all three are equivalent — just different ways of saying nothing</code></pre>
+
+    <p><strong>Confusion: must use the returned value</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getName() { return "Os"; }
+
+getName();
+// the function runs and returns "Os", but nothing catches the value — it's discarded
+
+const name = getName();
+// now the value is captured in a variable</code></pre>
+    <p>If you don't store the return value or use it inline, it just disappears.</p>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-13-2-3': `
+<pre class="language-javascript"><code class="language-javascript">function double(n) {
+  n * 2;
+}
+const result = double(5);
+console.log(result);
+// prints: undefined — forgot the return keyword
+// fix: return n * 2;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function add(a, b) {
+  return;
+  a + b;
+}
+// returns undefined — return on its own line ended the function
+// fix: return a + b;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function getValue() {
+  console.log(42);
+}
+const x = getValue();
+console.log(x);
+// prints: 42 then undefined — console.log shows but doesn't return
+// fix: return 42;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function check(value) {
+  if (value > 10) {
+    return "big";
+  }
+  // forgot a return for the else case
+}
+console.log(check(5));
+// prints: undefined — only one branch returns
+// fix: add return "small"; for the other case</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function makeUser(name) {
+  return
+    { name: name };
+}
+const user = makeUser("Os");
+console.log(user);
+// prints: undefined — return ends at the line break, the object is unreachable
+// fix: keep return on the same line as the value
+//      return { name: name };  OR  return (
+//                                    { name: name }
+//                                  );</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function calculate() {
+  return 10;
+  return 20;
+}
+calculate();
+// returns 10 — the second return is dead code, never runs
+// fix: only one return path per case</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-13-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Returning a number
+function add(a, b) { return a + b; }
+add(2, 3);
+// returns: 5
+
+// Returning a string
+function greeting(name) { return "Hello, " + name; }
+greeting("Os");
+// returns: "Hello, Os"
+
+// Returning a boolean
+function isEven(n) { return n % 2 === 0; }
+isEven(4);
+// returns: true
+
+// Returning an object
+function createUser(name, age) {
+  return { name: name, age: age };
+}
+createUser("Os", 30);
+// returns: { name: "Os", age: 30 }
+
+// Returning early
+function validate(value) {
+  if (!value) return false;
+  if (value.length < 3) return false;
+  return true;
+}
+
+// Using the returned value inline
+function double(n) { return n * 2; }
+console.log(double(5) + double(10));
+// prints: 30  (10 + 20)</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-13-3-1': `
+    <p><strong>Example: returning a calculated value</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getCartTotal(cart) {
+  return cart.reduce((sum, item) => sum + item.price, 0);
+}
+
+const cart = [{ price: 10 }, { price: 20 }, { price: 30 }];
+const total = getCartTotal(cart);
+console.log("Total: $" + total);
+// prints: "Total: $60"</code></pre>
+
+    <p><strong>Example: returning true/false from a check</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function isValidEmail(email) {
+  return email.includes("@") && email.length > 3;
+}
+
+if (isValidEmail(emailInput.value)) {
+  submitForm();
+} else {
+  showError("Invalid email");
+}
+// the return value drives the if/else decision</code></pre>
+
+    <p><strong>Example: returning a built object</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function buildProduct(name, price) {
+  return {
+    name: name,
+    price: price,
+    formatted: "$" + price.toFixed(2),
+  };
+}
+
+const product = buildProduct("Hat", 19.99);
+console.log(product.formatted);
+// prints: "$19.99"</code></pre>
+
+    <p><strong>Example: chaining calls together</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getName() { return "  Os  "; }
+
+const cleanName = getName().trim().toUpperCase();
+console.log(cleanName);
+// prints: "OS"
+// each method returns a string, the next method runs on that returned value</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-13-3-2': `
+    <ul>
+      <li><strong>Function body</strong> → return is a statement inside the body</li>
+      <li><strong>Calling a function</strong> → the call expression evaluates to the return value</li>
+      <li><strong>Arguments</strong> → data flowing in; return values are data flowing out</li>
+      <li><strong>Console.log vs return</strong> → showing vs handing back</li>
+      <li><strong>Early return</strong> → using <code>return</code> to bail out of a function</li>
+      <li><strong>Implicit return</strong> → arrow functions can return without the keyword</li>
+      <li><strong>Chaining</strong> → calling a method on a returned value</li>
+      <li><strong>Composition</strong> → using one function's return as another's argument</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-13-3-3': `
+    <ul>
+      <li><code>return</code> keyword</li>
+      <li><code>console.log()</code> vs return</li>
+      <li>Early return pattern</li>
+      <li>Implicit return (arrow functions)</li>
+      <li>Function composition</li>
+      <li>Chained method calls</li>
+      <li>Dead code</li>
+      <li>Returning <code>undefined</code></li>
+    </ul>
+  `,
+
 });
