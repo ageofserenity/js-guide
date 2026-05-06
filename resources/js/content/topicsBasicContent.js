@@ -18867,4 +18867,2342 @@ console.log(roundToTwo(price));
     </ul>
   `,
 
+
+  /* ========================================================= 
+   Sub-lesson: 3.9.22 Functions → functions receiving arrays
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-21-0-0': `
+    <p>A function "receives" an array when you pass an array in as an argument. Inside the function, the parameter holds the entire array — and the body can read items from it, loop over it, transform it, or measure its length.</p>
+    <p>Arrays are how you hand a function a <em>list</em> of things — products, scores, names, items in a cart — instead of one value at a time.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-21-0-1': `
+<pre class="language-javascript"><code class="language-javascript">function countItems(list) {
+  return list.length;
+}
+
+console.log(countItems(["apple", "banana", "cherry"]));
+console.log(countItems([1, 2, 3, 4, 5]));
+// prints:
+//   3
+//   5</code></pre>
+    <p>The parameter <code>list</code> holds the entire array. Inside the body, you can use <code>.length</code>, indexing, loops, and array methods on it.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-21-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function summarize(scores) {
+  const total = scores.reduce((sum, n) => sum + n, 0);
+  const average = total / scores.length;
+  return "Average: " + average;
+}
+
+console.log(summarize([80, 90, 100]));
+// prints: "Average: 90"
+
+// scores               → array parameter — holds the whole list
+// scores.reduce(...)   → array method called on the parameter
+// scores.length        → number of items in the array
+// total / scores.length → math using both the running total and the array's size
+// return ...           → the resulting string is handed back</code></pre>
+    <p>The function gets the whole array. Methods like <code>reduce</code>, properties like <code>length</code>, and indexing all work the same as on any other array variable.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-21-0-3': `
+    <p>Array arguments are written with square brackets:</p>
+<pre class="language-javascript"><code class="language-javascript">getMax([3, 7, 1]);              // pass an array literal directly
+const numbers = [3, 7, 1];
+getMax(numbers);                  // pass a variable that holds an array
+// both pass the same array into getMax</code></pre>
+
+    <p>The parameter is a regular variable holding an array — all array operations work:</p>
+<pre class="language-javascript"><code class="language-javascript">function inspect(items) {
+  console.log("length:", items.length);
+  console.log("first:", items[0]);
+  console.log("last:", items[items.length - 1]);
+  console.log("includes 'b':", items.includes("b"));
+  console.log("joined:", items.join(", "));
+}
+
+inspect(["a", "b", "c"]);
+// prints:
+//   length: 3
+//   first: a
+//   last: c
+//   includes 'b': true
+//   joined: a, b, c</code></pre>
+
+    <p>Arrays are passed by <strong>reference</strong> — modifying the parameter modifies the original:</p>
+<pre class="language-javascript"><code class="language-javascript">function addItem(list) {
+  list.push("new");          // modifies the same array the caller passed in
+}
+
+const items = ["a", "b"];
+addItem(items);
+console.log(items);
+// prints: ["a", "b", "new"] — the original was changed!</code></pre>
+
+    <p>Reassigning the parameter does <strong>not</strong> affect the original:</p>
+<pre class="language-javascript"><code class="language-javascript">function reset(list) {
+  list = [];          // reassigns the local parameter, doesn't touch the original
+}
+
+const items = ["a", "b"];
+reset(items);
+console.log(items);
+// prints: ["a", "b"] — unchanged</code></pre>
+
+    <p>If you want to avoid mutating the original, copy it first or use a non-mutating method:</p>
+<pre class="language-javascript"><code class="language-javascript">function withExtra(list) {
+  return [...list, "new"];   // returns a NEW array, original is untouched
+}
+
+const items = ["a", "b"];
+const result = withExtra(items);
+console.log(items);
+console.log(result);
+// prints:
+//   ["a", "b"]
+//   ["a", "b", "new"]</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-21-1-0': `
+    <p>A lot of real work involves a list of things — products, todos, scores, search results, cart items. Without arrays as parameters, you'd have to handle items one by one or pile them into separate variables.</p>
+    <p>Functions that receive arrays let you wrap list-processing logic in a name. Compute totals, filter for matches, build summaries, render lists — all with one function that works for any list of any size.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-21-1-1': `
+    <p>Use array parameters whenever a function needs to operate on a collection — counting, summing, filtering, transforming, finding, building.</p>
+<pre class="language-javascript"><code class="language-javascript">// Sum a list of numbers
+function total(prices) {
+  return prices.reduce((sum, p) => sum + p, 0);
+}
+total([10, 20, 30]);
+// returns: 60
+
+// Filter a list
+function inStock(products) {
+  return products.filter(p => p.stock > 0);
+}
+inStock([{ name: "Hat", stock: 0 }, { name: "Shirt", stock: 5 }]);
+// returns: [{ name: "Shirt", stock: 5 }]
+
+// Find one item
+function findByName(items, target) {
+  return items.find(item => item.name === target);
+}
+findByName([{ name: "Os" }, { name: "Sam" }], "Sam");
+// returns: { name: "Sam" }</code></pre>
+    <p>Each one wraps a single list operation. The function name describes what the operation produces.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-21-1-2': `
+    <p>Array parameters show up everywhere a list is involved — shopping carts, search results, form options, tables, charts.</p>
+<pre class="language-javascript"><code class="language-javascript">// Cart math
+function getCartTotal(items) {
+  return items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+}
+
+// Search
+function searchProducts(products, query) {
+  const q = query.toLowerCase();
+  return products.filter(p => p.name.toLowerCase().includes(q));
+}
+
+// UI rendering
+function renderList(items) {
+  for (const item of items) {
+    const li = document.createElement("li");
+    li.textContent = item;
+    list.appendChild(li);
+  }
+}
+
+// Average calculation
+function averageScore(scores) {
+  if (scores.length === 0) return 0;
+  return scores.reduce((sum, s) => sum + s, 0) / scores.length;
+}
+
+// Removing duplicates
+function unique(values) {
+  return [...new Set(values)];
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-21-1-3': `
+    <p>A function that receives an array is a function with a slot waiting for a whole list. When you call it, you hand over the list, and the function does whatever its job is — counts the items, picks one out, builds a summary, transforms each one.</p>
+    <p>Inside the function, the parameter is just a normal array. Same indexing, same length, same methods. The only thing that's different is where the array came from.</p>
+    <p>One thing to remember: when you pass an array, you're passing the actual array — not a copy. If the function changes the array (with <code>push</code>, <code>splice</code>, etc.), the change is visible to the caller.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-21-1-4': `
+    <p>The parameter is the slot. The argument is the array. The function and the caller share the same array — both can see and change it.</p>
+<pre class="language-javascript"><code class="language-javascript">const items = [1, 2, 3];
+//                ↓ shared
+function modify(list) {
+  list.push(4);     // modifies the SAME array
+}
+modify(items);
+console.log(items);
+// prints: [1, 2, 3, 4]
+// items and list both pointed at the same array — pushing affected both</code></pre>
+    <p>This is "pass by reference" — the function gets a reference to the same array, not a separate copy.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-21-1-5': `
+<pre class="language-javascript"><code class="language-javascript">function biggest(numbers) {
+  let max = numbers[0];
+  for (const n of numbers) {
+    if (n > max) max = n;
+  }
+  return max;
+}
+
+const result = biggest([5, 12, 3, 9]);
+console.log(result);
+// prints: 12
+
+// JavaScript is thinking:
+// Line 1: register biggest. Don't run the body yet.
+// Line 9: see biggest([5, 12, 3, 9]) → call it. Local scope: numbers = [5, 12, 3, 9].
+// Line 2: max = numbers[0] → max is 5.
+// Line 3-5: loop over [5, 12, 3, 9] → check each. 5 not > 5. 12 > 5 → max becomes 12. 3 not > 12. 9 not > 12.
+// Line 6: return max → 12. Local scope destroyed.
+// Line 9: store 12 in result.
+// Line 10: log result → 12.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-21-2-0': `
+    <p>If passing an array changes it in unexpected ways, the function is mutating it. Check for <code>push</code>, <code>pop</code>, <code>shift</code>, <code>unshift</code>, <code>splice</code>, <code>sort</code>, or <code>reverse</code> — those modify in place.</p>
+<pre class="language-javascript"><code class="language-javascript">function getSorted(list) {
+  return list.sort();           // sort modifies the original AND returns it
+}
+
+const items = [3, 1, 2];
+const sorted = getSorted(items);
+console.log(items);
+console.log(sorted);
+// prints:
+//   [1, 2, 3]
+//   [1, 2, 3]
+// the original was mutated!
+// fix: copy first → return [...list].sort();</code></pre>
+
+    <p>If <code>arr.length</code> is unexpectedly 0 or undefined, log the parameter to confirm an array was actually passed:</p>
+<pre class="language-javascript"><code class="language-javascript">function process(items) {
+  console.log("got:", items, Array.isArray(items));
+  // ...
+}
+
+process();              // prints: got: undefined false
+process("hello");       // prints: got: "hello" false — string, not array
+process([1, 2]);        // prints: got: [1, 2] true</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-21-2-1': `
+    <p>An array parameter is the same array the caller has — not a copy. The function and the caller are both holding references that point at the same list in memory.</p>
+    <p>That's why mutating methods (<code>push</code>, <code>splice</code>, etc.) leak changes back to the caller. And why returning a new array (with <code>map</code>, <code>filter</code>, spread) is the safe way to "modify" without surprises.</p>
+    <p>Once you internalize this, choosing between mutating and non-mutating methods stops being arbitrary — it's about whether you want the original to change.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-21-2-2': `
+    <p><strong>Confusion: arrays are shared, not copied</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function addZero(list) {
+  list.push(0);
+}
+
+const nums = [1, 2, 3];
+addZero(nums);
+console.log(nums);
+// prints: [1, 2, 3, 0] — the original was changed
+// in contrast, primitives (numbers, strings) are copied:
+function addOne(n) { n = n + 1; }
+let x = 5;
+addOne(x);
+console.log(x);
+// prints: 5 — primitive was copied, original untouched</code></pre>
+
+    <p><strong>Confusion: mutating vs non-mutating methods</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Mutating — changes the original
+function badRemoveFirst(list) {
+  list.shift();         // modifies original
+  return list;
+}
+
+// Non-mutating — returns a new array
+function goodRemoveFirst(list) {
+  return list.slice(1);  // returns a new array, original untouched
+}</code></pre>
+
+    <p><strong>Confusion: reassigning the parameter</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function emptyOut(list) {
+  list = [];        // local parameter now points to a new array
+                    // but the original outside is unchanged
+}
+
+const items = [1, 2, 3];
+emptyOut(items);
+console.log(items);
+// prints: [1, 2, 3] — unchanged
+// note: list.length = 0 WOULD have changed the original</code></pre>
+
+    <p><strong>Confusion: empty array isn't undefined</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function describe(list) {
+  if (!list) return "no list";
+  if (list.length === 0) return "empty";
+  return "has items";
+}
+
+describe();          // "no list" — undefined is falsy
+describe([]);        // "empty" — empty array is TRUTHY (despite length 0)
+describe([1, 2]);    // "has items"
+// to check for empty, look at length, not truthiness</code></pre>
+
+    <p><strong>Confusion: passing array elements vs the array</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function addThree(a, b, c) { return a + b + c; }
+
+const nums = [1, 2, 3];
+addThree(nums);          // wrong — passes the whole array as a, b and c are undefined
+addThree(...nums);       // correct — spread expands the array into separate arguments</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-21-2-3': `
+<pre class="language-javascript"><code class="language-javascript">function getSorted(list) {
+  return list.sort();
+}
+const original = [3, 1, 2];
+getSorted(original);
+console.log(original);
+// prints: [1, 2, 3] — original was mutated by sort
+// fix: return [...list].sort(); — copy first</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function average(scores) {
+  const sum = scores.reduce((a, b) => a + b);
+  return sum / scores.length;
+}
+average([]);
+// returns: NaN — empty array breaks the math
+// fix: if (scores.length === 0) return 0; at the top</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function first(items) {
+  return items[1];
+}
+first(["a", "b", "c"]);
+// returns: "b" — arrays are 0-indexed, not 1-indexed
+// fix: items[0] for the first item</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function describe(list) {
+  if (list.length > 0) return "has items";
+  return "empty";
+}
+describe();
+// TypeError — undefined doesn't have .length
+// fix: if (!list) return "no list"; before checking length</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function clean(list) {
+  for (let i = 0; i < list.length; i++) {
+    if (list[i] === null) list.splice(i, 1);
+  }
+}
+clean([1, null, null, 2]);
+// bug: splice changes the array as you iterate, indices shift
+// fix: filter and return a new array → return list.filter(x => x !== null);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function combine(a, b) {
+  return a + b;
+}
+combine([1, 2], [3, 4]);
+// returns: "1,23,4" — + on arrays converts them to strings and concatenates
+// fix: return [...a, ...b]; — spread to build a new array</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-21-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Counting items
+function howMany(list) {
+  return list.length;
+}
+howMany([10, 20, 30]);
+// returns: 3
+
+// Summing numbers
+function sumAll(numbers) {
+  return numbers.reduce((sum, n) => sum + n, 0);
+}
+sumAll([1, 2, 3, 4]);
+// returns: 10
+
+// Finding the maximum
+function highest(numbers) {
+  return Math.max(...numbers);
+}
+highest([5, 12, 3, 9]);
+// returns: 12
+
+// Filtering
+function evens(numbers) {
+  return numbers.filter(n => n % 2 === 0);
+}
+evens([1, 2, 3, 4, 5, 6]);
+// returns: [2, 4, 6]
+
+// Joining into a string
+function listOut(items) {
+  return items.join(", ");
+}
+listOut(["apple", "banana", "cherry"]);
+// returns: "apple, banana, cherry"</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-21-3-1': `
+    <p><strong>Example: cart total</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getCartTotal(items) {
+  return items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+}
+
+const cart = [
+  { name: "Hat", price: 20, quantity: 2 },
+  { name: "Shirt", price: 30, quantity: 1 },
+];
+
+console.log("Total: $" + getCartTotal(cart));
+// prints: "Total: $70"</code></pre>
+
+    <p><strong>Example: filter products by category</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function byCategory(products, category) {
+  return products.filter(p => p.category === category);
+}
+
+const products = [
+  { name: "Hat", category: "clothing" },
+  { name: "Apple", category: "food" },
+  { name: "Shirt", category: "clothing" },
+];
+
+console.log(byCategory(products, "clothing"));
+// prints: [{ name: "Hat", ... }, { name: "Shirt", ... }]</code></pre>
+
+    <p><strong>Example: rendering a list to the page</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function renderTodos(todos) {
+  todoList.innerHTML = "";
+  for (const todo of todos) {
+    const li = document.createElement("li");
+    li.textContent = todo.text;
+    todoList.appendChild(li);
+  }
+}
+
+renderTodos([
+  { text: "Buy milk" },
+  { text: "Walk the dog" },
+  { text: "Pay bills" },
+]);
+// builds three <li> elements, one per todo</code></pre>
+
+    <p><strong>Example: removing duplicates</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function unique(values) {
+  return [...new Set(values)];
+}
+
+console.log(unique([1, 2, 2, 3, 3, 3, 4]));
+// prints: [1, 2, 3, 4]
+// Set drops duplicates, spread turns it back into an array</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-21-3-2': `
+    <ul>
+      <li><strong>Arrays</strong> → the data type the function operates on</li>
+      <li><strong>Array methods</strong> → <code>.map()</code>, <code>.filter()</code>, <code>.reduce()</code>, <code>.find()</code>, etc.</li>
+      <li><strong>Mutating vs non-mutating methods</strong> → some change the original, some return a new array</li>
+      <li><strong>Pass by reference</strong> → arrays are shared between caller and function</li>
+      <li><strong>Spread syntax</strong> → <code>[...arr]</code> for copying or expanding</li>
+      <li><strong>Loops</strong> → <code>for</code>, <code>for...of</code>, <code>forEach</code> for processing each item</li>
+      <li><strong>Indexing</strong> → <code>arr[0]</code> for accessing specific items</li>
+      <li><strong>Length property</strong> → <code>arr.length</code> for counting items</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-21-3-3': `
+    <ul>
+      <li>Arrays</li>
+      <li>Array methods (<code>map</code>, <code>filter</code>, <code>reduce</code>)</li>
+      <li>Mutating array methods (<code>push</code>, <code>splice</code>, <code>sort</code>)</li>
+      <li>Pass by reference vs pass by value</li>
+      <li>Spread syntax</li>
+      <li>Loops</li>
+      <li>Empty array handling</li>
+      <li><code>Array.isArray()</code></li>
+    </ul>
+  `,
+
+
+  /* ========================================================= 
+   Sub-lesson: 3.9.23 Functions → functions receiving objects
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-22-0-0': `
+    <p>A function "receives" an object when you pass an object in as an argument. Inside the function, the parameter holds the entire object — and the body can read its properties, modify them, or build something new from them.</p>
+    <p>Objects are how you bundle related data together. Instead of passing five separate values for a user (name, age, email, etc.), you pass one object that contains all of them.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-22-0-1': `
+<pre class="language-javascript"><code class="language-javascript">function describePet(pet) {
+  return pet.name + " is a " + pet.species;
+}
+
+console.log(describePet({ name: "Rex", species: "dog" }));
+console.log(describePet({ name: "Whiskers", species: "cat" }));
+// prints:
+//   Rex is a dog
+//   Whiskers is a cat</code></pre>
+    <p>The parameter <code>pet</code> holds the whole object. Inside the body, you read properties with dot notation (<code>pet.name</code>) or bracket notation (<code>pet["name"]</code>).</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-22-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function buildOrder(customer) {
+  const greeting = "Hi " + customer.name;
+  const total = customer.items * customer.price;
+  return greeting + ", your total is $" + total;
+}
+
+const order = buildOrder({ name: "Os", items: 3, price: 12 });
+console.log(order);
+// prints: "Hi Os, your total is $36"
+
+// customer            → object parameter — holds the whole bundle
+// customer.name       → reads the "name" property
+// customer.items      → reads the "items" property
+// customer.price      → reads the "price" property
+// the function pulls out the properties it needs and uses them in calculations</code></pre>
+    <p>The function receives the whole object and digs into it for whatever properties it needs. The caller doesn't have to remember the order of arguments — the property names tell you what's what.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-22-0-3': `
+    <p>Object arguments are written with curly braces:</p>
+<pre class="language-javascript"><code class="language-javascript">describePet({ name: "Rex", species: "dog" });    // pass an object literal
+const pet = { name: "Rex", species: "dog" };
+describePet(pet);                                  // pass a variable that holds an object</code></pre>
+
+    <p>Read properties with dot notation or bracket notation:</p>
+<pre class="language-javascript"><code class="language-javascript">function show(user) {
+  console.log(user.name);          // dot notation
+  console.log(user["email"]);      // bracket notation
+  
+  const key = "age";
+  console.log(user[key]);          // bracket notation with a variable
+}
+
+show({ name: "Os", email: "os@x.com", age: 30 });
+// prints:
+//   Os
+//   os@x.com
+//   30</code></pre>
+
+    <p>Objects are passed by <strong>reference</strong> — modifying the parameter modifies the original:</p>
+<pre class="language-javascript"><code class="language-javascript">function activate(user) {
+  user.active = true;     // modifies the same object the caller passed in
+}
+
+const me = { name: "Os", active: false };
+activate(me);
+console.log(me);
+// prints: { name: "Os", active: true } — the original was changed</code></pre>
+
+    <p>Reassigning the parameter does <strong>not</strong> affect the original:</p>
+<pre class="language-javascript"><code class="language-javascript">function reset(user) {
+  user = {};        // reassigns the local parameter, doesn't touch the original
+}
+
+const me = { name: "Os" };
+reset(me);
+console.log(me);
+// prints: { name: "Os" } — unchanged</code></pre>
+
+    <p>You can destructure parameters to pull out properties directly:</p>
+<pre class="language-javascript"><code class="language-javascript">function describe({ name, species }) {       // destructured parameter
+  return name + " is a " + species;
+}
+
+describe({ name: "Rex", species: "dog" });
+// returns: "Rex is a dog"
+// the function pulls "name" and "species" out of the object automatically</code></pre>
+
+    <p>Missing properties become <code>undefined</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">function describePet(pet) {
+  return pet.name + " is " + pet.age + " years old";
+}
+
+describePet({ name: "Rex" });
+// returns: "Rex is undefined years old" — age wasn't set
+// fix: add a fallback → pet.age || "?"</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-22-1-0': `
+    <p>When a function needs a lot of related information — a user with a name, email, age, and role — passing each piece as a separate argument gets unwieldy. The order matters, and you have to remember which is which.</p>
+    <p>Objects bundle related data into one named package. The function receives one object, and the property names describe each piece. Easier to call, easier to read, easier to extend.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-22-1-1': `
+    <p>Use an object parameter when a function needs several related pieces of information that belong together — or when you have so many parameters that order is hard to remember.</p>
+<pre class="language-javascript"><code class="language-javascript">// Hard to read — many positional arguments
+function createUser(name, age, email, role, isActive) {
+  // ...
+}
+createUser("Os", 30, "os@x.com", "admin", true);
+
+// Easier — one object with named fields
+function createUser(user) {
+  // ...
+}
+createUser({
+  name: "Os",
+  age: 30,
+  email: "os@x.com",
+  role: "admin",
+  isActive: true,
+});</code></pre>
+    <p>The second version is self-documenting. The reader doesn't have to remember which position is the email and which is the role — the keys spell it out.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-22-1-2': `
+    <p>Object parameters are common anywhere data has structure — users, products, events, configs, API payloads.</p>
+<pre class="language-javascript"><code class="language-javascript">// User profile rendering
+function renderProfile(user) {
+  nameEl.textContent = user.name;
+  emailEl.textContent = user.email;
+}
+
+// Building a card from a product
+function buildCard(product) {
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = "<h3>" + product.name + "</h3><p>$" + product.price + "</p>";
+  return card;
+}
+
+// Event handlers receiving the event object
+function handleClick(event) {
+  event.preventDefault();
+  console.log(event.target);
+}
+
+// Configuring something with options
+function fetchData(options) {
+  const url = options.url;
+  const method = options.method || "GET";
+  return fetch(url, { method });
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-22-1-3': `
+    <p>An object is a bundle of labeled facts — name, age, email, all packaged together. Passing an object to a function is like handing someone a folder with everything they need to do the job.</p>
+    <p>The function opens the folder, picks out the labels it cares about, and uses what it finds. The caller didn't have to lay out the contents in a specific order — the labels make it clear which is which.</p>
+    <p>One thing to remember: just like with arrays, the function gets the same object — not a copy. Changing properties of the parameter changes the original.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-22-1-4': `
+    <p>The parameter is the slot. The argument is the object. The function and the caller share the same object — both can see and change it.</p>
+<pre class="language-javascript"><code class="language-javascript">const me = { name: "Os", active: false };
+//             ↓ shared
+function activate(user) {
+  user.active = true;     // modifies the SAME object
+}
+
+activate(me);
+console.log(me);
+// prints: { name: "Os", active: true }
+// me and user both pointed at the same object — changing a property affected both</code></pre>
+    <p>Like arrays, objects are passed by reference. The function gets a reference to the same object, not a separate copy.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-22-1-5': `
+<pre class="language-javascript"><code class="language-javascript">function getFullName(person) {
+  const first = person.first;
+  const last = person.last;
+  return first + " " + last;
+}
+
+const result = getFullName({ first: "Os", last: "Garcia" });
+console.log(result);
+// prints: "Os Garcia"
+
+// JavaScript is thinking:
+// Line 1: register getFullName. Don't run the body yet.
+// Line 7: see getFullName({ first: "Os", last: "Garcia" }) → call it. Local scope: person = the passed-in object.
+// Line 2: const first = person.first → look up the "first" property → "Os". Store in local first.
+// Line 3: const last = person.last → look up "last" → "Garcia". Store in local last.
+// Line 4: return first + " " + last → "Os Garcia". Local scope destroyed.
+// Line 7: store "Os Garcia" in result.
+// Line 8: log result → "Os Garcia".</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-22-2-0': `
+    <p>If you read a property and get <code>undefined</code>, the object either doesn't have that property or the property name is misspelled. Log the whole object to see what's actually there.</p>
+<pre class="language-javascript"><code class="language-javascript">function showEmail(user) {
+  console.log("user:", user);
+  console.log("email:", user.email);
+}
+
+showEmail({ name: "Os", emial: "os@x.com" });
+// prints:
+//   user: { name: 'Os', emial: 'os@x.com' }
+//   email: undefined
+// the object has "emial" — typo. Property names are case- and spelling-sensitive.</code></pre>
+
+    <p>If your function unexpectedly mutates the caller's data, check whether you're reassigning properties (<code>user.name = ...</code>) on the parameter. Returning a new object is the safe alternative.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-22-2-1': `
+    <p>An object parameter is the same object the caller has — not a copy. The function and the caller are both holding references to the same object in memory.</p>
+    <p>That's why setting <code>user.active = true</code> inside the function leaks back to the caller. And why returning a new object (with spread, <code>Object.assign</code>) is the safe way to "modify" without surprises.</p>
+    <p>Same rule as arrays: structures (objects and arrays) are passed by reference. Primitives (numbers, strings, booleans) are passed by value.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-22-2-2': `
+    <p><strong>Confusion: objects are shared, not copied</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function activate(user) {
+  user.active = true;
+}
+
+const me = { name: "Os", active: false };
+activate(me);
+console.log(me);
+// prints: { name: "Os", active: true } — original was changed
+// in contrast, primitives are copied:
+function setName(name) { name = "X"; }
+let n = "Os";
+setName(n);
+console.log(n);
+// prints: "Os" — unchanged</code></pre>
+
+    <p><strong>Confusion: dot vs bracket notation</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function get(user, field) {
+  return user.field;       // wrong — looks for a property literally called "field"
+  return user[field];      // correct — looks up the property whose name is in the variable
+}
+
+get({ name: "Os" }, "name");
+// without brackets: returns undefined
+// with brackets: returns "Os"</code></pre>
+
+    <p><strong>Confusion: missing property is undefined, not an error</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function describe(pet) {
+  return pet.name + " is " + pet.age;
+}
+
+describe({ name: "Rex" });
+// returns: "Rex is undefined"
+// JS doesn't error when reading a missing property — it just gives undefined
+// fix: provide a fallback → pet.age || "unknown"</code></pre>
+
+    <p><strong>Confusion: returning a new object vs modifying the parameter</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Mutates — modifies the caller's object
+function badRename(user, newName) {
+  user.name = newName;
+}
+
+// Pure — returns a new object, original untouched
+function goodRename(user, newName) {
+  return { ...user, name: newName };
+}</code></pre>
+
+    <p><strong>Confusion: destructuring</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function withProperty(user) {
+  return user.name + " is " + user.age;
+}
+
+function withDestructuring({ name, age }) {
+  return name + " is " + age;
+}
+
+const me = { name: "Os", age: 30 };
+withProperty(me);          // "Os is 30"
+withDestructuring(me);     // "Os is 30"
+// destructuring pulls properties out at call time — same effect, less typing inside the body</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-22-2-3': `
+<pre class="language-javascript"><code class="language-javascript">function show(user) {
+  console.log(user.Name);
+}
+show({ name: "Os" });
+// prints: undefined — property names are case-sensitive
+// fix: user.name (lowercase) to match the actual key</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function get(obj, field) {
+  return obj.field;
+}
+get({ name: "Os" }, "name");
+// returns: undefined — looks for a literal property called "field"
+// fix: return obj[field];</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function clearUser(user) {
+  user = null;
+}
+const me = { name: "Os" };
+clearUser(me);
+console.log(me);
+// prints: { name: "Os" } — reassigning the parameter doesn't affect the original
+// fix: delete user.name; — modify properties, not the variable itself</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function describe(pet) {
+  return pet.name.toUpperCase();
+}
+describe();
+// TypeError — undefined doesn't have .name
+// fix: check first → if (!pet) return "";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function update(user) {
+  user.name = user.name.trim();
+}
+const me = { name: "  Os  " };
+update(me);
+// works, but mutates the caller's object — they might not want that
+// fix: return { ...user, name: user.name.trim() };</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function combine(a, b) {
+  return a + b;
+}
+combine({ x: 1 }, { y: 2 });
+// returns: "[object Object][object Object]" — + on objects is not what you want
+// fix: return { ...a, ...b }; — spread to merge into a new object</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-22-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Reading a property
+function greet(user) {
+  return "Hello, " + user.name;
+}
+greet({ name: "Os" });
+// returns: "Hello, Os"
+
+// Combining two properties
+function fullName(person) {
+  return person.first + " " + person.last;
+}
+fullName({ first: "Os", last: "Garcia" });
+// returns: "Os Garcia"
+
+// Returning a derived object
+function makeCard(product) {
+  return {
+    title: product.name,
+    label: "$" + product.price.toFixed(2),
+  };
+}
+makeCard({ name: "Hat", price: 19.99 });
+// returns: { title: "Hat", label: "$19.99" }
+
+// Using destructuring
+function describe({ name, age }) {
+  return name + " is " + age + " years old";
+}
+describe({ name: "Os", age: 30 });
+// returns: "Os is 30 years old"
+
+// Default values for missing properties
+function welcome({ name = "friend" } = {}) {
+  return "Hello, " + name;
+}
+welcome();                    // "Hello, friend"
+welcome({ name: "Os" });      // "Hello, Os"</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-22-3-1': `
+    <p><strong>Example: rendering a user profile</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function renderProfile(user) {
+  nameEl.textContent = user.name;
+  emailEl.textContent = user.email;
+  avatarEl.src = user.avatar;
+}
+
+renderProfile({
+  name: "Os",
+  email: "os@example.com",
+  avatar: "/images/os.jpg",
+});
+// updates all three DOM elements from one object</code></pre>
+
+    <p><strong>Example: building HTML from a product</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function buildProductCard(product) {
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = \`
+    <h3>\${product.name}</h3>
+    <p>$\${product.price.toFixed(2)}</p>
+    <p>Stock: \${product.stock}</p>
+  \`;
+  return card;
+}
+
+const card = buildProductCard({
+  name: "Hat",
+  price: 19.99,
+  stock: 12,
+});
+document.body.appendChild(card);</code></pre>
+
+    <p><strong>Example: function with options</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function showNotification({ title, body, duration = 3000 }) {
+  const note = document.createElement("div");
+  note.innerHTML = "<h4>" + title + "</h4><p>" + body + "</p>";
+  document.body.appendChild(note);
+  setTimeout(() => note.remove(), duration);
+}
+
+showNotification({ title: "Saved!", body: "Your changes are saved." });
+showNotification({ title: "Error", body: "Try again", duration: 5000 });
+// destructured parameters with defaults — flexible and self-documenting</code></pre>
+
+    <p><strong>Example: returning a non-mutating update</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function withDiscount(product, percent) {
+  return {
+    ...product,
+    price: product.price * (1 - percent / 100),
+  };
+}
+
+const original = { name: "Hat", price: 100 };
+const sale = withDiscount(original, 20);
+console.log(original.price);
+console.log(sale.price);
+// prints:
+//   100
+//   80
+// the original is untouched — sale is a new object</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-22-3-2': `
+    <ul>
+      <li><strong>Objects</strong> → the data type the function operates on</li>
+      <li><strong>Properties</strong> → individual fields read with dot or bracket notation</li>
+      <li><strong>Destructuring</strong> → pulling properties out of the parameter directly</li>
+      <li><strong>Pass by reference</strong> → objects are shared between caller and function</li>
+      <li><strong>Spread syntax</strong> → <code>{ ...obj }</code> for copying or merging</li>
+      <li><strong>Default values</strong> → fallbacks for missing properties</li>
+      <li><strong>Mutation vs immutability</strong> → modify in place or return a new object</li>
+      <li><strong>Event objects</strong> → DOM events are objects passed to handlers</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-22-3-3': `
+    <ul>
+      <li>Objects</li>
+      <li>Object properties (dot/bracket notation)</li>
+      <li>Destructuring</li>
+      <li>Pass by reference vs pass by value</li>
+      <li>Spread syntax</li>
+      <li>Default parameters</li>
+      <li>Object mutation</li>
+      <li>Optional chaining (<code>?.</code>)</li>
+    </ul>
+  `,
+
+
+  /* ========================================================= 
+   Sub-lesson: 3.9.24 Functions → functions inside event listeners
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-23-0-0': `
+    <p>An event listener is a way to register a function to run when something happens — a click, a keypress, a form submission. The function you provide is called the <strong>handler</strong> or <strong>callback</strong>, and the browser runs it for you when the event fires.</p>
+    <p>You don't call this function yourself. You hand it over, and the browser calls it later, every time the event happens.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-23-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const button = document.querySelector("#save");
+
+button.addEventListener("click", function() {
+  console.log("button clicked!");
+});
+
+// every time the button is clicked, "button clicked!" is logged
+// the function is registered now, but it doesn't run until a click happens</code></pre>
+    <p><code>addEventListener</code> takes two arguments: the event name (a string) and the function to run. The function is the second argument — it's a callback waiting for the event.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-23-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const button = document.querySelector("#submit");
+
+function handleClick(event) {
+  console.log("clicked at", event.clientX);
+}
+
+button.addEventListener("click", handleClick);
+
+// const button                → the DOM element to watch
+// function handleClick        → the function to run when clicked
+// event                       → parameter the browser passes — info about the event
+// addEventListener            → method that registers the listener
+// "click"                     → the event name
+// handleClick                 → reference to the function (no parens — don't call yet)</code></pre>
+    <p>The function isn't called when you register it. The browser stores it and calls it itself, passing the event object each time.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-23-0-3': `
+    <p>Pass the function as a <strong>reference</strong>, not a call:</p>
+<pre class="language-javascript"><code class="language-javascript">button.addEventListener("click", handleClick);    // correct — pass the function
+button.addEventListener("click", handleClick());  // wrong — calls handleClick immediately
+
+// the second one runs handleClick once on this line, then passes the result (probably undefined)
+// to addEventListener, so the click never fires anything</code></pre>
+
+    <p>The handler can be a named function, an inline function expression, or an arrow function:</p>
+<pre class="language-javascript"><code class="language-javascript">// Named function
+function handleClick() { console.log("clicked"); }
+button.addEventListener("click", handleClick);
+
+// Inline function expression
+button.addEventListener("click", function() {
+  console.log("clicked");
+});
+
+// Arrow function (most common in modern code)
+button.addEventListener("click", () => {
+  console.log("clicked");
+});</code></pre>
+
+    <p>The browser passes an <strong>event object</strong> as the first argument:</p>
+<pre class="language-javascript"><code class="language-javascript">button.addEventListener("click", (event) => {
+  console.log("type:", event.type);          // "click"
+  console.log("target:", event.target);       // the element that was clicked
+  console.log("at x:", event.clientX);        // mouse coordinates
+});
+
+// you don't pass the event yourself — the browser provides it on each call</code></pre>
+
+    <p>To remove a listener, use the same function reference:</p>
+<pre class="language-javascript"><code class="language-javascript">function handleClick() { console.log("clicked"); }
+
+button.addEventListener("click", handleClick);
+button.removeEventListener("click", handleClick);
+// works because we have a stable reference to the same function
+
+button.addEventListener("click", () => console.log("clicked"));
+// you CAN'T remove this — there's no name to refer to</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-23-1-0': `
+    <p>JavaScript pages are interactive — users click buttons, type into inputs, submit forms. The script needs a way to react to those actions. But the script can't sit in a loop waiting for clicks; the browser has to tell it.</p>
+    <p>Event listeners solve this by letting you say: "when this event happens, run this function." You hand the browser a function and walk away. The browser triggers it whenever the event fires.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-23-1-1': `
+    <p>Use event listeners whenever you want code to run in response to user interaction or browser events.</p>
+<pre class="language-javascript"><code class="language-javascript">// Button click
+saveBtn.addEventListener("click", () => {
+  saveData();
+});
+
+// Form submit
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  validateAndSubmit();
+});
+
+// Input changes
+emailInput.addEventListener("input", (event) => {
+  console.log("typed:", event.target.value);
+});
+
+// Keyboard
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") closeModal();
+});
+
+// Page load
+window.addEventListener("load", () => {
+  console.log("page is fully loaded");
+});</code></pre>
+    <p>Each one is a single function tied to a specific event. The browser does the wiring; you just write the response.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-23-1-2': `
+    <p>Almost every interactive page is built around event listeners.</p>
+<pre class="language-javascript"><code class="language-javascript">// Form validation as the user types
+emailInput.addEventListener("input", (e) => {
+  errorBox.textContent = isValid(e.target.value) ? "" : "Invalid email";
+});
+
+// Toggle UI state on click
+menuButton.addEventListener("click", () => {
+  sidebar.classList.toggle("open");
+});
+
+// Submit handler
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const data = collectFormData();
+  await sendLogin(data);
+});
+
+// Prevent the default browser action
+link.addEventListener("click", (e) => {
+  e.preventDefault();
+  openInModal(link.href);
+});
+
+// Drag-and-drop
+dropzone.addEventListener("dragover", (e) => e.preventDefault());
+dropzone.addEventListener("drop", (e) => handleDrop(e));</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-23-1-3': `
+    <p>An event listener is like leaving a note for the doorbell. The note says: "If anyone rings the bell, do this." You don't stand at the door waiting — you go on with your life, and the bell triggers the response when it happens.</p>
+    <p>The function you pass to <code>addEventListener</code> is the note. You hand it over once. Every time the event happens, the browser reads the note and runs the function.</p>
+    <p>The function isn't called when you write it — that's the part that trips people up. Writing the listener registers the callback. The browser calls it later, on each event.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-23-1-4': `
+    <p>You hand the browser a function. The browser holds onto it and calls it for you when the event fires.</p>
+<pre class="language-javascript"><code class="language-javascript">button.addEventListener("click", handleClick);
+
+// you           browser
+//  ↓               ↓
+// "here's a     "got it. I'll call it 
+//  function"     when 'click' happens"
+
+// later, on each click:
+// browser → calls handleClick(event)</code></pre>
+    <p>The function lives in the browser's listener list. Each click triggers a call. You're not running the function — the browser is, repeatedly, in response to the event.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-23-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const button = document.querySelector("#count");
+let count = 0;
+
+function bump() {
+  count = count + 1;
+  console.log("count is now:", count);
+}
+
+button.addEventListener("click", bump);
+
+// JavaScript is thinking:
+// Line 1: find the element with id "count", store it in button.
+// Line 2: register count in global scope, value 0.
+// Line 4: register bump. Don't run it yet.
+// Line 9: see button.addEventListener("click", bump) → call addEventListener with two arguments: the string "click" and a reference to bump. The browser stores bump in its listener list. The script ends — but the listener stays registered.
+
+// Later, the user clicks the button:
+// browser fires a "click" event → looks up listeners for "click" on this button → finds bump → calls bump(event).
+// inside bump: count = 0 + 1 → 1. Logs "count is now: 1".
+
+// Next click:
+// browser calls bump again. count = 1 + 1 → 2. Logs "count is now: 2".</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-23-2-0': `
+    <p>If a handler runs once on page load and then never again, you almost certainly added <code>()</code> after the function name when registering it.</p>
+<pre class="language-javascript"><code class="language-javascript">button.addEventListener("click", handleClick());
+// wrong: handleClick() runs immediately on this line
+// addEventListener gets the RETURN value (probably undefined)
+
+button.addEventListener("click", handleClick);
+// correct: pass the function reference; the browser calls it on each click</code></pre>
+
+    <p>If a handler doesn't fire at all, check three things: the element exists when you register, the event name is spelled right ("click", not "clicked"), and the listener was added after the element exists in the DOM (or after <code>DOMContentLoaded</code>).</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-23-2-1': `
+    <p>Event listeners turn function references into <strong>delayed actions</strong>. You define a function. You hand it over. Later — could be milliseconds, could be hours — the browser runs it for you.</p>
+    <p>This is why functions can be passed around as values: so other code (the browser, a library, a parent component) can hold onto them and call them at the right moment. Once you see this, the whole concept of callbacks clicks into place.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-23-2-2': `
+    <p><strong>Confusion: pass the function, don't call it</strong></p>
+<pre class="language-javascript"><code class="language-javascript">button.addEventListener("click", handleClick);     // pass — browser calls later
+button.addEventListener("click", handleClick());    // call — runs now, useless
+// always pass the function reference, no parens</code></pre>
+
+    <p><strong>Confusion: passing arguments to a handler</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Wrong — calls deleteItem immediately
+button.addEventListener("click", deleteItem(123));
+
+// Right — wrap in an arrow that calls deleteItem on click
+button.addEventListener("click", () => deleteItem(123));</code></pre>
+
+    <p><strong>Confusion: each addEventListener adds a new listener</strong></p>
+<pre class="language-javascript"><code class="language-javascript">button.addEventListener("click", handleClick);
+button.addEventListener("click", handleClick);
+button.addEventListener("click", handleClick);
+// click once → handleClick fires three times — each call added a new listener
+// fix: only register once, or remove before re-adding</code></pre>
+
+    <p><strong>Confusion: arrow vs named function for removal</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// CAN'T be removed — no reference to the same function
+button.addEventListener("click", () => console.log("hi"));
+button.removeEventListener("click", () => console.log("hi"));   // doesn't work — different function
+
+// CAN be removed
+function handleClick() { console.log("hi"); }
+button.addEventListener("click", handleClick);
+button.removeEventListener("click", handleClick);   // works</code></pre>
+
+    <p><strong>Confusion: <code>event.preventDefault</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">form.addEventListener("submit", (event) => {
+  event.preventDefault();    // stops the browser's default form submission
+  customSubmit();
+});
+
+link.addEventListener("click", (event) => {
+  event.preventDefault();    // stops the browser from following the link
+  customAction();
+});
+// preventDefault is how you say "don't do the browser's normal thing — I'm handling it"</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-23-2-3': `
+<pre class="language-javascript"><code class="language-javascript">button.addEventListener("click", handleClick());
+// wrong: () makes it run on registration, not on click
+// fix: button.addEventListener("click", handleClick);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const button = document.querySelector("#save");
+button.addEventListener("click", () => alert("saved"));
+// might fail with: Cannot read properties of null
+// the script ran before the button existed in the DOM
+// fix: put the script at the bottom of the body, OR use DOMContentLoaded:
+//   document.addEventListener("DOMContentLoaded", () => { ... });</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">form.addEventListener("submit", () => {
+  console.log("submitted");
+});
+// the page reloads after submitting — your handler ran, but the browser also did its default submit
+// fix: take event as a parameter and call event.preventDefault();</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">button.addEventListener("Click", handleClick);
+// wrong: event names are case-sensitive, "Click" isn't a real event
+// fix: "click" (lowercase)</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Inside a loop, accidentally registering many listeners
+buttons.forEach(btn => {
+  btn.addEventListener("click", () => alert("hi"));
+  btn.addEventListener("click", () => alert("hi"));
+});
+// each button now fires alert twice
+// fix: register each listener once</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">button.addEventListener("click", () => {
+  doSomething();
+});
+button.removeEventListener("click", () => {
+  doSomething();
+});
+// removeEventListener does nothing — the two arrow functions are different
+// fix: store the handler in a variable first
+//   const handler = () => doSomething();
+//   button.addEventListener("click", handler);
+//   button.removeEventListener("click", handler);</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-23-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Click handler with an arrow function
+button.addEventListener("click", () => {
+  console.log("clicked");
+});
+
+// Click handler with a named function (easier to debug, removable)
+function handleClick() {
+  console.log("clicked");
+}
+button.addEventListener("click", handleClick);
+
+// Reading event info
+button.addEventListener("click", (event) => {
+  console.log("clicked at:", event.clientX, event.clientY);
+});
+
+// Reading input value as the user types
+input.addEventListener("input", (event) => {
+  console.log("typed:", event.target.value);
+});
+
+// Preventing default behavior on a form
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  console.log("would submit, but stopped the page reload");
+});
+
+// Removing a listener later
+function once() {
+  console.log("ran once");
+  button.removeEventListener("click", once);
+}
+button.addEventListener("click", once);</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-23-3-1': `
+    <p><strong>Example: counter button</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+const counterBtn = document.querySelector("#counter");
+const counterDisplay = document.querySelector("#counter-value");
+
+counterBtn.addEventListener("click", () => {
+  count = count + 1;
+  counterDisplay.textContent = count;
+});
+// each click increments the count and updates the display</code></pre>
+
+    <p><strong>Example: form submission</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const loginForm = document.querySelector("#login");
+
+loginForm.addEventListener("submit", async (event) => {
+  event.preventDefault();        // stop the page reload
+  const email = event.target.email.value;
+  const password = event.target.password.value;
+  await login({ email, password });
+});</code></pre>
+
+    <p><strong>Example: keyboard shortcut</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeModal();
+  }
+  if (event.key === "/" && event.ctrlKey) {
+    focusSearch();
+  }
+});</code></pre>
+
+    <p><strong>Example: live search</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const searchInput = document.querySelector("#search");
+
+searchInput.addEventListener("input", (event) => {
+  const query = event.target.value.toLowerCase();
+  const matches = products.filter(p => p.name.toLowerCase().includes(query));
+  renderResults(matches);
+});
+// every keystroke filters the product list and re-renders</code></pre>
+
+    <p><strong>Example: same handler, multiple elements</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function closeModal() {
+  modal.classList.remove("open");
+}
+
+closeBtn.addEventListener("click", closeModal);
+overlay.addEventListener("click", closeModal);
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") closeModal();
+});
+// one named function reused across three different triggers</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-23-3-2': `
+    <ul>
+      <li><strong>Callbacks</strong> → handlers are callbacks the browser will run</li>
+      <li><strong>Function references</strong> → you pass the function without calling it</li>
+      <li><strong>Event object</strong> → the browser passes event details as an argument</li>
+      <li><strong>preventDefault()</strong> → stops the browser's default behavior</li>
+      <li><strong>removeEventListener</strong> → unregisters a listener (needs the same reference)</li>
+      <li><strong>DOM events</strong> → click, input, submit, keydown, load, etc.</li>
+      <li><strong>event.target</strong> → the element the event happened on</li>
+      <li><strong>Event delegation</strong> → listening on a parent for events on its children</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-23-3-3': `
+    <ul>
+      <li>Callback functions</li>
+      <li>Event object</li>
+      <li><code>event.preventDefault()</code></li>
+      <li><code>event.target</code></li>
+      <li>Common DOM events (click, input, submit, keydown)</li>
+      <li>Event delegation</li>
+      <li>Removing event listeners</li>
+      <li>DOMContentLoaded</li>
+    </ul>
+  `,
+
+
+  /* ========================================================= 
+   Sub-lesson: 3.9.25 Functions → callback functions
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-24-0-0': `
+    <p>A callback is a function passed as an argument to another function, to be called later. The receiving function decides when to call it — after a delay, after a fetch finishes, on every item in a list, when an event fires.</p>
+    <p>You're not calling the callback yourself. You're handing it over and saying "call this when it's time."</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-24-0-1': `
+<pre class="language-javascript"><code class="language-javascript">function announce() {
+  console.log("3 seconds passed!");
+}
+
+setTimeout(announce, 3000);
+// announce is the callback — setTimeout will call it after 3000 milliseconds
+// the script keeps running in the meantime</code></pre>
+    <p><code>setTimeout</code> doesn't run <code>announce</code> when this line executes. It registers it. Three seconds later, the browser calls <code>announce</code> on its own.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-24-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function processItem(name) {
+  console.log("processing:", name);
+}
+
+const items = ["apple", "banana", "cherry"];
+items.forEach(processItem);
+
+// prints:
+//   processing: apple
+//   processing: banana
+//   processing: cherry
+
+// processItem            → the callback function (defined separately)
+// items.forEach(...)     → method that takes a callback and calls it once per item
+// processItem (no parens) → reference passed in, NOT called now
+// forEach calls processItem(item) for each item in the array</code></pre>
+    <p>You define <code>processItem</code> once. <code>forEach</code> calls it three times — once per item — passing each value as the argument. You never call <code>processItem</code> directly; <code>forEach</code> does it for you.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-24-0-3': `
+    <p>Pass the function as a <strong>reference</strong>, not a call:</p>
+<pre class="language-javascript"><code class="language-javascript">setTimeout(showAlert, 1000);     // correct — pass the function, runs after 1s
+setTimeout(showAlert(), 1000);   // wrong — calls showAlert NOW, passes its return value</code></pre>
+
+    <p>The receiving function decides when (and how often) to call the callback:</p>
+<pre class="language-javascript"><code class="language-javascript">// setTimeout calls it once, after a delay
+setTimeout(handler, 1000);
+
+// setInterval calls it repeatedly, every interval
+setInterval(handler, 1000);
+
+// addEventListener calls it on every event
+button.addEventListener("click", handler);
+
+// forEach calls it once per array item
+[1, 2, 3].forEach(handler);</code></pre>
+
+    <p>Callbacks can be named functions, expressions, or arrow functions:</p>
+<pre class="language-javascript"><code class="language-javascript">// Named function
+function logIt(value) { console.log(value); }
+[1, 2, 3].forEach(logIt);
+
+// Inline function expression
+[1, 2, 3].forEach(function(value) {
+  console.log(value);
+});
+
+// Arrow function (most common in modern code)
+[1, 2, 3].forEach((value) => console.log(value));</code></pre>
+
+    <p>The receiving function passes arguments to your callback — what they are depends on who's calling:</p>
+<pre class="language-javascript"><code class="language-javascript">// forEach passes (item, index, array)
+[10, 20, 30].forEach((item, index) => {
+  console.log(index, item);
+});
+// prints:
+//   0 10
+//   1 20
+//   2 30
+
+// addEventListener passes the event object
+button.addEventListener("click", (event) => {
+  console.log("clicked at:", event.clientX);
+});
+
+// fetch().then passes the response
+fetch("/api").then((response) => {
+  console.log(response.status);
+});</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-24-1-0': `
+    <p>Some work has to happen <em>later</em> — when a button is clicked, when data finishes loading, when a timer fires, when each item in a list is processed. The script can't sit and wait for those things; it needs a way to say "here's what to do when it happens."</p>
+    <p>Callbacks solve this. You define the response, hand it over, and the surrounding system runs it at the right moment. Your code keeps moving in the meantime.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-24-1-1': `
+    <p>Use a callback whenever another function or system needs to call your code at the right moment — events, timers, async operations, list processing.</p>
+<pre class="language-javascript"><code class="language-javascript">// "When the button is clicked, run this"
+button.addEventListener("click", () => {
+  saveDocument();
+});
+
+// "After 2 seconds, run this"
+setTimeout(() => {
+  hideNotification();
+}, 2000);
+
+// "For each product, run this"
+products.forEach((product) => {
+  console.log(product.name);
+});
+
+// "Once the data loads, run this"
+fetch("/api/users").then((response) => {
+  console.log("loaded");
+});</code></pre>
+    <p>Callbacks are how JavaScript stays responsive. The script doesn't block waiting for the click, the timer, the fetch, or the loop iteration — it hands over the next-step function and moves on.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-24-1-2': `
+    <p>Callbacks are everywhere a function gets passed to another function.</p>
+<pre class="language-javascript"><code class="language-javascript">// Array methods
+[1, 2, 3].map(n => n * 2);
+[1, 2, 3].filter(n => n > 1);
+[1, 2, 3].reduce((sum, n) => sum + n, 0);
+[1, 2, 3].forEach(n => console.log(n));
+
+// Timers
+setTimeout(() => console.log("later"), 1000);
+setInterval(() => console.log("tick"), 1000);
+
+// Events
+button.addEventListener("click", () => console.log("clicked"));
+
+// Promises
+fetch("/api").then(r => r.json()).then(data => console.log(data));
+
+// Sorting with custom logic
+[3, 1, 2].sort((a, b) => a - b);
+
+// Custom helpers
+function withLogging(fn, label) {
+  return function(...args) {
+    console.log(label, "called with", args);
+    return fn(...args);
+  };
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-24-1-3': `
+    <p>A callback is a function you give to another function with the instruction "call me back when you're ready." You don't run it yourself. You hand it over and walk away.</p>
+    <p>The receiving function — <code>setTimeout</code>, <code>addEventListener</code>, <code>forEach</code>, <code>fetch</code> — knows when the right moment is. It calls the callback for you, sometimes once, sometimes many times, sometimes seconds later, sometimes immediately.</p>
+    <p>The whole point: you write what should happen <em>when</em> something occurs, but you don't have to manage the timing yourself. The system that knows when it happens does the calling.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-24-1-4': `
+    <p>You hand a function to another function. That other function decides when to call it.</p>
+<pre class="language-javascript"><code class="language-javascript">// you                                     who calls it
+// ↓                                              ↓
+setTimeout(myCallback, 1000);                // setTimeout — once, after 1s
+button.addEventListener("click", myCallback); // browser — on every click
+[1, 2, 3].forEach(myCallback);                // forEach — once per item
+fetch("/api").then(myCallback);               // fetch — when the data arrives</code></pre>
+    <p>The function isn't special. It's a value being handed to another function so it can be called at the right time. That's the whole pattern.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-24-1-5': `
+<pre class="language-javascript"><code class="language-javascript">function shout(value) {
+  console.log(value.toUpperCase());
+}
+
+["hello", "world"].forEach(shout);
+// prints:
+//   HELLO
+//   WORLD
+
+// JavaScript is thinking:
+// Line 1: register shout. Don't run it yet.
+// Line 5: see ["hello", "world"].forEach(shout) → call forEach on the array, pass shout (no parens) as the callback.
+// forEach loops internally:
+//   call 1: shout("hello") → "hello".toUpperCase() → "HELLO" → log "HELLO".
+//   call 2: shout("world") → "world".toUpperCase() → "WORLD" → log "WORLD".
+// forEach finishes, returns undefined. The script continues on line 6.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-24-2-0': `
+    <p>If a callback runs once on registration instead of when it should — same bug as event listeners. You added <code>()</code> after the function name.</p>
+<pre class="language-javascript"><code class="language-javascript">setTimeout(saveData(), 1000);
+// wrong: saveData() runs immediately, setTimeout gets undefined
+// fix: setTimeout(saveData, 1000);
+
+[1, 2, 3].forEach(processItem());
+// wrong: processItem() runs once, forEach gets undefined as the callback
+// fix: [1, 2, 3].forEach(processItem);</code></pre>
+
+    <p>If a callback expects arguments but doesn't receive them, check what the receiving function actually passes — different functions pass different things:</p>
+<pre class="language-javascript"><code class="language-javascript">// forEach passes (item, index, array)
+[10, 20].forEach((value) => console.log(value));   // value, value
+[10, 20].forEach((value, i) => console.log(i, value));  // includes index
+
+// setTimeout passes nothing
+setTimeout((event) => console.log(event), 1000);
+// event is undefined — setTimeout doesn't pass an event</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-24-2-1': `
+    <p>A callback is just a function being treated as a value. You hand it over instead of running it. The receiving code calls it at the right moment.</p>
+    <p>This is the whole reason functions can be passed around. Once you see this — function as value, called by someone else, at a time of their choosing — events, timers, array methods, and promises all become variations of the same idea.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-24-2-2': `
+    <p><strong>Confusion: pass the function, don't call it</strong></p>
+<pre class="language-javascript"><code class="language-javascript">setTimeout(handleTimer, 1000);     // correct — function reference
+setTimeout(handleTimer(), 1000);   // wrong — runs immediately</code></pre>
+
+    <p><strong>Confusion: passing arguments to the callback</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Wrong — calls deleteItem immediately, passes its return value
+setTimeout(deleteItem(123), 1000);
+
+// Right — wrap in an arrow that calls deleteItem when the timer fires
+setTimeout(() => deleteItem(123), 1000);</code></pre>
+
+    <p><strong>Confusion: callbacks vs regular function calls</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Regular call — you call the function, the function returns a value
+const total = add(2, 3);
+
+// Callback — you hand a function to someone else, they call it later
+setTimeout(notifyDone, 1000);
+// you don't get notifyDone's return value — setTimeout calls it for you
+
+// Both involve functions, but the timing is completely different</code></pre>
+
+    <p><strong>Confusion: arrow vs named callback</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Both work — same effect
+[1, 2, 3].forEach(function(n) { console.log(n); });
+[1, 2, 3].forEach((n) => console.log(n));
+
+// Naming helps when the callback is reused or needs to be removed
+function logIt(n) { console.log(n); }
+[1, 2, 3].forEach(logIt);
+[4, 5, 6].forEach(logIt);
+// the same function used in two places</code></pre>
+
+    <p><strong>Confusion: the callback's parameters come from the caller</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// forEach decides what to pass to your callback
+[10, 20, 30].forEach((item, index) => {
+  // forEach passes the item, then the index, then the whole array
+});
+
+// addEventListener passes the event object
+button.addEventListener("click", (event) => {
+  // event was passed by the browser, not by you
+});
+// you don't pick the parameter names randomly — they catch what the caller hands over</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-24-2-3': `
+<pre class="language-javascript"><code class="language-javascript">setTimeout(showMessage(), 1000);
+// wrong: showMessage() runs immediately
+// fix: setTimeout(showMessage, 1000);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">[1, 2, 3].map(double());
+// wrong: double() runs once, map gets undefined as the callback
+// fix: [1, 2, 3].map(double);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">button.addEventListener("click", () => {
+  console.log("clicked");
+});
+button.removeEventListener("click", () => {
+  console.log("clicked");
+});
+// remove does nothing — the two arrows are different functions
+// fix: store the handler in a variable first</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">setTimeout(deleteUser(userId), 5000);
+// wrong: deleteUser runs immediately, the user is gone before the timer
+// fix: setTimeout(() => deleteUser(userId), 5000);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">["a", "b"].forEach(item => {
+  setTimeout(() => console.log(item), 1000);
+  return item.toUpperCase();
+});
+// the return value is ignored — forEach doesn't use it
+// fix: if you want the transformed array, use map instead of forEach</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function withDelay(callback) {
+  setTimeout(callback(), 1000);   // wrong — calls immediately
+}
+// fix: setTimeout(callback, 1000); — pass the reference</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-24-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Callback to a timer
+function notify() {
+  console.log("done!");
+}
+setTimeout(notify, 1000);
+// after 1 second, prints: done!
+
+// Callback to forEach
+function showItem(item) {
+  console.log("item:", item);
+}
+["a", "b", "c"].forEach(showItem);
+// prints:
+//   item: a
+//   item: b
+//   item: c
+
+// Callback to map (callback's return value is collected)
+const doubled = [1, 2, 3].map((n) => n * 2);
+console.log(doubled);
+// prints: [2, 4, 6]
+
+// Callback to filter
+const evens = [1, 2, 3, 4].filter((n) => n % 2 === 0);
+console.log(evens);
+// prints: [2, 4]
+
+// Callback to reduce
+const total = [10, 20, 30].reduce((sum, n) => sum + n, 0);
+console.log(total);
+// prints: 60
+
+// Callback to event listener
+button.addEventListener("click", () => console.log("clicked"));</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-24-3-1': `
+    <p><strong>Example: rendering a list with map</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const products = [
+  { name: "Hat", price: 20 },
+  { name: "Shirt", price: 30 },
+];
+
+const html = products.map((product) => {
+  return "<div>" + product.name + " — $" + product.price + "</div>";
+}).join("");
+
+document.body.innerHTML = html;
+// the callback runs once per product, returning HTML for each one
+// map collects the results into a new array</code></pre>
+
+    <p><strong>Example: filtering search results</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function matchesQuery(product) {
+  return product.name.toLowerCase().includes(query.toLowerCase());
+}
+
+const results = products.filter(matchesQuery);
+console.log(results);
+// filter calls matchesQuery once per product, keeps the ones that return true</code></pre>
+
+    <p><strong>Example: chained promise callbacks</strong></p>
+<pre class="language-javascript"><code class="language-javascript">fetch("/api/users")
+  .then((response) => response.json())
+  .then((users) => {
+    console.log("got users:", users.length);
+    return users.filter(u => u.active);
+  })
+  .then((activeUsers) => {
+    renderUserList(activeUsers);
+  });
+// each .then takes a callback that runs when the previous step finishes</code></pre>
+
+    <p><strong>Example: defining a custom helper that takes a callback</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function debounce(fn, delay) {
+  let timer;
+  return function(...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}
+
+const debouncedSearch = debounce((query) => {
+  console.log("searching for:", query);
+}, 300);
+
+input.addEventListener("input", (e) => debouncedSearch(e.target.value));
+// debounce takes a callback and returns a version that only fires after the user stops typing</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-24-3-2': `
+    <ul>
+      <li><strong>Function references</strong> → callbacks are references passed without parens</li>
+      <li><strong>Higher-order functions</strong> → functions that take callbacks as arguments</li>
+      <li><strong>Event listeners</strong> → handlers are callbacks the browser calls on events</li>
+      <li><strong>Timers</strong> → <code>setTimeout</code> and <code>setInterval</code> use callbacks</li>
+      <li><strong>Array methods</strong> → <code>map</code>, <code>filter</code>, <code>reduce</code>, <code>forEach</code></li>
+      <li><strong>Promises</strong> → <code>.then()</code> takes callbacks for when the promise resolves</li>
+      <li><strong>Asynchronous code</strong> → callbacks let work continue while waiting</li>
+      <li><strong>Closures</strong> → callbacks often capture variables from where they were defined</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-24-3-3': `
+    <ul>
+      <li>Higher-order functions</li>
+      <li>Function references</li>
+      <li>Event listeners</li>
+      <li>Array methods (<code>map</code>, <code>filter</code>, <code>reduce</code>)</li>
+      <li>Promises and <code>.then()</code></li>
+      <li><code>setTimeout</code> and <code>setInterval</code></li>
+      <li>Asynchronous JavaScript</li>
+      <li>Callback hell (nested callbacks)</li>
+    </ul>
+  `,
+
+
+  /* ========================================================= 
+   Sub-lesson: 3.9.26 Functions → higher-order functions
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-25-0-0': `
+    <p>A higher-order function is a function that takes another function as an argument, returns a function, or both. It's a function that <em>works with</em> other functions instead of just plain values.</p>
+    <p>You've already used many of them: <code>setTimeout</code>, <code>addEventListener</code>, <code>map</code>, <code>filter</code>, <code>forEach</code>. They're "higher-order" because they operate at one level above regular functions — they treat functions themselves as the data they work on.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-25-0-1': `
+<pre class="language-javascript"><code class="language-javascript">function repeat(times, action) {
+  for (let i = 0; i < times; i++) {
+    action(i);
+  }
+}
+
+repeat(3, (i) => console.log("step:", i));
+// prints:
+//   step: 0
+//   step: 1
+//   step: 2</code></pre>
+    <p><code>repeat</code> is a higher-order function because it takes another function (<code>action</code>) as an argument. It calls that function however many times needed, passing the current step.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-25-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function forEachItem(list, doSomething) {
+  for (const item of list) {
+    doSomething(item);
+  }
+}
+
+forEachItem(["a", "b", "c"], (letter) => {
+  console.log("got:", letter);
+});
+
+// prints:
+//   got: a
+//   got: b
+//   got: c
+
+// forEachItem            → the higher-order function (takes a function as input)
+// list                   → first parameter (data)
+// doSomething            → second parameter — a FUNCTION
+// doSomething(item)      → calls the passed-in function on each item
+// (letter) => { ... }    → the function being handed in as an argument</code></pre>
+    <p>The point: <code>forEachItem</code> doesn't decide what to do with each letter. It just loops, and lets the caller pass in the action.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-25-0-3': `
+    <p>Two basic shapes — taking a function, returning a function, or both:</p>
+<pre class="language-javascript"><code class="language-javascript">// Takes a function as input
+function runTwice(action) {
+  action();
+  action();
+}
+runTwice(() => console.log("hi"));
+// prints:
+//   hi
+//   hi
+
+// Returns a function
+function makeGreeter(greeting) {
+  return function(name) {
+    return greeting + ", " + name;
+  };
+}
+const sayHi = makeGreeter("Hi");
+sayHi("Os");
+// returns: "Hi, Os"</code></pre>
+
+    <p>The function being passed in is called wherever it makes sense — sometimes once, sometimes many times:</p>
+<pre class="language-javascript"><code class="language-javascript">// Once
+setTimeout(showAlert, 1000);
+
+// Once per item in a list
+[1, 2, 3].forEach(showItem);
+
+// Once per event
+button.addEventListener("click", handleClick);
+
+// Many times in a custom loop
+function repeat(n, fn) {
+  for (let i = 0; i < n; i++) fn(i);
+}
+repeat(5, (i) => console.log(i));</code></pre>
+
+    <p>Functions that return functions are called <strong>function factories</strong>:</p>
+<pre class="language-javascript"><code class="language-javascript">function multiplyBy(factor) {
+  return function(n) {
+    return n * factor;
+  };
+}
+
+const double = multiplyBy(2);
+const triple = multiplyBy(3);
+
+console.log(double(5));
+console.log(triple(5));
+// prints:
+//   10
+//   15
+// each returned function "remembers" its own factor — that's a closure</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-25-1-0': `
+    <p>Without higher-order functions, every loop, every event handler, every transform would have to be written from scratch. With them, you can write the looping logic once and let the caller decide what to do at each step.</p>
+    <p>It's the difference between writing "for each product, print its name" five different times for five different lists, vs. writing one general "for each item, do this thing" function and reusing it everywhere.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-25-1-1': `
+    <p>Use higher-order functions when you want to <strong>separate the work from the action</strong> — the looping/timing/event-handling stays general, and the specific behavior is handed in by the caller.</p>
+<pre class="language-javascript"><code class="language-javascript">// Without higher-order — duplicated loop logic
+function logAllNames(products) {
+  for (const p of products) console.log(p.name);
+}
+function logAllPrices(products) {
+  for (const p of products) console.log(p.price);
+}
+function logAllStock(products) {
+  for (const p of products) console.log(p.stock);
+}
+
+// With higher-order — one general function, three behaviors
+products.forEach((p) => console.log(p.name));
+products.forEach((p) => console.log(p.price));
+products.forEach((p) => console.log(p.stock));</code></pre>
+    <p>The general looping is built once (in <code>forEach</code>). What's done at each step is up to the caller — that's the callback.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-25-1-2': `
+    <p>Higher-order functions are the foundation of most modern JavaScript code. Most array methods, every event listener, every promise chain, every timer is one.</p>
+<pre class="language-javascript"><code class="language-javascript">// Built-in higher-order functions you already use:
+
+[1, 2, 3].map((n) => n * 2);                // map
+[1, 2, 3].filter((n) => n > 1);              // filter
+[1, 2, 3].reduce((sum, n) => sum + n, 0);    // reduce
+[1, 2, 3].forEach((n) => console.log(n));    // forEach
+
+setTimeout(() => console.log("later"), 1000);
+button.addEventListener("click", handleClick);
+fetch("/api").then((response) => response.json());
+
+// Common pattern: writing your own
+function withLogging(fn, label) {
+  return function(...args) {
+    console.log(label, "called with", args);
+    return fn(...args);
+  };
+}
+
+const loggedAdd = withLogging((a, b) => a + b, "add");
+loggedAdd(2, 3);
+// prints: "add called with [2, 3]"
+// returns: 5</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-25-1-3': `
+    <p>A higher-order function is a function that handles the boring repetitive part — looping, timing, event-watching — and lets you slot in the specific thing you want done.</p>
+    <p>Think of it like a vending machine. The machine handles taking your money, dispensing the item, and returning change. You just press the button to say <em>which</em> snack you want. The machine doesn't care what's inside — it just delivers what you picked.</p>
+    <p><code>forEach</code> handles the looping. You hand it the function that says what to do with each item. Same idea — general process plus your specific action.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-25-1-4': `
+    <p>Functions are values. Higher-order functions are values that <em>work with</em> other values that happen to be functions.</p>
+<pre class="language-javascript"><code class="language-javascript">// Regular function — works with values
+function double(n) {
+  return n * 2;
+}
+double(5);   // 10
+
+// Higher-order function — works with a function (also a value!)
+function applyTwice(fn, value) {
+  return fn(fn(value));
+}
+applyTwice(double, 5);
+// double(double(5)) → double(10) → 20</code></pre>
+    <p>Once you see functions as values, higher-order functions are just functions that accept those values. Nothing magical — same parameter mechanism, just for functions instead of numbers or strings.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-25-1-5': `
+<pre class="language-javascript"><code class="language-javascript">function applyTo(value, transform) {
+  return transform(value);
+}
+
+const result = applyTo(7, (n) => n * 3);
+console.log(result);
+// prints: 21
+
+// JavaScript is thinking:
+// Line 1: register applyTo. Don't run the body yet.
+// Line 5: see applyTo(7, (n) => n * 3) → call applyTo. Local scope: value = 7, transform = the arrow function.
+// Line 2: return transform(value) → call transform with 7 → arrow runs: 7 * 3 = 21. Return 21 from applyTo.
+// Line 5: store 21 in result.
+// Line 6: log result → 21.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-25-2-0': `
+    <p>Same warning as callbacks: pass the function reference, don't call it.</p>
+<pre class="language-javascript"><code class="language-javascript">repeat(3, doStuff());     // wrong — runs doStuff once, repeat gets undefined
+repeat(3, doStuff);        // correct — passes the function reference</code></pre>
+
+    <p>If a higher-order function isn't doing what you expect, log inside the callback to see if it's even being called and what arguments it's receiving:</p>
+<pre class="language-javascript"><code class="language-javascript">[1, 2, 3].map((n, i) => {
+  console.log("called with:", n, "index:", i);
+  return n * 2;
+});
+// prints:
+//   called with: 1 index: 0
+//   called with: 2 index: 1
+//   called with: 3 index: 2
+// confirms map is calling the callback once per item</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-25-2-1': `
+    <p>A higher-order function isn't a special kind of function. It's just a regular function whose job involves another function. The "higher" doesn't mean fancier — it means "operating on functions instead of values."</p>
+    <p>Once you see this, the whole idea collapses into something simple: functions are values, and you can pass values into other functions. That's it.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-25-2-2': `
+    <p><strong>Confusion: higher-order function vs callback</strong></p>
+<pre class="language-javascript"><code class="language-javascript">[1, 2, 3].forEach((n) => console.log(n));
+
+// forEach           → the higher-order function (it takes a function as input)
+// (n) => console.log(n) → the callback (the function being passed in)
+
+// They're two sides of the same coin:
+// - higher-order is the receiver
+// - callback is what gets received</code></pre>
+
+    <p><strong>Confusion: when does the inner function actually run?</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function makeGreeter(greeting) {
+  console.log("making greeter");
+  return function(name) {
+    console.log("greeting now");
+    return greeting + ", " + name;
+  };
+}
+
+const hi = makeGreeter("Hi");
+// prints: "making greeter" — outer function ran
+
+hi("Os");
+// prints: "greeting now" — inner function runs only when YOU call it
+// returns: "Hi, Os"</code></pre>
+
+    <p><strong>Confusion: "function as input" vs "function as output"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Takes a function as input
+function timer(callback) {
+  setTimeout(callback, 1000);
+}
+
+// Returns a function as output
+function makeAdder(x) {
+  return function(y) { return x + y; };
+}
+
+// Does both
+function withLogging(fn) {
+  return function(...args) {
+    console.log("calling", fn);
+    return fn(...args);
+  };
+}</code></pre>
+
+    <p><strong>Confusion: built-ins are higher-order too</strong></p>
+<pre class="language-javascript"><code class="language-javascript">setTimeout(showAlert, 1000);          // setTimeout is higher-order
+button.addEventListener("click", fn);  // addEventListener is higher-order
+fetch("/api").then(handleData);         // .then is higher-order
+[1, 2].map(double);                     // map is higher-order
+
+// you've been using higher-order functions all along</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-25-2-3': `
+<pre class="language-javascript"><code class="language-javascript">function doTimes(n, fn) {
+  for (let i = 0; i < n; i++) fn();
+}
+doTimes(3, sayHi());
+// wrong: sayHi() runs immediately, doTimes gets undefined as fn
+// fix: doTimes(3, sayHi);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">[1, 2, 3].map((n) => {
+  n * 2;     // forgot to return
+});
+// returns: [undefined, undefined, undefined]
+// fix: return n * 2; — or use implicit return: (n) => n * 2</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function once(fn) {
+  let called = false;
+  return function() {
+    if (called) return;
+    called = true;
+    fn();
+  };
+}
+const handler = once(saveData);
+handler();
+handler();
+handler();
+// saveData runs once, then nothing — that's the point of "once"
+// works because closure remembers "called" between calls</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function logger(label) {
+  return console.log(label);
+}
+const log = logger("INFO");
+log("hello");
+// TypeError — log is undefined (console.log returned undefined)
+// fix: return a function, not the result of calling console.log
+//   function logger(label) {
+//     return function(message) { console.log(label, message); };
+//   }</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function withDelay(callback, delay) {
+  setTimeout(callback(), delay);
+}
+// wrong: callback() runs immediately
+// fix: setTimeout(callback, delay);</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-25-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Higher-order: takes a function
+function repeat(n, fn) {
+  for (let i = 0; i < n; i++) fn(i);
+}
+repeat(3, (i) => console.log(i));
+// prints:
+//   0
+//   1
+//   2
+
+// Higher-order: returns a function
+function multiplyBy(factor) {
+  return function(n) {
+    return n * factor;
+  };
+}
+const double = multiplyBy(2);
+console.log(double(7));
+// prints: 14
+
+// Higher-order: built-ins
+[1, 2, 3].map((n) => n * 10);
+// returns: [10, 20, 30]
+
+[1, 2, 3].filter((n) => n > 1);
+// returns: [2, 3]
+
+[1, 2, 3].reduce((sum, n) => sum + n, 0);
+// returns: 6
+
+// Higher-order helper: adds logging to any function
+function logged(label, fn) {
+  return function(...args) {
+    console.log(label + ":", args);
+    return fn(...args);
+  };
+}
+const loggedAdd = logged("add", (a, b) => a + b);
+loggedAdd(2, 3);
+// prints: "add: [2, 3]"
+// returns: 5</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-25-3-1': `
+    <p><strong>Example: array methods are higher-order</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const products = [
+  { name: "Hat",   price: 20, stock: 5 },
+  { name: "Shirt", price: 30, stock: 0 },
+  { name: "Shoes", price: 80, stock: 12 },
+];
+
+const inStock = products.filter((p) => p.stock > 0);
+const names = inStock.map((p) => p.name);
+const total = inStock.reduce((sum, p) => sum + p.price, 0);
+
+console.log(names);
+console.log(total);
+// prints:
+//   ["Hat", "Shoes"]
+//   100
+// each callback says what to do — filter/map/reduce handle the looping</code></pre>
+
+    <p><strong>Example: factory creating handlers</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function makeRemoveHandler(itemId) {
+  return function() {
+    cart = cart.filter((item) => item.id !== itemId);
+    renderCart();
+  };
+}
+
+cart.forEach((item) => {
+  const btn = document.querySelector("#remove-" + item.id);
+  btn.addEventListener("click", makeRemoveHandler(item.id));
+});
+// each button gets its own handler that "remembers" the right itemId</code></pre>
+
+    <p><strong>Example: sorting with custom logic</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const products = [
+  { name: "Shoes", price: 80 },
+  { name: "Hat", price: 20 },
+  { name: "Shirt", price: 30 },
+];
+
+products.sort((a, b) => a.price - b.price);
+console.log(products);
+// sort is higher-order — it calls the callback to decide ordering
+// the callback returns a number; sort uses it to compare pairs</code></pre>
+
+    <p><strong>Example: building a debouncer</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function debounce(fn, delay) {
+  let timer;
+  return function(...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}
+
+const debouncedSearch = debounce((query) => {
+  console.log("searching for:", query);
+}, 300);
+
+input.addEventListener("input", (e) => debouncedSearch(e.target.value));
+// debounce takes a function and returns a wrapped version
+// the wrapped version only fires after the user stops typing for 300ms</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-25-3-2': `
+    <ul>
+      <li><strong>Callbacks</strong> → the functions passed into higher-order functions</li>
+      <li><strong>Function references</strong> → how you pass functions without calling them</li>
+      <li><strong>Function factories</strong> → higher-order functions that return new functions</li>
+      <li><strong>Closures</strong> → returned functions often "remember" outer variables</li>
+      <li><strong>Array methods</strong> → <code>map</code>, <code>filter</code>, <code>reduce</code> are all higher-order</li>
+      <li><strong>Event listeners</strong> → <code>addEventListener</code> is higher-order</li>
+      <li><strong>Promises</strong> → <code>.then()</code> is higher-order</li>
+      <li><strong>Composition</strong> → combining small functions into bigger ones</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-25-3-3': `
+    <ul>
+      <li>Callback functions</li>
+      <li>Function factories</li>
+      <li>Closures</li>
+      <li>Array methods</li>
+      <li>Function composition</li>
+      <li>Currying (advanced)</li>
+      <li><code>.bind()</code>, <code>.call()</code>, <code>.apply()</code> (advanced)</li>
+      <li>Function references</li>
+    </ul>
+  `,
+
 });
