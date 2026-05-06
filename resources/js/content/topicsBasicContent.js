@@ -15662,4 +15662,3209 @@ console.log(cleanName);
     </ul>
   `,
 
+
+  /* ========================================================= 
+   Sub-lesson: 3.9.15 Functions → console.log() vs return
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-14-0-0': `
+    <p><code>console.log()</code> and <code>return</code> are the two most-confused things in functions, because they both seem to "produce a value" — but they do completely different jobs.</p>
+    <p><code>console.log()</code> <strong>shows</strong> a value in the developer console for you to read. <code>return</code> <strong>hands</strong> a value back to the code that called the function, so the program can keep using it.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-14-0-1': `
+<pre class="language-javascript"><code class="language-javascript">function showDouble(n) {
+  console.log(n * 2);     // prints to the console
+}
+
+function returnDouble(n) {
+  return n * 2;           // hands the value back to the caller
+}
+
+showDouble(5);
+// prints: 10  (then the function ends, nothing is handed back)
+
+const result = returnDouble(5);
+console.log(result);
+// prints: 10  (the value 10 was handed back, stored in result, then logged)</code></pre>
+    <p>Same math, different outcomes. <code>showDouble</code> only displays. <code>returnDouble</code> produces a value the rest of the program can use.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-14-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function getPrice(amount) {
+  console.log("calculating...");   // shown for the developer
+  return amount * 1.08;            // handed back to the caller
+}
+
+const total = getPrice(50);
+console.log("Total: $" + total);
+// prints:
+//   calculating...
+//   Total: $54
+
+// console.log("calculating...")  → side effect — text appears in the console
+// return amount * 1.08           → hands 54 back to whoever called getPrice
+// const total = getPrice(50)     → catches the returned value (54)
+// console.log("Total: $" + ...)  → uses that returned value to build the final message</code></pre>
+    <p>You can have both in the same function. <code>console.log()</code> is for you (the developer) — <code>return</code> is for the rest of the program.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-14-0-3': `
+    <p><code>console.log()</code> doesn't return a useful value — it returns <code>undefined</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">const x = console.log("hi");
+console.log(x);
+// prints:
+//   hi
+//   undefined
+// console.log shows "hi", then returns undefined, which is what x catches</code></pre>
+
+    <p><code>return</code> doesn't print anything to the console — you have to log the returned value yourself:</p>
+<pre class="language-javascript"><code class="language-javascript">function getValue() {
+  return 42;
+}
+
+getValue();
+// nothing appears in the console — the value was returned but not logged
+
+console.log(getValue());
+// prints: 42 — now you've caught the returned value and logged it</code></pre>
+
+    <p>You can use <code>return</code>'s value anywhere in your code. <code>console.log()</code>'s output exists only in the console:</p>
+<pre class="language-javascript"><code class="language-javascript">function add(a, b) { return a + b; }
+
+const x = add(2, 3);     // 5 → can be reused, stored, passed around
+const y = add(2, 3) * 10; // 50 → return value used in math
+
+function showAdd(a, b) { console.log(a + b); }
+const z = showAdd(2, 3);  // prints 5, but z is undefined</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-14-1-0': `
+    <p>People often see <code>console.log()</code> and assume the function is "outputting" a value. It's not — <code>console.log()</code> just prints to a developer tool. The rest of your code can't read what's in the console.</p>
+    <p>If a function is supposed to produce a value the program will actually use — calculating a total, checking validity, building an object — you need <code>return</code>. If you only need to <em>see</em> the value while debugging, <code>console.log()</code> is fine.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-14-1-1': `
+    <p>Use <code>return</code> when the function produces a value the rest of the code needs. Use <code>console.log()</code> only to inspect what's happening while you write or debug code.</p>
+<pre class="language-javascript"><code class="language-javascript">// Wrong: function "produces" a value, but only logs it
+function getTax(price) {
+  console.log(price * 0.08);
+}
+
+const tax = getTax(50);
+console.log(tax);
+// prints:
+//   4
+//   undefined  — you can't reuse the calculated tax
+
+// Right: function returns the value
+function getTax(price) {
+  return price * 0.08;
+}
+
+const tax = getTax(50);
+console.log("Tax: $" + tax);
+// prints: "Tax: $4"</code></pre>
+    <p>The rule of thumb: if you'll do anything with the value besides look at it, use <code>return</code>.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-14-1-2': `
+    <p><code>return</code> shows up in functions that produce values. <code>console.log()</code> shows up while debugging or in functions whose only job is to display something.</p>
+<pre class="language-javascript"><code class="language-javascript">// return — the function's job is to produce a value
+function calculateTotal(price, tax) { return price + (price * tax); }
+function isAdult(age)                { return age >= 18; }
+function buildUser(name, age)        { return { name: name, age: age }; }
+
+// console.log — the function's job is to show something OR for debugging
+function debugCart(cart) {
+  console.log("cart contents:", cart);
+  console.log("item count:", cart.length);
+}
+
+// inside other functions, while debugging
+function calculateTotal(price, tax) {
+  console.log("got price:", price, "tax:", tax);   // temporary — for debugging
+  const total = price + (price * tax);
+  console.log("total:", total);                      // also temporary
+  return total;                                       // the actual output
+}</code></pre>
+    <p>Once the bug's fixed, you remove the <code>console.log()</code> lines. The <code>return</code> stays.</p>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-14-1-3': `
+    <p>Imagine you ask a coworker to calculate something. There are two ways they can answer: they can shout the result across the room (<code>console.log</code>) — you hear it, but you can't put it in a spreadsheet — or they can write it on paper and hand it to you (<code>return</code>) — now you can use it however you want.</p>
+    <p>The shouted answer is fine if you just want to know what they got. But if you need to actually use the number for something else, you need it in your hand. <code>return</code> is the paper. <code>console.log</code> is the shout.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-14-1-4': `
+    <p>Two completely different directions:</p>
+<pre class="language-javascript"><code class="language-javascript">function example(n) {
+  console.log(n);     // → goes OUT to the developer's console (you can read it)
+  return n;           // → goes BACK to the caller (the program can use it)
+}</code></pre>
+    <p><code>console.log</code> is a side door pointed at you. <code>return</code> is the front door pointed at the rest of the program. They go to different places, for different audiences.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-14-1-5': `
+<pre class="language-javascript"><code class="language-javascript">function showSquare(n) {
+  console.log(n * n);
+}
+
+function getSquare(n) {
+  return n * n;
+}
+
+const a = showSquare(4);
+const b = getSquare(4);
+console.log("a is:", a);
+console.log("b is:", b);
+// prints:
+//   16
+//   a is: undefined
+//   b is: 16
+
+// JavaScript is thinking:
+// Line 9: see showSquare(4) → run the body, console.log shows 16, function ends with no return → returns undefined. Store undefined in a.
+// Line 10: see getSquare(4) → run the body, return 4 * 4 → 16. Store 16 in b.
+// Line 11: log "a is:" and a → "a is: undefined".
+// Line 12: log "b is:" and b → "b is: 16".</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-14-2-0': `
+    <p>If you call a function and try to use its result, but the result is <code>undefined</code> — the function is probably using <code>console.log</code> instead of <code>return</code>.</p>
+<pre class="language-javascript"><code class="language-javascript">function getDiscount(price) {
+  console.log(price * 0.10);
+}
+
+const discount = getDiscount(50);
+const finalPrice = 50 - discount;
+console.log(finalPrice);
+// prints:
+//   5
+//   NaN  — discount is undefined, so 50 - undefined is NaN
+// fix: change console.log to return inside getDiscount</code></pre>
+
+    <p>The flip side: if you write a clean <code>return</code> but nothing shows in the console, you forgot to log the result. <code>return</code> alone doesn't print anything — you have to log the value at the call site (or at the top level) to see it.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-14-2-1': `
+    <p><code>console.log()</code> is a <strong>side effect</strong>. It changes the world (the console) but doesn't produce a value for the program.</p>
+    <p><code>return</code> is the function's <strong>output</strong>. It's the value the function gives back so the rest of the program can use it.</p>
+    <p>Once you see this split — "showing" vs "producing" — you stop conflating them. Logs are for you. Returns are for the program.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-14-2-2': `
+    <p><strong>Confusion: thinking <code>console.log</code> "outputs" a value</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getFive() {
+  console.log(5);
+}
+
+const x = getFive();
+console.log(x);
+// prints:
+//   5
+//   undefined
+// the 5 was shown in the console, but the function didn't return it — x is undefined</code></pre>
+    <p><code>console.log</code> doesn't pass values out of the function. Only <code>return</code> does.</p>
+
+    <p><strong>Confusion: <code>return</code> doesn't print on its own</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getNumber() { return 42; }
+
+getNumber();
+// nothing visible in the console — the value was returned, but nobody logged it
+
+console.log(getNumber());
+// prints: 42 — now you've caught and logged the return value</code></pre>
+
+    <p><strong>Confusion: which to use</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Use return when the value will be USED
+function getCartTotal(cart) {
+  return cart.reduce((sum, item) => sum + item.price, 0);
+}
+
+// Use console.log when you only need to SEE the value (debugging or display)
+function debugCart(cart) {
+  console.log("cart length:", cart.length);
+  console.log("first item:", cart[0]);
+}</code></pre>
+    <p>If the value flows on into more code — return. If it just needs to be displayed for the developer — log.</p>
+
+    <p><strong>Confusion: using both together</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function calculate(price, tax) {
+  console.log("running with:", price, tax);   // for debugging
+  const total = price + (price * tax);
+  return total;                                 // for the program
+}
+
+const final = calculate(50, 0.08);
+console.log("final:", final);
+// prints:
+//   running with: 50 0.08
+//   final: 54</code></pre>
+    <p>You can use both. <code>console.log</code> for the developer, <code>return</code> for the program. They don't conflict.</p>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-14-2-3': `
+<pre class="language-javascript"><code class="language-javascript">function double(n) {
+  console.log(n * 2);
+}
+const result = double(5);
+console.log(result);
+// prints:
+//   10
+//   undefined
+// fix: return n * 2;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function getName() {
+  return "Os";
+}
+getName();
+// nothing prints — return alone doesn't display
+// fix: console.log(getName());  — or save and use the value</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function isAdult(age) {
+  console.log(age >= 18);
+}
+if (isAdult(20)) {
+  showAdultContent();
+}
+// the if check fails — isAdult logs true but RETURNS undefined
+// fix: return age >= 18;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function calculate(price) {
+  return price * 1.08;
+  console.log("done");
+}
+// "done" never prints — return ended the function
+// fix: console.log before return, OR remove the unreachable line</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function showError(msg) {
+  return console.log(msg);
+}
+const x = showError("oops");
+console.log(x);
+// prints:
+//   oops
+//   undefined
+// returning console.log() returns undefined — usually pointless
+// fix: just call console.log, no return needed</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-14-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// console.log only — for displaying, no usable result
+function showStatus() {
+  console.log("All systems operational");
+}
+showStatus();
+// prints: "All systems operational"
+
+// return only — the function produces a value
+function getStatus() {
+  return "operational";
+}
+const status = getStatus();
+console.log("status:", status);
+// prints: "status: operational"
+
+// Both — log for debugging, return for the program
+function calculateTip(bill, percent) {
+  console.log("calculating tip on", bill);
+  return bill * (percent / 100);
+}
+const tip = calculateTip(50, 20);
+console.log("tip:", tip);
+// prints:
+//   calculating tip on 50
+//   tip: 10
+
+// console.log inside the call site
+function double(n) { return n * 2; }
+console.log(double(7));
+// prints: 14 — calling and logging at once</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-14-3-1': `
+    <p><strong>Example: validation that needs the result</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function isValidEmail(email) {
+  return email.includes("@") && email.length > 3;
+}
+
+if (isValidEmail(emailInput.value)) {
+  submitForm();
+} else {
+  showError("Invalid email");
+}
+// must use return — the if statement needs the boolean</code></pre>
+
+    <p><strong>Example: temporary debug logs while developing</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function processOrder(order) {
+  console.log("incoming order:", order);          // debug — remove later
+  const total = calculateTotal(order.items);
+  console.log("calculated total:", total);        // debug — remove later
+  return total;                                    // the actual result
+}
+// console.log helps while building, but the return is what matters</code></pre>
+
+    <p><strong>Example: function whose only job is to display</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function logUserInfo(user) {
+  console.log("Name: " + user.name);
+  console.log("Email: " + user.email);
+  console.log("Active: " + user.active);
+}
+
+logUserInfo({ name: "Os", email: "os@example.com", active: true });
+// prints:
+//   Name: Os
+//   Email: os@example.com
+//   Active: true
+// no return needed — the function only exists to display</code></pre>
+
+    <p><strong>Example: debugging a returned value</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getCartTotal(cart) {
+  return cart.reduce((sum, item) => sum + item.price, 0);
+}
+
+console.log(getCartTotal(myCart));
+// shows what the function returned — useful while testing
+// in the final code, the return value would be assigned to a variable instead</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-14-3-2': `
+    <ul>
+      <li><strong>return</strong> → produces a value the rest of the program can use</li>
+      <li><strong>console.log()</strong> → side effect that shows a value in the developer console</li>
+      <li><strong>Side effects</strong> → things a function does to the outside world</li>
+      <li><strong>Pure functions</strong> → functions with no side effects, only return values</li>
+      <li><strong>Debugging</strong> → <code>console.log</code> is the simplest debugging tool</li>
+      <li><strong>undefined</strong> → what functions return when there's no <code>return</code> statement</li>
+      <li><strong>Function composition</strong> → only works with returned values, not logged ones</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-14-3-3': `
+    <ul>
+      <li><code>return</code> keyword</li>
+      <li><code>console.log()</code></li>
+      <li>Side effects vs return values</li>
+      <li>Pure functions</li>
+      <li>Debugging with console</li>
+      <li><code>console.warn</code>, <code>console.error</code>, <code>console.table</code></li>
+      <li><code>undefined</code></li>
+      <li>Function composition</li>
+    </ul>
+  `,
+
+
+  /* ========================================================= 
+   Sub-lesson: 3.9.16 Functions → scope
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-15-0-0': `
+    <p>Scope is the set of variables a piece of code can see and use. Every function creates its own scope — its own private workspace where local variables live.</p>
+    <p>Code inside a function can see variables defined inside that function, plus variables from the surrounding scope. Code outside the function can't see what's inside it.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-15-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const outerName = "Os";
+
+function sayHi() {
+  const innerMessage = "Hello!";
+  console.log(outerName);       // works — function can see outer
+  console.log(innerMessage);    // works — function can see its own
+}
+
+sayHi();
+// prints:
+//   Os
+//   Hello!
+
+console.log(innerMessage);
+// ReferenceError — innerMessage is inside the function, not visible out here</code></pre>
+    <p>Inside the function, both variables are reachable. Outside the function, only <code>outerName</code> exists — <code>innerMessage</code> doesn't escape.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-15-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const APP_NAME = "Tracker";          // global scope
+
+function startApp() {
+  const startTime = Date.now();      // local scope of startApp
+  console.log(APP_NAME + " started at " + startTime);
+}
+
+startApp();
+// prints something like: "Tracker started at 1735000000000"
+
+console.log(APP_NAME);    // works — global is visible everywhere
+console.log(startTime);   // ReferenceError — local to startApp
+
+// const APP_NAME       → global scope (top of the file)
+// function startApp    → creates a new local scope
+// const startTime      → lives only inside startApp's scope
+// inside startApp      → can see APP_NAME (outer) AND startTime (own)
+// outside startApp     → can see APP_NAME, but NOT startTime</code></pre>
+    <p>Each function call creates a fresh local scope. When the function ends, that scope is thrown away — its local variables disappear.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-15-0-3': `
+    <p>Scope works like nested boxes — inner scopes can see out, outer scopes can't see in:</p>
+<pre class="language-javascript"><code class="language-javascript">const a = 1;                  // outer scope
+
+function outer() {
+  const b = 2;                // outer's local scope
+  
+  function inner() {
+    const c = 3;              // inner's local scope
+    console.log(a, b, c);     // works — sees all three
+  }
+
+  inner();
+  console.log(a, b);          // works — sees its own and the outer
+  console.log(c);             // ReferenceError — c is inside inner
+}
+
+outer();
+console.log(a);               // works
+console.log(b, c);            // ReferenceError — b and c are inside functions</code></pre>
+
+    <p>Variables in different scopes can have the same name without conflicting:</p>
+<pre class="language-javascript"><code class="language-javascript">const name = "outer name";
+
+function showName() {
+  const name = "inner name";    // shadows the outer one
+  console.log(name);            // "inner name"
+}
+
+showName();
+console.log(name);              // "outer name"  — outer untouched</code></pre>
+
+    <p>Parameters are also part of the function's local scope:</p>
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {        // name is local to greet
+  console.log("Hello, " + name);
+}
+
+greet("Os");
+console.log(name);            // ReferenceError — name was the parameter, gone now</code></pre>
+
+    <p>Variables declared with <code>var</code> have function scope; <code>let</code> and <code>const</code> have block scope (smaller — limited to the nearest <code>{ }</code>):</p>
+<pre class="language-javascript"><code class="language-javascript">function example() {
+  if (true) {
+    var v = 1;       // var: function-scoped
+    let l = 2;       // let: block-scoped
+    const c = 3;     // const: block-scoped
+  }
+  console.log(v);    // 1 — var leaks out of the if block
+  console.log(l);    // ReferenceError — let stays inside the if
+  console.log(c);    // ReferenceError — const stays inside the if
+}</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-15-1-0': `
+    <p>If every variable were visible everywhere, big programs would be impossible. Two functions could accidentally share a variable named <code>count</code>, overwrite each other, and silently break things.</p>
+    <p>Scope solves this by giving each function a private space. What happens inside the function stays inside. The rest of the program is protected from the function's intermediate steps.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-15-1-1': `
+    <p>You don't really "use" scope — it just exists. But understanding it lets you write functions that don't leak their internals into the rest of your code.</p>
+<pre class="language-javascript"><code class="language-javascript">// Good: variables stay inside the function
+function calculateTotal(items) {
+  let total = 0;            // local — disappears when the function ends
+  for (const item of items) {
+    total = total + item.price;
+  }
+  return total;
+}
+
+const cartTotal = calculateTotal([{ price: 10 }, { price: 20 }]);
+console.log(cartTotal);
+// prints: 30
+// outside the function, "total" doesn't exist — and that's a good thing</code></pre>
+    <p>Keeping variables local means they can't accidentally collide with other code, and they're cleaned up automatically when the function finishes.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-15-1-2': `
+    <p>Scope is in play every time a function runs. Most of the time you don't think about it consciously — until something goes wrong.</p>
+<pre class="language-javascript"><code class="language-javascript">// Common scope patterns:
+
+// 1. Helper variables stay inside the function
+function buildGreeting(name) {
+  const time = new Date().getHours();
+  const period = time < 12 ? "morning" : "afternoon";
+  return "Good " + period + ", " + name;
+}
+
+// 2. Reading outer variables (allowed)
+const TAX_RATE = 0.08;
+function withTax(price) {
+  return price + (price * TAX_RATE);
+}
+
+// 3. Inner function reading outer's variables (allowed)
+function makeCounter() {
+  let count = 0;
+  return function() {
+    count = count + 1;     // inner can see outer's count
+    return count;
+  };
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-15-1-3': `
+    <p>Think of a function like a sealed room. Inside the room, you can use anything in the room and anything visible through the door (the outer scope). But people outside the room can't see what's inside.</p>
+    <p>Variables you create inside the function are objects in the room. They exist while the function is running and disappear when the function ends. The outer code never sees them.</p>
+    <p>This is why two different functions can both have a variable called <code>count</code> without any conflict — they're in different rooms.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-15-1-4': `
+    <p>Scopes are nested. Inner scopes can look outward, but outer scopes can't look inward.</p>
+<pre class="language-javascript"><code class="language-javascript">// global scope
+//  ┌──────────────────────────────────────┐
+//  │  const APP = "tracker";              │
+//  │                                      │
+//  │  function start() {  ← local scope ┐ │
+//  │  ┌──────────────────────────────┐  │ │
+//  │  │  const time = Date.now();    │  │ │
+//  │  │  console.log(APP);  // OK    │  │ │
+//  │  │  console.log(time); // OK    │  │ │
+//  │  └──────────────────────────────┘  │ │
+//  │  }                                  │ │
+//  │                                      │
+//  │  console.log(APP);   // OK          │
+//  │  console.log(time);  // ReferenceError│
+//  └──────────────────────────────────────┘</code></pre>
+    <p>The function is a smaller box inside the bigger box. From inside, you can see out. From outside, the inner box looks like a black box.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-15-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const greeting = "Hello";
+
+function makeMessage(name) {
+  const fullMessage = greeting + ", " + name;
+  return fullMessage;
+}
+
+const msg = makeMessage("Os");
+console.log(msg);
+// prints: "Hello, Os"
+
+// JavaScript is thinking:
+// Line 1: register greeting in global scope, value "Hello".
+// Line 3: register makeMessage in global scope. Don't run it yet.
+// Line 8: see makeMessage("Os") → call it. Create a NEW local scope for this call. In the local scope: name = "Os".
+// Line 4: const fullMessage → look up greeting (not local, check outer → "Hello"), build "Hello, Os", store in local fullMessage.
+// Line 5: return fullMessage → exit, hand "Hello, Os" back. The local scope (with name and fullMessage) is thrown away.
+// Line 8: store the returned value in msg.
+// Line 9: log msg → "Hello, Os".</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-15-2-0': `
+    <p>If you get <code>ReferenceError: x is not defined</code>, the variable doesn't exist in the current scope. Either it was declared inside a function and you're trying to use it outside, or it's misspelled.</p>
+<pre class="language-javascript"><code class="language-javascript">function calculate() {
+  const result = 42;
+}
+
+calculate();
+console.log(result);
+// ReferenceError — result is local to calculate, can't be seen out here
+// fix: return result from calculate, then capture it: const result = calculate();</code></pre>
+
+    <p>If you get unexpected values, you might be reading or writing to a variable in the wrong scope. Add <code>console.log</code> inside and outside the function to see which version is being used.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-15-2-1': `
+    <p>Each function call creates a fresh, throwaway local scope. The scope is born when the function is called, lives while the function runs, and dies when the function returns.</p>
+    <p>Inside that scope, you have your own private versions of all the local variables. Outside the function, that scope is invisible — it might as well not exist.</p>
+    <p>This is what makes functions self-contained. They do their work without polluting the rest of the program, and the rest of the program can't reach in to mess with them.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-15-2-2': `
+    <p><strong>Confusion: trying to use a local variable outside</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getTotal() {
+  const total = 100;
+}
+
+getTotal();
+console.log(total);
+// ReferenceError — total only exists inside getTotal
+// fix: return total, then catch it outside</code></pre>
+
+    <p><strong>Confusion: outer vs inner with the same name</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const value = "outer";
+
+function show() {
+  const value = "inner";    // creates a NEW variable in this scope
+  console.log(value);       // "inner" — finds the local one first
+}
+
+show();
+console.log(value);
+// prints:
+//   inner
+//   outer
+// the inner const didn't replace the outer — it's a separate variable in a different scope</code></pre>
+
+    <p><strong>Confusion: reading outer is fine, but be careful with assignments</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+
+function increment() {
+  count = count + 1;     // modifies the OUTER count
+}
+
+increment();
+increment();
+console.log(count);
+// prints: 2 — the function reaches out and changes the outer variable
+// this is allowed, but can make code hard to follow if overused</code></pre>
+    <p>If you write <code>const newCount</code> inside the function, you create a local variable. If you assign without <code>const</code>/<code>let</code>, you're modifying whatever variable already exists in the nearest scope.</p>
+
+    <p><strong>Confusion: each call has its own fresh scope</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function counter() {
+  let count = 0;
+  count = count + 1;
+  console.log(count);
+}
+
+counter();    // prints 1
+counter();    // prints 1 — NOT 2
+counter();    // prints 1 — count is recreated each call
+
+// the local count is born and dies with each call
+// to remember between calls, the variable has to live OUTSIDE the function</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-15-2-3': `
+<pre class="language-javascript"><code class="language-javascript">function getData() {
+  const data = fetchSomething();
+}
+
+getData();
+console.log(data);
+// ReferenceError — data is local
+// fix: return data; then const data = getData();</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">let total = 100;
+function update() {
+  total = 200;       // modifies the outer total — probably not intentional
+}
+update();
+console.log(total);
+// prints: 200
+// fix: if you want a local copy, use const total = 200; inside the function</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function process(items) {
+  for (const item of items) {
+    const cleaned = item.trim();
+  }
+  console.log(cleaned);
+}
+// ReferenceError — cleaned is inside the for block, not visible after it
+// fix: declare let cleaned outside the loop, or use the value inside the loop</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function makeList() {
+  result = [1, 2, 3];     // missing const/let — creates an unintentional global
+  return result;
+}
+makeList();
+console.log(result);
+// prints: [1, 2, 3] — but this is a leak; result shouldn't be global
+// fix: const result = [1, 2, 3];</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function counter() {
+  let count = 0;
+  count = count + 1;
+  return count;
+}
+counter();    // 1
+counter();    // 1 — NOT 2, because count is recreated each call
+// fix: move count outside the function if you want it to persist</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-15-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Local stays local
+function calculate() {
+  const x = 10;
+  return x * 2;
+}
+calculate();        // 20
+// console.log(x); // would error — x doesn't exist here
+
+// Function reads outer variable
+const TAX = 0.08;
+function withTax(price) {
+  return price + (price * TAX);
+}
+withTax(100);       // 108
+
+// Function writes to outer variable
+let clickCount = 0;
+function track() {
+  clickCount = clickCount + 1;
+}
+track();
+track();
+console.log(clickCount);
+// prints: 2
+
+// Same name, different scopes
+const message = "outer";
+function show() {
+  const message = "inner";
+  console.log(message);
+}
+show();
+console.log(message);
+// prints:
+//   inner
+//   outer
+
+// Nested function — inner can see outer's locals
+function outer() {
+  const greeting = "Hello";
+  function inner() {
+    console.log(greeting);
+  }
+  inner();
+}
+outer();
+// prints: "Hello"</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-15-3-1': `
+    <p><strong>Example: helper variables stay private</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function formatDate(timestamp) {
+  const date = new Date(timestamp);
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const year = date.getFullYear();
+  return month + "/" + day + "/" + year;
+}
+
+const result = formatDate(1735000000000);
+console.log(result);
+// prints something like: "12/24/2024"
+// month, day, year, date — all clean up after the function returns</code></pre>
+
+    <p><strong>Example: shared state lives outside the function</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let cartCount = 0;
+
+function addToCart() {
+  cartCount = cartCount + 1;
+  cartBadge.textContent = cartCount;
+}
+
+addBtn.addEventListener("click", addToCart);
+// cartCount has to be outside addToCart so it survives between clicks</code></pre>
+
+    <p><strong>Example: factory using closures</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function makeCounter() {
+  let count = 0;
+  return function() {
+    count = count + 1;
+    return count;
+  };
+}
+
+const counter = makeCounter();
+console.log(counter());
+console.log(counter());
+console.log(counter());
+// prints:
+//   1
+//   2
+//   3
+// the inner function "remembers" count from its outer scope, even after makeCounter has returned</code></pre>
+
+    <p><strong>Example: avoiding name collisions</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function processOrder(order) {
+  const total = order.items.reduce((sum, i) => sum + i.price, 0);
+  return total;
+}
+
+function processRefund(refund) {
+  const total = refund.amount * -1;
+  return total;
+}
+// both functions use "total" — no conflict because each is in its own scope</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-15-3-2': `
+    <ul>
+      <li><strong>Local variables</strong> → variables declared inside the function's scope</li>
+      <li><strong>Global variables</strong> → variables visible to all code</li>
+      <li><strong>Block scope</strong> → <code>let</code>/<code>const</code> are limited to <code>{ }</code></li>
+      <li><strong>Function scope</strong> → <code>var</code> is limited to the function</li>
+      <li><strong>Variable shadowing</strong> → an inner variable hiding an outer one with the same name</li>
+      <li><strong>Closures</strong> → inner functions remembering outer variables after the outer function returns</li>
+      <li><strong>Hoisting</strong> → how declarations are processed before code runs</li>
+      <li><strong>Encapsulation</strong> → keeping a function's internals private</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-15-3-3': `
+    <ul>
+      <li>Local variables</li>
+      <li>Global variables</li>
+      <li>Block scope vs function scope</li>
+      <li><code>var</code>, <code>let</code>, <code>const</code></li>
+      <li>Variable shadowing</li>
+      <li>Closures</li>
+      <li>The scope chain</li>
+      <li>Encapsulation</li>
+    </ul>
+  `,
+
+
+  /* ========================================================= 
+   Sub-lesson: 3.9.17 Functions → local variables
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-16-0-0': `
+    <p>A local variable is a variable declared inside a function. It only exists while that function is running, and it can only be seen from inside that function's body.</p>
+    <p>Local variables include any <code>const</code> or <code>let</code> you declare in the body, plus the function's parameters.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-16-0-1': `
+<pre class="language-javascript"><code class="language-javascript">function buildGreeting() {
+  const time = "morning";
+  let greeting = "Good " + time;
+  return greeting;
+}
+
+console.log(buildGreeting());
+// prints: "Good morning"
+
+console.log(time);
+// ReferenceError — time is local to buildGreeting</code></pre>
+    <p><code>time</code> and <code>greeting</code> live inside the function. They're created when the function runs and disappear when it returns.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-16-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function buildSummary(reportName) {
+  const today = new Date().toDateString();
+  let header = reportName + " — " + today;
+  return header;
+}
+
+console.log(buildSummary("Sales"));
+// prints something like: "Sales — Tue Dec 24 2024"
+
+// reportName    → parameter (local — exists for this call only)
+// const today   → local variable, declared inside the body
+// let header    → local variable, can be reassigned
+// return        → ends the function; local variables disappear after this</code></pre>
+    <p>Parameters and locally declared variables behave the same way once the function starts: both live in the function's local scope and both vanish when the function ends.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-16-0-3': `
+    <p>Local variables exist only inside the function:</p>
+<pre class="language-javascript"><code class="language-javascript">function setup() {
+  const config = { theme: "dark" };
+  console.log(config);    // works
+}
+
+setup();
+console.log(config);      // ReferenceError — config doesn't exist out here</code></pre>
+
+    <p>Each call creates a fresh set of local variables:</p>
+<pre class="language-javascript"><code class="language-javascript">function tick() {
+  let count = 0;
+  count = count + 1;
+  console.log(count);
+}
+
+tick();    // prints: 1
+tick();    // prints: 1 — count was reset to 0 again
+tick();    // prints: 1
+// every call gets a brand-new count, starting at 0</code></pre>
+
+    <p>Locals declared with <code>let</code>/<code>const</code> are also block-scoped — they only exist within the nearest <code>{ }</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">function check(value) {
+  if (value > 10) {
+    const message = "big";
+    console.log(message);   // works — inside the if block
+  }
+  console.log(message);     // ReferenceError — message is gone after the if
+}</code></pre>
+
+    <p>Local variables can have the same name as outer variables — the local one wins inside the function:</p>
+<pre class="language-javascript"><code class="language-javascript">const status = "outer";
+
+function check() {
+  const status = "inner";
+  console.log(status);     // "inner"
+}
+
+check();
+console.log(status);       // "outer" — outer untouched</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-16-1-0': `
+    <p>Functions need workspace — temporary variables to do their job. If those workspace variables stayed around forever, every function would leak its internals into the rest of the program.</p>
+    <p>Local variables solve this. They give each function a private scratchpad that's automatically cleaned up when the function ends. The function gets to do its work without polluting anything else.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-16-1-1': `
+    <p>Use local variables for any value the function needs to compute, transform, or hold temporarily. If a value is only relevant to this one function, it should be local.</p>
+<pre class="language-javascript"><code class="language-javascript">function calculateOrderTotal(items) {
+  const subtotal = items.reduce((sum, i) => sum + i.price, 0);
+  const tax = subtotal * 0.08;
+  const shipping = subtotal > 50 ? 0 : 5;
+  return subtotal + tax + shipping;
+}
+
+const items = [{ price: 30 }, { price: 25 }];
+console.log(calculateOrderTotal(items));
+// prints: 59.4
+// subtotal, tax, shipping are intermediate steps — they only matter inside the function</code></pre>
+    <p>Keeping these intermediate values local means they don't clutter the global scope, can't accidentally collide with other code, and are garbage-collected as soon as the function returns.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-16-1-2': `
+    <p>Local variables show up in nearly every function — anywhere you need to break work into steps.</p>
+<pre class="language-javascript"><code class="language-javascript">function formatPhoneNumber(raw) {
+  const digits = raw.replace(/\\D/g, "");
+  const area = digits.slice(0, 3);
+  const prefix = digits.slice(3, 6);
+  const line = digits.slice(6, 10);
+  return "(" + area + ") " + prefix + "-" + line;
+}
+
+console.log(formatPhoneNumber("8005551234"));
+// prints: "(800) 555-1234"
+
+function buildUserCard(user) {
+  const card = document.createElement("div");
+  const heading = document.createElement("h2");
+  heading.textContent = user.name;
+  card.appendChild(heading);
+  return card;
+}</code></pre>
+    <p>Each step gets its own named local variable, which makes the function easier to read.</p>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-16-1-3': `
+    <p>A local variable is like a sticky note you write only for yourself, in your own room. You can use it however you want while you're working. When you leave the room, you throw the sticky note away.</p>
+    <p>The next time you come back into the room (call the function again), you start with no sticky notes — fresh slate. And nobody outside the room ever sees what you wrote.</p>
+    <p>That's the whole idea: temporary, private, automatic cleanup.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-16-1-4': `
+    <p>Local variables are born when the function starts and die when the function ends.</p>
+<pre class="language-javascript"><code class="language-javascript">function example() {
+  // ┌──────── function call begins ────────┐
+  const a = 1;       // a is born
+  const b = 2;       // b is born
+  return a + b;
+  // └──────── function call ends ─────────┘
+  //   a and b are gone, scope is destroyed
+}
+
+example();
+// each call to example() creates a brand-new "a" and "b"
+// they don't carry over from one call to the next</code></pre>
+    <p>If you want a value to survive between calls, it can't live as a local variable — it has to live outside the function.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-16-1-5': `
+<pre class="language-javascript"><code class="language-javascript">function makeLabel(name, count) {
+  const formatted = name + " (" + count + ")";
+  return formatted;
+}
+
+const label = makeLabel("Inbox", 5);
+console.log(label);
+// prints: "Inbox (5)"
+
+// JavaScript is thinking:
+// Line 1: register makeLabel. Don't run the body yet.
+// Line 6: see makeLabel("Inbox", 5) → call it. Create a fresh local scope. Locals so far: name = "Inbox", count = 5.
+// Line 2: const formatted = "Inbox" + " (" + 5 + ")" → formatted is now "Inbox (5)". Stored in the local scope.
+// Line 3: return formatted → exit the function with "Inbox (5)". The local scope (name, count, formatted) is destroyed.
+// Line 6: the returned value is stored in label.
+// Line 7: log label → "Inbox (5)".</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-16-2-0': `
+    <p>If you call a function expecting a local value to be available afterward, you'll get a <code>ReferenceError</code>. That's the signal — you need to <code>return</code> the value out, not reach in.</p>
+<pre class="language-javascript"><code class="language-javascript">function process() {
+  const result = 42;
+}
+
+process();
+console.log(result);
+// ReferenceError — result is local to process
+// fix: return result; then capture it: const result = process();</code></pre>
+
+    <p>If a counter or accumulator inside a function isn't growing across calls, it's because the local variable resets every time. Move the variable outside the function (or use a closure) if you want it to persist.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-16-2-1': `
+    <p>Locals are <strong>scratch paper</strong>. The function gets a fresh sheet at the start of every call, scribbles whatever it needs, then throws the sheet away.</p>
+    <p>The function can <em>show</em> you what it wrote (via <code>return</code>) before the paper goes in the trash — but the paper itself is never accessible from outside.</p>
+    <p>This is why local variables are safe by default: they can't outlive the function, can't conflict with anything else, and can't be tampered with from outside.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-16-2-2': `
+    <p><strong>Confusion: locals are gone after the function ends</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getUser() {
+  const user = { name: "Os" };
+}
+
+getUser();
+console.log(user);
+// ReferenceError — user no longer exists
+// fix: return user, then catch it</code></pre>
+
+    <p><strong>Confusion: parameters are also locals</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {        // name is a local variable
+  console.log("hi, " + name);
+}
+
+greet("Os");
+console.log(name);
+// ReferenceError — name was a parameter, lives only inside greet</code></pre>
+
+    <p><strong>Confusion: each call has its own copy</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function tick() {
+  let count = 0;
+  count = count + 1;
+  return count;
+}
+
+console.log(tick());
+console.log(tick());
+console.log(tick());
+// prints:
+//   1
+//   1
+//   1
+// count is recreated as 0 on every call — the function doesn't remember between calls</code></pre>
+
+    <p><strong>Confusion: locals can shadow outer variables</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const total = 100;
+
+function calculate() {
+  const total = 50;     // a NEW local — outer total is hidden inside this function
+  return total;
+}
+
+console.log(calculate());
+console.log(total);
+// prints:
+//   50
+//   100
+// the local total only exists inside the function, the outer one is unchanged</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-16-2-3': `
+<pre class="language-javascript"><code class="language-javascript">function getValue() {
+  const value = 42;
+}
+getValue();
+console.log(value);
+// ReferenceError — value is local
+// fix: return value;  then  const value = getValue();</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function counter() {
+  let count = 0;
+  count = count + 1;
+  return count;
+}
+counter();   // 1
+counter();   // 1 — NOT 2
+// fix: move count outside the function if you want it to persist</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function setup() {
+  config = { theme: "dark" };    // missing const/let — accidentally global
+}
+setup();
+console.log(config);
+// prints: { theme: "dark" } — but this is a leak, not intentional
+// fix: const config = { theme: "dark" };</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function build() {
+  for (const item of items) {
+    const card = makeCard(item);
+  }
+  document.body.appendChild(card);
+}
+// ReferenceError — card is inside the for block, gone after the loop ends
+// fix: append inside the loop, or collect in an array declared above the loop</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const total = 100;
+function add(amount) {
+  const total = total + amount;    // ReferenceError — can't read const total before it's initialized
+  return total;
+}
+// fix: rename the local, or use a different approach
+// e.g.  function add(amount) { return total + amount; }</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-16-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Single local for an intermediate value
+function double(n) {
+  const result = n * 2;
+  return result;
+}
+double(5);
+// returns: 10
+
+// Multiple locals to break work into steps
+function fullName(first, last) {
+  const trimmedFirst = first.trim();
+  const trimmedLast = last.trim();
+  const combined = trimmedFirst + " " + trimmedLast;
+  return combined;
+}
+fullName("  Os ", " Garcia ");
+// returns: "Os Garcia"
+
+// Local that gets reassigned
+function addAll(numbers) {
+  let total = 0;
+  for (const n of numbers) {
+    total = total + n;
+  }
+  return total;
+}
+addAll([1, 2, 3, 4]);
+// returns: 10
+
+// Parameter as a local
+function greet(name) {
+  return "Hello, " + name;
+}
+greet("Os");
+// returns: "Hello, Os"</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-16-3-1': `
+    <p><strong>Example: building a string in steps</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function formatAddress(user) {
+  const street = user.address.street;
+  const city = user.address.city;
+  const zip = user.address.zip;
+  return street + ", " + city + " " + zip;
+}
+
+const user = { address: { street: "123 Main", city: "Austin", zip: "78701" } };
+console.log(formatAddress(user));
+// prints: "123 Main, Austin 78701"</code></pre>
+
+    <p><strong>Example: building DOM elements</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function createCard(title, body) {
+  const card = document.createElement("div");
+  const heading = document.createElement("h3");
+  const paragraph = document.createElement("p");
+
+  heading.textContent = title;
+  paragraph.textContent = body;
+  card.appendChild(heading);
+  card.appendChild(paragraph);
+
+  return card;
+}
+
+const newCard = createCard("Welcome", "Glad you're here.");
+document.body.appendChild(newCard);
+// every helper variable is local — only the final card escapes via return</code></pre>
+
+    <p><strong>Example: validation with locals for clarity</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function isValidPassword(password) {
+  const minLength = password.length >= 8;
+  const hasNumber = /\\d/.test(password);
+  const hasLetter = /[a-zA-Z]/.test(password);
+  return minLength && hasNumber && hasLetter;
+}
+
+console.log(isValidPassword("hello123"));
+// prints: true
+// each rule is its own local boolean — much clearer than chaining everything in one expression</code></pre>
+
+    <p><strong>Example: parsing JSON safely</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getCart() {
+  const raw = localStorage.getItem("cart");
+  const parsed = raw ? JSON.parse(raw) : [];
+  return parsed;
+}
+
+const cart = getCart();
+console.log(cart);
+// raw and parsed are local helpers — they disappear, only the cart array escapes</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-16-3-2': `
+    <ul>
+      <li><strong>Scope</strong> → local variables exist within the function's scope</li>
+      <li><strong>Parameters</strong> → also local variables — they live and die with the call</li>
+      <li><strong>Global variables</strong> → the opposite — visible everywhere</li>
+      <li><strong>Block scope</strong> → <code>let</code>/<code>const</code> are scoped to the nearest <code>{ }</code></li>
+      <li><strong>Variable shadowing</strong> → a local with the same name as an outer variable</li>
+      <li><strong>Garbage collection</strong> → locals are freed when the function ends</li>
+      <li><strong>Closures</strong> → inner functions can keep outer locals alive longer than usual</li>
+      <li><strong>Encapsulation</strong> → keeping work private to the function</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-16-3-3': `
+    <ul>
+      <li>Scope</li>
+      <li>Global variables</li>
+      <li>Parameters</li>
+      <li>Block scope vs function scope</li>
+      <li>Variable shadowing</li>
+      <li>Closures</li>
+      <li>Garbage collection</li>
+      <li>Side effects</li>
+    </ul>
+  `,
+
+
+  /* ========================================================= 
+   Sub-lesson: 3.9.18 Functions → global variables
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-17-0-0': `
+    <p>A global variable is a variable declared at the top level of your script — outside of any function. It's visible to every function and every line of code in the file.</p>
+    <p>Globals are the opposite of locals. Locals only exist inside the function they were declared in. Globals exist everywhere.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-17-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const APP_NAME = "Tracker";       // global — outside any function
+
+function start() {
+  console.log("Starting " + APP_NAME);
+}
+
+function stop() {
+  console.log("Stopping " + APP_NAME);
+}
+
+start();
+stop();
+// prints:
+//   Starting Tracker
+//   Stopping Tracker</code></pre>
+    <p><code>APP_NAME</code> is declared once at the top, and both functions can read it. That's the defining feature of a global — it's reachable from anywhere.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-17-0-2': `
+<pre class="language-javascript"><code class="language-javascript">let pageViews = 0;                 // global — at the top level
+
+function recordVisit() {
+  pageViews = pageViews + 1;       // function reads and updates the global
+  console.log("Total views: " + pageViews);
+}
+
+recordVisit();
+recordVisit();
+recordVisit();
+// prints:
+//   Total views: 1
+//   Total views: 2
+//   Total views: 3
+
+// let pageViews = 0          → declared at the top — global scope
+// function recordVisit()     → has its own local scope, but can see globals
+// pageViews = pageViews + 1  → reaches outside its scope, modifies the global
+// each call updates the same global, so the count carries over</code></pre>
+    <p>The function doesn't have its own <code>pageViews</code>. It reads and modifies the one outside, which is why the value persists between calls.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-17-0-3': `
+    <p>Anything declared at the top level of a script (outside all functions) is global within that file:</p>
+<pre class="language-javascript"><code class="language-javascript">const TAX_RATE = 0.08;       // global
+let cartCount = 0;            // global
+
+function addItem() {
+  cartCount = cartCount + 1;  // can see the global
+}
+
+function getTax(price) {
+  return price * TAX_RATE;    // can see the global
+}</code></pre>
+
+    <p>Globals stay alive for the entire life of the page — they don't get cleaned up when a function returns:</p>
+<pre class="language-javascript"><code class="language-javascript">let total = 0;
+
+function add(n) {
+  total = total + n;
+}
+
+add(5);
+add(3);
+console.log(total);
+// prints: 8 — total survives between calls</code></pre>
+
+    <p>Forgetting <code>const</code>/<code>let</code> creates an accidental global, even inside a function:</p>
+<pre class="language-javascript"><code class="language-javascript">function setup() {
+  config = { theme: "dark" };   // no const/let — accidentally creates a global
+}
+
+setup();
+console.log(config);
+// prints: { theme: "dark" }
+// fix: always use const or let</code></pre>
+
+    <p>Locals can shadow globals — same name, different scopes:</p>
+<pre class="language-javascript"><code class="language-javascript">const status = "active";       // global
+
+function check() {
+  const status = "local";      // shadows the global inside this function
+  console.log(status);          // "local"
+}
+
+check();
+console.log(status);            // "active" — global untouched</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-17-1-0': `
+    <p>Some values need to be shared across many functions — a tax rate, a current user, an app config, a click counter. If those values lived inside one function, no other function could read them.</p>
+    <p>Globals solve this by living at the top level, where every function can reach them. They're how separate functions coordinate around a shared value.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-17-1-1': `
+    <p>Use globals sparingly — only for values that genuinely need to be shared everywhere. The most common good cases are constants and persistent state.</p>
+<pre class="language-javascript"><code class="language-javascript">// Good: shared constants
+const TAX_RATE = 0.08;
+const MAX_ITEMS_PER_PAGE = 20;
+const API_URL = "https://api.example.com";
+
+function getTax(price)         { return price * TAX_RATE; }
+function getPageSize()         { return MAX_ITEMS_PER_PAGE; }
+function fetchUsers()          { return fetch(API_URL + "/users"); }
+
+// Good: persistent state across calls
+let cartCount = 0;
+
+function addToCart() {
+  cartCount = cartCount + 1;
+  cartBadge.textContent = cartCount;
+}</code></pre>
+    <p>The rule of thumb: if the value should be visible in three or more places and never changes (or rarely changes), it's a fair candidate for a global.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-17-1-2': `
+    <p>Globals show up most often as configuration constants and shared state.</p>
+<pre class="language-javascript"><code class="language-javascript">// Configuration constants
+const APP_VERSION = "1.2.0";
+const DEFAULT_THEME = "light";
+const FEATURE_FLAGS = {
+  newCheckout: true,
+  betaSearch: false,
+};
+
+// Shared application state
+let currentUser = null;
+let cart = [];
+let isOnline = true;
+
+// DOM references used everywhere
+const cartBadge = document.querySelector("#cart-count");
+const errorBox = document.querySelector("#error-message");
+
+// Functions all over the file use these globals
+function login(user)           { currentUser = user; }
+function logout()              { currentUser = null; }
+function getCurrentUser()      { return currentUser; }
+function isLoggedIn()          { return currentUser !== null; }</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-17-1-3': `
+    <p>If local variables are sticky notes inside a private room, globals are signs hanging in the hallway. Everyone walking by can read them, and anyone can change them.</p>
+    <p>That's powerful — every function can see the same sign without you having to pass it in. But it's also risky: if too many functions can change the sign, it gets hard to track who changed it last and why.</p>
+    <p>Globals are useful, but they're a tool to use carefully. The more globals you have, the more your functions secretly depend on each other through shared state.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-17-1-4': `
+    <p>Globals live at the top level, where everyone can see them. Locals live inside their function, hidden from outside.</p>
+<pre class="language-javascript"><code class="language-javascript">// global scope (the hallway)
+//  ┌──────────────────────────────────────┐
+//  │  const TAX_RATE = 0.08;              │  ← every function can see this
+//  │                                      │
+//  │  function getTax() {                 │
+//  │    const price = 100;   ← only here  │
+//  │    return price * TAX_RATE;          │
+//  │  }                                   │
+//  │                                      │
+//  │  function addToCart() {              │
+//  │    const item = "Hat"; ← only here   │
+//  │    console.log(TAX_RATE);            │
+//  │  }                                   │
+//  └──────────────────────────────────────┘</code></pre>
+    <p>Both functions can read <code>TAX_RATE</code>. Neither can read the other's locals.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-17-1-5': `
+<pre class="language-javascript"><code class="language-javascript">let score = 0;
+
+function addPoint() {
+  score = score + 1;
+}
+
+addPoint();
+addPoint();
+console.log(score);
+// prints: 2
+
+// JavaScript is thinking:
+// Line 1: register score in global scope, value 0.
+// Line 3: register addPoint. Don't run it yet.
+// Line 7: call addPoint() → create a fresh local scope. Run the body.
+// Line 4: score = score + 1 → no local "score" exists; look outward → finds the global score (0). Compute 0 + 1 = 1. Assign back to the global score.
+// Line 7: function ends, local scope destroyed. The global score is now 1.
+// Line 8: call addPoint() again → new local scope. score = 1 + 1 = 2. Global score is now 2.
+// Line 9: log score → 2.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-17-2-0': `
+    <p>If a value seems to "change on its own" or behave unpredictably, suspect a global. With many functions modifying the same global, it's easy to lose track of which one changed it.</p>
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+
+function add()    { count = count + 1; }
+function reset()  { count = 0; }
+function double() { count = count * 2; }
+
+add();
+add();
+double();
+reset();
+console.log(count);
+// prints: 0
+// any of these functions could have changed count — debugging means tracing every place it was touched</code></pre>
+
+    <p>Another sign: if your function works correctly the first time but breaks on the second call, you might be relying on a global that didn't get reset. Locals would naturally start fresh; globals don't.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-17-2-1': `
+    <p>A global is a variable that <strong>outlives any single function call</strong>. Local variables come and go with each call. Globals stick around for the entire life of the page.</p>
+    <p>That permanence is the whole point. It's what lets a click counter remember its count between clicks, or what lets a user object stay logged in as the user navigates the page.</p>
+    <p>The flip side: anything that outlives a function can be touched by anything that comes after. That's why globals are powerful and risky at the same time.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-17-2-2': `
+    <p><strong>Confusion: globals vs locals</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const outside = "global";        // global
+
+function show() {
+  const inside = "local";        // local
+  console.log(outside);          // works — globals are visible everywhere
+  console.log(inside);           // works — local within its own function
+}
+
+show();
+console.log(outside);            // works
+console.log(inside);             // ReferenceError — locals don't escape</code></pre>
+
+    <p><strong>Confusion: assigning vs declaring</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let count = 0;       // global declaration
+
+function bump() {
+  count = count + 1;   // assignment — modifies the global
+}
+
+function reset() {
+  let count = 0;       // declaration — creates a new LOCAL count, doesn't touch the global
+}
+
+bump();
+reset();
+console.log(count);
+// prints: 1 — reset's local count was a separate variable, the global was untouched</code></pre>
+    <p>Adding <code>const</code>/<code>let</code> creates a new local. Without it, you're modifying whatever variable already exists in the nearest scope.</p>
+
+    <p><strong>Confusion: accidental globals</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function setup() {
+  result = computeResult();   // missing const/let — creates a global by accident
+  return result;
+}
+// fix: const result = computeResult();
+// always declare with const or let, even inside functions</code></pre>
+
+    <p><strong>Confusion: when persistence is wrong</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let total = 0;     // global
+
+function sum(numbers) {
+  total = 0;       // have to manually reset, or it carries from previous calls
+  for (const n of numbers) {
+    total = total + n;
+  }
+  return total;
+}
+
+// safer with a local — each call gets a fresh start automatically
+function sum(numbers) {
+  let total = 0;
+  for (const n of numbers) {
+    total = total + n;
+  }
+  return total;
+}</code></pre>
+    <p>If you only need a value during the function's run, use a local. Globals are for things that need to stick around.</p>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-17-2-3': `
+<pre class="language-javascript"><code class="language-javascript">function setup() {
+  config = { theme: "dark" };    // missing const/let → accidental global
+}
+// fix: const config = { theme: "dark" };</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">let userName = "Os";
+
+function setName(name) {
+  userName = name;
+}
+function clearName() {
+  let userName = "";   // creates a NEW local, doesn't touch the global
+}
+
+setName("Sam");
+clearName();
+console.log(userName);
+// prints: "Sam" — clearName didn't actually clear anything
+// fix: in clearName, drop the let — userName = "";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Too many globals — hard to know which function affects what
+let user = null;
+let cart = [];
+let theme = "light";
+let language = "en";
+let isPremium = false;
+let lastVisit = null;
+// works, but every function in the file can read or change all of these
+// fix: group related state into objects, or move it into closures</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const TAX_RATE = 0.08;
+function discount() {
+  TAX_RATE = 0.05;   // TypeError — can't reassign const
+}
+// fix: use let if you need it to change, or pass a different value as a parameter</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Reusing a global as a temporary
+let temp;
+function process(items) {
+  for (const item of items) {
+    temp = transform(item);
+    save(temp);
+  }
+}
+// works, but temp is exposed to every other function
+// fix: make temp local — let temp = ... inside the function</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-17-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Constants used in many places
+const TAX_RATE = 0.08;
+const MAX_ITEMS = 50;
+
+function getTax(price) {
+  return price * TAX_RATE;
+}
+
+console.log(getTax(100));
+// prints: 8
+
+// Counter that persists between calls
+let clicks = 0;
+
+function recordClick() {
+  clicks = clicks + 1;
+  return clicks;
+}
+
+console.log(recordClick());
+console.log(recordClick());
+console.log(recordClick());
+// prints:
+//   1
+//   2
+//   3
+
+// Shared state object
+const user = {
+  name: "Os",
+  loggedIn: false,
+};
+
+function login(name) {
+  user.name = name;
+  user.loggedIn = true;
+}
+
+login("Sam");
+console.log(user);
+// prints: { name: "Sam", loggedIn: true }</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-17-3-1': `
+    <p><strong>Example: app-wide configuration</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const API_URL = "https://api.example.com";
+const TIMEOUT_MS = 5000;
+
+async function fetchUsers() {
+  return fetch(API_URL + "/users", { timeout: TIMEOUT_MS });
+}
+
+async function fetchProducts() {
+  return fetch(API_URL + "/products", { timeout: TIMEOUT_MS });
+}
+// both functions read the same constants — change once, applies everywhere</code></pre>
+
+    <p><strong>Example: cart that persists across many handlers</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let cart = [];
+
+function addToCart(product) {
+  cart.push(product);
+  updateBadge();
+}
+
+function removeFromCart(productId) {
+  cart = cart.filter(p => p.id !== productId);
+  updateBadge();
+}
+
+function updateBadge() {
+  cartBadge.textContent = cart.length;
+}
+
+addBtn.addEventListener("click", () => addToCart({ id: 1, name: "Hat" }));
+removeBtn.addEventListener("click", () => removeFromCart(1));
+// the cart survives between every click because it lives at the global level</code></pre>
+
+    <p><strong>Example: cached DOM references</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const errorBox = document.querySelector("#error");
+const successBox = document.querySelector("#success");
+const submitBtn = document.querySelector("#submit");
+
+function showError(msg) {
+  errorBox.textContent = msg;
+  errorBox.classList.add("visible");
+}
+
+function showSuccess(msg) {
+  successBox.textContent = msg;
+  successBox.classList.add("visible");
+}
+// querySelector runs once at the top — every function reuses the cached references</code></pre>
+
+    <p><strong>Example: feature flags</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const FEATURES = {
+  newCheckout: true,
+  betaSearch: false,
+};
+
+function checkout() {
+  if (FEATURES.newCheckout) {
+    runNewCheckout();
+  } else {
+    runOldCheckout();
+  }
+}
+// global FEATURES is read by any function that needs to branch on a flag</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-17-3-2': `
+    <ul>
+      <li><strong>Local variables</strong> → the opposite — visible only inside one function</li>
+      <li><strong>Scope</strong> → globals live in the global scope; everything can see them</li>
+      <li><strong>Constants</strong> → most useful globals are <code>const</code> values that never change</li>
+      <li><strong>Shared state</strong> → globals are how state persists across function calls</li>
+      <li><strong>Variable shadowing</strong> → a local with the same name hides the global inside that function</li>
+      <li><strong>Accidental globals</strong> → forgetting <code>const</code>/<code>let</code> creates one by accident</li>
+      <li><strong>Side effects</strong> → modifying a global is a side effect</li>
+      <li><strong>Encapsulation</strong> → using fewer globals keeps code more self-contained</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-17-3-3': `
+    <ul>
+      <li>Local variables</li>
+      <li>Scope</li>
+      <li>Constants</li>
+      <li>Variable shadowing</li>
+      <li>Accidental globals</li>
+      <li>Side effects</li>
+      <li>The <code>window</code> object (in browsers)</li>
+      <li>Modules and namespacing</li>
+    </ul>
+  `,
+
+
+  /* ========================================================= 
+   Sub-lesson: 3.9.19 Functions → functions using outside variables
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-18-0-0': `
+    <p>A function can use variables from the surrounding code — not just its own parameters and locals. When a function reads or modifies a variable that lives outside it, it's "reaching out" into the surrounding scope.</p>
+    <p>This is the foundation of <strong>closures</strong>: an inner function remembering and using variables from the outer code that contained it.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-18-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const userName = "Os";
+
+function greet() {
+  console.log("Hello, " + userName);   // userName isn't a parameter, isn't local — it's outside
+}
+
+greet();
+// prints: "Hello, Os"</code></pre>
+    <p>The function didn't receive <code>userName</code> as an argument. It just reached up into the surrounding scope and used it. Any function can do this with any variable that exists in its outer scopes.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-18-0-2': `
+<pre class="language-javascript"><code class="language-javascript">let visitCount = 0;
+
+function trackVisit() {
+  visitCount = visitCount + 1;
+  console.log("Total visits: " + visitCount);
+}
+
+trackVisit();
+trackVisit();
+trackVisit();
+// prints:
+//   Total visits: 1
+//   Total visits: 2
+//   Total visits: 3
+
+// let visitCount = 0          → outer variable, declared in the surrounding scope
+// function trackVisit         → has access to its outer scope
+// visitCount = visitCount + 1 → reads the outer variable, modifies it
+// each call sees the updated value because they all reference the same outer variable</code></pre>
+    <p>Because <code>visitCount</code> lives outside the function, it persists between calls. The function isn't creating a new variable each time — it's modifying the one outside.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-18-0-3': `
+    <p>A function can read any variable from any enclosing scope:</p>
+<pre class="language-javascript"><code class="language-javascript">const a = 1;
+
+function outer() {
+  const b = 2;
+
+  function inner() {
+    const c = 3;
+    console.log(a, b, c);   // can see all three
+  }
+
+  inner();
+}
+
+outer();
+// prints: 1 2 3</code></pre>
+
+    <p>If a function modifies an outer variable, the change persists:</p>
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+
+function increment() {
+  count = count + 1;
+}
+
+increment();
+increment();
+console.log(count);
+// prints: 2 — the outer variable was modified twice</code></pre>
+
+    <p>Reading is fine. Reassigning <code>const</code> is not — same rule as anywhere else:</p>
+<pre class="language-javascript"><code class="language-javascript">const config = { theme: "light" };
+
+function update() {
+  config.theme = "dark";    // modifying a property — fine
+  // config = { theme: "dark" };  // wrong — can't reassign const
+}
+
+update();
+console.log(config);
+// prints: { theme: "dark" }</code></pre>
+
+    <p>An inner function can keep working with outer variables even after the outer function has finished — that's a closure:</p>
+<pre class="language-javascript"><code class="language-javascript">function makeCounter() {
+  let count = 0;
+  return function() {
+    count = count + 1;
+    return count;
+  };
+}
+
+const counter = makeCounter();
+console.log(counter());
+console.log(counter());
+// prints:
+//   1
+//   2
+// makeCounter() has already returned — but the inner function still remembers count</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-18-1-0': `
+    <p>If functions could only see their own parameters and locals, every shared value would have to be passed in as an argument every single time. That'd make code repetitive and tightly coupled.</p>
+    <p>Letting functions read from their surroundings lets them work with shared state — counters that persist, configs that apply everywhere, helper variables shared across multiple functions — without constantly passing the same things around.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-18-1-1': `
+    <p>Use outside variables when several functions need to share state or settings, or when a function needs to "remember" something between calls. The most common pattern is the closure: an inner function that captures and uses a variable from its containing function.</p>
+<pre class="language-javascript"><code class="language-javascript">// Without using outside variables — count has to be passed and returned each time
+function increment(count) {
+  return count + 1;
+}
+let total = 0;
+total = increment(total);
+total = increment(total);
+
+// Using outside variables — cleaner, count lives in one place
+let count = 0;
+function tick() {
+  count = count + 1;
+}
+tick();
+tick();
+console.log(count);
+// prints: 2</code></pre>
+    <p>The cleaner version is also riskier: every function reaching <code>count</code> can change it, so you have to be careful about who's allowed to. That's the tradeoff.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-18-1-2': `
+    <p>This pattern is everywhere — closures, event handlers, factories, modules.</p>
+<pre class="language-javascript"><code class="language-javascript">// Constants used by many functions
+const API_URL = "https://api.example.com";
+
+async function getUsers()    { return fetch(API_URL + "/users"); }
+async function getProducts() { return fetch(API_URL + "/products"); }
+
+// Click handler reading and modifying outer state
+let clickCount = 0;
+button.addEventListener("click", () => {
+  clickCount = clickCount + 1;
+  display.textContent = clickCount;
+});
+
+// Factory function returning an inner function that uses outer values
+function makeMultiplier(factor) {
+  return function(n) {
+    return n * factor;        // factor comes from the outer scope
+  };
+}
+
+const triple = makeMultiplier(3);
+console.log(triple(10));
+// prints: 30</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-18-1-3': `
+    <p>A function isn't a sealed box. It's more like a room with a window. The function has its own things inside (locals, parameters), but it can also see out the window into the surrounding code — and use whatever's out there.</p>
+    <p>That's why a click counter at the top of your file can be incremented by a function inside an event handler, even though they're written far apart. They share the same outer scope, so the inner function can reach the outer counter.</p>
+    <p>The "remembering" part is what makes closures special: the function keeps its view through that window even if the outer function has long since finished. Whatever was in scope when the function was created stays available to it forever.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-18-1-4': `
+    <p>A function carries an invisible link back to the scope it was defined in. Wherever it gets called from, it can still see those original surrounding variables.</p>
+<pre class="language-javascript"><code class="language-javascript">function makeGreeter(greeting) {
+  return function(name) {
+    return greeting + ", " + name;    // ← reaches out for "greeting"
+  };
+}
+
+const sayHi = makeGreeter("Hi");
+const sayHello = makeGreeter("Hello");
+
+console.log(sayHi("Os"));
+console.log(sayHello("Sam"));
+// prints:
+//   Hi, Os
+//   Hello, Sam
+// each inner function carries its own remembered "greeting"</code></pre>
+    <p>The inner function isn't just code — it's code <em>plus</em> a snapshot of the surrounding variables it depends on. That snapshot is the closure.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-18-1-5': `
+<pre class="language-javascript"><code class="language-javascript">let lastUser = null;
+
+function login(name) {
+  lastUser = name;
+  console.log("Logged in as " + lastUser);
+}
+
+login("Os");
+login("Sam");
+// prints:
+//   Logged in as Os
+//   Logged in as Sam
+
+// JavaScript is thinking:
+// Line 1: register lastUser in the global scope, value null.
+// Line 3: register login. Don't run it yet.
+// Line 8: see login("Os") → call it. Local scope: name = "Os".
+// Line 4: see lastUser = name → no local "lastUser", look outward → finds the global one. Set global lastUser to "Os".
+// Line 5: log "Logged in as " + lastUser → "Logged in as Os".
+// Line 6: function ends. Local scope (with name) destroyed. Global lastUser is still "Os".
+// Line 9: see login("Sam") → fresh local scope: name = "Sam".
+// Line 4: lastUser = "Sam" → updates the same global. (Was "Os", now "Sam".)
+// Line 5: logs "Logged in as Sam".</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-18-2-0': `
+    <p>If a function seems to "remember" something between calls but you didn't intend that, it's reading from an outer variable. If you wanted a fresh value each call, you need a local.</p>
+<pre class="language-javascript"><code class="language-javascript">let total = 0;
+
+function sum(numbers) {
+  for (const n of numbers) {
+    total = total + n;     // reaches outside — accumulates between calls!
+  }
+  return total;
+}
+
+console.log(sum([1, 2, 3]));
+console.log(sum([1, 2, 3]));
+// prints:
+//   6
+//   12  — wrong! the second call kept adding to the first call's total
+// fix: declare total inside the function (let total = 0; inside the body)</code></pre>
+
+    <p>If a closure seems to "lose" its outer value, double-check that the outer variable was a <code>const</code> or <code>let</code> in the right scope. Closures hold references, not snapshots — but the variable still has to exist in the function's chain of outer scopes.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-18-2-1': `
+    <p>Functions can see "outward" but not "inward." A function can reach into its surrounding scopes to read or modify variables. But code outside the function can't reach inside it.</p>
+    <p>This is why globals and closures both work: the function is allowed to look out and use what it finds. And it's why local variables stay private: nothing on the outside has a way to look in.</p>
+    <p>Once you see this, scope stops feeling like a list of rules and starts feeling like a one-way mirror.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-18-2-2': `
+    <p><strong>Confusion: outside variable vs parameter</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const greeting = "Hello";
+
+function greet(name) {       // name comes IN as an argument
+  console.log(greeting + ", " + name);   // greeting comes from OUTSIDE
+}
+
+greet("Os");
+// prints: "Hello, Os"
+// greeting wasn't passed in — the function just reached up to find it</code></pre>
+
+    <p><strong>Confusion: inner function still works after outer returns</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function makeGreeter(greeting) {
+  return function(name) {
+    return greeting + ", " + name;
+  };
+}
+
+const hello = makeGreeter("Hello");
+console.log(hello("Os"));
+// prints: "Hello, Os"
+// makeGreeter has already finished, but "Hello" is still alive inside hello — that's a closure</code></pre>
+
+    <p><strong>Confusion: closure captures the variable, not its value at the moment</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+
+function show() {
+  console.log(count);    // reads the LATEST value of count
+}
+
+show();             // 0
+count = 5;
+show();             // 5 — show always reads the current count, not a snapshot</code></pre>
+
+    <p><strong>Confusion: shadowing — local hides outer</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const name = "outer";
+
+function greet() {
+  const name = "inner";    // creates a NEW local — outer is hidden inside
+  console.log(name);
+}
+
+greet();
+console.log(name);
+// prints:
+//   inner
+//   outer</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-18-2-3': `
+<pre class="language-javascript"><code class="language-javascript">let total = 0;
+function sum(numbers) {
+  for (const n of numbers) {
+    total = total + n;
+  }
+  return total;
+}
+sum([1, 2]);
+sum([1, 2]);
+// returns 3, then 6 — the global accumulates
+// fix: declare let total = 0 INSIDE the function</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function process() {
+  result = computeStuff();   // missing const/let → accidentally creates a global
+}
+// fix: const result = computeStuff();</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const items = [1, 2, 3];
+const handlers = [];
+
+for (var i = 0; i < items.length; i++) {
+  handlers.push(function() { console.log(i); });
+}
+
+handlers[0]();
+handlers[1]();
+handlers[2]();
+// prints: 3, 3, 3 — every closure reads the SAME outer i (now 3)
+// fix: use let i instead of var i — let is block-scoped, each loop gets its own i</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const config = { theme: "light" };
+
+function freeze() {
+  config = { theme: "dark" };   // TypeError — can't reassign const
+}
+// fix: modify a property: config.theme = "dark";
+// or use let if you really need to reassign</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Way too much shared state
+let user = null;
+let cart = [];
+let orders = [];
+function loginUser()      { user = ...; }
+function addToCart()      { cart.push(...); }
+function placeOrder()     { orders.push(...); user = ...; cart = []; }
+// any function can change anything — bugs become hard to trace
+// fix: group related state into objects, or limit who's allowed to modify what</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-18-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Reading an outer constant
+const TAX_RATE = 0.08;
+function withTax(price) {
+  return price + (price * TAX_RATE);
+}
+withTax(100);
+// returns: 108
+
+// Modifying an outer counter
+let clicks = 0;
+function track() {
+  clicks = clicks + 1;
+}
+track();
+track();
+console.log(clicks);
+// prints: 2
+
+// Inner function remembers an outer value (closure)
+function greeter(greeting) {
+  return function(name) {
+    return greeting + ", " + name;
+  };
+}
+const hi = greeter("Hi");
+console.log(hi("Os"));
+// prints: "Hi, Os"
+
+// Counter factory — each counter has its own private count
+function makeCounter() {
+  let count = 0;
+  return function() {
+    count = count + 1;
+    return count;
+  };
+}
+const c1 = makeCounter();
+const c2 = makeCounter();
+console.log(c1());
+console.log(c1());
+console.log(c2());
+// prints:
+//   1
+//   2
+//   1   — c2 has its own separate count</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-18-3-1': `
+    <p><strong>Example: handler reaching out for state</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let cartCount = 0;
+
+addBtn.addEventListener("click", () => {
+  cartCount = cartCount + 1;
+  cartBadge.textContent = cartCount;
+});
+// the click handler reads and updates cartCount from the outer scope</code></pre>
+
+    <p><strong>Example: configuration captured by helpers</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const API_URL = "https://api.example.com";
+
+async function fetchUsers()    { return fetch(API_URL + "/users"); }
+async function fetchProducts() { return fetch(API_URL + "/products"); }
+async function fetchOrders()   { return fetch(API_URL + "/orders"); }
+// every function uses the same outer API_URL — no need to pass it in</code></pre>
+
+    <p><strong>Example: closure for private state</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function createIdGenerator() {
+  let id = 0;
+  return function nextId() {
+    id = id + 1;
+    return id;
+  };
+}
+
+const nextId = createIdGenerator();
+console.log(nextId());
+console.log(nextId());
+console.log(nextId());
+// prints:
+//   1
+//   2
+//   3
+// id is hidden — nothing outside can read or change it</code></pre>
+
+    <p><strong>Example: customizing helpers</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function withPrefix(prefix) {
+  return function(message) {
+    console.log("[" + prefix + "] " + message);
+  };
+}
+
+const logInfo = withPrefix("INFO");
+const logError = withPrefix("ERROR");
+
+logInfo("user logged in");
+logError("network failed");
+// prints:
+//   [INFO] user logged in
+//   [ERROR] network failed
+// each returned function remembers its own prefix</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-18-3-2': `
+    <ul>
+      <li><strong>Closures</strong> → an inner function remembering its outer scope</li>
+      <li><strong>Scope chain</strong> → how JavaScript looks up variables from inner to outer scopes</li>
+      <li><strong>Local variables</strong> → the function's own variables, separate from outer ones</li>
+      <li><strong>Global variables</strong> → outer variables visible everywhere</li>
+      <li><strong>Variable shadowing</strong> → a local with the same name hides the outer</li>
+      <li><strong>Factory functions</strong> → functions that return other functions with captured state</li>
+      <li><strong>Side effects</strong> → modifying outer variables is a side effect</li>
+      <li><strong>Encapsulation</strong> → closures let you hide state behind a function</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-18-3-3': `
+    <ul>
+      <li>Closures</li>
+      <li>Scope chain</li>
+      <li>Local vs global variables</li>
+      <li>Variable shadowing</li>
+      <li>Factory functions</li>
+      <li>Higher-order functions</li>
+      <li>Module pattern</li>
+      <li>The classic loop-and-closure bug</li>
+    </ul>
+  `,
+
+
+  /* ========================================================= 
+   Sub-lesson: 3.9.20 Functions → functions receiving strings
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-19-0-0': `
+    <p>A function "receives" a string when you pass a string in as an argument. Inside the function, the parameter holds that string and the body can read it, transform it, combine it with other text, or check it against rules.</p>
+    <p>Strings are one of the most common things functions work with — names, messages, URLs, form input, search terms.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-19-0-1': `
+<pre class="language-javascript"><code class="language-javascript">function shout(text) {
+  return text.toUpperCase() + "!";
+}
+
+console.log(shout("hello"));
+console.log(shout("good morning"));
+// prints:
+//   HELLO!
+//   GOOD MORNING!</code></pre>
+    <p>The parameter <code>text</code> holds whatever string was passed in. Inside the body, you can use it like any other string — calling string methods, concatenating with <code>+</code>, slicing, comparing.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-19-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function makeUsername(firstName, lastName) {
+  const cleaned = (firstName + lastName).toLowerCase();
+  return cleaned.replace(/\\s+/g, "");
+}
+
+console.log(makeUsername("Os", "Garcia"));
+console.log(makeUsername("Sam ", " Lee"));
+// prints:
+//   osgarcia
+//   samlee
+
+// firstName, lastName       → string parameters
+// (firstName + lastName)    → concatenate the two strings
+// .toLowerCase()            → string method called on the result
+// .replace(/\\s+/g, "")      → another method, removes whitespace
+// return cleaned...         → the final string is handed back</code></pre>
+    <p>Once a string is inside the function, you can do anything with it — every string method works on a parameter just like any other string variable.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-19-0-3': `
+    <p>String arguments must be wrapped in quotes — single, double, or backticks:</p>
+<pre class="language-javascript"><code class="language-javascript">greet("Os");        // double quotes
+greet('Os');         // single quotes
+greet(\`Os\`);         // backticks (template literal)
+
+greet(Os);           // wrong: ReferenceError — Os is treated as a variable name
+// fix: wrap the value in quotes</code></pre>
+
+    <p>The parameter is a regular variable holding a string — all string methods are available:</p>
+<pre class="language-javascript"><code class="language-javascript">function describe(text) {
+  console.log("length:", text.length);
+  console.log("upper:", text.toUpperCase());
+  console.log("first char:", text[0]);
+  console.log("first 3:", text.slice(0, 3));
+  console.log("contains 'lo':", text.includes("lo"));
+}
+
+describe("hello world");
+// prints:
+//   length: 11
+//   upper: HELLO WORLD
+//   first char: h
+//   first 3: hel
+//   contains 'lo': true</code></pre>
+
+    <p>If a non-string is passed, the function may still run — but the result might be unexpected:</p>
+<pre class="language-javascript"><code class="language-javascript">function shout(text) {
+  return text.toUpperCase();
+}
+
+shout("hi");        // "HI" — fine
+shout(42);          // TypeError — numbers don't have toUpperCase
+shout(null);        // TypeError — null doesn't have toUpperCase
+shout(undefined);   // TypeError — undefined doesn't have toUpperCase</code></pre>
+
+    <p>You can build new strings inside the function using <code>+</code> or template literals:</p>
+<pre class="language-javascript"><code class="language-javascript">function welcome(name) {
+  return "Welcome, " + name + "!";          // concatenation
+}
+
+function welcome2(name) {
+  return \`Welcome, \${name}!\`;               // template literal — easier to read with multiple inserts
+}
+
+welcome("Os");      // returns "Welcome, Os!"
+welcome2("Os");     // returns "Welcome, Os!"</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-19-1-0': `
+    <p>Most user-facing data is text — names, addresses, messages, search queries, error messages. Without a way for functions to take strings as input, every piece of text-processing logic would have to be inlined wherever it's needed.</p>
+    <p>Functions that receive strings let you wrap text-processing logic in a name and reuse it. One <code>formatPrice</code>, one <code>capitalizeName</code>, one <code>buildErrorMessage</code> — used everywhere those operations are needed.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-19-1-1': `
+    <p>Use string parameters whenever a function needs to operate on text. Validation, formatting, building messages, parsing URLs, transforming user input — all of these are functions that receive strings.</p>
+<pre class="language-javascript"><code class="language-javascript">// Formatting
+function capitalize(word) {
+  return word[0].toUpperCase() + word.slice(1).toLowerCase();
+}
+capitalize("hello");
+// returns: "Hello"
+
+// Validation
+function isValidEmail(email) {
+  return email.includes("@") && email.length > 3;
+}
+isValidEmail("test@x.com");
+// returns: true
+
+// Building messages
+function welcomeMessage(name) {
+  return "Welcome to the app, " + name + "!";
+}
+welcomeMessage("Os");
+// returns: "Welcome to the app, Os!"</code></pre>
+    <p>Each one is a small, named tool you can use anywhere in the codebase.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-19-1-2': `
+    <p>String parameters show up everywhere user input or display text is involved.</p>
+<pre class="language-javascript"><code class="language-javascript">// Form handling
+function trimInput(value) {
+  return value.trim();
+}
+
+// Building UI text
+function buildBadgeText(label, count) {
+  return label + " (" + count + ")";
+}
+
+// Working with URLs
+function getPathFromUrl(url) {
+  return url.split("?")[0];
+}
+
+// Search and filtering
+function matchesQuery(name, query) {
+  return name.toLowerCase().includes(query.toLowerCase());
+}
+
+// Building HTML
+function makeHeading(text) {
+  return "<h1>" + text + "</h1>";
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-19-1-3': `
+    <p>A function that receives a string is just a function with a slot waiting for some text. When you call it, you hand it the text you want it to work with, and the function does whatever its job is — clean it up, check it, format it, build something with it.</p>
+    <p>Inside the function, the string parameter is just a normal variable that happens to hold text. You can use any string method on it, chop it up, glue it to other strings, or hand it back transformed.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-19-1-4': `
+    <p>The parameter is the slot. The argument is the text. Inside the function, the parameter behaves like any string variable.</p>
+<pre class="language-javascript"><code class="language-javascript">function process(text) {
+  // inside, "text" is just a string variable
+  // you can do anything with it that you'd do with any string
+}
+
+process("hello");
+// while this call is running:
+// text = "hello"</code></pre>
+    <p>Once you see the parameter as "just a string variable, but the value comes from the call," all the string-processing skills you already have apply directly inside the function.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-19-1-5': `
+<pre class="language-javascript"><code class="language-javascript">function reverseWord(word) {
+  const chars = word.split("");
+  const reversed = chars.reverse();
+  return reversed.join("");
+}
+
+const result = reverseWord("hello");
+console.log(result);
+// prints: "olleh"
+
+// JavaScript is thinking:
+// Line 1: register reverseWord. Don't run the body yet.
+// Line 7: see reverseWord("hello") → call it. Local scope: word = "hello".
+// Line 2: word.split("") → ["h", "e", "l", "l", "o"]. Store in local chars.
+// Line 3: chars.reverse() → ["o", "l", "l", "e", "h"]. Store in local reversed.
+// Line 4: reversed.join("") → "olleh". Return it.
+// Line 7: store "olleh" in result.
+// Line 8: log result → "olleh".</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-19-2-0': `
+    <p>If you get <code>TypeError: ... is not a function</code> on a string method, the parameter probably isn't a string — it might be <code>undefined</code>, <code>null</code>, or a number.</p>
+<pre class="language-javascript"><code class="language-javascript">function shout(text) {
+  return text.toUpperCase();
+}
+
+shout();
+// TypeError: Cannot read properties of undefined (reading 'toUpperCase')
+// fix: pass a string, or check for undefined first
+//   if (!text) return "";</code></pre>
+
+    <p>If a string parameter contains unexpected content (extra spaces, mixed case, weird characters), log it at the top of the body to see exactly what came in:</p>
+<pre class="language-javascript"><code class="language-javascript">function login(email) {
+  console.log("got:", JSON.stringify(email));   // shows quotes and exact characters
+  // ...
+}
+
+login("  test@example.com  ");
+// prints: got: "  test@example.com  "
+// JSON.stringify reveals hidden whitespace that a normal log wouldn't</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-19-2-1': `
+    <p>A string parameter is a string. That's it. The fact that it came from outside the function doesn't change what you can do with it.</p>
+    <p>Once it's inside the body, all your normal string skills apply — methods, concatenation, comparison, slicing. The parameter is just the doorway through which the string entered.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-19-2-2': `
+    <p><strong>Confusion: passing a string vs passing a variable that holds a string</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {
+  console.log("hi, " + name);
+}
+
+greet("Os");           // passing the string literal
+const userName = "Os";
+greet(userName);       // passing a variable that holds a string
+// both end up with name = "Os" inside the function — same result</code></pre>
+
+    <p><strong>Confusion: forgetting quotes</strong></p>
+<pre class="language-javascript"><code class="language-javascript">greet(Os);
+// ReferenceError — Os is treated as a variable name, but Os doesn't exist
+// fix: greet("Os");</code></pre>
+
+    <p><strong>Confusion: changing the parameter doesn't change the original</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function tidy(text) {
+  text = text.trim();          // reassigns the local parameter
+  return text;
+}
+
+const original = "  hello  ";
+const tidied = tidy(original);
+console.log(original);         // "  hello  " — unchanged
+console.log(tidied);            // "hello"
+// strings are immutable — methods like trim return a NEW string, they don't modify the original</code></pre>
+
+    <p><strong>Confusion: empty string vs missing</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function describe(text) {
+  if (!text) return "no text";
+  return "got: " + text;
+}
+
+describe();          // "no text" — undefined is falsy
+describe("");        // "no text" — empty string is also falsy
+describe("hi");       // "got: hi"
+// !text catches both undefined AND empty string — useful for "is anything there?"</code></pre>
+
+    <p><strong>Confusion: + vs template literals</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function buildMessage(name, count) {
+  return "Hello " + name + ", you have " + count + " messages.";    // concatenation
+  return \`Hello \${name}, you have \${count} messages.\`;             // template literal
+}
+// both produce the same output — template literals are easier to read with multiple inserts</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-19-2-3': `
+<pre class="language-javascript"><code class="language-javascript">function shout(text) {
+  return text.toUpperCase();
+}
+shout(42);
+// TypeError — 42 is a number, doesn't have toUpperCase
+// fix: pass a string, or coerce: text = String(text);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {
+  return "hi, " + name;
+}
+greet();
+// returns: "hi, undefined" — no argument was passed
+// fix: greet("Os"); — or set a default: function greet(name = "friend")</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function clean(text) {
+  text.trim();         // result is thrown away
+  return text;
+}
+clean("  hello  ");
+// returns: "  hello  " — trim wasn't captured
+// fix: text = text.trim(); — or return text.trim() directly</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function welcome(name) {
+  return "Welcome " name;
+}
+// SyntaxError — missing + between the strings
+// fix: return "Welcome " + name; — or use a template literal</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function login(email) {
+  if (email == "test@example.com") { ... }
+}
+login("  test@example.com  ");
+// won't match — extra spaces in the email
+// fix: trim before comparing: if (email.trim() === "test@example.com")</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function isMatch(name, query) {
+  return name.includes(query);
+}
+isMatch("Hello World", "hello");
+// returns: false — case-sensitive
+// fix: lowercase both sides: name.toLowerCase().includes(query.toLowerCase())</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-19-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Returning a transformed string
+function shout(text) {
+  return text.toUpperCase() + "!";
+}
+shout("hello");
+// returns: "HELLO!"
+
+// Combining multiple string parameters
+function fullName(first, last) {
+  return first + " " + last;
+}
+fullName("Os", "Garcia");
+// returns: "Os Garcia"
+
+// Returning a boolean from a string check
+function isLongEnough(text) {
+  return text.length >= 8;
+}
+isLongEnough("hi");
+isLongEnough("hello world");
+// returns: false, then true
+
+// Using a template literal
+function welcome(name) {
+  return \`Welcome, \${name}!\`;
+}
+welcome("Os");
+// returns: "Welcome, Os!"
+
+// Default parameter when no string is passed
+function greet(name = "friend") {
+  return "Hello, " + name;
+}
+greet();
+greet("Os");
+// returns: "Hello, friend", then "Hello, Os"</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-19-3-1': `
+    <p><strong>Example: cleaning user input</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function cleanInput(value) {
+  return value.trim().toLowerCase();
+}
+
+const email = cleanInput(emailInput.value);
+console.log(email);
+// strips spaces and normalizes casing — common before saving or comparing</code></pre>
+
+    <p><strong>Example: validating a string</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function isValidUsername(username) {
+  if (username.length < 3) return false;
+  if (username.length > 20) return false;
+  if (!/^[a-zA-Z0-9_]+$/.test(username)) return false;
+  return true;
+}
+
+if (!isValidUsername(input.value)) {
+  showError("Invalid username");
+}</code></pre>
+
+    <p><strong>Example: building a display string</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function formatTimeAgo(label) {
+  return "Last updated: " + label;
+}
+
+statusBar.textContent = formatTimeAgo("2 minutes ago");
+// the function packages the prefix so all "last updated" labels look consistent</code></pre>
+
+    <p><strong>Example: search filter</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function matchesSearch(productName, query) {
+  return productName.toLowerCase().includes(query.toLowerCase());
+}
+
+const results = products.filter(p => matchesSearch(p.name, searchInput.value));
+console.log(results);
+// case-insensitive search — works whether the user types "hat", "Hat", or "HAT"</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-19-3-2': `
+    <ul>
+      <li><strong>Strings</strong> → the data type the function operates on</li>
+      <li><strong>Parameters</strong> → the slot that catches the incoming string</li>
+      <li><strong>String methods</strong> → <code>.trim()</code>, <code>.toUpperCase()</code>, <code>.includes()</code>, etc.</li>
+      <li><strong>String concatenation</strong> → using <code>+</code> to join strings together</li>
+      <li><strong>Template literals</strong> → cleaner syntax for building strings with inserts</li>
+      <li><strong>Default parameters</strong> → fallback when no string is passed</li>
+      <li><strong>Form input</strong> → form values come in as strings</li>
+      <li><strong>Validation</strong> → string checks are a common function pattern</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-19-3-3': `
+    <ul>
+      <li>Strings</li>
+      <li>String methods</li>
+      <li>Template literals</li>
+      <li>String concatenation</li>
+      <li>Parameters</li>
+      <li>Default parameters</li>
+      <li>Type coercion</li>
+      <li>Form input handling</li>
+    </ul>
+  `,
+
+
+  /* ========================================================= 
+   Sub-lesson: 3.9.21 Functions → functions receiving numbers
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-8-20-0-0': `
+    <p>A function "receives" a number when you pass a number in as an argument. Inside the function, the parameter holds that number and the body can do math with it, compare it, format it, or use it to drive logic.</p>
+    <p>Numbers are the second-most-common kind of input — prices, ages, counts, percentages, coordinates, scores.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-8-20-0-1': `
+<pre class="language-javascript"><code class="language-javascript">function tripleIt(n) {
+  return n * 3;
+}
+
+console.log(tripleIt(4));
+console.log(tripleIt(10));
+// prints:
+//   12
+//   30</code></pre>
+    <p>The parameter <code>n</code> holds whatever number was passed in. Inside the body, you can do math with it, compare it, or pass it to other functions.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-8-20-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function applyDiscount(price, percent) {
+  const discount = price * (percent / 100);
+  const final = price - discount;
+  return final;
+}
+
+console.log(applyDiscount(80, 25));
+// prints: 60
+
+// price, percent     → number parameters
+// price * (percent / 100) → math operations on the parameters
+// price - discount   → another calculation
+// return final       → the resulting number is handed back</code></pre>
+    <p>Once a number is inside the function, you can use any math operator (<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code>, <code>**</code>) and any number method (<code>toFixed</code>, <code>toString</code>) on it.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-8-20-0-3': `
+    <p>Number arguments are written without quotes:</p>
+<pre class="language-javascript"><code class="language-javascript">double(5);          // correct: passing the number 5
+double("5");         // wrong: passing the string "5"
+                     // double would try to do "5" * 2 → JS coerces, returns 10 anyway
+                     // but other operations would behave differently</code></pre>
+
+    <p>The parameter holds a number — math operators and number methods work on it:</p>
+<pre class="language-javascript"><code class="language-javascript">function describe(n) {
+  console.log("doubled:", n * 2);
+  console.log("squared:", n ** 2);
+  console.log("rounded:", Math.round(n));
+  console.log("two decimals:", n.toFixed(2));
+  console.log("is even:", n % 2 === 0);
+}
+
+describe(7.456);
+// prints:
+//   doubled: 14.912
+//   squared: 55.59145600000001
+//   rounded: 7
+//   two decimals: 7.46
+//   is even: false</code></pre>
+
+    <p>Watch out for <code>+</code> with strings — it concatenates instead of adding:</p>
+<pre class="language-javascript"><code class="language-javascript">function add(a, b) {
+  return a + b;
+}
+
+add(2, 3);          // returns: 5  (number + number)
+add("2", "3");      // returns: "23"  (string + string)
+add("2", 3);        // returns: "23"  (string + number → string)
+// fix: convert to numbers first → Number(a) + Number(b)</code></pre>
+
+    <p>Form inputs always arrive as strings — convert them to numbers explicitly:</p>
+<pre class="language-javascript"><code class="language-javascript">const raw = priceInput.value;     // "19.99" — string
+const price = Number(raw);         // 19.99 — actual number
+
+function applyTax(price) {
+  return price * 1.08;
+}
+
+applyTax(price);
+// returns: 21.5892
+// passing the string "19.99" might also work due to coercion, but explicit conversion is safer</code></pre>
+
+    <p>Special values to know:</p>
+<pre class="language-javascript"><code class="language-javascript">function check(n) {
+  console.log(n);
+}
+
+check(NaN);          // NaN — "Not a Number", from invalid math
+check(Infinity);     // Infinity — from things like 1/0
+check(0.1 + 0.2);    // 0.30000000000000004 — floating-point quirk</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-8-20-1-0': `
+    <p>Most calculations in real apps — prices, ages, distances, averages, percentages — happen on numbers. Without functions to take numbers as input, math logic would have to be inlined every time you needed it.</p>
+    <p>Functions that receive numbers let you wrap calculations in a name and reuse them. One <code>calculateTax</code>, one <code>formatPrice</code>, one <code>averageScore</code> — used everywhere those calculations are needed.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-8-20-1-1': `
+    <p>Use number parameters whenever a function does math, compares quantities, or formats numeric values.</p>
+<pre class="language-javascript"><code class="language-javascript">// Math
+function addTax(price) {
+  return price + (price * 0.08);
+}
+addTax(50);
+// returns: 54
+
+// Comparison
+function isAdult(age) {
+  return age >= 18;
+}
+isAdult(20);
+// returns: true
+
+// Formatting
+function formatPrice(amount) {
+  return "$" + amount.toFixed(2);
+}
+formatPrice(19.999);
+// returns: "$20.00"</code></pre>
+    <p>Each one wraps a single calculation. The function name describes what the math means, which makes the calling code much easier to read.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-8-20-1-2': `
+    <p>Number parameters show up anywhere quantities are involved — prices, sizes, counts, times, scores.</p>
+<pre class="language-javascript"><code class="language-javascript">// Pricing
+function applyDiscount(price, percent) { return price * (1 - percent / 100); }
+
+// Quantity checks
+function hasEnoughStock(stock, ordered)  { return stock >= ordered; }
+
+// Time / age
+function isOlderThan(age, threshold) { return age > threshold; }
+
+// Display
+function formatBytes(bytes) {
+  if (bytes < 1024) return bytes + " B";
+  return (bytes / 1024).toFixed(1) + " KB";
+}
+
+// Random / chance
+function rollUnder(threshold) {
+  return Math.random() < threshold;
+}
+
+// Geometry
+function rectangleArea(width, height) { return width * height; }</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-8-20-1-3': `
+    <p>A function that receives a number is just a function with a slot waiting for some quantity. When you call it, you hand it the number you want it to work with, and the function does whatever its job is — calculate, compare, round, format.</p>
+    <p>Inside the function, the parameter is just a normal number variable. You can multiply it, divide it, compare it, round it, or use it as part of a bigger formula.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-8-20-1-4': `
+    <p>The parameter is the slot. The argument is the number. Inside the function, the parameter behaves like any number variable.</p>
+<pre class="language-javascript"><code class="language-javascript">function process(n) {
+  // inside, "n" is just a number variable
+  // you can do anything with it that you'd do with any number
+}
+
+process(7);
+// while this call is running:
+// n = 7</code></pre>
+    <p>Once you see the parameter as "just a number variable, but the value comes from the call," all your math skills work directly inside the function.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-8-20-1-5': `
+<pre class="language-javascript"><code class="language-javascript">function bonus(score) {
+  const reward = score * 10;
+  return reward + 50;
+}
+
+const result = bonus(7);
+console.log(result);
+// prints: 120
+
+// JavaScript is thinking:
+// Line 1: register bonus. Don't run the body yet.
+// Line 6: see bonus(7) → call it. Local scope: score = 7.
+// Line 2: const reward = 7 * 10 → reward is 70.
+// Line 3: return reward + 50 → 70 + 50 → 120, exit the function with 120.
+// Line 6: store 120 in result. Local scope (score, reward) destroyed.
+// Line 7: log result → 120.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-8-20-2-0': `
+    <p>If a calculation gives <code>NaN</code> ("Not a Number"), one of the inputs probably wasn't actually a number. Log the parameters with their types to see what came in.</p>
+<pre class="language-javascript"><code class="language-javascript">function add(a, b) {
+  console.log("a:", a, typeof a, "b:", b, typeof b);
+  return a + b;
+}
+
+add(5, undefined);
+// prints: a: 5 'number' b: undefined 'undefined'
+// returns: NaN — undefined breaks the math
+// fix: check inputs, or use defaults: function add(a = 0, b = 0)</code></pre>
+
+    <p>If results are slightly off (like <code>0.1 + 0.2</code> giving <code>0.30000000000000004</code>), it's floating-point math — a JavaScript-wide quirk, not a bug in your function. Use <code>.toFixed()</code> or round to a fixed number of decimals when displaying.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-8-20-2-1': `
+    <p>A number parameter is a number. The fact that it came from outside the function doesn't change what you can do with it.</p>
+    <p>Once it's inside the body, all your math skills apply — operators, methods, comparisons, formulas. The parameter is just the doorway through which the number entered.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-8-20-2-2': `
+    <p><strong>Confusion: <code>+</code> with strings</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function sum(a, b) {
+  return a + b;
+}
+
+sum(2, 3);          // returns: 5
+sum("2", "3");      // returns: "23" — strings concatenate
+sum(2, "3");        // returns: "23" — number gets coerced to string
+// fix: ensure inputs are numbers — sum(Number(a), Number(b)) — or use a number-specific operator</code></pre>
+
+    <p><strong>Confusion: form values are strings</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function calculateTotal(price, quantity) {
+  return price * quantity;
+}
+
+const price = priceInput.value;       // "19.99" — string
+const qty = qtyInput.value;            // "2" — string
+
+calculateTotal(price, qty);
+// returns: 39.98 — works because * coerces strings to numbers
+// but: calculateTotal("3", "5") with + would give "35" not 8
+// safer: convert with Number() first</code></pre>
+
+    <p><strong>Confusion: NaN doesn't equal anything, even itself</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function isValid(n) {
+  return n === n;     // false only when n is NaN
+}
+
+isValid(5);           // true
+isValid(NaN);         // false
+// the proper check is Number.isNaN(n) — purpose-built for this</code></pre>
+
+    <p><strong>Confusion: integer division</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function half(n) {
+  return n / 2;
+}
+
+half(10);          // 5
+half(7);           // 3.5 — JS uses floating-point division by default
+// for integer results, use Math.floor: Math.floor(n / 2)</code></pre>
+
+    <p><strong>Confusion: modulo for divisibility</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function isEven(n) {
+  return n % 2 === 0;     // remainder when divided by 2 is 0
+}
+
+isEven(4);         // true
+isEven(7);         // false
+// % gives the remainder — useful for divisibility checks and cycling</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-8-20-2-3': `
+<pre class="language-javascript"><code class="language-javascript">function add(a, b) {
+  return a + b;
+}
+add("5", "10");
+// returns: "510" — string concatenation, not addition
+// fix: convert first → Number("5") + Number("10") → 15</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function calculate(price) {
+  return price.toFixed(2);
+}
+calculate("19.99");
+// TypeError — toFixed only works on numbers
+// fix: convert first → Number(price).toFixed(2)</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function divide(a, b) {
+  return a / b;
+}
+divide(10, 0);
+// returns: Infinity — not an error, but probably not what you want
+// fix: check for zero first → if (b === 0) return null;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function discount(price) {
+  return price * 0.1;
+}
+discount();
+// returns: NaN — undefined * 0.1 is NaN
+// fix: set a default → function discount(price = 0)</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function isAdult(age) {
+  if (age = 18) return true;
+}
+// always returns true — = is assignment, not comparison
+// fix: use === for comparison → if (age === 18)</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function average(a, b) {
+  return a + b / 2;
+}
+average(10, 20);
+// returns: 20 — division happens before addition
+// fix: parens → return (a + b) / 2;</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-8-20-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Simple math
+function square(n) {
+  return n * n;
+}
+square(5);
+// returns: 25
+
+// Math with multiple parameters
+function average(a, b, c) {
+  return (a + b + c) / 3;
+}
+average(10, 20, 30);
+// returns: 20
+
+// Returning a boolean from a number check
+function isPositive(n) {
+  return n > 0;
+}
+isPositive(-3);
+isPositive(7);
+// returns: false, then true
+
+// Formatting
+function formatMoney(amount) {
+  return "$" + amount.toFixed(2);
+}
+formatMoney(9.5);
+// returns: "$9.50"
+
+// Default parameter
+function multiply(n, factor = 2) {
+  return n * factor;
+}
+multiply(5);
+multiply(5, 3);
+// returns: 10, then 15</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-8-20-3-1': `
+    <p><strong>Example: cart total with tax</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function calculateOrderTotal(subtotal, taxRate) {
+  const tax = subtotal * taxRate;
+  return subtotal + tax;
+}
+
+const total = calculateOrderTotal(100, 0.08);
+console.log("Total: $" + total.toFixed(2));
+// prints: "Total: $108.00"</code></pre>
+
+    <p><strong>Example: progress bar percentage</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getPercent(current, total) {
+  return Math.round((current / total) * 100);
+}
+
+const percent = getPercent(45, 60);
+progressBar.style.width = percent + "%";
+console.log(percent);
+// prints: 75
+// progress bar fills 75%</code></pre>
+
+    <p><strong>Example: clamping a value to a range</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function clamp(value, min, max) {
+  if (value < min) return min;
+  if (value > max) return max;
+  return value;
+}
+
+console.log(clamp(150, 0, 100));
+console.log(clamp(-10, 0, 100));
+console.log(clamp(50, 0, 100));
+// prints:
+//   100
+//   0
+//   50
+// useful for sliders, input limits, volume controls, anything bounded</code></pre>
+
+    <p><strong>Example: rounding a price for display</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function roundToTwo(n) {
+  return Math.round(n * 100) / 100;
+}
+
+const price = 19.99 * 1.08;       // 21.5892
+console.log(roundToTwo(price));
+// prints: 21.59
+// avoids floating-point clutter when displaying prices</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-8-20-3-2': `
+    <ul>
+      <li><strong>Numbers</strong> → the data type the function operates on</li>
+      <li><strong>Parameters</strong> → the slot that catches the incoming number</li>
+      <li><strong>Math operators</strong> → <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code>, <code>**</code></li>
+      <li><strong>Number methods</strong> → <code>.toFixed()</code>, <code>.toString()</code></li>
+      <li><strong>Math object</strong> → <code>Math.round</code>, <code>Math.floor</code>, <code>Math.max</code>, etc.</li>
+      <li><strong>Type coercion</strong> → strings can sneak into number math via <code>+</code></li>
+      <li><strong>Comparison operators</strong> → <code>&lt;</code>, <code>&gt;</code>, <code>===</code></li>
+      <li><strong>Default parameters</strong> → fallback when no number is passed</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-8-20-3-3': `
+    <ul>
+      <li>Numbers</li>
+      <li>Math operators</li>
+      <li>Math object methods</li>
+      <li>Number methods (<code>toFixed</code>, <code>toString</code>)</li>
+      <li>Type coercion</li>
+      <li><code>NaN</code> and <code>Infinity</code></li>
+      <li>Floating-point precision</li>
+      <li>Default parameters</li>
+    </ul>
+  `,
+
 });
