@@ -73,17 +73,27 @@ if (score >= 90) {
 
     <p>You can have just <code>if</code>, just <code>if</code> + <code>else</code>, or a long chain — all valid:</p>
 <pre class="language-javascript"><code class="language-javascript">// Just if — nothing happens if false
-if (isLoggedIn) showDashboard();
+if (isLoggedIn) {
+  showDashboard();
+}
 
 // if + else — one of two paths
-if (age >= 18) showAdult();
-else showMinor();
+if (age >= 18) {
+  showAdult();
+} else {
+  showMinor();
+}
 
 // if + else if + else — many paths, one fallback
-if (score >= 90) grade = "A";
-else if (score >= 80) grade = "B";
-else if (score >= 70) grade = "C";
-else grade = "F";</code></pre>
+if (score >= 90) {
+  grade = "A";
+} else if (score >= 80) {
+  grade = "B";
+} else if (score >= 70) {
+  grade = "C";
+} else {
+  grade = "F";
+}</code></pre>
 
     <p>Conditions don't have to be comparisons — any value works. JavaScript treats values as either "truthy" or "falsy":</p>
 <pre class="language-javascript"><code class="language-javascript">if (cart.length) {           // any non-zero number is truthy
@@ -147,8 +157,12 @@ if (response.ok) {
     <p>Conditionals are everywhere. Almost any function with branching logic uses them.</p>
 <pre class="language-javascript"><code class="language-javascript">// Form validation
 function isValidEmail(email) {
-  if (!email.includes("@")) return false;
-  if (email.length < 3) return false;
+  if (!email.includes("@")) {
+    return false;
+  }
+  if (email.length < 3) {
+    return false;
+  }
   return true;
 }
 
@@ -531,7 +545,14 @@ if (isReady) {                  // safer — clearly scoped
 if (isReady)
   start();
   cleanup();
-// cleanup() always runs — only start() is conditional</code></pre>
+// cleanup() always runs — only start() is conditional
+
+// safe with braces:
+if (isReady) {
+  start();
+  cleanup();
+}</code></pre>
+
 
     <p>The condition can be any expression that evaluates to truthy or falsy:</p>
 <pre class="language-javascript"><code class="language-javascript">if (true) { ... }              // literal — always runs
@@ -596,8 +617,12 @@ if (timer) {
     <p>Standalone <code>if</code> shows up anywhere code is conditional but doesn't need a paired alternative.</p>
 <pre class="language-javascript"><code class="language-javascript">// Guard clauses (early returns)
 function processOrder(order) {
-  if (!order) return;
-  if (order.items.length === 0) return;
+  if (!order) {
+    return;
+  }
+  if (order.items.length === 0) {
+    return;
+  }
   // ... main logic
 }
 
@@ -817,9 +842,15 @@ if (cart.length > 0) {
 }
 
 // Multiple separate ifs — each independent
-if (user.isLoggedIn) showDashboard();
-if (cart.length > 0)  showCheckout();
-if (hasMessages)      showBadge();</code></pre>
+if (user.isLoggedIn) {
+  showDashboard();
+}
+if (cart.length > 0) {
+  showCheckout();
+}
+if (hasMessages) {
+  showBadge();
+}</code></pre>
   `,
 
   /* 3.1 Real website uses */
@@ -1029,20 +1060,30 @@ else if (score >= 70) { console.log("passed"); }
     <p>Use <code>else if</code> when there are more than two outcomes that you want to handle as one chain — only one of them should run.</p>
 <pre class="language-javascript"><code class="language-javascript">// Score → letter grade
 function getGrade(score) {
-  if (score >= 90)      return "A";
-  else if (score >= 80) return "B";
-  else if (score >= 70) return "C";
-  else if (score >= 60) return "D";
-  else                  return "F";
+  if (score >= 90) {
+    return "A";
+  } else if (score >= 80) {
+    return "B";
+  } else if (score >= 70) {
+    return "C";
+  } else if (score >= 60) {
+    return "D";
+  } else {
+    return "F";
+  }
 }
 
 console.log(getGrade(85));
 // prints: "B"
 
 // Status → action
-if (order.status === "pending")   notifyUser();
-else if (order.status === "shipped") trackShipment();
-else if (order.status === "delivered") askForReview();</code></pre>
+if (order.status === "pending") {
+  notifyUser();
+} else if (order.status === "shipped") {
+  trackShipment();
+} else if (order.status === "delivered") {
+  askForReview();
+}</code></pre>
     <p>The chain handles all the cases at once, and exactly one branch runs.</p>
   `,
 
@@ -1051,26 +1092,39 @@ else if (order.status === "delivered") askForReview();</code></pre>
     <p><code>else if</code> shows up wherever there are several mutually exclusive options to handle.</p>
 <pre class="language-javascript"><code class="language-javascript">// Pricing tiers
 function getDiscount(user) {
-  if (user.tier === "platinum")    return 0.30;
-  else if (user.tier === "gold")    return 0.20;
-  else if (user.tier === "silver")  return 0.10;
-  else                              return 0;
+  if (user.tier === "platinum")    
+    return 0.30;
+  else if (user.tier === "gold")    
+    return 0.20;
+  else if (user.tier === "silver")  
+    return 0.10;
+  else                              
+    return 0;
 }
 
 // UI states
 function render(state) {
-  if (state.isLoading)              showSpinner();
-  else if (state.error)             showError(state.error);
-  else if (state.items.length === 0) showEmptyMessage();
-  else                              showItems(state.items);
+  if (state.isLoading)              
+    showSpinner();
+  else if (state.error)             
+    showError(state.error);
+  else if (state.items.length === 0) 
+    showEmptyMessage();
+  else                              
+    showItems(state.items);
 }
 
 // HTTP status handling
-if (response.status === 200)        handleSuccess();
-else if (response.status === 401)   redirectToLogin();
-else if (response.status === 404)   show404();
-else if (response.status >= 500)    showServerError();
-else                                showGenericError();</code></pre>
+if (response.status === 200)        
+  handleSuccess();
+else if (response.status === 401)   
+  redirectToLogin();
+else if (response.status === 404)   
+  show404();
+else if (response.status >= 500)    
+  showServerError();
+else                                
+    showGenericError();</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -1535,10 +1589,14 @@ if (response.ok) {
 }
 
 // Catch-all in a longer chain
-if (status === "ok")        handleOk();
-else if (status === "warn") handleWarn();
-else if (status === "fail") handleFail();
-else                        handleUnknown();   // fallback for any other status</code></pre>
+if (status === "ok")          
+handleOk();
+else if (status === "warn") 
+  handleWarn();
+else if (status === "fail") 
+  handleFail();
+else                        
+  handleUnknown();   // fallback for any other status</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -1967,11 +2025,16 @@ switch (status) {
     <p>Use <code>switch</code> when you're comparing one value to many fixed options that you can list ahead of time.</p>
 <pre class="language-javascript"><code class="language-javascript">// Repetitive with if/else
 function getDayType(day) {
-  if (day === "Saturday")      return "weekend";
-  else if (day === "Sunday")    return "weekend";
-  else if (day === "Friday")    return "almost weekend";
-  else if (day === "Monday")    return "start of week";
-  else                          return "weekday";
+  if (day === "Saturday")      
+    return "weekend";
+  else if (day === "Sunday")    
+    return "weekend";
+  else if (day === "Friday")    
+    return "almost weekend";
+  else if (day === "Monday")    
+    return "start of week";
+  else                          
+      return "weekday";
 }
 
 // Cleaner with switch
@@ -1996,25 +2059,36 @@ function getDayType(day) {
     <p><code>switch</code> shows up most when handling specific string or number values — statuses, action types, key codes, route names.</p>
 <pre class="language-javascript"><code class="language-javascript">// Action handlers
 switch (action.type) {
-  case "ADD_ITEM":     return state.concat(action.item);
-  case "REMOVE_ITEM":  return state.filter(i => i.id !== action.id);
-  case "CLEAR":        return [];
-  default:             return state;
+  case "ADD_ITEM":     
+    return state.concat(action.item);
+  case "REMOVE_ITEM":  
+    return state.filter(i => i.id !== action.id);
+  case "CLEAR":        
+    return [];
+  default:             
+    return state;
 }
 
 // Keyboard shortcuts
 switch (event.key) {
-  case "Escape":       closeModal(); break;
-  case "Enter":        submit(); break;
-  case "ArrowUp":      moveSelection(-1); break;
-  case "ArrowDown":    moveSelection(1); break;
+  case "Escape": closeModal(); 
+    break;
+  case "Enter": submit(); 
+    break;
+  case "ArrowUp": moveSelection(-1); 
+    break;
+  case "ArrowDown": moveSelection(1); 
+    break;
 }
 
 // HTTP status categories
 switch (Math.floor(response.status / 100)) {
-  case 2: handleSuccess(); break;
-  case 4: handleClientError(); break;
-  case 5: handleServerError(); break;
+  case 2: handleSuccess(); 
+    break;
+  case 4: handleClientError(); 
+    break;
+  case 5: handleServerError(); 
+    break;
   default: handleUnknown();
 }</code></pre>
   `,
@@ -3385,20 +3459,30 @@ if (response.ok)            { ... }   // property access</code></pre>
   'topics-6-7-1-1': `
     <p>The <code>if</code> position is for the condition you want JavaScript to check first. Pick the case that's most specific, most important, or most likely.</p>
 <pre class="language-javascript"><code class="language-javascript">// Most specific first — A grades require >= 90
-if (score >= 90)      return "A";    // most specific
-else if (score >= 80) return "B";
-else if (score >= 70) return "C";
-else                  return "F";
+if (score >= 90)      
+  return "A";    // most specific
+else if (score >= 80) 
+  return "B";
+else if (score >= 70) 
+  return "C";
+else                  
+  return "F";
 
 // Most important first — handle errors before normal cases
-if (response.error)        showError();
-else if (response.empty)   showEmpty();
-else                       showData();
+if (response.error)        
+  showError();
+else if (response.empty)   
+  showEmpty();
+else                       
+    showData();
 
 // Most common first — for performance, check what's likely
-if (input === "")          return;     // common: empty input, exit fast
-else if (input.length > 100) return;
-else                       process(input);</code></pre>
+if (input === "")          
+  return;     // common: empty input, exit fast
+else if (input.length > 100) 
+  return;
+else                       
+  process(input);</code></pre>
     <p>Whichever condition is in the <code>if</code> position gets first dibs. Choose carefully.</p>
   `,
 
@@ -3406,22 +3490,34 @@ else                       process(input);</code></pre>
   'topics-6-7-1-2': `
     <p>Every conditional chain starts with <code>if</code> — and what you put there sets up the rest.</p>
 <pre class="language-javascript"><code class="language-javascript">// Render based on UI state
-if (state.error)             showError();       // most urgent first
-else if (state.isLoading)    showSpinner();
-else if (state.items.empty)  showEmpty();
-else                         showItems();
+if (state.error)             
+  showError();       // most urgent first
+else if (state.isLoading)    
+  showSpinner();
+else if (state.items.empty)  
+  showEmpty();
+else                         
+  showItems();
 
 // HTTP responses
-if (response.status === 200)       handleSuccess();   // happy path first
-else if (response.status === 401)  redirectLogin();
-else if (response.status === 404)  show404();
-else                               showError();
+if (response.status === 200)       
+  handleSuccess();   // happy path first
+else if (response.status === 401)  
+  redirectLogin();
+else if (response.status === 404)  
+  show404();
+else                               
+  showError();
 
 // Form validation
-if (!email)                  return "Email required";    // missing first
-else if (!email.includes("@")) return "Invalid email";   // format second
-else if (email.length > 100) return "Too long";
-else                         return null;
+if (!email)                  
+  return "Email required";    // missing first
+else if (!email.includes("@")) 
+  return "Invalid email";   // format second
+else if (email.length > 100) 
+  return "Too long";
+else                         
+    return null;
 </code></pre>
   `,
 
@@ -3824,15 +3920,21 @@ else                       showHome();
   'topics-6-8-1-1': `
     <p>Use <code>else if</code> when there are more than two outcomes and you want to handle them as one connected decision — not as separate independent checks.</p>
 <pre class="language-javascript"><code class="language-javascript">// Wrong: separate ifs let multiple branches run
-if (score >= 90) console.log("A");
-if (score >= 80) console.log("B");      // also runs for score 95!
-if (score >= 70) console.log("C");      // also runs for score 95!
+if (score >= 90) 
+  console.log("A");
+if (score >= 80) 
+  console.log("B");      // also runs for score 95!
+if (score >= 70) 
+  console.log("C");      // also runs for score 95!
 // score 95 → "A" "B" "C" — three messages, probably not what you want
 
 // Right: chained — only one branch runs
-if (score >= 90) console.log("A");
-else if (score >= 80) console.log("B");
-else if (score >= 70) console.log("C");
+if (score >= 90) 
+  console.log("A");
+else if (score >= 80) 
+  console.log("B");
+else if (score >= 70) 
+  console.log("C");
 // score 95 → "A" only</code></pre>
     <p>If only one path makes sense, chain them. If multiple paths can run independently, use separate <code>if</code>s.</p>
   `,
@@ -3842,27 +3944,39 @@ else if (score >= 70) console.log("C");
     <p><code>else if</code> shows up wherever a value falls into one of several distinct categories — score → grade, status → action, error code → message, role → permission level.</p>
 <pre class="language-javascript"><code class="language-javascript">// Status → message
 function getStatusMessage(status) {
-  if (status === "loading")     return "Please wait...";
-  else if (status === "success") return "Done!";
-  else if (status === "error")   return "Something went wrong";
-  else if (status === "idle")    return "Ready";
+  if (status === "loading")     
+    return "Please wait...";
+  else if (status === "success") 
+    return "Done!";
+  else if (status === "error")   
+    return "Something went wrong";
+  else if (status === "idle")    
+    return "Ready";
 }
 
 // Time of day → greeting
 function getGreeting() {
   const hour = new Date().getHours();
-  if (hour < 12)        return "Good morning";
-  else if (hour < 17)   return "Good afternoon";
-  else if (hour < 21)   return "Good evening";
-  else                  return "Good night";
+  if (hour < 12)        
+    return "Good morning";
+  else if (hour < 17)   
+    return "Good afternoon";
+  else if (hour < 21)   
+    return "Good evening";
+  else                  
+      return "Good night";
 }
 
 // Score → emoji
 function scoreToEmoji(score) {
-  if (score >= 90)      return "🌟";
-  else if (score >= 70) return "✅";
-  else if (score >= 50) return "⚠️";
-  else                  return "❌";
+  if (score >= 90)      
+    return "🌟";
+  else if (score >= 70) 
+    return "✅";
+  else if (score >= 50) 
+    return "⚠️";
+  else                  
+      return "❌";
 }</code></pre>
   `,
 
@@ -4260,10 +4374,14 @@ function check(x) {
     <p>Use <code>else</code> when you want a guaranteed default — something that runs no matter what. Skip it when "do nothing if nothing matches" is the intended behavior.</p>
 <pre class="language-javascript"><code class="language-javascript">// With else — guaranteed handling
 function getDiscount(tier) {
-  if (tier === "platinum")    return 0.30;
-  else if (tier === "gold")    return 0.20;
-  else if (tier === "silver")  return 0.10;
-  else                          return 0;       // default for any unknown tier
+  if (tier === "platinum")    
+    return 0.30;
+  else if (tier === "gold")    
+    return 0.20;
+  else if (tier === "silver")  
+    return 0.10;
+  else                          
+    return 0;       // default for any unknown tier
 }
 
 console.log(getDiscount("bronze"));
@@ -4273,9 +4391,12 @@ console.log(getDiscount(undefined));
 
 // Without else — undefined for unknown tiers
 function getDiscount(tier) {
-  if (tier === "platinum")    return 0.30;
-  else if (tier === "gold")    return 0.20;
-  else if (tier === "silver")  return 0.10;
+  if (tier === "platinum")    
+    return 0.30;
+  else if (tier === "gold")    
+    return 0.20;
+  else if (tier === "silver")  
+    return 0.10;
   // no fallback
 }
 
@@ -4288,24 +4409,36 @@ console.log(getDiscount("bronze"));
   'topics-6-9-1-2': `
     <p><code>else</code> shows up wherever there's a clear "default" — the catch-all path when none of the specific conditions hit.</p>
 <pre class="language-javascript"><code class="language-javascript">// Default content
-if (state.error)             showError();
-else if (state.isLoading)    showSpinner();
-else                         showItems();        // happy path is the fallback
+if (state.error)             
+  showError();
+else if (state.isLoading)    
+  showSpinner();
+else                         
+  showItems();        // happy path is the fallback
 
 // Default permission level
-if (user.isAdmin)            return "all";
-else if (user.isEditor)      return "edit";
-else                         return "read";       // anyone else: read-only
+if (user.isAdmin)            
+  return "all";
+else if (user.isEditor)      
+  return "edit";
+else                         
+  return "read";       // anyone else: read-only
 
 // Default UI state
-if (cart.length === 0)       message = "Cart is empty";
-else if (cart.length === 1)  message = "1 item in cart";
-else                         message = cart.length + " items in cart";
+if (cart.length === 0)       
+  message = "Cart is empty";
+else if (cart.length === 1)  
+  message = "1 item in cart";
+else                         
+  message = cart.length + " items in cart";
 
 // Default error message
-if (response.status === 200) handleOk();
-else if (response.status === 404) showNotFound();
-else                          showGenericError();    // anything else</code></pre>
+if (response.status === 200) 
+  handleOk();
+else if (response.status === 404) 
+  showNotFound();
+else                          
+  showGenericError();    // anything else</code></pre>
   `,
 
   /* 1.3 Plain English explanation */
@@ -4590,6 +4723,2361 @@ setFormMode("preview");
       <li>Truthy and falsy</li>
       <li>Dangling else problem</li>
       <li>Code blocks</li>
+    </ul>
+  `,
+
+    /* ========================================================= 
+   Sub-lesson: 3.7.11 If / Else → else does not need parentheses
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-6-10-0-0': `
+    <p>Unlike <code>if</code> and <code>else if</code>, <code>else</code> doesn't take a condition — and it doesn't take parentheses. It's just the word <code>else</code> followed directly by a block of code.</p>
+    <p>The reason: <code>else</code> isn't asking a question. It's the catch-all that runs when every condition above has already been checked and failed. There's nothing left to check.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-6-10-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const isOnline = false;
+
+if (isOnline) {
+  console.log("connected");
+} else {
+  console.log("offline");
+}
+
+// prints: "offline"
+// notice: else has no ( ) after it — just goes straight to {</code></pre>
+    <p><code>if</code> needs parens because it has a condition to evaluate. <code>else</code> has nothing to evaluate, so it skips straight to its block.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-6-10-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const day = "Tuesday";
+
+if (day === "Saturday") {
+  console.log("weekend");
+} else if (day === "Friday") {
+  console.log("almost weekend");
+} else {
+  console.log("regular day");
+}
+
+// prints: "regular day"
+
+// if              → keyword
+// (day === ...)   → condition in parens
+// { ... }         → block
+
+// else if         → keyword pair
+// (day === ...)   → condition in parens
+// { ... }         → block
+
+// else            → keyword only — NO parens, NO condition
+// { ... }         → block runs whenever everything above failed</code></pre>
+    <p>The pattern: <code>if</code> and <code>else if</code> always have parens because they need a condition. <code>else</code> never has parens because it doesn't.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-6-10-0-3': `
+    <p>Putting parens after <code>else</code> is a syntax error in spirit — JavaScript will misread it:</p>
+<pre class="language-javascript"><code class="language-javascript">if (x > 0) { ... }
+else (x < 0) { ... }
+// JS parses this as: else { (x < 0) }; { ... }
+// the (x < 0) becomes a meaningless expression, then { ... } is treated as a separate empty block
+// fix: if you want a condition, use else if (x < 0) { ... }
+//      if you don't, use else { ... }</code></pre>
+
+    <p>Don't confuse <code>else</code> with <code>else if</code> — they're spelled almost the same but behave differently:</p>
+<pre class="language-javascript"><code class="language-javascript">// else (no parens, no condition) — catch-all
+if (x > 0) { ... }
+else { ... }
+
+// else if (with parens, with condition) — backup question
+if (x > 0) { ... }
+else if (x === 0) { ... }</code></pre>
+
+    <p>The block after <code>else</code> uses braces just like any other block:</p>
+<pre class="language-javascript"><code class="language-javascript">if (cart.length > 0) {
+  showCheckout();
+} else {
+  showEmptyMessage();
+  trackEvent("empty_cart_view");     // multiple statements all run together
+}</code></pre>
+
+    <p>Technically, the braces are optional for a single statement (same as <code>if</code>), but always use them:</p>
+<pre class="language-javascript"><code class="language-javascript">// Works without braces — risky once you add lines
+if (a) doA();
+else doB();
+
+// Always-safe with braces
+if (a) {
+  doA();
+} else {
+  doB();
+}</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-6-10-1-0': `
+    <p>JavaScript needs to know whether a branch has a condition or not. The parens are how it knows. <code>if (...)</code> says "here's something to evaluate." <code>else</code> with no parens says "no condition — just run my block as the fallback."</p>
+    <p>If <code>else</code> took parens, it'd be ambiguous with <code>else if</code>. The lack of parens is what makes <code>else</code> recognizable as the catch-all.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-6-10-1-1': `
+    <p>Recognize the pattern: every branch with a condition has parens, the catch-all doesn't.</p>
+<pre class="language-javascript"><code class="language-javascript">if (a > 0)             { ... }    // condition → parens
+else if (a < 0)         { ... }    // condition → parens
+else if (a === 0)       { ... }    // condition → parens
+else                    { ... }    // no condition → no parens
+
+// remembering this also helps debug: if you see else (something), it's a typo
+// either drop the parens to make it the catch-all, or add "if" to make it else if</code></pre>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-6-10-1-2': `
+    <p>This rule applies wherever you write an <code>if/else</code> chain — every chain that has an <code>else</code> uses the no-parens form.</p>
+<pre class="language-javascript"><code class="language-javascript">// Two-branch
+if (isLoggedIn) 
+  showDashboard();
+else            
+    showLogin();
+
+// Three-branch
+if (n > 0)      
+  console.log("positive");
+else if (n < 0) 
+  console.log("negative");
+else            
+  console.log("zero");
+
+// Long chain
+if (status === "ok")        
+  handleOk();
+else if (status === "warn")  
+  handleWarn();
+else if (status === "fail")  
+  handleFail();
+else                          
+  handleUnknown();    // still no parens
+
+// Inside functions, returning from each branch
+function classify(n) {
+  if (n > 0)      
+    return "positive";
+  else if (n < 0) 
+    return "negative";
+  else            
+    return "zero";          // else, no parens
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-6-10-1-3': `
+    <p><code>if</code> says "if this question is true." It has a question, so it has parens.</p>
+    <p><code>else if</code> says "if not, then if this question is true." Also has a question, also has parens.</p>
+    <p><code>else</code> just says "otherwise." No question — it runs whenever nothing else matched. Since there's no question, there's nothing to put in parens.</p>
+    <p>It's a tiny rule, but easy to get wrong if you're typing fast or thinking <code>else</code> behaves like <code>else if</code>.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-6-10-1-4': `
+    <p>Parens hold the question. <code>else</code> isn't a question — so no parens.</p>
+<pre class="language-javascript"><code class="language-javascript">if (x > 0) { ... }       // question: "is x > 0?"   → needs parens
+else if (x < 0) { ... }   // question: "is x < 0?"   → needs parens
+else { ... }              // no question — just runs → no parens
+
+// the rule is mechanical: condition exists → parens. No condition → no parens.</code></pre>
+    <p>Think of <code>else</code> as the "default" or "otherwise" case. Defaults don't have conditions — they're what happens when no specific case applies.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-6-10-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const value = "hello";
+
+if (typeof value === "number") {
+  console.log("a number");
+} else if (typeof value === "boolean") {
+  console.log("a boolean");
+} else {
+  console.log("something else");
+}
+
+// prints: "something else"
+
+// JavaScript is thinking:
+// Line 1: register value, holds the string "hello".
+// Line 3: see if (typeof value === "number") → typeof "hello" is "string", not "number" → false. Skip block.
+// Line 5: see else if (typeof value === "boolean") → "string" === "boolean" → false. Skip block.
+// Line 7: see else → no parens, no condition. Runs because everything above failed.
+// Line 8: log "something else".
+// Line 9: end of chain. Done.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-6-10-2-0': `
+    <p>If you accidentally write <code>else (something)</code>, you'll often get strange results — JavaScript may not throw a clear error. Look for the missing <code>if</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">if (x > 0) {
+  console.log("positive");
+} else (x < 0) {
+  console.log("negative");
+}
+
+// JS reads this as something like:
+//   else { (x < 0) }     ← the (x < 0) becomes a meaningless expression
+//   { console.log("negative"); }    ← then a SEPARATE block always runs!
+// "negative" prints whenever the if was false, even when x is 0 — broken logic
+// fix: change to else if (x < 0)</code></pre>
+
+    <p>If you see strange behavior in a chain, scan each branch and confirm: <code>if</code> and <code>else if</code> have parens, <code>else</code> doesn't.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-6-10-2-1': `
+    <p>Parens in JavaScript always wrap something that needs evaluating — function arguments, expressions, conditions. <code>else</code> has nothing to evaluate, so it has no parens. Same logic across the language.</p>
+    <p>Once you see the pattern — "parens hold things to evaluate" — the rule for <code>else</code> isn't a special exception. It's just consistency.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-6-10-2-2': `
+    <p><strong>Confusion: writing <code>else (condition)</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">if (a) { ... }
+else (b) { ... }       // wrong — this isn't a condition for else
+else if (b) { ... }    // right — for an alternate condition
+else { ... }            // right — catch-all</code></pre>
+
+    <p><strong>Confusion: thinking <code>else</code> needs <em>something</em></strong></p>
+<pre class="language-javascript"><code class="language-javascript">if (x > 0) { ... }
+else true { ... }      // wrong — else takes nothing between the keyword and {
+else { ... }            // right — just the keyword and the block</code></pre>
+
+    <p><strong>Confusion: confusing <code>else</code> and <code>else if</code> while typing</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Easy mistake to make:
+if (a) doA();
+else (b) doB();        // typed "else" but meant "else if"
+
+// Two fixes depending on intent:
+else if (b) doB();     // if you wanted another condition
+else doB();             // if you wanted a catch-all</code></pre>
+
+    <p><strong>Confusion: parens around the body</strong></p>
+<pre class="language-javascript"><code class="language-javascript">if (a) { doA(); }
+else { doB(); }         // braces are correct — the BODY uses { }
+else (doB());           // wrong — that's not a body, it's a function call</code></pre>
+
+    <p><strong>Confusion: the rule isn't unique to <code>else</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Same logic applies to other "no condition" keywords:
+try        { ... }       // try has no condition — no parens
+catch (err) { ... }      // catch has a binding — uses parens
+finally    { ... }       // finally has no condition — no parens
+do         { ... }       // do has no condition — no parens
+while (x)  { ... }        // while has a condition — uses parens
+// "needs evaluation → parens" is a consistent JS rule</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-6-10-2-3': `
+<pre class="language-javascript"><code class="language-javascript">if (x > 0) { ... }
+else (x < 0) { ... }
+// JS misreads this — fallback always runs
+// fix: else if (x < 0) — if you meant a condition</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (a) doA();
+else if doB();
+// SyntaxError — else if needs a condition
+// fix: else if (b) doB(); — or just else doB();</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (a) { ... } else (true) { ... }
+// (true) is a valid expression but it's not a condition for else
+// fix: drop the parens — else { ... }</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (a) doA();
+else if (b)
+  doB();
+else
+  doC();
+  doD();
+// doD always runs — only doC is part of else
+// fix: wrap each branch in braces</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (a) { ... }
+else (someCondition || true) { ... }
+// JS doesn't error here — it just evaluates (someCondition || true) as an expression and discards the result
+// then { ... } becomes a SEPARATE block that always runs
+// fix: use else if (someCondition || true) { ... }</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-6-10-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Simple two-branch
+const x = -5;
+if (x >= 0) {
+  console.log("non-negative");
+} else {
+  console.log("negative");
+}
+// prints: "negative"
+
+// Multi-branch ending in else
+const grade = 60;
+if (grade >= 90)      console.log("A");
+else if (grade >= 70) console.log("C");
+else                  console.log("below C");
+// prints: "below C"
+
+// else inside a function
+function categorize(n) {
+  if (n > 0)      return "positive";
+  else if (n < 0) return "negative";
+  else            return "zero";
+}
+console.log(categorize(0));
+// prints: "zero"
+
+// else with multiple statements
+const isOnline = false;
+if (isOnline) {
+  syncData();
+} else {
+  showOfflineMessage();
+  queueForSync();
+  console.log("offline mode");
+}
+
+// else attached to else if
+const day = "Friday";
+if (day === "Saturday")      console.log("weekend");
+else if (day === "Sunday")    console.log("weekend");
+else if (day === "Friday")    console.log("almost there");
+else                          console.log("midweek");
+// prints: "almost there"</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-6-10-3-1': `
+    <p><strong>Example: render branches</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function render(state) {
+  if (state.error) {
+    showError(state.error);
+  } else if (state.isLoading) {
+    showSpinner();
+  } else {
+    showItems(state.items);    // catch-all, no parens
+  }
+}</code></pre>
+
+    <p><strong>Example: form mode default</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function setFormMode(mode) {
+  if (mode === "create") {
+    enableCreateMode();
+  } else if (mode === "edit") {
+    enableEditMode();
+  } else {
+    enableViewMode();         // default — no parens, no condition
+  }
+}
+
+setFormMode("preview");
+// "preview" doesn't match any case → falls to the else, enables view mode</code></pre>
+
+    <p><strong>Example: simple toggle</strong></p>
+<pre class="language-javascript"><code class="language-javascript">if (sidebar.classList.contains("open")) {
+  sidebar.classList.remove("open");
+} else {
+  sidebar.classList.add("open");
+}
+// classic two-branch with else for the opposite state — no parens needed</code></pre>
+
+    <p><strong>Example: status with default error</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function describeStatus(code) {
+  if (code === 200)      return "OK";
+  else if (code === 404) return "Not Found";
+  else if (code >= 500)  return "Server Error";
+  else                   return "Unknown";    // catches any other code
+}
+
+console.log(describeStatus(418));
+// prints: "Unknown"</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-6-10-3-2': `
+    <ul>
+      <li><strong><code>if</code></strong> → uses parens because it has a condition</li>
+      <li><strong><code>else if</code></strong> → uses parens because it has a condition</li>
+      <li><strong>Code blocks</strong> → braces hold the body, not parens</li>
+      <li><strong>Parens vs braces</strong> → parens hold expressions, braces hold blocks</li>
+      <li><strong>Default behavior</strong> → <code>else</code> often holds the default</li>
+      <li><strong>Switch <code>default</code></strong> → similar idea — no condition, just a fallback</li>
+      <li><strong>Try/catch/finally</strong> → similar pattern (<code>finally</code> has no parens either)</li>
+      <li><strong>Common typos</strong> → typing <code>else (...)</code> instead of <code>else if (...)</code></li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-6-10-3-3': `
+    <ul>
+      <li><code>if</code> and <code>else if</code></li>
+      <li>Code blocks</li>
+      <li>Parens vs braces</li>
+      <li>Switch <code>default</code></li>
+      <li><code>finally</code> in try/catch</li>
+      <li>Statements vs expressions</li>
+      <li>Dangling else problem</li>
+      <li>Common typos in conditionals</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.7.12 If / Else → condition order matters
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-6-11-0-0': `
+    <p>In an <code>if / else if / else</code> chain, JavaScript checks the conditions <strong>top-down</strong> and stops at the first one that's true. Whatever runs is decided by which condition is reached <em>first</em>, not which one is the "best fit."</p>
+    <p>That means the order you write the branches in directly controls which one wins. Two chains with the same conditions in different orders can produce completely different results.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-6-11-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const score = 95;
+
+if (score >= 60) {
+  console.log("passing");
+} else if (score >= 90) {
+  console.log("excellent");
+}
+
+// prints: "passing"
+// "excellent" is never reached — score >= 60 was true first, chain stopped.</code></pre>
+    <p>The <code>>= 90</code> branch is unreachable here. Not because it's wrong, but because <code>>= 60</code> sits above it and catches the value first.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-6-11-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const score = 95;
+
+if (score >= 90) {            // checked first  → true → runs
+  console.log("excellent");
+} else if (score >= 60) {     // never checked — chain already stopped
+  console.log("passing");
+}
+
+// prints: "excellent"
+
+// if (...)        → first question, checked at the top
+// else if (...)   → only checked if everything above was false
+// order top→down  → JS stops at the first true condition
+
+// flip the order and the answer flips with it.</code></pre>
+    <p>Same value, same conditions — the only thing that changed is the order, and the result changed completely.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-6-11-0-3': `
+    <p>The rule of thumb: <strong>narrower conditions go first, wider ones go after.</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Wrong order — wider check first swallows everything
+if (n > 0)       console.log("positive");
+else if (n > 100) console.log("big");      // unreachable: n > 100 also satisfies n > 0
+
+// Right order — narrower (more specific) check first
+if (n > 100)     console.log("big");
+else if (n > 0)   console.log("positive");</code></pre>
+
+    <p>This applies whenever conditions <em>overlap</em>. If conditions are mutually exclusive (only one can be true at a time), order doesn't change the result:</p>
+<pre class="language-javascript"><code class="language-javascript">// Mutually exclusive — order doesn't matter
+if (day === "Saturday") { ... }
+else if (day === "Sunday") { ... }
+// "Saturday" and "Sunday" can never both be true, so order is safe either way
+
+// Overlapping — order is everything
+if (age >= 18) { ... }
+else if (age >= 21) { ... }    // unreachable — anyone 21+ already matched 18+</code></pre>
+
+    <p>JavaScript will not warn you about an unreachable branch. It runs the chain top-down and silently skips past anything blocked by an earlier branch.</p>
+<pre class="language-javascript"><code class="language-javascript">if (true) {
+  console.log("always");
+} else if (somethingComplicated()) {
+  console.log("never reached");      // dead code — JS doesn't flag it
+}</code></pre>
+
+    <p>The fix is mechanical: when conditions overlap, sort them so the most specific case is at the top.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-6-11-1-0': `
+    <p>An <code>if / else if</code> chain is a <em>race</em>, not a search. JavaScript doesn't look at all the branches and pick the best one — it walks them in order and takes the first match.</p>
+    <p>Knowing this lets you control which branch wins by controlling where you put it. It also explains why "the right code" can still produce wrong results: the conditions might all be correct, but the order is wrong.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-6-11-1-1': `
+    <p>Putting the most specific case first is how chains stay correct as values change.</p>
+<pre class="language-javascript"><code class="language-javascript">function gradeOf(score) {
+  if (score >= 90) 
+    return "A";
+  else if (score >= 80) 
+    return "B";
+  else if (score >= 70) 
+    return "C";
+  else if (score >= 60) 
+    return "D";
+  else                   
+    return "F";
+}
+
+// 95 → A    (first match wins, doesn't fall to B/C/D)
+// 72 → C    (skips A, B, lands on >= 70)
+// 50 → F    (nothing matched, fallback runs)
+
+// flip the order and every score above 60 returns "D" — the chain breaks.</code></pre>
+    <p>The chain reads like a sieve: tightest filter first, loosest last. Each branch only catches what slipped past the one above it.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-6-11-1-2': `
+    <p>Anywhere conditions overlap — numeric ranges, type checks that include each other, status codes that share families.</p>
+<pre class="language-javascript"><code class="language-javascript">// Numeric ranges (overlapping by definition)
+if (price >= 1000)     
+  applyHugeDiscount();
+else if (price >= 500) 
+  applyBigDiscount();
+else if (price >= 100) 
+  applySmallDiscount();
+else                    
+  applyNoDiscount();
+
+// HTTP status families (5xx is a subset of "not 200")
+if (status === 200)        
+  showSuccess();
+else if (status >= 500)    
+  showServerError();
+else if (status >= 400)    
+  showClientError();
+else                        
+    showUnknown();
+
+// Type checks — narrower first
+if (Array.isArray(value))         
+  handleArray(value);
+else if (typeof value === "object") 
+  handleObject(value);   // arrays are also "object"
+else                                
+  handlePrimitive(value);
+
+// User permission tiers
+if (user.isAdmin)      
+  showEverything();
+else if (user.isPaid)  
+  showPaidFeatures();
+else                    
+  showFreeFeatures();</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-6-11-1-3': `
+    <p>Imagine a bouncer at a club checking IDs against a list of rules, top to bottom. The first rule that matches your ID is the one that decides what happens to you. Every rule below it gets ignored, even if it would have matched too.</p>
+    <p>So if the first rule on the list is "let in anyone over 18" and the second is "give VIP access to anyone over 21," nobody ever gets VIP — they all match the first rule and get sent to the regular line. Not because the VIP rule is wrong, but because nobody ever reaches it.</p>
+    <p>To fix it: put the VIP rule first. Now anyone over 21 matches there and stops. Everyone 18–20 falls past it and matches the second rule. The order is the logic.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-6-11-1-4': `
+    <p>An <code>if / else if</code> chain is a <strong>filter stack</strong>: each branch only sees what fell through the one above it.</p>
+<pre class="language-javascript"><code class="language-javascript">value
+  │
+  ▼
+[ if (score >= 90) ]   → catches A's       → done
+  │ (only B–F continue)
+  ▼
+[ else if (>= 80) ]    → catches B's       → done
+  │ (only C–F continue)
+  ▼
+[ else if (>= 70) ]    → catches C's       → done
+  │
+  ▼
+[ else ]               → catches everyone else
+
+// each branch's "true zone" is whatever's left after the branches above already grabbed their share.</code></pre>
+    <p>Put the tightest filter at the top. Each branch below it only deals with the values that survived.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-6-11-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const n = 150;
+
+if (n > 0) {
+  console.log("positive");
+} else if (n > 100) {
+  console.log("big");
+} else {
+  console.log("zero or negative");
+}
+
+// prints: "positive"
+
+// JavaScript is thinking:
+// Line 1: register n, value 150.
+// Line 3: see if (n > 0) → 150 > 0 → true. Run this block.
+// Line 4: log "positive".
+// Line 5: see else if — chain already matched, SKIP without checking the condition.
+// Line 7: see else — chain already matched, SKIP.
+// Done.
+
+// Notice: n > 100 was true too, but JS never even checked it.
+// To get "big" for n=150, the n > 100 branch must come BEFORE n > 0.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-6-11-2-0': `
+    <p>If the wrong branch is running and the conditions all "look right," check the order. Specifically: is there a wider/looser condition above the one that should be matching?</p>
+<pre class="language-javascript"><code class="language-javascript">// "Why does score 95 print 'passing' instead of 'excellent'?"
+if (score >= 60) console.log("passing");        // ← this catches 95 first
+else if (score >= 90) console.log("excellent"); // ← unreachable for score >= 60
+
+// fix: put the narrower (>= 90) check above the wider (>= 60) one</code></pre>
+    <p>Quick test: trace the value through each branch top-down. The first <code>true</code> you hit is what runs. If that's not the branch you wanted, the order is wrong, not the conditions.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-6-11-2-1': `
+    <p>The chain doesn't pick the <em>best</em> match. It picks the <em>first</em> match.</p>
+    <p>Once you see that, two rules drop out of it: (1) order overlapping conditions narrow→wide, top→bottom, and (2) any branch below an always-true condition is dead code that JavaScript will never run.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-6-11-2-2': `
+    <p><strong>Confusion: thinking JS picks the "most specific" branch</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Many people expect this to print "big" for n = 150.
+if (n > 0)        console.log("positive");
+else if (n > 100) console.log("big");
+
+// JS doesn't compare branches. It walks the list and stops at the first true.
+// Order is the only thing that decides specificity.</code></pre>
+
+    <p><strong>Confusion: order doesn't matter when conditions are mutually exclusive</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// These can never both be true, so order is safe either way:
+if (day === "Mon") { ... }
+else if (day === "Tue") { ... }
+
+// These overlap — order matters:
+if (n >= 0)  { ... }
+else if (n >= 10) { ... }    // dead — anything >= 10 is also >= 0</code></pre>
+
+    <p><strong>Confusion: separate <code>if</code> statements behave the same as <code>else if</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">// else if chain — only ONE branch runs
+if (score >= 90)      console.log("A");
+else if (score >= 60) console.log("passing");
+
+// Separate ifs — every true branch runs
+if (score >= 90) console.log("A");
+if (score >= 60) console.log("passing");
+// score = 95 prints BOTH "A" and "passing" — they're independent checks, no chain to stop them.</code></pre>
+
+    <p><strong>Confusion: the <code>else</code> branch is "for everything else" — even if a higher branch should have caught it</strong></p>
+<pre class="language-javascript"><code class="language-javascript">if (status >= 400) showError();
+else if (status === 404) showNotFound();   // unreachable — 404 already matched >= 400
+else                       showOk();
+// "for everything else" only means "for what fell through to here."</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-6-11-2-3': `
+<pre class="language-javascript"><code class="language-javascript">if (n > 0)        console.log("positive");
+else if (n > 100) console.log("big");
+// "big" never prints — n > 0 catches everything first.
+// fix: swap the order — narrower (n > 100) goes first.</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (typeof v === "object")          handleObject(v);
+else if (Array.isArray(v))           handleArray(v);
+// arrays are also typeof "object" — handleArray is unreachable.
+// fix: check Array.isArray FIRST, then fall through to the general object branch.</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (true)               doThing();
+else if (someCondition)  doOtherThing();
+// dead code — anything below an always-true if can never run.
+// fix: remove the always-true branch, or replace it with a real condition.</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (user)            showProfile();
+else if (user.isAdmin) showAdminPanel();
+// adminPanel never runs — every admin is also a user, so the first branch always wins.
+// fix: put isAdmin first, then fall through to the generic user branch.</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (price >= 100) applyDiscount("10%");
+else if (price >= 500) applyDiscount("25%");
+else if (price >= 1000) applyDiscount("50%");
+// every big spender gets the smallest discount — order is reversed.
+// fix: highest threshold first, lowest last.</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-6-11-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Grade chain — narrower (higher) thresholds first
+function grade(s) {
+  if (s >= 90) return "A";
+  else if (s >= 80) return "B";
+  else if (s >= 70) return "C";
+  else               return "F";
+}
+console.log(grade(85));   // "B"
+
+// Discount tiers — highest tier first
+function discount(price) {
+  if (price >= 1000) return 0.5;
+  else if (price >= 500) return 0.25;
+  else if (price >= 100) return 0.1;
+  else                    return 0;
+}
+console.log(discount(750));   // 0.25
+
+// Type narrowing — most specific check first
+function describe(v) {
+  if (Array.isArray(v))            return "array";
+  else if (typeof v === "object")   return "object";
+  else if (typeof v === "function") return "function";
+  else                              return typeof v;
+}
+console.log(describe([1, 2]));    // "array"
+console.log(describe({}));         // "object"
+
+// Permission tier — highest privilege first
+function landingPage(user) {
+  if (user.isAdmin)   return "/admin";
+  else if (user.isPaid) return "/dashboard";
+  else                  return "/welcome";
+}
+
+// Wrong order — every admin lands on /welcome
+function landingPageBad(user) {
+  if (user)            return "/welcome";   // catches everyone
+  else if (user.isAdmin) return "/admin";    // unreachable
+}</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-6-11-3-1': `
+    <p><strong>Example: HTTP response handling</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function handleResponse(status) {
+  if (status === 401)        redirectToLogin();      // most specific first
+  else if (status === 404)   showNotFound();
+  else if (status >= 500)    showServerError();
+  else if (status >= 400)    showClientError();      // generic 4xx fallback
+  else if (status >= 200)    showSuccess();
+  else                        showUnknown();
+}
+// 401 and 404 must come before the generic >= 400 branch — otherwise they get swallowed.</code></pre>
+
+    <p><strong>Example: shipping cost tiers</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function shippingCost(weightLbs) {
+  if (weightLbs >= 50)      return 25;
+  else if (weightLbs >= 20)  return 15;
+  else if (weightLbs >= 5)   return 8;
+  else                        return 5;
+}
+// heaviest tier first — flipping the order would charge $5 for everything.</code></pre>
+
+    <p><strong>Example: render priority</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function renderView(state) {
+  if (state.error)        return showError(state.error);    // errors trump everything
+  else if (state.isLoading) return showSpinner();
+  else if (state.items.length === 0) return showEmpty();
+  else                       return showList(state.items);
+}
+// error first → never get stuck rendering a stale list when something failed.</code></pre>
+
+    <p><strong>Example: feature gating</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getPlanFeatures(user) {
+  if (user.plan === "enterprise") return enterpriseFeatures;
+  else if (user.plan === "pro")    return proFeatures;
+  else if (user.plan === "free")   return freeFeatures;
+  else                              return guestFeatures;
+}
+// each tier is mutually exclusive here, so order doesn't change correctness —
+// but listing them highest-to-lowest keeps the chain readable.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-6-11-3-2': `
+    <ul>
+      <li><strong><code>if</code> / <code>else if</code> / <code>else</code></strong> → the chain whose order this lesson is about</li>
+      <li><strong>Only one branch runs</strong> → the reason order matters at all</li>
+      <li><strong>Comparison operators</strong> → <code>>=</code> vs <code>></code> create overlapping ranges</li>
+      <li><strong>Logical operators</strong> → <code>&&</code> and <code>||</code> can make broad conditions accidentally</li>
+      <li><strong>Switch statements</strong> → cases run top-down too; same ordering trap</li>
+      <li><strong>Truthy and falsy</strong> → <code>if (user)</code> catches more than just admins</li>
+      <li><strong>Guard clauses</strong> → early <code>return</code>s rely on the same first-match-wins rule</li>
+      <li><strong>Dead code</strong> → unreachable branches caused by ordering</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-6-11-3-3': `
+    <ul>
+      <li>Only one branch runs</li>
+      <li>Separate <code>if</code> vs <code>else if</code> chain</li>
+      <li>Comparison operators in conditions</li>
+      <li>Logical operators in conditions</li>
+      <li>Truthy and falsy values</li>
+      <li>Switch statements</li>
+      <li>Guard clauses</li>
+      <li>Dead code / unreachable branches</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.7.13 If / Else → only one branch runs
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-6-12-0-0': `
+    <p>In an <code>if / else if / else</code> chain, exactly <strong>one</strong> branch runs — never two, never zero (if there's an <code>else</code>). The moment a condition is true, JavaScript runs that block and skips everything else in the chain.</p>
+    <p>This is what makes a chain different from writing several separate <code>if</code> statements. The chain is a single decision; separate <code>if</code>s are independent decisions.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-6-12-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const score = 95;
+
+if (score >= 90) {
+  console.log("A");
+} else if (score >= 80) {
+  console.log("B");
+} else if (score >= 70) {
+  console.log("C");
+} else {
+  console.log("F");
+}
+
+// prints: "A" — only one branch runs
+// the >= 80 and >= 70 branches are skipped, even though they're also true.</code></pre>
+    <p>One match, one block, done. The chain doesn't keep checking after it finds a winner.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-6-12-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const x = 10;
+
+if (x > 0) {           // checked → true → run this block, then exit the chain
+  console.log("positive");
+} else if (x > 5) {    // never checked
+  console.log("big");
+} else if (x === 10) { // never checked, even though it's true
+  console.log("ten");
+}
+
+// prints: "positive"
+
+// if      → first check, takes the win if true
+// else if → only checked if everything above was false
+// else    → only runs if NOTHING above matched
+// the chain is one decision with multiple options, not a list of yes/no questions.</code></pre>
+    <p>Once any branch runs, the chain is over. The remaining branches don't get checked at all — JavaScript moves on to whatever code comes after the chain.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-6-12-0-3': `
+    <p>The "only one runs" rule is about the <strong>chain</strong>, not about <code>if</code> in general. Two separate <code>if</code> statements are not a chain — they're independent and both can run.</p>
+<pre class="language-javascript"><code class="language-javascript">// CHAIN — only one branch runs
+if (n > 0)        console.log("positive");
+else if (n > 100) console.log("big");
+// n = 150 prints only "positive". The chain stopped.
+
+// SEPARATE IFs — every true condition runs
+if (n > 0)   console.log("positive");
+if (n > 100) console.log("big");
+// n = 150 prints BOTH "positive" and "big". Two independent checks.</code></pre>
+
+    <p>What links branches into a single chain is the keyword <code>else</code>. Drop the <code>else</code> and you've broken the chain into separate decisions.</p>
+<pre class="language-javascript"><code class="language-javascript">if (a) doA();
+else if (b) doB();      // chained — only one of these can run
+else doC();
+
+if (a) doA();
+if (b) doB();           // not chained — independent
+if (c) doC();           // can all run at the same time</code></pre>
+
+    <p>Inside a function, <code>return</code> ends the chain even without <code>else</code> — because the function exits before the next <code>if</code> can run.</p>
+<pre class="language-javascript"><code class="language-javascript">function classify(n) {
+  if (n > 0) return "positive";
+  if (n < 0) return "negative";    // works like else if — earlier return prevents this from running for positives
+  return "zero";
+}
+// the return statements are what enforce "only one runs," not the if structure itself.</code></pre>
+
+    <p>Without an <code>else</code> at the end, it's possible for <em>zero</em> branches to run — every condition can be false:</p>
+<pre class="language-javascript"><code class="language-javascript">if (x > 100) doSomething();
+else if (x > 50) doOther();
+// if x = 5, neither block runs. That's fine — but if you need a guaranteed action, add else.</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-6-12-1-0': `
+    <p>Most decisions in real code are "pick exactly one." Render <em>this</em> view, not several. Show <em>this</em> error message, not three at once. Charge <em>this</em> price tier, not all of them.</p>
+    <p>The chain enforces that automatically. You don't have to write <code>return</code> after each branch or manually skip the rest — the structure itself guarantees that only one path through the chain ever runs.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-6-12-1-1': `
+    <p>The chain is how you say "these options are alternatives, not additions." It's the difference between a multiple-choice question and a checklist.</p>
+<pre class="language-javascript"><code class="language-javascript">// Chain — alternatives. One winner.
+if (user.isAdmin)       
+  showAdminDashboard();
+else if (user.isPaid)    
+  showPaidDashboard();
+else                      
+  showFreeDashboard();
+// admin sees admin only — never sees paid or free dashboards stacked together.
+
+// Separate ifs — checklist. Multiple winners possible.
+if (user.hasUnreadMessages) 
+  showMessageBadge();
+if (user.hasNewFollowers)   
+  showFollowerBadge();
+if (user.hasPendingInvites) 
+  showInviteBadge();
+// any combination of badges can show — these aren't alternatives.</code></pre>
+    <p>If you find yourself writing <code>if</code>s and then realizing "wait, I only want one of these to happen," that's the signal to chain them with <code>else if</code>.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-6-12-1-2': `
+    <p>Anywhere the result is "pick one option" — UI states, classifications, tier lookups, error mapping.</p>
+<pre class="language-javascript"><code class="language-javascript">// UI render — only one view at a time
+if (loading)        
+  return <Spinner />;
+else if (error)     
+  return <ErrorView />;
+else                
+  return <Content />;
+
+// Classification — every input lands in exactly one bucket
+function size(bytes) {
+  if (bytes < 1024)              
+    return "small";
+  else if (bytes < 1024 * 1024)  
+    return "medium";
+  else                            
+    return "large";
+}
+
+// Permission tier — pick highest tier user qualifies for
+if (user.isAdmin)      
+  grant("all");
+else if (user.isPaid)  
+  grant("paid");
+else                    
+  grant("basic");
+
+// Error mapping — show one message per error
+if (err.code === "NETWORK")   
+  showOfflineBanner();
+else if (err.code === "AUTH")  
+  redirectToLogin();
+else                            
+  showGenericError();</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-6-12-1-3': `
+    <p>Think of a chain like a single elevator that stops at one floor. You press a button, the elevator picks one floor based on the rules, and it stops there. It doesn't visit every floor that could have matched — it picks one and stops.</p>
+    <p>Separate <code>if</code> statements are like pressing every button on a control panel. Each one runs on its own, regardless of what the others do. If two are true, two things happen.</p>
+    <p>The <code>else if</code> keyword is what tells JavaScript "this is part of the same decision as the <code>if</code> above." Once any branch wins, the whole decision is settled and the chain ends.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-6-12-1-4': `
+    <p>A chain is a <strong>single switch</strong> with multiple positions. The switch is in exactly one position at a time — never two.</p>
+<pre class="language-javascript"><code class="language-javascript">    if      else if    else if    else
+     │         │          │         │
+     ▼         ▼          ▼         ▼
+   [path]   [path]     [path]    [path]
+     ↑
+     └── only one path is "active" per run
+
+// vs. separate ifs — multiple independent switches
+   if         if         if
+    │          │          │
+    ▼          ▼          ▼
+  [path]    [path]    [path]    ← all can be active at once</code></pre>
+    <p>One chain = one decision. The number of branches doesn't change that — five branches still means one winner, not five.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-6-12-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const role = "editor";
+
+if (role === "admin") {
+  console.log("admin tools");
+} else if (role === "editor") {
+  console.log("editor tools");
+} else if (role === "viewer") {
+  console.log("read-only");
+} else {
+  console.log("no access");
+}
+
+console.log("done");
+
+// prints:
+// editor tools
+// done
+
+// JavaScript is thinking:
+// Line 1: register role, value "editor".
+// Line 3: see if (role === "admin") → "editor" === "admin" → false. Skip block.
+// Line 5: see else if (role === "editor") → true. Run this block.
+// Line 6: log "editor tools".
+// Line 7: chain done — skip every remaining else if and the else.
+// Line 13: log "done" (this isn't part of the chain — runs normally).</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-6-12-2-0': `
+    <p>If multiple things are happening when you only wanted one, check whether the branches are actually <em>chained</em>:</p>
+<pre class="language-javascript"><code class="language-javascript">// Looks like a chain — isn't
+if (n > 0)   console.log("positive");
+if (n > 100) console.log("big");
+// for n = 150, both lines run. They're independent.
+
+// Actual chain — only one runs
+if (n > 0)        console.log("positive");
+else if (n > 100)  console.log("big");
+// for n = 150, only "positive" runs.</code></pre>
+    <p>The fix is almost always one missing word: <code>else</code>. If you see two <code>if</code> statements that should have been alternatives, prepend <code>else</code> to the second one.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-6-12-2-1': `
+    <p><code>else if</code> isn't a fancier <code>if</code>. It's the thing that <em>links</em> branches together so JavaScript treats them as one decision.</p>
+    <p>Once you see that, the rule "only one branch runs" stops being a rule to memorize — it's just what a chain <em>is</em>. A chain that ran multiple branches wouldn't be a chain anymore; it'd just be a list of separate <code>if</code>s.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-6-12-2-2': `
+    <p><strong>Confusion: thinking <code>if</code> + <code>if</code> is a chain</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Two independent statements, NOT a chain
+if (a) doA();
+if (b) doB();
+// both can run if both are true
+
+// Actual chain — only one runs
+if (a) doA();
+else if (b) doB();</code></pre>
+
+    <p><strong>Confusion: thinking <code>else</code> always runs at the end</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// else only runs if NOTHING above matched
+if (a) doA();
+else if (b) doB();
+else doC();
+// if a is true, only doA runs. doC is skipped — even though it's at the end.</code></pre>
+
+    <p><strong>Confusion: assuming a missing <code>else</code> means "default zero"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">if (x > 0) console.log("positive");
+else if (x < 0) console.log("negative");
+// if x === 0, NEITHER runs. There's no else, so zero branches matched.
+// fix: add else { console.log("zero"); } if you need a guaranteed action.</code></pre>
+
+    <p><strong>Confusion: <code>return</code> changes the rules</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function classify(n) {
+  if (n > 0) return "positive";
+  if (n < 0) return "negative";   // looks like a separate if, but acts like else if
+  return "zero";
+}
+// inside a function, an early return makes the next if effectively unreachable for the matched case.
+// only one return ever happens — but it's the function exiting, not the chain enforcing it.</code></pre>
+
+    <p><strong>Confusion: thinking <code>else if</code> is a separate keyword</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// else if is just: else { if (...) { ... } }
+// it's two keywords — else, then a nested if — that JS treats as a chain.
+// you can write it the long way and it behaves the same:
+
+if (a) {
+  doA();
+} else {
+  if (b) doB();
+  else doC();
+}
+// same as:
+if (a) doA();
+else if (b) doB();
+else doC();</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-6-12-2-3': `
+<pre class="language-javascript"><code class="language-javascript">if (n > 0)   console.log("positive");
+if (n > 100) console.log("big");
+// both run when n > 100 — wasn't intended as a chain.
+// fix: change the second to "else if (n > 100)".</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (status === "ok")  showSuccess();
+if (status === "error") showError();
+if (status === "loading") showSpinner();
+// for status = "ok", only one is true so it works by accident —
+// but the structure invites bugs if conditions ever overlap.
+// fix: chain with else if so the structure says "pick one."</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (user.isAdmin) {
+  showAdmin();
+}
+showRegular();
+// showRegular ALWAYS runs — it's not part of the if.
+// fix: put showRegular in an else block.
+if (user.isAdmin) {
+  showAdmin();
+} else {
+  showRegular();
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (a) doA();
+else if (b) doB();
+// expected this to handle ALL cases — but if both a and b are false, nothing runs.
+// fix: add an else for the catch-all if you need one.</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (a) doA();
+else if (b) doB(); doC();
+// doC is OUTSIDE the chain — it always runs.
+// fix: wrap branches in braces { } if multiple statements should run together.</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-6-12-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Chain — exactly one branch runs
+const day = "Wednesday";
+if (day === "Saturday" || day === "Sunday") {
+  console.log("weekend");
+} else if (day === "Friday") {
+  console.log("almost weekend");
+} else {
+  console.log("weekday");
+}
+// prints: "weekday"
+
+// Chain with no else — zero or one runs
+const temp = 70;
+if (temp >= 90)      console.log("hot");
+else if (temp <= 32) console.log("freezing");
+// prints nothing — neither matched, and there's no else.
+
+// Separate ifs — multiple can run
+const flags = { isNew: true, isOnSale: true };
+if (flags.isNew)    console.log("NEW");
+if (flags.isOnSale) console.log("SALE");
+// prints both: "NEW" and "SALE"
+
+// Inside a function — early returns enforce one-result
+function statusLabel(s) {
+  if (s === "ok")   return "✓";
+  if (s === "warn") return "⚠";
+  if (s === "fail") return "✗";
+  return "?";   // catch-all
+}
+console.log(statusLabel("warn"));   // "⚠"
+
+// Mixed — one chain, then independent code after
+if (user.isAdmin)    setupAdminTools();
+else if (user.isPaid) setupPaidTools();
+else                  setupBasicTools();
+
+logPageView();   // runs no matter which branch ran above</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-6-12-3-1': `
+    <p><strong>Example: render exactly one view</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function render(state) {
+  if (state.error)     return showError(state.error);
+  else if (state.isLoading) return showSpinner();
+  else if (state.items.length === 0) return showEmpty();
+  else                  return showList(state.items);
+}
+// at any moment, the page shows ONE of these — never error + spinner stacked.</code></pre>
+
+    <p><strong>Example: badge stack (separate ifs on purpose)</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function renderBadges(product) {
+  const badges = [];
+  if (product.isNew)       badges.push("NEW");
+  if (product.isOnSale)    badges.push("SALE");
+  if (product.isExclusive) badges.push("EXCLUSIVE");
+  return badges;
+}
+// here we WANT all matching badges to show — separate ifs, no chain.</code></pre>
+
+    <p><strong>Example: route guarding</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function guardRoute(req) {
+  if (!req.user)            return redirect("/login");
+  else if (!req.user.verified) return redirect("/verify");
+  else if (req.path.startsWith("/admin") && !req.user.isAdmin) return redirect("/403");
+  else                      return next();   // allow request through
+}
+// only one redirect happens — chained because the checks are alternatives.</code></pre>
+
+    <p><strong>Example: form validation message</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function emailError(value) {
+  if (!value)                return "Email is required";
+  else if (!value.includes("@")) return "Email must include @";
+  else if (value.length > 100) return "Email is too long";
+  else                        return "";   // valid
+}
+// show ONE error message at a time — chained for that reason.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-6-12-3-2': `
+    <ul>
+      <li><strong><code>else if</code></strong> → the keyword that links branches into a chain</li>
+      <li><strong>Separate <code>if</code> vs <code>else if</code> chain</strong> → the difference between independent and chained checks</li>
+      <li><strong>Condition order matters</strong> → which branch wins depends on order; only-one-runs is why it matters</li>
+      <li><strong>Code blocks</strong> → braces define what counts as part of a branch</li>
+      <li><strong>Switch statements</strong> → similar one-winner behavior with <code>break</code> or fall-through</li>
+      <li><strong>Guard clauses</strong> → early <code>return</code>s create a chain-like effect inside functions</li>
+      <li><strong>Default <code>else</code></strong> → ensures one branch always runs</li>
+      <li><strong>Dead code</strong> → branches the chain can never reach</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-6-12-3-3': `
+    <ul>
+      <li>Separate <code>if</code> vs <code>else if</code> chain</li>
+      <li>Condition order matters</li>
+      <li>Code blocks and braces</li>
+      <li>Switch statements and <code>break</code></li>
+      <li>Guard clauses</li>
+      <li>Early <code>return</code> patterns</li>
+      <li>Catch-all <code>else</code></li>
+      <li>Truthy and falsy values</li>
+    </ul>
+  `,
+
+/* ========================================================= 
+   Sub-lesson: 3.7.14 If / Else → separate if vs else if chain
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-6-13-0-0': `
+    <p>Two <code>if</code> statements written one after another are <strong>not</strong> the same as an <code>if / else if</code> chain. They look almost identical on the page, but they behave very differently.</p>
+    <p>Separate <code>if</code>s are independent — each one is its own decision, and any number of them can run. A chain is one decision with multiple options — exactly one branch runs.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-6-13-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// Separate ifs — independent
+if (n > 0) {
+  console.log("positive");
+}
+if (n > 100) {
+  console.log("big");
+}
+
+// Chain — one decision
+if (n > 0) {
+  console.log("positive");
+} else if (n > 100) {
+  console.log("big");
+}</code></pre>
+    <p>The only difference is the word <code>else</code>. That one word changes whether the second check is independent or part of the same decision as the first.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-6-13-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const n = 150;
+
+// SEPARATE IFS — both are checked, both can run
+if (n > 0) {
+  console.log("positive");   // runs (true)
+}
+if (n > 100) {
+  console.log("big");        // also runs (true)
+}
+// prints: "positive" then "big" — two outputs
+
+// CHAIN — only the first match runs
+if (n > 0) {
+  console.log("positive");   // runs (true)
+} else if (n > 100) {
+  console.log("big");        // skipped — chain already won
+}
+// prints: "positive" only — one output
+
+// the value, the conditions, and the blocks are identical.
+// the only thing that changed is "else if" vs "if".</code></pre>
+    <p>That single keyword tells JavaScript whether these are alternatives (chain) or unrelated checks (separate).</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-6-13-0-3': `
+    <p><code>else if</code> must come <em>immediately</em> after the closing brace of the previous branch. Putting any code between them breaks the chain:</p>
+<pre class="language-javascript"><code class="language-javascript">// Chain — else if directly after the if's closing brace
+if (a) {
+  doA();
+} else if (b) {
+  doB();
+}
+
+// NOT a chain — there's code between them
+if (a) {
+  doA();
+}
+console.log("hi");
+else if (b) {       // SyntaxError — else if has nothing to attach to
+  doB();
+}</code></pre>
+
+    <p>You can mix chains and separate <code>if</code>s in the same function. Each chain is its own decision; everything outside the chain is independent:</p>
+<pre class="language-javascript"><code class="language-javascript">// Chain decides which view to show — exactly one
+if (state.error) {
+  showError();
+} else if (state.isLoading) {
+  showSpinner();
+} else {
+  showContent();
+}
+
+// Separate ifs — independent badges, any combination can show
+if (user.hasMessages) {
+  showMessageBadge();
+}
+if (user.hasInvites) {
+  showInviteBadge();
+}</code></pre>
+
+    <p>An <code>else</code> always belongs to the <strong>nearest <code>if</code> above it</strong>. If you have a separate <code>if</code> in between, the <code>else</code> attaches to that one — not the one you might have meant:</p>
+<pre class="language-javascript"><code class="language-javascript">if (a) {
+  doA();
+}
+if (b) {
+  doB();
+} else {
+  doFallback();    // attaches to "if (b)", NOT to "if (a)"
+}
+// if a is true and b is false → runs doA AND doFallback
+// because doFallback is the else for b, not for the whole thing.</code></pre>
+
+    <p>The fix is to chain them properly with <code>else if</code> if that's what was intended.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-6-13-1-0': `
+    <p>Real code has both kinds of decisions. Some are "pick one" (which view, which error message, which tier). Others are "any of these might apply" (which badges, which warnings, which side effects).</p>
+    <p>JavaScript needs a way to express both. Chaining with <code>else if</code> handles "pick one." Writing separate <code>if</code>s handles "check each independently." Knowing which one you want is the difference between code that works and code that has subtle bugs.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-6-13-1-1': `
+    <p>Use a <strong>chain</strong> when the branches are alternatives — when running two of them at once would be wrong:</p>
+<pre class="language-javascript"><code class="language-javascript">// Wrong with separate ifs — could show two views at once
+if (state.isLoading) {
+  showSpinner();
+}
+if (state.error) {
+  showError();
+}
+// if both are true (rare but possible during a retry), both render — broken UI
+
+// Right with a chain — only one view shows
+if (state.error) {
+  showError();
+} else if (state.isLoading) {
+  showSpinner();
+} else {
+  showContent();
+}</code></pre>
+
+    <p>Use <strong>separate <code>if</code>s</strong> when the checks are independent — when each one might or might not apply, and they don't interfere with each other:</p>
+<pre class="language-javascript"><code class="language-javascript">// Right with separate ifs — each badge is its own decision
+if (product.isNew) {
+  addBadge("NEW");
+}
+if (product.isOnSale) {
+  addBadge("SALE");
+}
+if (product.isLimitedStock) {
+  addBadge("LOW STOCK");
+}
+// a product can be NEW + SALE + LOW STOCK all at once — all three should show.</code></pre>
+
+    <p>The test: <em>"If two of these conditions are true at the same time, do I want both blocks to run, or just one?"</em> Both → separate ifs. Just one → chain.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-6-13-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// CHAIN — UI state (one view at a time)
+if (loading) {
+  showSpinner();
+} else if (error) {
+  showError();
+} else {
+  showContent();
+}
+
+// CHAIN — classification (every input gets one label)
+function priceTier(price) {
+  if (price >= 1000) {
+    return "premium";
+  } else if (price >= 100) {
+    return "standard";
+  } else {
+    return "budget";
+  }
+}
+
+// SEPARATE IFS — collecting validation errors
+const errors = [];
+if (!email) {
+  errors.push("Email required");
+}
+if (!password) {
+  errors.push("Password required");
+}
+if (password && password.length < 8) {
+  errors.push("Password too short");
+}
+// each check is independent — we want ALL the errors, not just the first.
+
+// SEPARATE IFS — feature flags
+if (features.darkMode) {
+  enableDarkMode();
+}
+if (features.betaSearch) {
+  enableBetaSearch();
+}
+if (features.newDashboard) {
+  enableNewDashboard();
+}
+// features are independent — any combination can be on.</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-6-13-1-3': `
+    <p>Picture an HR form. Some questions are "pick one" — like marital status. Single, married, divorced, widowed: you pick exactly one bubble. That's a chain.</p>
+    <p>Other questions are "check all that apply" — like skills. JavaScript, HTML, CSS, Python: you can check zero, one, or all of them. Each box is independent. That's separate <code>if</code>s.</p>
+    <p>The mistake people make is treating "check all that apply" code like "pick one," or vice versa. The form question is the same in both cases — but the right answer depends on whether the options are exclusive or independent.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-6-13-1-4': `
+    <p>A chain is <strong>one switch</strong>. Separate <code>if</code>s are <strong>multiple light switches</strong> in the same room.</p>
+<pre class="language-javascript"><code class="language-javascript">// CHAIN — one switch, one position
+[ if (a) ] ─→ [ else if (b) ] ─→ [ else if (c) ] ─→ [ else ]
+       └────── only ONE position is "on" at a time ──────┘
+
+// SEPARATE IFS — independent switches, any combination
+[ if (a) ]      [ if (b) ]      [ if (c) ]
+    │               │                │
+    ▼               ▼                ▼
+   on/off          on/off           on/off       ← each one independent</code></pre>
+    <p>When you write your code, ask: <em>"Am I flipping one switch, or am I checking three different switches?"</em> The answer tells you whether to chain.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-6-13-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const n = 150;
+
+// SEPARATE IFS
+if (n > 0) {
+  console.log("positive");
+}
+if (n > 100) {
+  console.log("big");
+}
+
+// JavaScript is thinking:
+// Line 3: see if (n > 0) → 150 > 0 → true. Run block. Log "positive".
+// Line 5: this is a NEW if statement (no else attached) — check it independently.
+// Line 6: 150 > 100 → true. Run block. Log "big".
+// Result: both lines printed.
+
+// ────────────────────────────────────
+
+const n2 = 150;
+
+// CHAIN
+if (n2 > 0) {
+  console.log("positive");
+} else if (n2 > 100) {
+  console.log("big");
+}
+
+// JavaScript is thinking:
+// Line 3: see if (n2 > 0) → true. Run block. Log "positive".
+// Line 5: see else if — but the chain already matched. Skip without checking.
+// Result: only "positive" printed.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-6-13-2-0': `
+    <p>Two of the most common bug patterns:</p>
+    <p><strong>Pattern 1 — multiple things happening when only one should:</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Bug: both error AND content render
+if (state.error) {
+  showError();
+}
+if (state.hasContent) {
+  showContent();
+}
+// fix: chain them so only one runs at a time.</code></pre>
+
+    <p><strong>Pattern 2 — only the first thing happening when several should:</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Bug: only "NEW" shows, "SALE" never does
+if (product.isNew) {
+  addBadge("NEW");
+} else if (product.isOnSale) {
+  addBadge("SALE");
+}
+// fix: separate ifs — both are independent and should run.</code></pre>
+
+    <p>If you're getting too many results, you probably need a chain. If you're getting too few, you probably wrote a chain when you needed separate <code>if</code>s.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-6-13-2-1': `
+    <p>The word <code>else</code> isn't decoration — it's the <strong>link</strong> between branches. It says "this check only matters if the previous one didn't match."</p>
+    <p>Without <code>else</code>, the next <code>if</code> doesn't know about the previous one. They live in completely separate worlds. With <code>else</code>, they're linked into a single decision and only one can win.</p>
+    <p>So the question isn't "should I use <code>if</code> or <code>else if</code>?" — it's "are these checks related to each other or not?"</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-6-13-2-2': `
+    <p><strong>Confusion: visual similarity</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Look almost identical on screen, behave totally differently
+if (a) { ... }
+if (b) { ... }     // independent — both can run
+
+if (a) { ... }
+else if (b) { ... }  // chained — only one can run
+// the difference is one word: "else"</code></pre>
+
+    <p><strong>Confusion: thinking <code>else</code> applies to a chain "as a whole"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">if (a) {
+  doA();
+}
+if (b) {
+  doB();
+} else {
+  doFallback();
+}
+// doFallback is the else for "if (b)" only — NOT a fallback for the whole structure.
+// a = true, b = false → doA runs, then doFallback runs.</code></pre>
+
+    <p><strong>Confusion: returns inside functions blur the line</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function classify(n) {
+  if (n > 0) {
+    return "positive";
+  }
+  if (n < 0) {
+    return "negative";
+  }
+  return "zero";
+}
+// these are SEPARATE ifs, but they ACT like a chain because of the early returns.
+// once "return" runs, the function exits, so later ifs can't run anyway.
+// this pattern is called "guard clauses" — common and clean inside functions.</code></pre>
+
+    <p><strong>Confusion: thinking <code>else</code> needs to be on a new line / styled a certain way</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// All three are valid and equivalent:
+
+if (a) {
+  doA();
+} else if (b) {
+  doB();
+}
+
+if (a) {
+  doA();
+}
+else if (b) {
+  doB();
+}
+
+if (a) { doA(); } else if (b) { doB(); }
+// the chain works because "else" follows the closing brace —
+// whitespace/newlines don't matter to JS.</code></pre>
+
+    <p><strong>Confusion: thinking separate <code>if</code>s are "wrong" or sloppy</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Separate ifs are correct here — every applicable badge should show.
+if (product.isNew) {
+  addBadge("NEW");
+}
+if (product.isOnSale) {
+  addBadge("SALE");
+}
+if (product.isExclusive) {
+  addBadge("EXCLUSIVE");
+}
+// converting this to a chain would be a BUG, not an improvement.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-6-13-2-3': `
+<pre class="language-javascript"><code class="language-javascript">// Mistake: separate ifs when you wanted alternatives
+if (status === "loading") {
+  showSpinner();
+}
+if (status === "error") {
+  showError();
+}
+if (status === "ok") {
+  showContent();
+}
+// works by accident because conditions are mutually exclusive,
+// but the structure says "any of these can happen" — misleading.
+// fix: chain with else if to express "pick one".</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Mistake: chained when you wanted independent checks
+if (user.hasUnreadMessages) {
+  showMessageBadge();
+} else if (user.hasNewFollowers) {
+  showFollowerBadge();
+} else if (user.hasPendingInvites) {
+  showInviteBadge();
+}
+// only ONE badge ever shows — but a user could have all three!
+// fix: separate ifs so all applicable badges show.</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Mistake: else attaching to the wrong if
+if (a) {
+  doA();
+}
+if (b) {
+  doB();
+} else {
+  doFallback();    // attaches to (b), not (a)
+}
+// fix: if you wanted one decision, chain them:
+if (a) {
+  doA();
+} else if (b) {
+  doB();
+} else {
+  doFallback();
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Mistake: code accidentally between if and else if
+if (a) {
+  doA();
+}
+console.log("done with a");
+else if (b) {       // SyntaxError — else if can't attach across other code
+  doB();
+}
+// fix: move the console.log out of the chain, or remove "else".</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Mistake: thinking "I'll just write three ifs, they're cleaner"
+// when alternatives are needed
+if (price >= 1000) {
+  applyDiscount(0.5);
+}
+if (price >= 500) {
+  applyDiscount(0.25);
+}
+if (price >= 100) {
+  applyDiscount(0.1);
+}
+// for price = 1500, ALL THREE discounts apply!
+// fix: chain them so only the highest tier applies.</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-6-13-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Chain — pick one priority level
+const priority = 5;
+if (priority >= 8) {
+  console.log("urgent");
+} else if (priority >= 4) {
+  console.log("normal");
+} else {
+  console.log("low");
+}
+// prints: "normal" — exactly one.
+
+// Separate ifs — collect all matching tags
+const post = { isPinned: true, hasImage: true, isEdited: false };
+const tags = [];
+if (post.isPinned) {
+  tags.push("📌");
+}
+if (post.hasImage) {
+  tags.push("🖼");
+}
+if (post.isEdited) {
+  tags.push("✏️");
+}
+console.log(tags);   // ["📌", "🖼"] — both that applied
+
+// Mixed in one function
+function describeUser(user) {
+  // Chain — pick one tier
+  let tier;
+  if (user.isAdmin) {
+    tier = "admin";
+  } else if (user.isPaid) {
+    tier = "paid";
+  } else {
+    tier = "free";
+  }
+
+  // Separate ifs — collect all flags
+  const flags = [];
+  if (user.isVerified) {
+    flags.push("verified");
+  }
+  if (user.isBeta) {
+    flags.push("beta");
+  }
+
+  return { tier, flags };
+}
+
+// Inside a function — early returns act like a chain
+function classify(n) {
+  if (n > 0) {
+    return "positive";
+  }
+  if (n < 0) {
+    return "negative";
+  }
+  return "zero";
+}
+// only one return runs, even though these look like separate ifs.</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-6-13-3-1': `
+    <p><strong>Example: render exactly one main view (chain)</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function renderApp(state) {
+  if (state.error) {
+    showErrorScreen(state.error);
+  } else if (state.isLoading) {
+    showLoadingScreen();
+  } else if (!state.user) {
+    showLoginScreen();
+  } else {
+    showDashboard(state);
+  }
+}
+// only one screen at a time — chain is required.</code></pre>
+
+    <p><strong>Example: collect all form errors (separate ifs)</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function validateForm(form) {
+  const errors = [];
+
+  if (!form.email) {
+    errors.push("Email is required");
+  }
+  if (form.email && !form.email.includes("@")) {
+    errors.push("Email must include @");
+  }
+  if (!form.password) {
+    errors.push("Password is required");
+  }
+  if (form.password && form.password.length < 8) {
+    errors.push("Password too short");
+  }
+
+  return errors;
+}
+// independent checks — we want ALL the errors, not just the first.</code></pre>
+
+    <p><strong>Example: show all matching product badges (separate ifs)</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function renderBadges(product) {
+  const container = document.querySelector(".badges");
+  container.innerHTML = "";
+
+  if (product.isNew) {
+    container.appendChild(makeBadge("NEW"));
+  }
+  if (product.isOnSale) {
+    container.appendChild(makeBadge("SALE"));
+  }
+  if (product.stock < 5) {
+    container.appendChild(makeBadge("LOW STOCK"));
+  }
+  if (product.isExclusive) {
+    container.appendChild(makeBadge("EXCLUSIVE"));
+  }
+}
+// a product can be NEW + SALE + LOW STOCK all at once.</code></pre>
+
+    <p><strong>Example: route guard with early returns (chain-like via guard clauses)</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function checkAccess(user, page) {
+  if (!user) {
+    return "redirect:/login";
+  }
+  if (!user.verified) {
+    return "redirect:/verify-email";
+  }
+  if (page.requiresAdmin && !user.isAdmin) {
+    return "redirect:/403";
+  }
+  return "allow";
+}
+// separate ifs in syntax, but the early returns make only one outcome happen.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-6-13-3-2': `
+    <ul>
+      <li><strong>Only one branch runs</strong> → why chains behave the way they do</li>
+      <li><strong><code>else if</code></strong> → the keyword that turns separate <code>if</code>s into a chain</li>
+      <li><strong>Condition order matters</strong> → only matters inside a chain; doesn't apply to separate <code>if</code>s</li>
+      <li><strong>Guard clauses</strong> → using early <code>return</code>s inside functions to mimic chain behavior</li>
+      <li><strong>Truthy and falsy</strong> → drives the conditions in either pattern</li>
+      <li><strong>Code blocks</strong> → braces define what counts as part of one branch</li>
+      <li><strong>Switch statements</strong> → built-in "pick one" structure for many alternatives</li>
+      <li><strong>Common mistakes</strong> → choosing the wrong pattern is one of the most frequent JS bugs</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-6-13-3-3': `
+    <ul>
+      <li>Only one branch runs</li>
+      <li><code>else if</code> as backup question</li>
+      <li>Condition order matters</li>
+      <li>Guard clauses</li>
+      <li>Early <code>return</code> patterns</li>
+      <li>Switch statements</li>
+      <li>Code blocks and braces</li>
+      <li>Truthy and falsy values</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.7.15 If / Else → comparison operators in conditions
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-6-14-0-0': `
+    <p>Comparison operators are the small symbols that turn two values into a yes/no answer: <code>===</code>, <code>!==</code>, <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>. They're what most <code>if</code> conditions are built from.</p>
+    <p>Every comparison takes a left value, a right value, and produces a single boolean (<code>true</code> or <code>false</code>). That boolean is what JavaScript actually checks when deciding whether to run the branch.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-6-14-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const temp = 75;
+
+if (temp > 70) {
+  console.log("warm");
+}
+// prints: "warm"
+// temp > 70 → 75 > 70 → true → block runs</code></pre>
+    <p>The condition <code>temp &gt; 70</code> is just an expression that evaluates to <code>true</code> or <code>false</code>. The <code>if</code> doesn't care how that boolean was produced — only whether the result is truthy.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-6-14-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const balance = 200;
+
+if (balance >= 100) {
+  console.log("eligible");
+}
+
+// balance     → left side: the value being checked
+// >=          → operator: "greater than or equal to"
+// 100         → right side: the value being compared against
+// balance >= 100 → evaluates to true (200 is >= 100)
+// the whole condition reduces to one boolean</code></pre>
+    <p>Each operator follows the same shape: <em>left, operator, right</em>. JavaScript looks at both sides, applies the rule, and produces one true/false result.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-6-14-0-3': `
+    <p>JavaScript has six core comparison operators. Three of them check equality, three check ordering:</p>
+<pre class="language-javascript"><code class="language-javascript">// Equality
+a === b      // strict equal: same value AND same type
+a !== b      // strict not equal: different value or different type
+
+// Ordering
+a > b        // greater than
+a < b        // less than
+a >= b       // greater than or equal
+a <= b       // less than or equal</code></pre>
+
+    <p><code>===</code> is the strict equality check. It returns <code>true</code> only if both values are the same type AND the same value:</p>
+<pre class="language-javascript"><code class="language-javascript">5 === 5            // true
+5 === "5"          // false — number vs string, different types
+"hi" === "hi"      // true
+true === true      // true
+null === undefined // false — different types</code></pre>
+
+    <p>There's also a loose equality operator <code>==</code> (and its opposite <code>!=</code>), but it does type coercion that often causes bugs. <strong>Avoid <code>==</code>. Always use <code>===</code>:</strong></p>
+<pre class="language-javascript"><code class="language-javascript">5 == "5"           // true — JS converts "5" to 5 before comparing
+"" == 0            // true — both become 0
+false == 0         // true — both become 0
+null == undefined  // true — special-cased to be equal
+
+// === avoids all this confusion:
+5 === "5"          // false — different types, end of story</code></pre>
+
+    <p>Comparison operators only return booleans. Mixing them up with assignment (<code>=</code>) is one of the most common bugs:</p>
+<pre class="language-javascript"><code class="language-javascript">// Wrong — single = is assignment, not comparison
+if (status = "ready") {
+  // ...
+}
+// this assigns "ready" to status, then evaluates "ready" (truthy) → block always runs
+
+// Right — === compares
+if (status === "ready") {
+  // ...
+}</code></pre>
+
+    <p>Ordering operators (<code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code>) work on numbers and strings. With strings, they compare alphabetically based on character codes:</p>
+<pre class="language-javascript"><code class="language-javascript">10 > 5             // true
+"apple" < "banana" // true — "a" comes before "b"
+"Z" < "a"          // true — uppercase letters have lower codes than lowercase
+"10" < "9"         // true — string compare: "1" comes before "9"</code></pre>
+
+    <p>That last one is a classic trap — <code>"10" &lt; "9"</code> is <code>true</code> because it's comparing strings character by character, not numbers. Always make sure both sides are the type you expect.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-6-14-1-0': `
+    <p>Conditions need a way to ask specific questions about values: "is this exactly that?", "is this big enough?", "is this past the limit?". Comparison operators are how you ask those questions in JavaScript.</p>
+    <p>Without them, every condition would have to be a raw boolean variable. With them, you can compare any two values directly and get an answer in one expression.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-6-14-1-1': `
+    <p>Each operator answers a different kind of question. Pick the one that matches what you actually want to ask:</p>
+<pre class="language-javascript"><code class="language-javascript">// "Is it exactly this value?" → ===
+if (role === "admin") {
+  enableAdminTools();
+}
+
+// "Is it not this value?" → !==
+if (status !== "archived") {
+  showItem();
+}
+
+// "Is it past this threshold?" → > or >=
+if (score >= 60) {
+  pass();
+}
+
+// "Is it under this limit?" → < or <=
+if (attempts < 3) {
+  allowRetry();
+}</code></pre>
+
+    <p>The operator you choose is the question you're asking. Mixing them up changes the meaning entirely — <code>&gt;</code> and <code>&gt;=</code> only differ at the boundary, but at that boundary they behave opposite.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-6-14-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Permission checks (===)
+if (user.plan === "premium") {
+  showPremiumFeatures();
+}
+
+// Filtering exclusions (!==)
+const visible = items.filter(item => item.status !== "deleted");
+
+// Numeric thresholds (>=)
+if (cart.subtotal >= 50) {
+  applyFreeShipping();
+}
+
+// Boundaries (<)
+if (passwordAttempts < maxAttempts) {
+  allowLogin();
+} else {
+  lockAccount();
+}
+
+// Range checks (combining with logical operators)
+if (age >= 13 && age <= 19) {
+  console.log("teenager");
+}
+
+// Null checks (===)
+if (data === null) {
+  showEmpty();
+}
+
+// Existence (!==)
+if (response.error !== undefined) {
+  handleError(response.error);
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-6-14-1-3': `
+    <p>Comparison operators are the question marks of code. Each one is asking a question about two values, and the answer is always yes or no.</p>
+    <p><code>===</code> asks "is this <em>exactly</em> the same?" Not just similar — same value, same type, no conversions allowed. <code>!==</code> asks the opposite: "is this <em>not</em> the same?"</p>
+    <p><code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, and <code>&lt;=</code> ask about size or order. Bigger, smaller, at-or-above, at-or-below. The "or equal" versions include the boundary itself.</p>
+    <p>Whatever question you ask, JavaScript answers with a single <code>true</code> or <code>false</code>. That answer is what your <code>if</code> branches on.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-6-14-1-4': `
+    <p>Each comparison is a tiny question that returns a yes/no card. The <code>if</code> only looks at the card.</p>
+<pre class="language-javascript"><code class="language-javascript">     score >= 60
+         │
+         ▼
+   ┌───────────┐
+   │ comparison │ ← runs the check
+   └─────┬─────┘
+         ▼
+      [ true ]   ← the card it produces
+         │
+         ▼
+       if (...)  ← the if just sees the card
+
+// the if doesn't know or care what the comparison was —
+// it only sees the resulting boolean.</code></pre>
+    <p>Once you see comparisons as "expressions that produce booleans," any condition becomes simple to read: <em>"first reduce the expression to true or false, then ask if it's truthy."</em></p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-6-14-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const password = "abc";
+const minLength = 8;
+
+if (password.length >= minLength) {
+  console.log("password OK");
+} else {
+  console.log("password too short");
+}
+
+// prints: "password too short"
+
+// JavaScript is thinking:
+// Line 1: register password, value "abc".
+// Line 2: register minLength, value 8.
+// Line 4: see if (...) — start evaluating the condition.
+//         password.length → reads .length on "abc" → 3
+//         minLength → 8
+//         3 >= 8 → false
+//         the condition reduces to: if (false)
+// Line 5: false is falsy → skip this block.
+// Line 6: see else → run this block.
+// Line 7: log "password too short".</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-6-14-2-0': `
+    <p>If a condition isn't behaving the way you expect, log the comparison directly to see what JavaScript actually sees:</p>
+<pre class="language-javascript"><code class="language-javascript">const userId = "42";
+
+console.log("userId:", userId, typeof userId);
+console.log("compare:", userId === 42);
+
+if (userId === 42) {
+  console.log("match");
+} else {
+  console.log("no match");
+}
+
+// prints:
+//   userId: 42 string
+//   compare: false
+//   no match
+
+// the value LOOKS like 42, but it's the string "42".
+// === checks types too, so they're not equal.
+// fix: convert with Number(userId), or compare with the string "42".</code></pre>
+
+    <p>The two most common comparison bugs:</p>
+    <ol>
+      <li><strong>Using <code>=</code> instead of <code>===</code></strong> — this assigns instead of comparing, and the condition almost always evaluates to truthy.</li>
+      <li><strong>Comparing different types</strong> — strings and numbers that look the same aren't equal under <code>===</code>.</li>
+    </ol>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-6-14-2-1': `
+    <p>An <code>if</code> doesn't compare anything itself. It just checks whether the value inside the parens is truthy. Comparison operators are what produce the boolean that the <code>if</code> reads.</p>
+    <p>So <code>if (x &gt;= 10)</code> isn't really "if x is at least 10." It's two steps: first compute <code>x &gt;= 10</code>, then ask "is that result truthy?" Once you see that split, you can put any boolean expression in an <code>if</code> — the <code>if</code> doesn't care where the boolean came from.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-6-14-2-2': `
+    <p><strong>Confusion: <code>=</code> vs <code>===</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Wrong — assignment, not comparison
+if (status = "active") {
+  console.log("active");
+}
+// this ASSIGNS "active" to status, then evaluates "active" (truthy) → block ALWAYS runs
+
+// Right — comparison
+if (status === "active") {
+  console.log("active");
+}</code></pre>
+
+    <p><strong>Confusion: <code>==</code> vs <code>===</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">// == does type coercion (often surprising)
+0 == "0"        // true
+0 == ""         // true
+"" == false     // true
+null == undefined // true
+
+// === requires same type AND value (predictable)
+0 === "0"       // false
+0 === ""        // false
+"" === false    // false
+null === undefined // false
+
+// Always use === unless you have a very specific reason not to.</code></pre>
+
+    <p><strong>Confusion: <code>&gt;=</code> vs <code>&gt;</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">// They differ ONLY at the boundary
+const score = 60;
+
+if (score >= 60) { /* runs */ }    // 60 IS >= 60 → true
+if (score > 60)  { /* skips */ }   // 60 is NOT > 60 → false
+
+// Pick based on whether the boundary value should pass or fail.
+// "passing grade is 60" → score >= 60 (60 itself passes)
+// "must beat 60" → score > 60 (60 itself doesn't beat it)</code></pre>
+
+    <p><strong>Confusion: comparing objects</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const a = { id: 1 };
+const b = { id: 1 };
+
+a === b   // false — different objects in memory, even though contents match
+a === a   // true — same reference
+
+// === on objects only checks if it's the SAME object, not if contents match.
+// To compare contents, check fields directly:
+a.id === b.id   // true</code></pre>
+
+    <p><strong>Confusion: comparing strings as numbers</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Strings compare alphabetically, not numerically
+"10" < "9"      // true — "1" comes before "9" in character order
+"100" < "20"    // true — same trap
+
+// Convert to numbers if you mean numeric comparison
+Number("10") < Number("9")    // false — actual number compare
+parseInt("10") < parseInt("9") // false</code></pre>
+
+    <p><strong>Confusion: <code>NaN</code> doesn't equal anything</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const result = Number("hello");   // NaN
+
+result === NaN     // false — NaN is not equal to itself!
+result === result  // false — even comparing to itself
+
+// To check for NaN, use Number.isNaN():
+Number.isNaN(result)   // true</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-6-14-2-3': `
+<pre class="language-javascript"><code class="language-javascript">if (status = "ready") {
+  start();
+}
+// = is assignment — block always runs because "ready" is truthy
+// fix: use === for comparison
+if (status === "ready") {
+  start();
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (count == 0) {
+  console.log("empty");
+}
+// works, but == coerces types — risky habit
+// fix: use === for predictable comparison
+if (count === 0) {
+  console.log("empty");
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (userId === 42) {
+  // ...
+}
+// fails when userId is the string "42" instead of the number 42
+// fix: make sure both sides have the same type, or convert first
+if (Number(userId) === 42) {
+  // ...
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (price > 100 || 200) {
+  // ...
+}
+// wrong — this evaluates as (price > 100) || 200 — the 200 is truthy by itself
+// fix: write each side of OR as its own full comparison
+if (price > 100 || price > 200) {
+  // ...
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (a === b === c) {
+  // ...
+}
+// wrong — this evaluates left-to-right: (a === b) → true/false, then compares THAT to c
+// fix: combine with &&
+if (a === b && b === c) {
+  // ...
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (result === NaN) {
+  // ...
+}
+// NaN is never equal to anything, including itself
+// fix: use Number.isNaN()
+if (Number.isNaN(result)) {
+  // ...
+}</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-6-14-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Strict equality — exact value match
+const role = "admin";
+if (role === "admin") {
+  console.log("welcome admin");
+}
+
+// Strict inequality — exclude one case
+const view = "list";
+if (view !== "grid") {
+  renderListLayout();
+}
+
+// Numeric threshold
+const battery = 15;
+if (battery <= 20) {
+  console.log("low battery warning");
+}
+
+// String comparison
+const name = "Alice";
+if (name < "M") {
+  console.log("first half of alphabet");
+}
+
+// Combining with logical operators
+const age = 25;
+if (age >= 18 && age < 65) {
+  console.log("working age");
+}
+
+// Inside a function
+function isPositive(n) {
+  return n > 0;
+}
+console.log(isPositive(5));    // true
+console.log(isPositive(-2));   // false
+console.log(isPositive(0));    // false — exactly 0 doesn't pass</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-6-14-3-1': `
+    <p><strong>Example: feature flag check</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function shouldShowBeta(user) {
+  if (user.plan === "pro" && user.optedInToBeta === true) {
+    return true;
+  }
+  return false;
+}</code></pre>
+
+    <p><strong>Example: form field validation</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function validateAge(input) {
+  const value = Number(input);
+
+  if (Number.isNaN(value)) {
+    return "Age must be a number";
+  }
+  if (value < 0) {
+    return "Age can't be negative";
+  }
+  if (value > 150) {
+    return "Please enter a realistic age";
+  }
+  return null;
+}</code></pre>
+
+    <p><strong>Example: pagination button states</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function updatePagination(currentPage, totalPages) {
+  const prevBtn = document.querySelector(".prev");
+  const nextBtn = document.querySelector(".next");
+
+  if (currentPage <= 1) {
+    prevBtn.disabled = true;
+  } else {
+    prevBtn.disabled = false;
+  }
+
+  if (currentPage >= totalPages) {
+    nextBtn.disabled = true;
+  } else {
+    nextBtn.disabled = false;
+  }
+}</code></pre>
+
+    <p><strong>Example: filter list by status</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getActiveTickets(tickets) {
+  return tickets.filter(function (ticket) {
+    return ticket.status !== "closed" && ticket.status !== "archived";
+  });
+}</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-6-14-3-2': `
+    <ul>
+      <li><strong>Truthy and falsy values</strong> → what comparison results get treated as in conditions</li>
+      <li><strong>Logical operators</strong> → combining multiple comparisons with <code>&&</code> and <code>||</code></li>
+      <li><strong><code>=</code> vs <code>===</code></strong> → assignment vs comparison, a frequent bug source</li>
+      <li><strong>Type coercion</strong> → why <code>==</code> behaves unpredictably and <code>===</code> doesn't</li>
+      <li><strong>Numbers vs strings</strong> → string comparisons follow alphabetical order, not numeric</li>
+      <li><strong><code>NaN</code></strong> → the special value that's not equal to anything, even itself</li>
+      <li><strong>Object identity</strong> → <code>===</code> on objects checks reference equality, not contents</li>
+      <li><strong>Boolean expressions</strong> → comparisons are the most common way to produce them</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-6-14-3-3': `
+    <ul>
+      <li>Logical operators in conditions</li>
+      <li>Truthy and falsy values</li>
+      <li>Type coercion and <code>==</code> vs <code>===</code></li>
+      <li>Comparing numbers vs comparing strings</li>
+      <li><code>Number.isNaN()</code> and <code>Number.isFinite()</code></li>
+      <li>Object equality and reference comparison</li>
+      <li>Operator precedence in conditions</li>
+      <li>Common typos: <code>=</code> vs <code>==</code> vs <code>===</code></li>
     </ul>
   `,
 
