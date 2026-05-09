@@ -1024,3 +1024,11 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ==========================================================
+   Visual === Fixed
+   ========================================================== */
+
+code, pre {
+  font-variant-ligatures: none;
+}

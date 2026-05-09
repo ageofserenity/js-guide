@@ -6,6 +6,11 @@ Object.assign(CONTENT, {
      ========================================================== */
 
 
+     /* ==========================================================
+     TOPIC 3.7: If / Else Statements
+     ========================================================== */
+
+
   /* ========================================================= 
    Sub-lesson: 3.7.1 If / Else → what conditionals are
  =======================================================*/
@@ -7078,6 +7083,6647 @@ console.log(isPositive(0));    // false — exactly 0 doesn't pass</code></pre>
       <li>Object equality and reference comparison</li>
       <li>Operator precedence in conditions</li>
       <li>Common typos: <code>=</code> vs <code>==</code> vs <code>===</code></li>
+    </ul>
+  `,
+  /* ========================================================= 
+   Sub-lesson: 3.7.16 If / Else → logical operators in conditions
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-6-15-0-0': `
+    <p>Logical operators are the symbols that combine multiple yes/no checks into a single yes/no answer: <code>&&</code> (AND), <code>||</code> (OR), and <code>!</code> (NOT). They let one <code>if</code> ask about more than one thing at a time.</p>
+    <p>Without them, you'd need nested <code>if</code>s for every "this and that" or "this or that" condition. With them, you can express the whole question on one line.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-6-15-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const age = 25;
+const hasLicense = true;
+
+if (age >= 18 && hasLicense) {
+  console.log("can drive");
+}
+
+// prints: "can drive"
+// age >= 18 → true
+// hasLicense → true
+// true && true → true → block runs</code></pre>
+    <p>Each side of <code>&&</code> is its own boolean expression. JavaScript evaluates both, then combines them into one final answer that the <code>if</code> reads.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-6-15-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const isWeekend = true;
+const isHoliday = false;
+
+if (isWeekend || isHoliday) {
+  console.log("day off");
+}
+
+// isWeekend       → left side: a boolean expression
+// ||              → operator: "OR" — true if EITHER side is true
+// isHoliday       → right side: another boolean expression
+// true || false   → true → block runs
+
+// !isWeekend     → NOT operator flips the boolean
+// !true          → false
+// !false         → true</code></pre>
+    <p><code>&&</code> needs both sides to be true. <code>||</code> needs only one side to be true. <code>!</code> takes one value and flips it.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-6-15-0-3': `
+    <p>Three operators, each with a clear truth rule:</p>
+<pre class="language-javascript"><code class="language-javascript">// && (AND) — true only when BOTH sides are true
+true  && true   // true
+true  && false  // false
+false && true   // false
+false && false  // false
+
+// || (OR) — true when AT LEAST ONE side is true
+true  || true   // true
+true  || false  // true
+false || true   // true
+false || false  // false
+
+// ! (NOT) — flips a single boolean
+!true   // false
+!false  // true</code></pre>
+
+    <p><strong>Short-circuit evaluation:</strong> JavaScript stops as soon as it knows the answer. With <code>&&</code>, if the left side is false, the right side is never even checked. With <code>||</code>, if the left side is true, the right side is skipped.</p>
+<pre class="language-javascript"><code class="language-javascript">// Right side is NEVER called — left is already false
+if (false && expensiveCheck()) {
+  // ...
+}
+
+// Right side is NEVER called — left is already true
+if (true || expensiveCheck()) {
+  // ...
+}
+
+// This is useful for guarding against errors:
+if (user && user.name) {
+  // if user is null/undefined, the && stops there — user.name is never accessed
+  console.log(user.name);
+}</code></pre>
+
+    <p><strong>Operator precedence:</strong> <code>&&</code> binds tighter than <code>||</code>. When mixing them, use parentheses to make intent clear:</p>
+<pre class="language-javascript"><code class="language-javascript">// Without parens — && groups first, then ||
+if (a || b && c) {
+  // ...
+}
+// JS reads it as: a || (b && c)
+
+// With parens — explicit grouping
+if ((a || b) && c) {
+  // ...
+}
+// totally different meaning — both groupings can produce different results.</code></pre>
+
+    <p>Each side of a logical operator should be a complete expression. A common mistake is writing one comparison with two right-hand values:</p>
+<pre class="language-javascript"><code class="language-javascript">// Wrong — looks like "x equals 1 or 2", but isn't
+if (x === 1 || 2) {
+  // ...
+}
+// JS reads: (x === 1) || 2 — and 2 by itself is truthy, so block ALWAYS runs
+
+// Right — each side is a full comparison
+if (x === 1 || x === 2) {
+  // ...
+}</code></pre>
+
+    <p>Logical operators don't always return <code>true</code> or <code>false</code> — they return <strong>one of the actual values</strong>. <code>&&</code> returns the first falsy value (or the last value if all are truthy). <code>||</code> returns the first truthy value (or the last value if all are falsy). For most <code>if</code> conditions this doesn't matter — JavaScript will treat the result as truthy/falsy either way.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-6-15-1-0': `
+    <p>Real-world conditions almost never depend on just one thing. "User is logged in <em>and</em> verified." "Status is error <em>or</em> timeout." "Item is <em>not</em> archived." Logical operators let you express these compound questions naturally.</p>
+    <p>Without them, every "and" would need a nested <code>if</code>, and every "or" would need duplicated branches. With them, the structure of the code matches the structure of the question.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-6-15-1-1': `
+    <p>Each operator captures a specific kind of compound question:</p>
+<pre class="language-javascript"><code class="language-javascript">// AND — all conditions must be true
+if (user.isLoggedIn && user.isVerified) {
+  showDashboard();
+}
+
+// OR — any condition is enough
+if (status === "error" || status === "timeout") {
+  showRetryButton();
+}
+
+// NOT — invert a check
+if (!cart.isEmpty) {
+  showCheckoutButton();
+}
+
+// Combined — for more complex rules
+if ((user.isAdmin || user.isOwner) && !user.isSuspended) {
+  showAdminPanel();
+}</code></pre>
+
+    <p>Reading these out loud usually mirrors plain English: "if logged in <em>and</em> verified," "if error <em>or</em> timeout," "if cart is <em>not</em> empty." That's the test for whether your operator choice matches your intent.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-6-15-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Permission rules (AND)
+if (user.role === "editor" && document.isPublished === false) {
+  allowEdit();
+}
+
+// Multiple acceptable values (OR)
+if (file.type === "jpg" || file.type === "png" || file.type === "gif") {
+  uploadImage(file);
+}
+
+// Range checks (AND)
+if (temperature >= 60 && temperature <= 80) {
+  console.log("comfortable");
+}
+
+// Inverting checks (NOT)
+if (!form.isValid) {
+  showErrors();
+}
+
+// Safe property access (AND with short-circuit)
+if (response && response.data && response.data.user) {
+  showProfile(response.data.user);
+}
+
+// Multi-criteria filtering
+const visiblePosts = posts.filter(function (post) {
+  return post.isPublished && !post.isDeleted && post.author === currentUser.id;
+});
+
+// Login flow combinations
+if ((email !== "" && password !== "") || rememberedToken !== null) {
+  attemptLogin();
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-6-15-1-3': `
+    <p>Think of logical operators as tiny words that join sentences. <code>&&</code> means "and." <code>||</code> means "or." <code>!</code> means "not."</p>
+    <p>If you say "I'll go to the park if it's sunny <em>and</em> warm," you need both to be true — sunny alone isn't enough, warm alone isn't enough. That's <code>&&</code>.</p>
+    <p>If you say "I'll bring an umbrella if it's raining <em>or</em> snowing," either one is enough to trigger it. That's <code>||</code>.</p>
+    <p>If you say "I'll keep the window open if it's <em>not</em> raining," you're flipping a single check from positive to negative. That's <code>!</code>.</p>
+    <p>The key insight: each operator turns multiple yes/no questions into one yes/no answer. Whatever that final answer is, that's what the <code>if</code> sees.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-6-15-1-4': `
+    <p>Picture each comparison as a light switch. Logical operators wire them together to control one bulb.</p>
+<pre class="language-javascript"><code class="language-javascript">// && — series circuit (both must be ON)
+[switch A] ── [switch B] ── 💡
+// bulb only lights when BOTH switches are on
+
+// || — parallel circuit (either one is enough)
+[switch A] ─┐
+            ├─ 💡
+[switch B] ─┘
+// bulb lights when EITHER switch is on
+
+// ! — inverter
+[switch A] ── [NOT] ── 💡
+// flips the signal: ON becomes OFF, OFF becomes ON</code></pre>
+    <p>When reading a condition, trace each piece down to a true/false, then apply the wiring rule. The "bulb" at the end is what the <code>if</code> branches on.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-6-15-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const user = { isLoggedIn: true, isVerified: false };
+
+if (user.isLoggedIn && user.isVerified) {
+  console.log("welcome");
+} else {
+  console.log("please verify your account");
+}
+
+// prints: "please verify your account"
+
+// JavaScript is thinking:
+// Line 1: register user as an object with two properties.
+// Line 3: see if (...) — start evaluating the condition.
+//         user.isLoggedIn → true
+//         &&: left is true, so we DO need to check the right side
+//         user.isVerified → false
+//         true && false → false
+//         the condition reduces to: if (false)
+// Line 4: false is falsy → skip this block.
+// Line 5: see else → run this block.
+// Line 6: log "please verify your account".</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-6-15-2-0': `
+    <p>If a compound condition is doing the wrong thing, log each piece separately to see where the logic breaks down:</p>
+<pre class="language-javascript"><code class="language-javascript">const user = { age: 17, hasParentalConsent: true };
+
+console.log("age >= 18:", user.age >= 18);
+console.log("hasParentalConsent:", user.hasParentalConsent);
+console.log("combined:", user.age >= 18 && user.hasParentalConsent);
+
+if (user.age >= 18 && user.hasParentalConsent) {
+  allowSignup();
+} else {
+  blockSignup();
+}
+
+// prints:
+//   age >= 18: false
+//   hasParentalConsent: true
+//   combined: false
+//   blockSignup runs
+
+// Now you can see: even though consent is true, the age check fails,
+// and AND requires BOTH to be true.
+// The bug is the operator choice — should this be || (or)?</code></pre>
+
+    <p>Common signal: the condition <em>looks</em> right but the wrong branch runs. Trace each subcondition individually — the bug is almost always either the operator (AND when you wanted OR) or the precedence (missing parens).</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-6-15-2-1': `
+    <p>Logical operators don't change what the <code>if</code> does. The <code>if</code> still just checks one boolean. Logical operators just decide what that one boolean is.</p>
+    <p>So <code>if (a && b)</code> isn't really "if a and b are true." It's two steps: first compute <code>a && b</code>, then check if the result is truthy. Once you separate those two steps in your head, complex conditions stop being intimidating — they're just expressions that reduce to a single boolean.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-6-15-2-2': `
+    <p><strong>Confusion: <code>&&</code> vs <code>||</code> when you need "or"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Wrong — uses && (and) when you meant || (or)
+if (status === "error" && status === "timeout") {
+  // ...
+}
+// status can't be both "error" AND "timeout" at the same time → block NEVER runs
+
+// Right — use ||
+if (status === "error" || status === "timeout") {
+  // ...
+}</code></pre>
+
+    <p><strong>Confusion: shortened comparisons that don't work</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Wrong — looks like "x is 1 or 2"
+if (x === 1 || 2) {
+  // ...
+}
+// JS reads: (x === 1) || 2 — and 2 by itself is truthy → block ALWAYS runs
+
+// Right — each side is a full comparison
+if (x === 1 || x === 2) {
+  // ...
+}</code></pre>
+
+    <p><strong>Confusion: operator precedence with mixed && and ||</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Without parens — JS groups && first
+if (isAdmin || isOwner && !isSuspended) {
+  // ...
+}
+// reads as: isAdmin || (isOwner && !isSuspended)
+// → admins always pass, regardless of whether they're suspended
+
+// With parens — explicit
+if ((isAdmin || isOwner) && !isSuspended) {
+  // ...
+}
+// reads as: (admin OR owner) AND not suspended
+// → suspended admins are blocked
+
+// Always use parens when mixing — it removes guesswork.</code></pre>
+
+    <p><strong>Confusion: thinking <code>&&</code> and <code>||</code> always return <code>true</code> or <code>false</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">// They return one of the actual values, not always a strict boolean
+"hello" && 42        // 42 (last truthy)
+0 && "hello"         // 0 (first falsy)
+"" || "default"      // "default" (first truthy)
+null || undefined    // undefined (last value)
+
+// For if conditions this doesn't matter — JS treats the result as truthy/falsy.
+// But if you assign the result, you get the actual value:
+const name = inputName || "Anonymous";
+// if inputName is "", name becomes "Anonymous".</code></pre>
+
+    <p><strong>Confusion: <code>!</code> on non-boolean values</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// ! converts to boolean first, then flips
+!"hello"   // false ("hello" is truthy → flipped to false)
+!0         // true (0 is falsy → flipped to true)
+!null      // true (null is falsy → flipped to true)
+![]        // false (an array is truthy → flipped to false)
+
+// Common pattern: !! to convert anything to a real boolean
+!!"hello"  // true
+!!0        // false
+!!null     // false</code></pre>
+
+    <p><strong>Confusion: short-circuiting and side effects</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Right side might NOT run
+if (count > 0 && processItems()) {
+  // ...
+}
+// if count is 0, processItems() never runs.
+// usually fine — but if you NEED both sides to run, don't put them in the same condition.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-6-15-2-3': `
+<pre class="language-javascript"><code class="language-javascript">if (day === "Saturday" && day === "Sunday") {
+  console.log("weekend");
+}
+// day can't be two things at once → block never runs
+// fix: use ||
+if (day === "Saturday" || day === "Sunday") {
+  console.log("weekend");
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (color === "red" || "blue" || "green") {
+  // ...
+}
+// "blue" by itself is truthy → block always runs
+// fix: each side needs its own full comparison
+if (color === "red" || color === "blue" || color === "green") {
+  // ...
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (a && b || c) {
+  // ...
+}
+// ambiguous — JS groups && first: (a && b) || c
+// fix: add parens to show intent
+if ((a && b) || c) {
+  // ...
+}
+// or
+if (a && (b || c)) {
+  // ...
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (!user.isLoggedIn || !user.isVerified) {
+  blockAccess();
+}
+// works, but easier to read with the inverse
+// fix: combine with && and one !
+if (!(user.isLoggedIn && user.isVerified)) {
+  blockAccess();
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (user.profile.avatar) {
+  showAvatar();
+}
+// crashes if user is null or user.profile is undefined
+// fix: chain with && for safe access
+if (user && user.profile && user.profile.avatar) {
+  showAvatar();
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (count = 0 || count > 100) {
+  // ...
+}
+// = is assignment — count gets set to 0, then evaluated against || 100
+// fix: use === for comparison
+if (count === 0 || count > 100) {
+  // ...
+}</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-6-15-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// AND — all must be true
+const isLoggedIn = true;
+const isAdmin = true;
+if (isLoggedIn && isAdmin) {
+  console.log("admin access");
+}
+
+// OR — any one is enough
+const day = "Saturday";
+if (day === "Saturday" || day === "Sunday") {
+  console.log("weekend");
+}
+
+// NOT — invert a check
+const cart = [];
+if (!cart.length) {
+  console.log("cart is empty");
+}
+
+// Combined — admin OR owner, but not suspended
+const role = "owner";
+const suspended = false;
+if ((role === "admin" || role === "owner") && !suspended) {
+  console.log("can edit");
+}
+
+// Range check
+const score = 75;
+if (score >= 60 && score < 90) {
+  console.log("passing but not excellent");
+}
+
+// Safe property access with short-circuit
+const user = null;
+if (user && user.name) {
+  console.log(user.name);
+} else {
+  console.log("no user");
+}
+
+// Inside a function
+function canVote(person) {
+  return person.age >= 18 && person.isCitizen && !person.isIncarcerated;
+}
+console.log(canVote({ age: 22, isCitizen: true, isIncarcerated: false })); // true</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-6-15-3-1': `
+    <p><strong>Example: file upload validation</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function validateUpload(file) {
+  const allowedTypes = ["jpg", "png", "pdf"];
+  const maxSize = 5 * 1024 * 1024;   // 5 MB
+
+  if (!file) {
+    return "No file selected";
+  }
+  if (!allowedTypes.includes(file.type)) {
+    return "File type not supported";
+  }
+  if (file.size > maxSize) {
+    return "File is too large";
+  }
+  return null;
+}</code></pre>
+
+    <p><strong>Example: dark mode rule</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function shouldUseDarkMode(user, system) {
+  if (user.preference === "dark") {
+    return true;
+  }
+  if (user.preference === "light") {
+    return false;
+  }
+  // user has no preference — fall back to system, only between 8pm and 6am
+  const hour = new Date().getHours();
+  return system.darkModeAvailable && (hour >= 20 || hour < 6);
+}</code></pre>
+
+    <p><strong>Example: search filter combining multiple criteria</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function filterProducts(products, query) {
+  return products.filter(function (product) {
+    const matchesText = product.name.toLowerCase().includes(query.text.toLowerCase());
+    const matchesPrice = product.price >= query.minPrice && product.price <= query.maxPrice;
+    const matchesStock = !query.inStockOnly || product.stock > 0;
+
+    return matchesText && matchesPrice && matchesStock;
+  });
+}</code></pre>
+
+    <p><strong>Example: comment permissions</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function canDeleteComment(user, comment) {
+  if (!user) {
+    return false;
+  }
+  // a user can delete their own comment, OR if they're a moderator/admin
+  if (comment.authorId === user.id) {
+    return true;
+  }
+  if (user.role === "moderator" || user.role === "admin") {
+    return true;
+  }
+  return false;
+}</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-6-15-3-2': `
+    <ul>
+      <li><strong>Comparison operators</strong> → produce the booleans that logical operators combine</li>
+      <li><strong>Truthy and falsy values</strong> → drive what <code>&&</code> and <code>||</code> actually return</li>
+      <li><strong>Operator precedence</strong> → why <code>&&</code> binds tighter than <code>||</code> in mixed expressions</li>
+      <li><strong>Short-circuit evaluation</strong> → why some side effects don't run, and how to use it for safe access</li>
+      <li><strong>Default values with <code>||</code></strong> → common pattern outside <code>if</code>s for "use this or fall back to that"</li>
+      <li><strong>Nullish coalescing (<code>??</code>)</strong> → safer alternative to <code>||</code> when 0 or "" should count as valid</li>
+      <li><strong>De Morgan's laws</strong> → <code>!(a && b)</code> equals <code>!a || !b</code> — useful for rewriting conditions</li>
+      <li><strong>Optional chaining (<code>?.</code>)</strong> → modern alternative to chained <code>&&</code> for safe property access</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-6-15-3-3': `
+    <ul>
+      <li>Comparison operators</li>
+      <li>Truthy and falsy values</li>
+      <li>Operator precedence and parentheses</li>
+      <li>Short-circuit evaluation</li>
+      <li>Default values with <code>||</code></li>
+      <li>Nullish coalescing <code>??</code></li>
+      <li>Optional chaining <code>?.</code></li>
+      <li>Boolean conversion with <code>!!</code></li>
+    </ul>
+  `,
+  /* ========================================================= 
+   Sub-lesson: 3.7.17 If / Else → nested if statements
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-6-16-0-0': `
+    <p>A nested <code>if</code> is an <code>if</code> placed <em>inside</em> the body of another <code>if</code>. The outer check has to pass first; only then does the inner check even get evaluated.</p>
+    <p>It's how you ask layered questions: "first, is this true? if so, then also check that." Each layer of nesting represents one additional yes/no gate the code has to pass through.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-6-16-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const isLoggedIn = true;
+const role = "admin";
+
+if (isLoggedIn) {
+  if (role === "admin") {
+    console.log("welcome admin");
+  }
+}
+
+// prints: "welcome admin"
+// outer check passes → enter outer block
+// inner check runs → also passes → inner block runs</code></pre>
+    <p>The inner <code>if</code> is just a regular statement that happens to live inside another <code>if</code>'s block. Nothing special — it follows the same rules as any other <code>if</code>.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-6-16-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const order = { paid: true, items: 3 };
+
+if (order.paid) {                  // outer: gate 1
+  if (order.items > 0) {           // inner: gate 2 — only checked if gate 1 passed
+    shipOrder();                   // body: only runs if BOTH gates passed
+  }
+}
+
+// outer if    → first gate; if false, the entire structure is skipped
+// outer block → contains the inner if
+// inner if    → second gate; only evaluated when outer passed
+// inner block → only runs when both passed</code></pre>
+    <p>If the outer check is false, JavaScript never even looks at the inner check — the whole inner structure is skipped along with the outer block.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-6-16-0-3': `
+    <p>Each layer of nesting adds an indent. Standard style is 2 spaces per level:</p>
+<pre class="language-javascript"><code class="language-javascript">if (a) {
+  if (b) {
+    if (c) {
+      doSomething();
+    }
+  }
+}
+// 3 levels deep — c only runs if a AND b AND c are all true</code></pre>
+
+    <p>The braces matter just as much for nested <code>if</code>s as for regular ones. Without them, you can run into the <strong>dangling else problem</strong> — JavaScript pairs <code>else</code> with the nearest unmatched <code>if</code>, which may not be the one you meant:</p>
+<pre class="language-javascript"><code class="language-javascript">// BROKEN — looks like else belongs to the outer if, but it doesn't
+if (a)
+  if (b)
+    doX();
+  else
+    doY();
+// JS reads it as:
+//   if (a) {
+//     if (b) {
+//       doX();
+//     } else {
+//       doY();    // attached to inner if (b), not outer if (a)
+//     }
+//   }
+
+// FIXED — braces make scope explicit
+if (a) {
+  if (b) {
+    doX();
+  }
+} else {
+  doY();
+}</code></pre>
+
+    <p>Many nested <code>if</code>s can be flattened into a single condition with <code>&&</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">// Nested
+if (user.isLoggedIn) {
+  if (user.isVerified) {
+    showDashboard();
+  }
+}
+
+// Flattened — same behavior, easier to read
+if (user.isLoggedIn && user.isVerified) {
+  showDashboard();
+}</code></pre>
+
+    <p>Nesting is necessary when each layer needs to do something different — for example, when the inner <code>if</code> has its own <code>else</code> branch:</p>
+<pre class="language-javascript"><code class="language-javascript">if (user.isLoggedIn) {
+  if (user.isVerified) {
+    showDashboard();
+  } else {
+    showVerifyEmailPrompt();    // different fallback at each layer
+  }
+} else {
+  showLoginPrompt();
+}</code></pre>
+
+    <p>That can't easily be flattened — the two <code>else</code> branches handle different failure cases.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-6-16-1-0': `
+    <p>Some checks only make sense after another check has passed. There's no point asking "is the user verified?" if there's no user logged in. Nested <code>if</code>s let you express that dependency directly — the inner question is only asked once the outer one is settled.</p>
+    <p>It also lets each layer have its own response. The outer failure and the inner failure can do completely different things, which is hard to express with a single combined condition.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-6-16-1-1': `
+    <p>Nesting earns its place when the layers each need to react differently — especially when each level has its own <code>else</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">function handleCheckout(user, cart) {
+  if (user) {
+    if (cart.items.length > 0) {
+      processPayment(user, cart);
+    } else {
+      showMessage("Your cart is empty");
+    }
+  } else {
+    redirectToLogin();
+  }
+}
+// three different outcomes:
+//   no user            → login redirect
+//   user + empty cart  → "cart is empty" message
+//   user + items       → process payment
+// one flat condition can't say all three things — nesting is the natural fit.</code></pre>
+
+    <p>If the layers don't need separate <code>else</code> branches, flatten with <code>&&</code> instead. Less indentation is almost always easier to read.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-6-16-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Permission tree (each layer has its own message)
+if (user.isLoggedIn) {
+  if (user.role === "admin") {
+    if (user.permissions.includes("delete")) {
+      deleteRecord();
+    } else {
+      showMessage("Admins need the 'delete' permission");
+    }
+  } else {
+    showMessage("Only admins can delete");
+  }
+} else {
+  redirectToLogin();
+}
+
+// Form submission with field-by-field feedback
+if (form.email) {
+  if (form.email.includes("@")) {
+    submitForm(form);
+  } else {
+    showError("Email must include @");
+  }
+} else {
+  showError("Email is required");
+}
+
+// Game state with situational logic
+if (player.isAlive) {
+  if (player.hasKey) {
+    openDoor();
+  } else {
+    showHint("You need a key to open this door");
+  }
+}
+
+// API response handling
+if (response) {
+  if (response.ok) {
+    handleData(response.data);
+  } else {
+    handleError(response.error);
+  }
+}
+// no point asking response.ok if there's no response at all</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-6-16-1-3': `
+    <p>Think of nested <code>if</code>s as questions inside questions, like an automated phone menu. "Press 1 for billing." Once you press 1, you get a new menu: "Press 1 for current bill, press 2 for payment history." You only hear the second menu after answering the first.</p>
+    <p>The outer <code>if</code> is the first menu. The inner <code>if</code> is the menu that only opens up when you choose a particular path. If you never get past the first menu, the second one doesn't even matter — you never reach it.</p>
+    <p>Each layer of nesting is one more menu deep. Stack too many and it gets confusing fast — same as a real phone tree.</p>
+  `,
+
+/* 1.4 Mental model */
+  'topics-6-16-1-4': `
+    <p>Picture a security checkpoint with two guards. The first guard checks your ID. If your ID isn't valid, you're turned away — you never even reach the second guard. If your ID passes, you walk past and meet the second guard, who checks something else, like your appointment. Only if both guards approve you do you actually get inside.</p>
+    <p>That's all a nested <code>if</code> is. The outer condition is the first guard; the inner condition is the second guard standing further back. The second check only happens if the first one passed. If you fail at any guard, the rest don't matter — you stop right there.</p>
+    <p>Add a third nested <code>if</code> and you've added a third guard further down the hall. Each layer is one more checkpoint to pass. The action at the very end only runs when every guard along the way has approved you.</p>
+  `,
+
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-6-16-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const user = { isLoggedIn: true, isVerified: false };
+
+if (user.isLoggedIn) {
+  console.log("user is logged in");
+  if (user.isVerified) {
+    console.log("verified — granting access");
+  } else {
+    console.log("not verified — please verify");
+  }
+} else {
+  console.log("please log in first");
+}
+
+// prints:
+//   user is logged in
+//   not verified — please verify
+
+// JavaScript is thinking:
+// Line 1: register user object.
+// Line 3: see outer if (user.isLoggedIn) → true → enter block.
+// Line 4: log "user is logged in".
+// Line 5: see inner if (user.isVerified) → false → skip this block.
+// Line 7: see inner else → run this block.
+// Line 8: log "not verified — please verify".
+// Line 10: outer block done. The outer else is skipped (outer if was true).</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-6-16-2-0': `
+    <p>If a nested <code>if</code> isn't doing what you expect, log the entry into each layer to see how far the code is getting:</p>
+<pre class="language-javascript"><code class="language-javascript">if (user) {
+  console.log("entered outer block");
+  if (user.profile) {
+    console.log("entered inner block");
+    if (user.profile.avatar) {
+      console.log("avatar found");
+      showAvatar(user.profile.avatar);
+    }
+  }
+}
+
+// reading the logs shows exactly which layer the code stopped at —
+// no guessing about which check failed.</code></pre>
+
+    <p>Common signal: the inner code never runs even though you "know" the inner condition is true. The outer condition is failing silently. Always log the outer check first.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-6-16-2-1': `
+    <p>A nested <code>if</code> isn't a special construct. It's just an <code>if</code> that lives inside another <code>if</code>'s body — same rules apply at every layer.</p>
+    <p>The "nested" part is just the location. JavaScript doesn't have a "nested if" feature; it just runs whatever statements are inside a block, and another <code>if</code> is a perfectly valid statement. Once you see it that way, deep nesting feels less mysterious — it's just blocks all the way down.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-6-16-2-2': `
+    <p><strong>Confusion: nesting when flattening would work</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Unnecessary nesting
+if (user) {
+  if (user.isVerified) {
+    if (user.hasPaid) {
+      grantAccess();
+    }
+  }
+}
+
+// Flatten when there's no separate else for each layer
+if (user && user.isVerified && user.hasPaid) {
+  grantAccess();
+}
+// same behavior, half the lines, much easier to read.</code></pre>
+
+    <p><strong>Confusion: dangling <code>else</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Without braces, else attaches to the nearest if
+if (a)
+  if (b)
+    doX();
+  else
+    doY();
+// reads as: else belongs to inner if (b), NOT outer if (a)
+
+// With braces — scope is explicit
+if (a) {
+  if (b) {
+    doX();
+  } else {
+    doY();
+  }
+}
+
+// Or — if you wanted else for the outer
+if (a) {
+  if (b) {
+    doX();
+  }
+} else {
+  doY();
+}</code></pre>
+
+    <p><strong>Confusion: thinking the inner check runs even if the outer fails</strong></p>
+<pre class="language-javascript"><code class="language-javascript">if (user) {
+  if (user.name) {
+    console.log(user.name);
+  }
+}
+
+// if user is null, the inner check NEVER runs.
+// JS doesn't try the inner if "just in case" — outer must pass first.</code></pre>
+
+    <p><strong>Confusion: mixing nested ifs with else if chains</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// These look similar but behave differently:
+
+// NESTED — gates that must all pass
+if (a) {
+  if (b) {
+    doX();
+  }
+}
+// runs doX only when both a AND b are true
+
+// CHAIN — alternatives, only one runs
+if (a) {
+  doX();
+} else if (b) {
+  doY();
+}
+// runs doX OR doY, never both, never neither (unless else is added)</code></pre>
+
+    <p><strong>Confusion: deep nesting becoming unreadable</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// "Arrow code" — too many layers
+if (a) {
+  if (b) {
+    if (c) {
+      if (d) {
+        doSomething();
+      }
+    }
+  }
+}
+
+// Often cleaner with guard clauses inside a function (early returns)
+function tryDoSomething() {
+  if (!a) return;
+  if (!b) return;
+  if (!c) return;
+  if (!d) return;
+  doSomething();
+}
+// flat structure, each check stands alone, no rightward drift.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-6-16-2-3': `
+<pre class="language-javascript"><code class="language-javascript">if (user.isLoggedIn) {
+  if (user.profile.avatar) {
+    showAvatar();
+  }
+}
+// crashes if user.profile is undefined — accessing .avatar on undefined throws
+// fix: check each layer that could be missing
+if (user.isLoggedIn) {
+  if (user.profile) {
+    if (user.profile.avatar) {
+      showAvatar();
+    }
+  }
+}
+// or flatten with &&
+if (user.isLoggedIn && user.profile && user.profile.avatar) {
+  showAvatar();
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (a)
+  if (b) doX();
+  else doY();
+// looks like else attaches to the outer if, but it actually attaches to inner b
+// fix: always use braces
+if (a) {
+  if (b) {
+    doX();
+  } else {
+    doY();
+  }
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (user) {
+  if (user.isAdmin) {
+    grantAccess();
+  } else {
+    denyAccess();
+  }
+}
+denyAccess();
+// denyAccess() runs even when access was granted — it's outside the if entirely
+// fix: move the fallback into an outer else
+if (user) {
+  if (user.isAdmin) {
+    grantAccess();
+  } else {
+    denyAccess();
+  }
+} else {
+  denyAccess();
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (a && b) {
+  if (c && d) {
+    if (e && f) {
+      doSomething();
+    }
+  }
+}
+// "arrow code" — readable for a moment, miserable to maintain
+// fix: flatten or extract into a function with early returns
+function check() {
+  if (!(a && b)) return false;
+  if (!(c && d)) return false;
+  if (!(e && f)) return false;
+  doSomething();
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (status === "active") {
+  if (status === "active") {     // duplicate — never useful
+    doStuff();
+  }
+}
+// usually a copy-paste mistake
+// fix: remove the inner duplicate</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-6-16-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Two-layer check with different fallbacks
+const user = { loggedIn: true, verified: false };
+if (user.loggedIn) {
+  if (user.verified) {
+    console.log("welcome");
+  } else {
+    console.log("verify your email");
+  }
+} else {
+  console.log("please log in");
+}
+// prints: "verify your email"
+
+// Three layers, only the deepest runs the action
+const car = { hasGas: true, hasKey: true, hasDriver: true };
+if (car.hasGas) {
+  if (car.hasKey) {
+    if (car.hasDriver) {
+      console.log("ready to drive");
+    }
+  }
+}
+
+// Nested with an inner else — different messages per layer
+function rate(score) {
+  if (score >= 0) {
+    if (score >= 50) {
+      return "passing";
+    } else {
+      return "failing";
+    }
+  } else {
+    return "invalid score";
+  }
+}
+console.log(rate(75));   // "passing"
+console.log(rate(20));   // "failing"
+console.log(rate(-5));   // "invalid score"
+
+// Safe property drill-down
+const data = { user: { profile: { name: "Alex" } } };
+if (data) {
+  if (data.user) {
+    if (data.user.profile) {
+      console.log(data.user.profile.name);
+    }
+  }
+}
+// prints: "Alex"</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-6-16-3-1': `
+    <p><strong>Example: checkout flow with stage-specific feedback</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function startCheckout(user, cart) {
+  if (user) {
+    if (cart.items.length > 0) {
+      if (cart.shippingAddress) {
+        proceedToPayment(user, cart);
+      } else {
+        showAddressForm();
+      }
+    } else {
+      showEmptyCartMessage();
+    }
+  } else {
+    redirectToLogin();
+  }
+}
+// each layer of failure shows the user a different next step.</code></pre>
+
+    <p><strong>Example: comment moderation</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function handleCommentSubmit(user, text) {
+  if (user) {
+    if (!user.isBanned) {
+      if (text.length > 0 && text.length <= 500) {
+        postComment(user.id, text);
+      } else {
+        showError("Comment must be 1-500 characters");
+      }
+    } else {
+      showError("Your account is banned from commenting");
+    }
+  } else {
+    showError("You must be logged in to comment");
+  }
+}</code></pre>
+
+    <p><strong>Example: feature gating with plan + role checks</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function canAccessAnalytics(user) {
+  if (user) {
+    if (user.plan === "pro" || user.plan === "enterprise") {
+      if (user.role === "owner" || user.role === "admin") {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+// each gate must pass: logged in, paid plan, elevated role.</code></pre>
+
+    <p><strong>Example: form validation with conditional follow-ups</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function validateSignup(form) {
+  if (form.email) {
+    if (form.email.includes("@")) {
+      if (form.password) {
+        if (form.password.length >= 8) {
+          return null;   // all checks passed
+        }
+        return "Password must be at least 8 characters";
+      }
+      return "Password is required";
+    }
+    return "Email must include @";
+  }
+  return "Email is required";
+}</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-6-16-3-2': `
+    <ul>
+      <li><strong>Logical operators</strong> → flattening multiple nested checks into one condition with <code>&&</code></li>
+      <li><strong>Guard clauses</strong> → using early <code>return</code>s to avoid deep nesting inside functions</li>
+      <li><strong>Dangling else problem</strong> → why braces matter even more in nested code</li>
+      <li><strong>Code blocks and braces</strong> → each layer needs its own braces to keep scope clear</li>
+      <li><strong>Optional chaining (<code>?.</code>)</strong> → modern shortcut for safe property drill-down</li>
+      <li><strong>Short-circuit evaluation</strong> → <code>&&</code> stops at the first falsy, similar to outer-if-fails behavior</li>
+      <li><strong>Function extraction</strong> → moving deeply nested logic into its own function for clarity</li>
+      <li><strong>Common mistakes</strong> → arrow code, missing inner braces, redundant duplicates</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-6-16-3-3': `
+    <ul>
+      <li>Logical operators (especially <code>&&</code>)</li>
+      <li>Guard clauses</li>
+      <li>Dangling else problem</li>
+      <li>Code blocks and braces</li>
+      <li>Optional chaining <code>?.</code></li>
+      <li>Short-circuit evaluation</li>
+      <li>Refactoring deeply nested code</li>
+      <li>Early <code>return</code> patterns</li>
+    </ul>
+  `,
+  /* ========================================================= 
+   Sub-lesson: 3.7.18 If / Else → guard clauses
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-6-17-0-0': `
+    <p>A guard clause is an <code>if</code> at the top of a function that checks for a bad case and exits early — usually with <code>return</code>. It's how you handle "if this isn't right, stop here" before getting to the main logic.</p>
+    <p>Instead of wrapping the main work in deeply nested <code>if</code>s that check what's valid, guard clauses flip it around: check what's <em>not</em> valid first, bail out, and let the rest of the function focus on the happy path.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-6-17-0-1': `
+<pre class="language-javascript"><code class="language-javascript">function greet(name) {
+  if (!name) {
+    return;
+  }
+  console.log("hello " + name);
+}
+
+greet("Alex");   // prints: "hello Alex"
+greet("");       // prints nothing — guard exits before the console.log
+
+// the guard:
+//   if (!name) return;
+// asks: "is name missing? then stop right here."</code></pre>
+    <p>The guard runs first, exits if the input isn't usable, and the rest of the function only runs when everything's fine.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-6-17-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function processOrder(order) {
+  if (!order) {                           // guard 1: missing input
+    return;
+  }
+  if (order.items.length === 0) {         // guard 2: empty cart
+    return;
+  }
+  if (!order.paid) {                      // guard 3: not paid yet
+    return;
+  }
+
+  // main logic — only runs when all guards passed
+  shipOrder(order);
+  sendReceipt(order);
+}
+
+// guard pattern:
+//   if (badCondition) { return; }
+// each guard handles one specific failure case
+// the function reads top-to-bottom: rejections first, real work last</code></pre>
+    <p>Each guard handles a different reason to bail out. Once you're past all of them, the rest of the function can assume the input is valid and just do its job.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-6-17-0-3': `
+    <p>Guard clauses only work where <code>return</code> works — meaning <strong>inside a function</strong>. <code>return</code> outside a function is a syntax error:</p>
+<pre class="language-javascript"><code class="language-javascript">// Inside a function — works
+function doStuff(x) {
+  if (!x) {
+    return;
+  }
+  // ...
+}
+
+// Outside a function — SyntaxError
+if (!someValue) {
+  return;   // SyntaxError: 'return' outside of function
+}</code></pre>
+
+    <p>For loops, the equivalent of a guard is <code>continue</code> (skip this iteration) or <code>break</code> (exit the loop entirely):</p>
+<pre class="language-javascript"><code class="language-javascript">for (const item of items) {
+  if (item.deleted) {
+    continue;     // skip deleted items, move to next
+  }
+  process(item);
+}</code></pre>
+
+    <p>Guards can return a value, not just exit silently. Common patterns include returning <code>null</code>, an empty value, or an error string:</p>
+<pre class="language-javascript"><code class="language-javascript">function getUserName(user) {
+  if (!user) {
+    return null;
+  }
+  if (!user.name) {
+    return "Anonymous";
+  }
+  return user.name;
+}</code></pre>
+
+    <p>You can also <code>throw</code> from a guard if the input shouldn't be possible at all and you want loud failure instead of silent exit:</p>
+<pre class="language-javascript"><code class="language-javascript">function divide(a, b) {
+  if (b === 0) {
+    throw new Error("Cannot divide by zero");
+  }
+  return a / b;
+}</code></pre>
+
+    <p>The braces around guard bodies aren't optional in real-world style — even though a single-statement <code>return</code> works without them, always use braces for consistency and to avoid the brace-less pitfalls covered in earlier lessons.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-6-17-1-0': `
+    <p>Without guard clauses, functions tend to grow deep nesting as you add validation. Each new "what if this is missing?" check wraps the existing code in another <code>if</code> layer. After a few iterations, the real logic ends up indented six levels deep and buried inside a pyramid of conditionals.</p>
+    <p>Guards flatten that pyramid. Instead of nesting deeper for every check, you reject bad cases at the door and keep the main logic at the top level. The function reads naturally: "stop if this is wrong, stop if that is wrong, otherwise here's the real work."</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-6-17-1-1': `
+    <p>Guard clauses are easier to scan than nested validation. Compare:</p>
+<pre class="language-javascript"><code class="language-javascript">// Without guards — main logic buried deep
+function sendInvite(user, email) {
+  if (user) {
+    if (user.canInvite) {
+      if (email) {
+        if (email.includes("@")) {
+          // the actual work is way down here
+          dispatchInvite(user, email);
+        }
+      }
+    }
+  }
+}
+
+// With guards — main logic at the top level
+function sendInvite(user, email) {
+  if (!user) {
+    return;
+  }
+  if (!user.canInvite) {
+    return;
+  }
+  if (!email) {
+    return;
+  }
+  if (!email.includes("@")) {
+    return;
+  }
+  dispatchInvite(user, email);
+}</code></pre>
+
+    <p>Both functions do the exact same thing, but the guarded version reads top-to-bottom: each rejection is on its own line, and the main work is right there at the end — not buried four levels deep.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-6-17-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Validation at the start of any function
+function calculateTotal(items) {
+  if (!Array.isArray(items)) {
+    return 0;
+  }
+  if (items.length === 0) {
+    return 0;
+  }
+  return items.reduce(function (sum, item) {
+    return sum + item.price;
+  }, 0);
+}
+
+// Permission checks before the action
+function deletePost(user, post) {
+  if (!user) {
+    return false;
+  }
+  if (user.id !== post.authorId && !user.isAdmin) {
+    return false;
+  }
+  database.remove(post.id);
+  return true;
+}
+
+// Early returns from event handlers
+function onSubmit(event) {
+  event.preventDefault();
+  if (form.isSubmitting) {
+    return;
+  }
+  if (!form.isValid) {
+    showErrors();
+    return;
+  }
+  submitForm();
+}
+
+// API request setup
+function fetchUserData(userId) {
+  if (!userId) {
+    return Promise.reject(new Error("userId required"));
+  }
+  if (typeof userId !== "string") {
+    return Promise.reject(new Error("userId must be a string"));
+  }
+  return fetch("/api/users/" + userId);
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-6-17-1-3': `
+    <p>A guard clause is the same idea as a bouncer checking IDs at the door of a club. Before you get to the dance floor, the bouncer checks: "Are you over 21? Do you have ID? Are you on the list?" Anyone who fails gets turned away right there at the door — they never get inside.</p>
+    <p>The dance floor is your main logic. The bouncer is your guard clause. By rejecting people at the door, the inside of the club only deals with people who are supposed to be there. You don't have to keep checking IDs once they're already in.</p>
+    <p>Same thing with code: rejecting bad inputs at the top of the function means the rest of the function gets to assume everything is valid. No more checking the same things over and over.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-6-17-1-4': `
+    <p>Imagine your function is a small office and the guard clauses are receptionists at the front desk. Someone walks in and says they need help. The first receptionist asks "do you have an appointment?" — no appointment, you're sent away immediately. If you have one, you move to the second receptionist who checks your ID. No ID, sent away. You only reach the actual office worker once you've cleared every desk in the lobby.</p>
+    <p>The receptionists handle every possible reason to turn someone away, one at a time. The office worker in the back never has to ask "wait, do you have an appointment?" because they know — anyone who reached them already passed every check at the front. Their job is just to do the actual work.</p>
+    <p>That's the whole pattern. Front desk first (the guards), real work last (the main logic). Each guard handles one rejection reason, and the rest of the function trusts that anyone who got past them is good to go.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-6-17-1-5': `
+<pre class="language-javascript"><code class="language-javascript">function showProfile(user) {
+  if (!user) {
+    console.log("no user provided");
+    return;
+  }
+  if (!user.isActive) {
+    console.log("user is inactive");
+    return;
+  }
+
+  console.log("name: " + user.name);
+  console.log("email: " + user.email);
+}
+
+showProfile(null);
+showProfile({ isActive: false, name: "Alex" });
+showProfile({ isActive: true, name: "Sam", email: "sam@x.com" });
+
+// prints:
+//   no user provided
+//   user is inactive
+//   name: Sam
+//   email: sam@x.com
+
+// JavaScript is thinking (for the third call):
+// Line 12: call showProfile with the active user object.
+// Line 2: see if (!user) → user exists → false → skip.
+// Line 6: see if (!user.isActive) → isActive is true → false → skip.
+// Line 11: log "name: Sam".
+// Line 12: log "email: sam@x.com".
+// Function done.
+
+// For the first call (null):
+// Line 2: see if (!user) → !null → true → enter block.
+// Line 3: log "no user provided".
+// Line 4: return — function exits here, lines below NEVER run.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-6-17-2-0': `
+    <p>If a function is exiting silently and you don't know why, add a log to each guard so you can see which one tripped:</p>
+<pre class="language-javascript"><code class="language-javascript">function processPayment(user, amount) {
+  if (!user) {
+    console.log("guard: no user");
+    return;
+  }
+  if (!user.hasPaymentMethod) {
+    console.log("guard: no payment method");
+    return;
+  }
+  if (amount <= 0) {
+    console.log("guard: invalid amount");
+    return;
+  }
+
+  charge(user, amount);
+}
+
+processPayment({ hasPaymentMethod: false }, 100);
+// prints: "guard: no payment method"
+// now you know exactly which gate the input failed at.</code></pre>
+
+    <p>Common signal: the function "does nothing." Almost always means a guard caught the input and exited. Reading the guards in order tells you which condition needs a different input.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-6-17-2-1': `
+    <p>A guard clause isn't a special construct. It's just an <code>if</code> with a <code>return</code> inside it, placed at the top of a function. JavaScript doesn't know it's a "guard" — that's just a name for the pattern.</p>
+    <p>The shift is in how you frame validation: instead of wrapping the good case in checks for "is this valid? is this valid? is this valid?", you check for "is this <em>not</em> valid? if so, leave." Same logic, mirror image. The result is flatter code where the main work isn't buried.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-6-17-2-2': `
+    <p><strong>Confusion: thinking guards are only for errors</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getDisplayName(user) {
+  if (!user) {
+    return "Guest";          // guard returns a default, not an error
+  }
+  if (!user.name) {
+    return "Anonymous";      // another fallback
+  }
+  return user.name;
+}
+// guards can return any sensible default, not just exit.</code></pre>
+
+    <p><strong>Confusion: forgetting the <code>return</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">function deletePost(user, post) {
+  if (!user) {
+    console.log("not logged in");
+    // missing return — code below STILL runs
+  }
+  database.remove(post.id);   // runs even when user is null!
+}
+
+// fix: every guard needs the return
+function deletePost(user, post) {
+  if (!user) {
+    console.log("not logged in");
+    return;
+  }
+  database.remove(post.id);
+}</code></pre>
+
+    <p><strong>Confusion: nesting <code>else</code> after a guard (unnecessary)</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Redundant — the return already prevents the else block
+function classify(n) {
+  if (n < 0) {
+    return "negative";
+  } else {
+    if (n === 0) {
+      return "zero";
+    } else {
+      return "positive";
+    }
+  }
+}
+
+// Cleaner — no else needed when the guard returns
+function classify(n) {
+  if (n < 0) {
+    return "negative";
+  }
+  if (n === 0) {
+    return "zero";
+  }
+  return "positive";
+}</code></pre>
+
+    <p><strong>Confusion: putting guards in the wrong order</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function showUserAge(user) {
+  if (user.age < 0) {           // CRASHES — user might be null
+    return;
+  }
+  if (!user) {
+    return;
+  }
+  console.log(user.age);
+}
+
+// fix: check existence before checking properties
+function showUserAge(user) {
+  if (!user) {
+    return;
+  }
+  if (user.age < 0) {
+    return;
+  }
+  console.log(user.age);
+}
+// the order of guards matters — earlier guards protect later ones.</code></pre>
+
+    <p><strong>Confusion: guards can't be used outside functions</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// At the top level — SyntaxError
+if (!someValue) {
+  return;   // SyntaxError: 'return' outside of function
+}
+
+// Guards are a function-only pattern.
+// Outside a function, you'd use a regular if/else or wrap the code in a function.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-6-17-2-3': `
+<pre class="language-javascript"><code class="language-javascript">function send(message) {
+  if (!message) {
+    console.log("nothing to send");
+  }
+  dispatch(message);
+}
+// guard logs the warning but doesn't return — dispatch still runs with empty message
+// fix: add the return
+function send(message) {
+  if (!message) {
+    console.log("nothing to send");
+    return;
+  }
+  dispatch(message);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function showProfile(user) {
+  if (user.name) {
+    console.log(user.name);
+  }
+}
+// crashes if user is null — accessing .name on null throws
+// fix: guard for the parent first
+function showProfile(user) {
+  if (!user) {
+    return;
+  }
+  if (!user.name) {
+    return;
+  }
+  console.log(user.name);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function checkAccess(user) {
+  if (user) {
+    if (user.isAdmin) {
+      grantAccess();
+    } else {
+      denyAccess();
+    }
+  } else {
+    denyAccess();
+  }
+}
+// works, but deeply nested when guards would flatten it
+// fix: invert with guards
+function checkAccess(user) {
+  if (!user) {
+    denyAccess();
+    return;
+  }
+  if (!user.isAdmin) {
+    denyAccess();
+    return;
+  }
+  grantAccess();
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function divide(a, b) {
+  if (b === 0) return;
+  return a / b;
+}
+// silent failure — caller can't tell zero-division from a real result of undefined
+// fix: throw or return a clear sentinel value
+function divide(a, b) {
+  if (b === 0) {
+    throw new Error("Cannot divide by zero");
+  }
+  return a / b;
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function processItems(items) {
+  if (items === null) {
+    return;
+  }
+  for (const item of items) {
+    process(item);
+  }
+}
+// guard only catches null — but items might be undefined, or not an array at all
+// fix: a more thorough guard
+function processItems(items) {
+  if (!Array.isArray(items)) {
+    return;
+  }
+  for (const item of items) {
+    process(item);
+  }
+}</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-6-17-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Simple silent exit
+function logName(user) {
+  if (!user) {
+    return;
+  }
+  console.log(user.name);
+}
+logName(null);                    // exits silently
+logName({ name: "Alex" });        // logs "Alex"
+
+// Returning a default
+function getDisplayName(user) {
+  if (!user) {
+    return "Guest";
+  }
+  return user.name;
+}
+console.log(getDisplayName(null));            // "Guest"
+console.log(getDisplayName({ name: "Sam" })); // "Sam"
+
+// Multiple guards, one main action
+function publishPost(user, post) {
+  if (!user) {
+    return false;
+  }
+  if (!post) {
+    return false;
+  }
+  if (user.id !== post.authorId) {
+    return false;
+  }
+  post.published = true;
+  return true;
+}
+
+// Throwing for impossible inputs
+function squareRoot(n) {
+  if (n < 0) {
+    throw new Error("Cannot take square root of negative number");
+  }
+  return Math.sqrt(n);
+}
+
+// Loop equivalent — continue instead of return
+const numbers = [1, -2, 3, -4, 5];
+const positives = [];
+for (const n of numbers) {
+  if (n <= 0) {
+    continue;            // skip non-positives
+  }
+  positives.push(n);
+}
+console.log(positives);   // [1, 3, 5]</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-6-17-3-1': `
+    <p><strong>Example: form submit handler</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function handleSubmit(event) {
+  event.preventDefault();
+
+  if (form.isSubmitting) {
+    return;     // prevent double-submission
+  }
+  if (!form.isValid) {
+    showValidationErrors();
+    return;
+  }
+
+  form.isSubmitting = true;
+  sendToServer(form.data);
+}</code></pre>
+
+    <p><strong>Example: search input handler</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function handleSearch(query) {
+  if (typeof query !== "string") {
+    return;
+  }
+  if (query.length < 2) {
+    clearResults();   // too short to search
+    return;
+  }
+  if (query === lastQuery) {
+    return;     // same query as last time — no work to do
+  }
+
+  lastQuery = query;
+  fetchSearchResults(query);
+}</code></pre>
+
+    <p><strong>Example: API route handler</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function handleDeleteRequest(request, response) {
+  if (!request.user) {
+    response.status(401).send("Login required");
+    return;
+  }
+  if (!request.params.id) {
+    response.status(400).send("Missing post id");
+    return;
+  }
+
+  const post = database.find(request.params.id);
+  if (!post) {
+    response.status(404).send("Not found");
+    return;
+  }
+  if (post.authorId !== request.user.id) {
+    response.status(403).send("Not your post");
+    return;
+  }
+
+  database.remove(post.id);
+  response.status(200).send("Deleted");
+}</code></pre>
+
+    <p><strong>Example: drag-and-drop handler</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function handleDrop(event) {
+  event.preventDefault();
+
+  const file = event.dataTransfer.files[0];
+  if (!file) {
+    return;
+  }
+  if (!file.type.startsWith("image/")) {
+    showError("Only image files are accepted");
+    return;
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    showError("File is too large (max 5MB)");
+    return;
+  }
+
+  uploadFile(file);
+}</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-6-17-3-2': `
+    <ul>
+      <li><strong><code>return</code></strong> → the keyword that makes guard clauses exit early</li>
+      <li><strong>Functions</strong> → guards only work inside a function</li>
+      <li><strong>Nested if statements</strong> → the deeply-indented pattern guards are designed to flatten</li>
+      <li><strong>Logical operators (<code>!</code>)</strong> → guards usually invert their checks with <code>!</code></li>
+      <li><strong><code>continue</code> and <code>break</code></strong> → the loop equivalents of guard clauses</li>
+      <li><strong><code>throw</code></strong> → for guards that should fail loudly instead of exit silently</li>
+      <li><strong>Defaults and fallbacks</strong> → guards can return a sensible default value</li>
+      <li><strong>Common mistakes</strong> → forgetting the <code>return</code>, ordering guards wrong</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-6-17-3-3': `
+    <ul>
+      <li><code>return</code> statements</li>
+      <li>Function basics</li>
+      <li>Nested if statements (the pattern guards replace)</li>
+      <li>Logical NOT (<code>!</code>)</li>
+      <li><code>continue</code> in loops</li>
+      <li><code>throw</code> and error handling</li>
+      <li>Default values and fallbacks</li>
+      <li>Refactoring deeply nested code</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.7.19 If / Else → common mistakes
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-6-18-0-0': `
+    <p>This lesson is a roundup of the most frequent <code>if</code>/<code>else</code> mistakes — the ones that show up over and over in real code, even from people who already understand the syntax. Most aren't about not knowing how <code>if</code> works; they're about small habits that produce wrong results without throwing errors.</p>
+    <p>Every mistake here has been touched on in earlier lessons. Seeing them all in one place makes them easier to recognize when you're debugging your own code.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-6-18-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// The five most common mistakes, at a glance:
+
+// 1. Using = instead of ===
+if (status = "ready") { /* always runs */ }
+
+// 2. Wrong comparison type (== vs ===)
+if (count == "0") { /* coercion surprise */ }
+
+// 3. Putting else without an if before it
+else (status === "fail") { /* SyntaxError */ }
+
+// 4. Wrong condition order
+if (n > 0) { ... } else if (n > 100) { ... }   // n > 100 unreachable
+
+// 5. Missing braces with multiple lines
+if (isReady)
+  start();
+  cleanup();   // always runs — not part of the if</code></pre>
+    <p>Each of these is a single-line bug that compiles fine and runs without errors — which is what makes them dangerous. The code looks right; it just does the wrong thing.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-6-18-0-2': `
+<pre class="language-javascript"><code class="language-javascript">// Anatomy of the most common bug: = vs ===
+
+if (status = "ready") {     // single = is ASSIGNMENT
+  doSomething();
+}
+
+// What JavaScript actually does:
+//   1. Assign "ready" to status (overwrites whatever it was)
+//   2. Evaluate the expression — assignment returns the assigned value: "ready"
+//   3. "ready" is a non-empty string, so it's truthy
+//   4. The if condition becomes truthy → block ALWAYS runs
+//   5. As a side effect, status is now permanently "ready"
+
+if (status === "ready") {   // === is COMPARISON
+  doSomething();
+}
+
+// What JavaScript actually does:
+//   1. Compare status to "ready" without changing anything
+//   2. Returns true or false based on the comparison
+//   3. The if branches accordingly
+//   4. status is unchanged
+
+// the two operators look almost identical but do completely different things.</code></pre>
+    <p>The pattern is the same for every mistake on this list: small surface difference, completely different behavior underneath.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-6-18-0-3': `
+    <p>Most of these mistakes share a common thread: they don't crash, they just silently do the wrong thing. JavaScript will happily run all of them. Some general rules of thumb that prevent the majority of <code>if</code>/<code>else</code> bugs:</p>
+
+    <p><strong>Always use <code>===</code>, not <code>=</code> or <code>==</code>.</strong> Single <code>=</code> is assignment. Double <code>==</code> does type coercion. Triple <code>===</code> is the only one that actually compares the way you'd expect.</p>
+
+    <p><strong>Always use braces, even for one-liners.</strong> Brace-less <code>if</code>s work, but they break the moment someone adds a second statement, and they create the dangling-else problem. The cost of always typing braces is tiny; the cost of debugging brace-less mistakes is large.</p>
+
+    <p><strong>In an <code>if/else if</code> chain, put the most specific condition first.</strong> JavaScript stops at the first true branch. If a wider condition appears before a narrower one, the narrower one becomes unreachable.</p>
+
+    <p><strong>Each side of <code>||</code> needs to be a complete comparison.</strong> <code>x === 1 || 2</code> doesn't mean "x is 1 or 2." It means "x equals 1, or the value 2," and the value 2 is always truthy.</p>
+
+    <p><strong>Inside functions, prefer guard clauses over deep nesting.</strong> Reject bad inputs at the top with early <code>return</code>s instead of wrapping the main logic in layers of <code>if</code>s.</p>
+
+    <p>None of these rules eliminate every bug, but they cover the vast majority of <code>if</code>-related issues you'll run into.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-6-18-1-0': `
+    <p>The same handful of <code>if</code>/<code>else</code> bugs show up in real codebases over and over. Knowing them by sight cuts debugging time massively — instead of staring at code wondering "why isn't this working?", you can scan for the patterns you already know go wrong.</p>
+    <p>Most of these mistakes don't throw errors. The code runs, it just gives the wrong answer. So unlike syntax errors that fail loud, these only show up when behavior doesn't match expectations. Recognition is the main defense.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-6-18-1-1': `
+    <p>Knowing what to look for changes how you read code. Every time you see an <code>if</code>, you can quickly check the high-risk spots:</p>
+<pre class="language-javascript"><code class="language-javascript">if (status = "ready") {       // ⚠ single = ?
+  // ...
+}
+
+if (count == 0) {              // ⚠ double == ?
+  // ...
+}
+
+if (n > 0) {                   // ⚠ wider condition first?
+  // ...
+} else if (n > 100) {
+  // ...
+}
+
+if (color === "red" || "blue") {  // ⚠ each side a full comparison?
+  // ...
+}
+
+if (user) {
+  if (user.profile) {          // ⚠ deep nesting that could be flat?
+    if (user.profile.name) {
+      // ...
+    }
+  }
+}</code></pre>
+
+    <p>Once you've trained yourself to notice these, you'll catch them in your own code before they ship — and in code reviews of others' code.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-6-18-1-2': `
+    <p>These mistakes show up in roughly predictable places. Knowing where to look helps you scan code more efficiently:</p>
+<pre class="language-javascript"><code class="language-javascript">// Validation logic — common spot for == vs === confusion
+if (input == "") {
+  // ...
+}
+
+// Numeric thresholds — common spot for wrong condition order
+if (price >= 10) {
+  applyDiscount(0.1);
+} else if (price >= 100) {     // unreachable
+  applyDiscount(0.25);
+}
+
+// Multi-value checks — common spot for shorthand mistakes
+if (status === "active" || "trial") {
+  // ...
+}
+
+// Form handlers — common spot for missing return in guards
+function handleSubmit() {
+  if (!form.isValid) {
+    showErrors();
+    // missing return — code below runs anyway
+  }
+  submitForm();
+}
+
+// Property access — common spot for missing nested checks
+if (user.profile.name) {       // crashes if profile is undefined
+  // ...
+}
+
+// Toggle code — common spot for = instead of ===
+if (isOpen = true) {
+  closePanel();
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-6-18-1-3': `
+    <p>Most coding mistakes aren't dramatic. They're not "I forgot how <code>if</code> works." They're tiny visual mix-ups that look right at a glance but mean something different to the computer.</p>
+    <p>Think of these mistakes like typos in a recipe — you wrote "tsp" instead of "tbsp," or "salt" instead of "sugar." The recipe still produces a dish; it just tastes wrong. The hard part isn't fixing the typo, it's realizing one happened in the first place.</p>
+    <p>This lesson is the cheat sheet of the typos. Once you've seen each pattern a few times, your eye starts catching them automatically. That's the goal — not to memorize a rule book, but to build the instinct to notice when something looks slightly off.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-6-18-1-4': `
+    <p>Picture a list of usual suspects — like the wanted board at a small-town police station. Each face is a familiar offender, and you've seen them around enough times that you recognize them on sight. When a new bug walks into your code, you look up at the board and ask "wait, is this you again?"</p>
+    <p>Each item in this lesson is one of those faces. The <code>=</code> vs <code>===</code> mix-up. The wrong condition order. The shorthand comparison that doesn't actually do what it looks like. After enough exposure, scanning for them takes seconds instead of hours.</p>
+    <p>The point isn't to never make these mistakes — even experienced people slip up. The point is to recognize them quickly when they happen, so debugging becomes a quick lookup instead of a long puzzle.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-6-18-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// Walking through the most common debug session: "why does this always run?"
+
+const isReady = false;
+
+if (isReady = true) {
+  console.log("ready!");
+}
+
+// prints: "ready!"
+
+// JavaScript is thinking:
+// Line 1: register isReady, value false.
+// Line 3: see if (...) — evaluate the condition.
+//         isReady = true → this is ASSIGNMENT, not comparison.
+//         Assign true to isReady (overwriting false).
+//         The expression returns the assigned value: true.
+//         The condition becomes: if (true).
+// Line 4: true is truthy → run the block.
+// Line 5: log "ready!".
+// Line 6: function ends. As a side effect, isReady is now true forever.
+
+// The fix is one character: change = to ===
+if (isReady === true) {
+  console.log("ready!");
+}
+// now isReady is compared to true (which is false), so the block doesn't run.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-6-18-2-0': `
+    <p>When an <code>if</code> isn't behaving as expected, run through this short mental checklist before anything else:</p>
+<pre class="language-javascript"><code class="language-javascript">// 1. Is the comparison using === (not = or ==)?
+//    if (x = 5)    ← assignment, always truthy
+//    if (x == 5)   ← coerces types
+//    if (x === 5)  ← strict comparison ✓
+
+// 2. In an else if chain, is the most specific condition first?
+//    if (n > 0) ... else if (n > 100) ...   ← n > 100 unreachable
+//    if (n > 100) ... else if (n > 0) ...   ← correct ordering ✓
+
+// 3. Does each side of || or && have a full comparison?
+//    if (x === 1 || 2)              ← 2 is always truthy
+//    if (x === 1 || x === 2)        ← correct ✓
+
+// 4. Are the braces actually there?
+//    if (cond)
+//      doA();
+//      doB();   ← runs even when cond is false
+//
+//    if (cond) {
+//      doA();
+//      doB();   ← only runs when cond is true ✓
+//    }
+
+// 5. Is there a return missing in a guard clause?
+//    if (!valid) { showError(); }   ← code below still runs
+//    if (!valid) { showError(); return; }   ← actually exits ✓</code></pre>
+
+    <p>Roughly 80% of <code>if</code>-related bugs are one of these five things. Run the checklist before stepping into the debugger.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-6-18-2-1': `
+    <p>Most <code>if</code>/<code>else</code> mistakes share one thing in common: they don't fail loud. The code runs, no errors, no warnings — it just produces the wrong result. That's why they're sneaky and that's why pattern recognition matters more than rule memorization.</p>
+    <p>Once you've learned the patterns, debugging shifts from "what's wrong?" to "which one of the usual suspects is it this time?" That's the click — most bugs are familiar faces, not new monsters.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-6-18-2-2': `
+    <p><strong>Confusion: thinking these are advanced bugs</strong></p>
+    <p>None of these mistakes require deep knowledge to make. Beginners and senior engineers both ship them. The reason is the visual similarity — <code>=</code> and <code>===</code> look almost identical at a glance, especially in long expressions.</p>
+
+    <p><strong>Confusion: assuming linters catch everything</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Tools like ESLint catch some of these, but not all
+if (x = 5) { ... }              // some configs flag this
+if (x == 5) { ... }             // some configs flag this
+if (n > 0) ... else if (n > 100) ...  // no linter catches "wrong order"
+if (color === "red" || "blue") { ... } // no linter catches this either
+
+// Linters help, but they're a safety net, not a replacement for knowing the patterns.</code></pre>
+
+    <p><strong>Confusion: thinking the mistake will be obvious in testing</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Bug: assignment instead of comparison
+if (status = "ready") {
+  proceed();
+}
+
+// proceed() always runs. Tests with "ready" pass.
+// Tests with anything else still pass — because status gets overwritten to "ready".
+// The bug only shows up if you check whether status was modified — which most tests don't.
+
+// many of these mistakes survive testing because the wrong behavior happens to LOOK correct.</code></pre>
+
+    <p><strong>Confusion: thinking refactoring later will fix it</strong></p>
+    <p>These mistakes tend to compound. A wrongly-ordered chain accumulates more branches over time. A missing brace gets more lines added inside it. A missing <code>return</code> in a guard becomes the source of a dozen downstream bugs. The earlier you catch them, the cheaper they are to fix.</p>
+
+    <p><strong>Confusion: treating "common mistakes" as just a beginner topic</strong></p>
+    <p>The "common" in "common mistakes" applies to everyone. The specific mistakes shift over time — beginners hit <code>=</code> vs <code>===</code> often, experienced developers more often hit ordering issues or missed guards in async code — but the underlying pattern (small visual mix-ups producing wrong results) never goes away.</p>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-6-18-2-3': `
+<pre class="language-javascript"><code class="language-javascript">// 1. Single = instead of ===
+if (status = "ready") {
+  start();
+}
+// always runs because = assigns and returns the value
+// fix: use === for comparison
+if (status === "ready") {
+  start();
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// 2. == instead of === (type coercion surprises)
+if (count == "0") {
+  showEmpty();
+}
+// works for "0", but also matches 0, false, and other falsy values
+// fix: use === for predictable behavior
+if (count === 0) {
+  showEmpty();
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// 3. Wrong condition order in a chain
+if (price >= 10) {
+  applyDiscount(0.1);
+} else if (price >= 100) {
+  applyDiscount(0.25);
+}
+// price = 500 still gets 10% — the >= 10 branch caught it first
+// fix: most specific condition first
+if (price >= 100) {
+  applyDiscount(0.25);
+} else if (price >= 10) {
+  applyDiscount(0.1);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// 4. Shorthand multi-value check that doesn't work
+if (color === "red" || "blue" || "green") {
+  paint(color);
+}
+// "blue" by itself is truthy → block ALWAYS runs
+// fix: each side a full comparison
+if (color === "red" || color === "blue" || color === "green") {
+  paint(color);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// 5. Missing braces with multiple lines
+if (isReady)
+  start();
+  cleanup();
+// cleanup() always runs — not part of the if
+// fix: always use braces
+if (isReady) {
+  start();
+  cleanup();
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// 6. Missing return in a guard clause
+function send(message) {
+  if (!message) {
+    console.log("nothing to send");
+  }
+  dispatch(message);
+}
+// dispatch runs even when message is empty
+// fix: add the return
+function send(message) {
+  if (!message) {
+    console.log("nothing to send");
+    return;
+  }
+  dispatch(message);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// 7. Using else after a return-only branch
+function classify(n) {
+  if (n < 0) {
+    return "negative";
+  } else {
+    return "non-negative";    // unnecessary else
+  }
+}
+// fix: drop the else, the return already prevented fall-through
+function classify(n) {
+  if (n < 0) {
+    return "negative";
+  }
+  return "non-negative";
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// 8. Property access without checking the parent
+if (user.profile.name) {
+  showName(user.profile.name);
+}
+// crashes when user or user.profile is undefined
+// fix: check each layer with &&
+if (user && user.profile && user.profile.name) {
+  showName(user.profile.name);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// 9. Mixing && and || without parens
+if (isAdmin || isOwner && !isSuspended) {
+  grantAccess();
+}
+// JS groups && first: isAdmin || (isOwner && !isSuspended)
+// admins always pass, even if suspended
+// fix: explicit parens
+if ((isAdmin || isOwner) && !isSuspended) {
+  grantAccess();
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// 10. Else attaching to the wrong if
+if (a)
+  if (b) doX();
+  else doY();
+// else attaches to the inner if (b), not the outer if (a)
+// fix: always use braces with nested ifs
+if (a) {
+  if (b) {
+    doX();
+  } else {
+    doY();
+  }
+}</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-6-18-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Spot the bug — = instead of ===
+let status = "pending";
+if (status = "ready") {
+  console.log("starting");
+}
+console.log(status);
+// prints: "starting" then "ready"
+// status got overwritten as a side effect.
+
+// Spot the bug — wrong order
+const score = 95;
+if (score >= 60) {
+  console.log("passing");
+} else if (score >= 90) {
+  console.log("excellent");
+}
+// prints: "passing"
+// "excellent" is unreachable — wider condition was first.
+
+// Spot the bug — incomplete OR
+const day = "Wednesday";
+if (day === "Monday" || "Tuesday") {
+  console.log("early week");
+}
+// prints: "early week"
+// "Tuesday" by itself is truthy.
+
+// Spot the bug — missing return in guard
+function attemptLogin(user) {
+  if (!user) {
+    console.log("no user");
+  }
+  console.log("logging in: " + user.name);
+}
+attemptLogin(null);
+// prints: "no user", then crashes — accessing .name on null.
+
+// Fixed version — all of these patterns done correctly
+function attemptLogin(user) {
+  if (!user) {
+    console.log("no user");
+    return;
+  }
+  if (user.role === "admin" || user.role === "owner") {
+    console.log("admin login");
+  } else {
+    console.log("regular login");
+  }
+}</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-6-18-3-1': `
+    <p><strong>Example: a buggy login flow with the most common mistakes</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// BUGGY VERSION — riddled with the patterns from this lesson
+function login(email, password) {
+  if (!email) {
+    console.log("Email required");
+  }
+  if (password = "") {
+    return false;
+  }
+  if (email === "admin@site.com" || "owner@site.com") {
+    grantAdminAccess();
+  } else if (user.role >= "user") {
+    grantUserAccess();
+  } else if (user.role === "admin") {
+    grantAdminAccess();
+  }
+}
+
+// Bugs in this 12-line function:
+// 1. Missing return after "Email required"
+// 2. password = "" is assignment, not comparison
+// 3. email === ... || "owner@site.com" — the second string is always truthy
+// 4. comparing role with >= "user" treats it as a string comparison
+// 5. condition order — "admin" branch is unreachable after the role >= "user" branch</code></pre>
+
+    <p><strong>Example: the same logic, fixed</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function login(email, password) {
+  if (!email) {
+    console.log("Email required");
+    return false;
+  }
+  if (password === "") {
+    return false;
+  }
+
+  const user = findUser(email);
+  if (!user) {
+    return false;
+  }
+
+  if (user.role === "admin" || user.role === "owner") {
+    grantAdminAccess();
+  } else {
+    grantUserAccess();
+  }
+  return true;
+}
+// each guard returns. Each comparison is full and complete. Most specific role first.</code></pre>
+
+    <p><strong>Example: form validation with the right structure</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function validateSignup(form) {
+  if (!form.email) {
+    return "Email required";
+  }
+  if (!form.email.includes("@")) {
+    return "Invalid email";
+  }
+  if (!form.password) {
+    return "Password required";
+  }
+  if (form.password.length < 8) {
+    return "Password too short";
+  }
+  return null;
+}
+// each check is a guard. Each comparison uses ===. No nesting needed.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-6-18-3-2': `
+    <ul>
+      <li><strong>Comparison operators</strong> → the source of the <code>=</code> vs <code>==</code> vs <code>===</code> mistakes</li>
+      <li><strong>Logical operators</strong> → the source of the "incomplete OR" mistake and precedence issues</li>
+      <li><strong>Condition order matters</strong> → the source of unreachable-branch mistakes</li>
+      <li><strong>Code blocks and braces</strong> → the source of brace-less and dangling-else mistakes</li>
+      <li><strong>Guard clauses</strong> → fixing the missing-return mistake; preventing nested mistakes</li>
+      <li><strong>Truthy and falsy</strong> → why assignment in a condition almost always evaluates as truthy</li>
+      <li><strong>Nested if statements</strong> → the source of property-access-without-parent-check mistakes</li>
+      <li><strong>Debugging if/else</strong> → the next lesson, covers how to find these when they happen</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-6-18-3-3': `
+    <ul>
+      <li>Comparison operators (<code>===</code>, <code>!==</code>)</li>
+      <li>Logical operators (<code>&&</code>, <code>||</code>, <code>!</code>)</li>
+      <li>Condition order matters</li>
+      <li>Code blocks and braces</li>
+      <li>Guard clauses</li>
+      <li>Truthy and falsy values</li>
+      <li>Nested if statements</li>
+      <li>Debugging if/else (next lesson)</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.7.20 If / Else → debugging if/else
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-6-19-0-0': `
+    <p>Debugging an <code>if</code>/<code>else</code> means figuring out why the wrong branch is running — or why no branch is running when one should. Most of the time, the bug isn't that the syntax is broken. It's that the condition is evaluating to something different from what you expect.</p>
+    <p>The fix is almost always the same: stop guessing what the condition is, and make JavaScript tell you. A few well-placed <code>console.log</code> calls usually reveal the problem within seconds.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-6-19-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// The basic debugging technique: log what JavaScript actually sees
+
+const status = "ready";
+
+console.log("status is:", status, typeof status);
+console.log("comparison result:", status === "ready");
+
+if (status === "ready") {
+  console.log("entered ready block");
+  doSomething();
+}
+
+// the logs tell you:
+//   status is: ready string
+//   comparison result: true
+//   entered ready block
+
+// if the comparison says false when you expected true, you know exactly where to look.</code></pre>
+    <p>Logging the raw value, its type, and the comparison result removes guesswork. You stop debating "I'm pretty sure this is true" — JavaScript shows you whether it is.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-6-19-0-2': `
+<pre class="language-javascript"><code class="language-javascript">// Anatomy of a debugging session: the wrong branch is running
+
+const userId = "42";
+
+if (userId === 42) {
+  console.log("found user");
+} else {
+  console.log("user not found");
+}
+
+// Output: "user not found" — but you "know" the user has ID 42.
+// Time to debug systematically:
+
+console.log("userId value:", userId);          // "42"
+console.log("userId type:", typeof userId);    // "string"
+console.log("comparison:", userId === 42);     // false
+
+// The logs tell the story:
+//   userId is the STRING "42", not the NUMBER 42.
+//   === checks types, so they're not equal.
+//   The else branch runs because the if condition is false.
+
+// Fix: convert the type, or compare with the right type.
+if (Number(userId) === 42) {
+  // works
+}</code></pre>
+    <p>The pattern is always the same: log the value, log the type, log the comparison. Three lines, and the bug usually becomes obvious.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-6-19-0-3': `
+    <p>A few specific debugging techniques cover most <code>if</code>/<code>else</code> situations:</p>
+
+    <p><strong>Log the value AND the type.</strong> The most common cause of "the comparison should be true but isn't" is a type mismatch. <code>typeof</code> reveals it instantly:</p>
+<pre class="language-javascript"><code class="language-javascript">console.log("value:", x, "type:", typeof x);</code></pre>
+
+    <p><strong>Log entry into each branch.</strong> When you don't know which branch is running, put a log at the top of every block:</p>
+<pre class="language-javascript"><code class="language-javascript">if (a) {
+  console.log("branch: a");
+  // ...
+} else if (b) {
+  console.log("branch: b");
+  // ...
+} else {
+  console.log("branch: else");
+  // ...
+}</code></pre>
+
+    <p><strong>Log the result of each piece of a compound condition.</strong> When <code>&&</code> or <code>||</code> is involved, isolate each side:</p>
+<pre class="language-javascript"><code class="language-javascript">console.log("isLoggedIn:", user.isLoggedIn);
+console.log("isVerified:", user.isVerified);
+console.log("combined:", user.isLoggedIn && user.isVerified);
+
+if (user.isLoggedIn && user.isVerified) {
+  // ...
+}</code></pre>
+
+    <p><strong>Use <code>debugger;</code> to pause execution.</strong> Inside browser DevTools (with the Sources panel open), the <code>debugger</code> statement stops the code right there so you can inspect every variable in scope:</p>
+<pre class="language-javascript"><code class="language-javascript">if (someComplexCondition) {
+  debugger;     // execution pauses here
+  // ...
+}</code></pre>
+
+    <p><strong>Check for off-by-one in boundaries.</strong> When something happens "almost right," look at <code>&gt;</code> vs <code>&gt;=</code> and <code>&lt;</code> vs <code>&lt;=</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">// "Why does score 60 say 'failing'?"
+if (score > 60) {           // ← strictly greater — 60 doesn't pass
+  return "passing";
+}
+return "failing";
+
+// fix: use >= if 60 should pass
+if (score >= 60) {
+  return "passing";
+}</code></pre>
+
+    <p>None of these techniques are special tools. They're just systematic ways to make JavaScript show you what it's actually doing instead of what you assume it's doing.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-6-19-1-0': `
+    <p>Most <code>if</code>/<code>else</code> bugs come from one of two situations: either you don't know what the condition is evaluating to, or you don't know which branch is running. Both are easy to guess about and waste hours on. Both are easy to fix in seconds with a single <code>console.log</code>.</p>
+    <p>Debugging skill isn't about knowing exotic tools. It's about replacing assumptions with measurements. Once you stop trusting your mental model and start asking JavaScript directly, most <code>if</code> bugs reveal themselves within a minute or two.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-6-19-1-1': `
+    <p>Logging-based debugging is fast, requires no setup, and works everywhere — browser, Node, code playgrounds, anywhere. Compare:</p>
+<pre class="language-javascript"><code class="language-javascript">// Without debugging — guessing
+if (response.status === "success") {
+  showData(response.data);
+} else {
+  showError();
+}
+// "Why is the error showing? The API returned success!"
+// 30 minutes of staring at the code...
+
+// With debugging — measuring
+console.log("response.status:", response.status);
+console.log("type:", typeof response.status);
+console.log("comparison:", response.status === "success");
+
+if (response.status === "success") {
+  showData(response.data);
+} else {
+  showError();
+}
+
+// Output reveals: response.status is "Success" (capital S),
+// not "success". Comparison is false. Fix: lowercase the comparison
+// or fix the API response.</code></pre>
+
+    <p>Three lines of logging often replace 30 minutes of head-scratching. The cost is tiny; the benefit is enormous.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-6-19-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Debugging an unexpected branch
+function classify(score) {
+  console.log("classify called with:", score, typeof score);
+
+  if (score >= 90) {
+    console.log("→ A branch");
+    return "A";
+  } else if (score >= 80) {
+    console.log("→ B branch");
+    return "B";
+  } else {
+    console.log("→ else branch");
+    return "F";
+  }
+}
+classify("85");
+// reveals: score is the string "85", >= 90 happens to be false,
+// >= 80 is true (string comparison), returns "B" — looks correct, but for wrong reasons.
+
+// Debugging a condition that "should be true"
+const user = getCurrentUser();
+console.log("user:", user);
+console.log("user truthy:", !!user);
+console.log("user.isAdmin:", user && user.isAdmin);
+
+if (user && user.isAdmin) {
+  showAdminPanel();
+}
+
+// Debugging a guard clause
+function processOrder(order) {
+  console.log("entering processOrder with:", order);
+
+  if (!order) {
+    console.log("guard: no order, exiting");
+    return;
+  }
+  console.log("past order guard");
+
+  if (order.items.length === 0) {
+    console.log("guard: empty cart, exiting");
+    return;
+  }
+  console.log("past empty-cart guard");
+
+  shipOrder(order);
+}
+
+// Debugging a chain that's never reaching the right branch
+function getDiscount(price) {
+  console.log("price:", price, typeof price);
+
+  if (price >= 1000) {
+    console.log("→ 50% tier");
+    return 0.5;
+  } else if (price >= 100) {
+    console.log("→ 10% tier");
+    return 0.1;
+  }
+  console.log("→ no discount");
+  return 0;
+}
+getDiscount("1500");
+// reveals string vs number comparison — string "1500" >= 1000 is comparing as strings.</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-6-19-1-3': `
+    <p>Debugging an <code>if</code>/<code>else</code> is like figuring out why a vending machine gave you the wrong snack. You're sure you pressed the right button. You're sure the machine has the snack. But what came out wasn't what you expected.</p>
+    <p>The fix isn't to argue with the machine — it's to look at what actually happened. What button did the machine think you pressed? What slot did it dispense from? Once you can see those facts, the mistake is usually obvious — maybe you hit B5 instead of B6, or that slot has been refilled with something different.</p>
+    <p>Logging is how you "look at what the machine saw." The <code>console.log</code> statements don't change anything — they just expose what JavaScript is already doing. Once you can see it, you can fix it.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-6-19-1-4': `
+    <p>Picture each <code>if</code> like a fork in a road. The bug is "I expected to take the left fork but ended up on the right." When you can't see why, the answer is to put a sign at each fork — a little flag that says "you went this way."</p>
+    <p>That's what <code>console.log</code> does at each branch. You add a small marker at every possible path, then run the code and see which markers got hit. The bug becomes "oh, I went right because the fork sign actually said B, not A like I thought." Once you can see the path the code took, fixing it is straightforward.</p>
+    <p>The job isn't to be smart enough to predict every branch ahead of time. It's to make the code's actual behavior visible so you can see where reality diverged from expectation.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-6-19-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// Real debugging session: "the discount isn't applying"
+
+function calculateTotal(price, isMember) {
+  if (isMember && price > 100) {
+    return price * 0.9;
+  }
+  return price;
+}
+
+console.log(calculateTotal(150, "true"));
+// expected: 135 (10% off)
+// actual: 150
+
+// Step 1: log the inputs
+function calculateTotal(price, isMember) {
+  console.log("price:", price, typeof price);
+  console.log("isMember:", isMember, typeof isMember);
+
+  if (isMember && price > 100) {
+    return price * 0.9;
+  }
+  return price;
+}
+console.log(calculateTotal(150, "true"));
+
+// Output:
+//   price: 150 number
+//   isMember: true string
+
+// Step 2: log the condition pieces
+function calculateTotal(price, isMember) {
+  console.log("isMember truthy:", !!isMember);
+  console.log("price > 100:", price > 100);
+  console.log("combined:", isMember && price > 100);
+
+  if (isMember && price > 100) {
+    return price * 0.9;
+  }
+  return price;
+}
+console.log(calculateTotal(150, "true"));
+
+// Output:
+//   isMember truthy: true
+//   price > 100: true
+//   combined: true
+
+// Wait — combined is true, but the if didn't run? Let me check:
+
+// Step 3: log inside each branch
+function calculateTotal(price, isMember) {
+  if (isMember && price > 100) {
+    console.log("→ entered discount branch");
+    return price * 0.9;
+  }
+  console.log("→ no discount branch");
+  return price;
+}
+console.log(calculateTotal(150, "true"));
+
+// Output:
+//   → entered discount branch
+//   135
+
+// Wait — it's working now? Let me look at the original code more carefully...
+// Original returned 150. Adding logs returned 135. That means somewhere
+// in the path between the two, something else changed.
+
+// In real life this often turns out to be a typo, a stale browser cache,
+// a different code path entirely, or — in this case — calculating with
+// the right value but printing or storing the wrong one elsewhere.
+
+// The lesson: logging doesn't just find bugs — it disproves wrong assumptions
+// and points to where the real problem lives.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-6-19-2-0': `
+    <p>For any <code>if</code>/<code>else</code> bug, run through this mental order:</p>
+
+    <p><strong>1. What did the condition actually evaluate to?</strong> Log the comparison result directly. <code>console.log("cond:", x === 5);</code></p>
+
+    <p><strong>2. What is each value, and what type is it?</strong> The most common surprise is a string where you expected a number, or vice versa. <code>console.log(x, typeof x);</code></p>
+
+    <p><strong>3. Which branch is actually running?</strong> Put a log at the top of every block. The mismatch between expected and actual reveals the structure issue.</p>
+
+    <p><strong>4. Are all the conditions in the chain reachable?</strong> Re-read the chain top-down. If a wider condition appears before a narrower one, the narrower branches are dead code.</p>
+
+    <p><strong>5. Did a guard clause exit silently?</strong> If a function "does nothing," look for an early <code>return</code>. Add a log right before each <code>return</code> in any guard.</p>
+
+    <p>Most <code>if</code> bugs fall to this checklist within a couple of minutes.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-6-19-2-1': `
+    <p>Debugging isn't a separate skill from coding — it's just coding with the lights on. <code>console.log</code> turns the lights on. Without it, you're guessing in the dark about what your code is doing. With it, the bugs become obvious.</p>
+    <p>The shift in mindset: instead of trying to figure out why the code is wrong, ask "what is the code actually doing?" The first question leads to staring; the second leads to logs and answers.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-6-19-2-2': `
+    <p><strong>Confusion: thinking debugging requires special tools</strong></p>
+    <p>Browser DevTools, breakpoints, and step-through debugging are useful — but for most <code>if</code>/<code>else</code> bugs, plain <code>console.log</code> is faster and works everywhere. Don't reach for advanced tools when a one-line log gets the job done.</p>
+
+    <p><strong>Confusion: logging the variable but not the comparison</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Less useful — only tells you the value
+console.log("status:", status);
+if (status === "ready") { ... }
+
+// More useful — also tells you the comparison result
+console.log("status:", status, "===", status === "ready");
+if (status === "ready") { ... }
+// the second log tells you immediately whether the if will pass.</code></pre>
+
+    <p><strong>Confusion: removing logs immediately</strong></p>
+    <p>It's tempting to delete logs as soon as the bug is fixed. But often the same bug reappears in a different form, or the area you debugged becomes a hotspot. Leaving a few well-placed logs (or commenting them out so they're easy to re-enable) saves time on the next bug.</p>
+
+    <p><strong>Confusion: assuming the condition is the bug when it's the value</strong></p>
+<pre class="language-javascript"><code class="language-javascript">if (user.isActive === true) {
+  showActive();
+}
+
+// "The condition is wrong!" — debugger, console, frustration...
+// Actually: user.isActive is the STRING "true", not the boolean true.
+// The bug isn't in the if — it's wherever user.isActive was set.
+
+// Fix: trace back to where user.isActive comes from.</code></pre>
+
+    <p><strong>Confusion: trusting that "obvious" code can't be wrong</strong></p>
+<pre class="language-javascript"><code class="language-javascript">if (count > 0) {
+  console.log("we have items");
+}
+
+// "This is fine, count is obviously a number."
+// Actually: count came from form input, which always arrives as a string.
+// "0" > 0 is false — but "1" > 0 is true (string-to-number coercion).
+// Result: it works for some values and fails for others, depending on what string you compare to.
+
+// the obvious-looking conditions are often where the bugs hide.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-6-19-2-3': `
+<pre class="language-javascript"><code class="language-javascript">// Mistake: console.log without a label
+console.log(x);
+console.log(y);
+console.log(z);
+// in the console, you see: 5, "hello", true — which is which?
+// fix: label every log
+console.log("x:", x);
+console.log("y:", y);
+console.log("z:", z);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Mistake: logging a value but not its type when type might be the issue
+console.log("status:", status);
+if (status === 200) { ... }
+// you see "status: 200" but the if still fails — is it the string "200"?
+// fix: include typeof
+console.log("status:", status, typeof status);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Mistake: only logging at one branch
+if (a) {
+  console.log("a was true");
+  // ...
+} else if (b) {
+  // no log here
+  // ...
+} else {
+  // no log here
+  // ...
+}
+// when "a was true" doesn't print, you don't know which other branch ran
+// fix: log at the top of every branch
+if (a) {
+  console.log("→ a");
+  // ...
+} else if (b) {
+  console.log("→ b");
+  // ...
+} else {
+  console.log("→ else");
+  // ...
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Mistake: using debugger without DevTools open
+function checkSomething(x) {
+  debugger;        // does nothing if DevTools isn't open
+  if (x > 0) { ... }
+}
+// fix: open DevTools (F12 in most browsers) before running the code,
+// otherwise the debugger statement is silently ignored.</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Mistake: changing the code while debugging without resetting state
+let count = 0;
+
+if (count > 0) {
+  count = count + 1;
+}
+
+// you change the code, hit run again, but the test failed.
+// because you forgot to reset count back to its starting value.
+// fix: when debugging stateful code, always restart the page or reset variables
+// before re-running.</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Mistake: logging inside a loop without a counter
+for (const item of items) {
+  console.log("checking item");
+  if (item.isReady) {
+    process(item);
+  }
+}
+// the console fills with identical "checking item" lines
+// fix: include the actual data
+for (const item of items) {
+  console.log("checking:", item.id, "isReady:", item.isReady);
+  if (item.isReady) {
+    process(item);
+  }
+}</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-6-19-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Logging the value and type — catches type mismatches
+const userId = "42";
+console.log("userId:", userId, typeof userId);
+if (userId === 42) {
+  console.log("match");
+} else {
+  console.log("no match — likely type mismatch");
+}
+
+// Logging branch entry — catches "wrong branch" bugs
+function getGrade(score) {
+  if (score >= 90) {
+    console.log("→ A");
+    return "A";
+  }
+  if (score >= 80) {
+    console.log("→ B");
+    return "B";
+  }
+  console.log("→ F");
+  return "F";
+}
+getGrade(85);   // logs "→ B"
+
+// Logging compound condition pieces — catches operator confusion
+const isLoggedIn = true;
+const isVerified = false;
+console.log("loggedIn:", isLoggedIn);
+console.log("verified:", isVerified);
+console.log("combined:", isLoggedIn && isVerified);
+if (isLoggedIn && isVerified) {
+  console.log("welcome");
+}
+
+// Using debugger statement to inspect mid-execution
+function findItem(items, target) {
+  for (const item of items) {
+    if (item.id === target) {
+      debugger;       // pause here when DevTools is open
+      return item;
+    }
+  }
+  return null;
+}
+
+// Quick on/off pattern — comment logs out instead of deleting them
+function process(data) {
+  // console.log("data:", data);
+  if (data.valid) {
+    // console.log("→ valid path");
+    return data.value;
+  }
+  // console.log("→ invalid path");
+  return null;
+}</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-6-19-3-1': `
+    <p><strong>Example: form submission silently failing</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function handleSubmit(form) {
+  console.log("handleSubmit called with:", form);
+
+  if (!form.email) {
+    console.log("→ blocked: missing email");
+    return;
+  }
+  if (!form.password) {
+    console.log("→ blocked: missing password");
+    return;
+  }
+
+  console.log("→ all checks passed, submitting");
+  submitToServer(form);
+}
+
+handleSubmit({ email: "user@site.com", password: "" });
+// console output:
+//   handleSubmit called with: { email: "user@site.com", password: "" }
+//   → blocked: missing password
+// now you know exactly which guard caught it.</code></pre>
+
+    <p><strong>Example: API response handling not branching as expected</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function handleResponse(response) {
+  console.log("response:", response);
+  console.log("response.ok:", response.ok, typeof response.ok);
+  console.log("status:", response.status, typeof response.status);
+
+  if (response.ok) {
+    console.log("→ success");
+    showData(response.data);
+  } else if (response.status === 401) {
+    console.log("→ unauthorized");
+    redirectToLogin();
+  } else {
+    console.log("→ generic error");
+    showError();
+  }
+}
+
+// when the wrong branch runs, the logs reveal whether response.ok was the
+// expected boolean, whether the status was the expected number, etc.</code></pre>
+
+    <p><strong>Example: shopping cart total computing wrong</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function applyDiscount(cart) {
+  console.log("subtotal:", cart.subtotal, typeof cart.subtotal);
+  console.log("isMember:", cart.user.isMember);
+
+  if (cart.user.isMember && cart.subtotal >= 100) {
+    console.log("→ 20% member discount");
+    return cart.subtotal * 0.8;
+  }
+  if (cart.subtotal >= 50) {
+    console.log("→ 10% threshold discount");
+    return cart.subtotal * 0.9;
+  }
+  console.log("→ no discount");
+  return cart.subtotal;
+}
+
+// reveals issues like subtotal being a string from form input,
+// or isMember being undefined because the user object isn't fully loaded.</code></pre>
+
+    <p><strong>Example: route guarding showing the wrong page</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function checkAccess(user, page) {
+  console.log("checking access for:", user, "to page:", page.name);
+
+  if (!user) {
+    console.log("→ no user → login");
+    return "login";
+  }
+  if (page.requiresPaid && !user.isPaid) {
+    console.log("→ paywall");
+    return "paywall";
+  }
+  if (page.requiresAdmin && !user.isAdmin) {
+    console.log("→ 403");
+    return "403";
+  }
+  console.log("→ allowed");
+  return "allowed";
+}
+
+// when a paying admin user is being sent to /paywall, the logs reveal
+// which guard tripped and what user.isPaid was at the time.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-6-19-3-2': `
+    <ul>
+      <li><strong><code>console.log</code></strong> → the primary tool for debugging conditions</li>
+      <li><strong><code>typeof</code></strong> → reveals the type behind a value when comparisons fail unexpectedly</li>
+      <li><strong>Comparison operators</strong> → understanding <code>===</code> vs <code>==</code> is half of debugging chains</li>
+      <li><strong>Truthy and falsy values</strong> → why <code>if (0)</code> doesn't run and <code>if ("0")</code> does</li>
+      <li><strong>Common mistakes</strong> → the previous lesson, lists the bugs you'll be debugging</li>
+      <li><strong>Guard clauses</strong> → silent exits often need branch logging to trace</li>
+      <li><strong>Browser DevTools</strong> → the <code>debugger;</code> keyword pairs with this for deeper inspection</li>
+      <li><strong>Logging conventions</strong> → labels, types, and entry markers make logs readable</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-6-19-3-3': `
+    <ul>
+      <li><code>console.log</code> and other <code>console</code> methods</li>
+      <li><code>typeof</code> operator</li>
+      <li>Comparison operators</li>
+      <li>Truthy and falsy values</li>
+      <li>Common mistakes (previous lesson)</li>
+      <li>Guard clauses</li>
+      <li><code>debugger</code> keyword and DevTools breakpoints</li>
+      <li>Reading the browser console</li>
+    </ul>
+  `,
+
+       /* ==========================================================
+     TOPIC 3.8: Loops
+     ========================================================== */
+
+  /* ========================================================= 
+   Sub-lesson: 3.8.1 Loops → what loops are
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-7-0-0-0': `
+    <p>A loop is code that repeats. Instead of writing the same instruction over and over, you write it once and tell JavaScript to run it multiple times. The same block executes again and again until you tell it to stop.</p>
+    <p>It's one of the most basic building blocks in any program. Anything that involves "do this for every item" or "keep doing this until something changes" is a loop.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-7-0-0-1': `
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  console.log("hello");
+}
+
+// prints:
+//   hello
+//   hello
+//   hello
+
+// the line console.log("hello") only appears once in the code,
+// but it ran three times because the loop repeated it.</code></pre>
+    <p>The block inside the curly braces is the body of the loop. Whatever's in there gets executed once per repetition. The stuff before the body controls how many times it repeats.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-7-0-0-2': `
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  console.log("count:", i);
+}
+
+// prints:
+//   count: 0
+//   count: 1
+//   count: 2
+
+// for       → keyword that starts a counted loop
+// let i = 0 → start value: a counter named i, beginning at 0
+// i < 3     → keep going while this is true (when it becomes false, stop)
+// i++       → after each round, add 1 to i
+// { ... }   → the body, runs each time the loop repeats</code></pre>
+    <p>The three pieces inside the parentheses control the repetition: where to start, when to stop, and what to change each time. The body is what gets repeated.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-7-0-0-3': `
+    <p>JavaScript has several different loop forms. They all repeat code, but each one is shaped for a different situation:</p>
+
+<pre class="language-javascript"><code class="language-javascript">// for loop — when you need a counter
+for (let i = 0; i < 5; i++) {
+  console.log(i);
+}
+
+// while loop — when you don't know how many times in advance
+while (someCondition) {
+  doSomething();
+}
+
+// for...of — walking through items in an array
+const items = ["apple", "banana", "cherry"];
+for (const item of items) {
+  console.log(item);
+}</code></pre>
+
+    <p>Every loop has two essential parts: a <strong>condition</strong> that decides whether to keep going, and a <strong>body</strong> that runs each repetition. The condition is checked at the top of every cycle; the moment it's false, the loop stops.</p>
+
+    <p>If the condition never becomes false, the loop runs forever — that's called an <strong>infinite loop</strong> and usually crashes the page. The most common cause is forgetting to update the value the condition depends on:</p>
+<pre class="language-javascript"><code class="language-javascript">let i = 0;
+while (i < 5) {
+  console.log(i);
+  // forgot to do i = i + 1 here
+}
+// runs forever — i stays at 0, condition stays true</code></pre>
+
+    <p>Each loop type uses braces around its body. The body can be one statement or many — anything you'd normally write in a function block can go inside a loop body.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-7-0-1-0': `
+    <p>Without loops, every repeated action would have to be written out by hand. Sending a message to 100 users would mean writing the same line 100 times. Adding up the prices of 50 cart items would mean 50 separate addition lines. The code would balloon for any task involving more than a few items.</p>
+    <p>Loops collapse all that repetition into a single block that runs as many times as needed. Whether you're processing 5 items or 5 million, the code stays the same length.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-7-0-1-1': `
+    <p>Loops let one block of code do work that would otherwise require huge amounts of duplication:</p>
+<pre class="language-javascript"><code class="language-javascript">// Without a loop — manual repetition
+console.log("user 1");
+console.log("user 2");
+console.log("user 3");
+console.log("user 4");
+console.log("user 5");
+
+// With a loop — same result, scales to any number
+for (let i = 1; i <= 5; i++) {
+  console.log("user " + i);
+}
+
+// And if you need 1,000 users instead of 5, you change ONE number.</code></pre>
+
+    <p>Beyond saving keystrokes, loops let your code handle data sizes you can't predict ahead of time. If a user uploads a list with an unknown number of items, you can't manually write the right number of statements — but a loop handles any size.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-7-0-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Walking through items in a list
+const cart = ["shirt", "pants", "shoes"];
+for (const item of cart) {
+  console.log("you have:", item);
+}
+
+// Doing something a fixed number of times
+for (let i = 0; i < 5; i++) {
+  console.log("attempt " + (i + 1));
+}
+
+// Counting up a total
+let total = 0;
+const prices = [10, 20, 30];
+for (const price of prices) {
+  total = total + price;
+}
+console.log("total:", total);   // 60
+
+// Building up a string or list
+let greeting = "";
+const names = ["Alice", "Bob", "Carol"];
+for (const name of names) {
+  greeting = greeting + "Hi " + name + "! ";
+}
+console.log(greeting);   // "Hi Alice! Hi Bob! Hi Carol! "
+
+// Repeating until something changes
+let attempts = 0;
+while (attempts < 3 && !connected) {
+  tryConnect();
+  attempts = attempts + 1;
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-7-0-1-3': `
+    <p>A loop is the same idea as a chore you do over and over. "Wash one dish, then wash the next dish, then wash the next dish, until there are no more dishes." You don't think of it as 30 separate tasks — it's one task you keep repeating until the sink is empty.</p>
+    <p>Code loops work the same way. You describe one round of the work — wash a dish — and the rules for when to stop — when the sink is empty. JavaScript handles the repetition. You don't write 30 lines for 30 dishes; you write the dish-washing instruction once.</p>
+    <p>The trick is the stopping rule. Without one, you'd be stuck at the sink forever. Every loop needs some condition that eventually becomes false, or it never stops.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-7-0-1-4': `
+    <p>Picture a music player set to repeat a single song. The player keeps starting the song from the top, playing it through, then starting again — same instructions every time. The only thing that changes is "what round are we on now?" The song itself doesn't know or care. It just plays.</p>
+    <p>That's a loop. The body of the loop is the song. The condition is the "keep repeating?" toggle. Each repetition is identical work, except for whatever data you're tracking — a counter, an item from a list, whatever.</p>
+    <p>Eventually you flip the toggle off (the condition becomes false) and the music stops. Whatever progress you've accumulated — a running total, a built-up string, items processed — is what you're left with when the loop ends.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-7-0-1-5': `
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  console.log("round " + i);
+}
+console.log("done");
+
+// prints:
+//   round 0
+//   round 1
+//   round 2
+//   done
+
+// JavaScript is thinking:
+// 1. See the for loop. Run the setup: let i = 0.
+// 2. Check the condition: 0 < 3 → true. Enter the body.
+// 3. Log "round 0".
+// 4. End of body. Run the update: i++ → i is now 1.
+// 5. Check the condition again: 1 < 3 → true. Enter the body.
+// 6. Log "round 1".
+// 7. Update: i++ → i is now 2.
+// 8. Check: 2 < 3 → true. Enter the body.
+// 9. Log "round 2".
+// 10. Update: i++ → i is now 3.
+// 11. Check: 3 < 3 → false. Exit the loop.
+// 12. Continue with code after the loop. Log "done".</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-7-1-2-0': `
+    <p>If a loop isn't behaving as expected, the fastest way to see what's happening is to log the counter (or current item) at the start of each round:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  console.log("iteration:", i, "item:", items[i]);
+  // ... rest of the loop body
+}
+
+// you'll see something like:
+//   iteration: 0 item: "apple"
+//   iteration: 1 item: "banana"
+//   iteration: 2 item: "cherry"
+
+// from this you can tell:
+//   - whether the loop is running at all (any output? any iterations?)
+//   - whether it's running too many times or too few (last index?)
+//   - what data is being processed each round (right values?)</code></pre>
+
+    <p>Common loop bugs almost always reveal themselves once you can see the counter and the current item side by side.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-7-0-2-1': `
+    <p>A loop isn't a special kind of code. It's just normal code that runs more than once. The body of a loop follows all the same rules as any other code block — variables work the same way, <code>if</code> statements work the same way, function calls work the same way.</p>
+    <p>The only "loop magic" is that JavaScript jumps back to the top of the body after each round and re-runs it. Once you see that, loops stop being mysterious — they're just blocks that get re-entered until the condition says stop.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-7-0-2-2': `
+    <p><strong>Confusion: thinking the body runs all at once</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  console.log(i);
+}
+
+// some people picture this as "JS runs i = 0, i = 1, i = 2 simultaneously"
+// what actually happens: one full round at a time, sequentially.
+// round 1 finishes completely before round 2 even starts.</code></pre>
+
+    <p><strong>Confusion: forgetting the loop modifies its own counter</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  console.log(i);
+  i = 100;          // changes i mid-loop
+}
+// runs ONCE, then stops — because i went from 0 to 100, then i++ made it 101,
+// and 101 < 3 is false.
+// usually a bug, sometimes intentional. Either way, the counter is just a variable.</code></pre>
+
+    <p><strong>Confusion: thinking loops "create" the iterations</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 5; i++) {
+  // ...
+}
+// JS doesn't pre-decide it'll run 5 times.
+// it just keeps re-checking the condition. If you change i mid-loop or modify
+// the array being looped, the count can shift.</code></pre>
+
+    <p><strong>Confusion: assuming all loops need a counter</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// for...of doesn't use a counter — it just walks through items
+const fruits = ["apple", "banana"];
+for (const fruit of fruits) {
+  console.log(fruit);
+}
+
+// while doesn't necessarily use one either — it just checks a condition
+let isOpen = true;
+while (isOpen) {
+  isOpen = checkSomething();
+}</code></pre>
+
+    <p><strong>Confusion: forgetting that loops can be empty</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const items = [];
+for (const item of items) {
+  console.log(item);
+}
+// runs ZERO times — the array is empty, so there's nothing to walk through.
+// loops aren't guaranteed to run at all. Always handle the "empty" case.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-7-0-2-3': `
+<pre class="language-javascript"><code class="language-javascript">let i = 0;
+while (i < 5) {
+  console.log(i);
+  // forgot to update i
+}
+// infinite loop — i never changes, condition stays true forever
+// fix: update the counter inside the loop
+let i = 0;
+while (i < 5) {
+  console.log(i);
+  i = i + 1;
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i <= items.length; i++) {
+  console.log(items[i]);
+}
+// off-by-one: <= goes one PAST the last index, prints undefined at the end
+// fix: use < instead of <=
+for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 1; i < items.length; i++) {
+  console.log(items[i]);
+}
+// starts at 1 instead of 0 — skips the first item
+// fix: start at 0 unless you specifically want to skip
+for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (const item of items)
+  console.log(item);
+  console.log("---");
+// the second log isn't part of the loop body — runs only ONCE after the loop ends
+// fix: use braces
+for (const item of items) {
+  console.log(item);
+  console.log("---");
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">let total = 0;
+for (let i = 0; i < prices.length; i++) {
+  let total = 0;
+  total = total + prices[i];
+}
+console.log(total);
+// inner total is a NEW variable each round — outer total stays at 0
+// fix: don't redeclare the variable inside
+let total = 0;
+for (let i = 0; i < prices.length; i++) {
+  total = total + prices[i];
+}</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-7-0-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Basic counted loop
+for (let i = 0; i < 3; i++) {
+  console.log("step", i);
+}
+// step 0
+// step 1
+// step 2
+
+// Walking through an array
+const colors = ["red", "green", "blue"];
+for (const color of colors) {
+  console.log(color);
+}
+// red
+// green
+// blue
+
+// Counting up to a total
+let sum = 0;
+for (let i = 1; i <= 10; i++) {
+  sum = sum + i;
+}
+console.log(sum);   // 55 (1+2+3+...+10)
+
+// Repeating until a condition changes
+let attempts = 0;
+let success = false;
+while (attempts < 3 && !success) {
+  attempts = attempts + 1;
+  success = tryThing();
+}
+
+// Building a list from another list
+const numbers = [1, 2, 3, 4];
+const doubled = [];
+for (const n of numbers) {
+  doubled.push(n * 2);
+}
+console.log(doubled);   // [2, 4, 6, 8]
+
+// Skipping or stopping early
+const items = ["ok", "skip", "ok", "stop", "never"];
+for (const item of items) {
+  if (item === "skip") {
+    continue;     // jump to next iteration
+  }
+  if (item === "stop") {
+    break;        // exit the loop entirely
+  }
+  console.log(item);
+}
+// ok
+// ok</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-7-0-3-1': `
+    <p><strong>Example: rendering a list of items</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function renderProductList(products) {
+  const container = document.querySelector(".products");
+  container.innerHTML = "";
+
+  for (const product of products) {
+    const card = document.createElement("div");
+    card.className = "product-card";
+    card.textContent = product.name;
+    container.appendChild(card);
+  }
+}
+// one block of code creates as many cards as there are products.</code></pre>
+
+    <p><strong>Example: calculating a cart subtotal</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function calculateSubtotal(cart) {
+  let subtotal = 0;
+  for (const item of cart) {
+    subtotal = subtotal + item.price * item.quantity;
+  }
+  return subtotal;
+}
+// works for any cart size — 1 item or 1,000.</code></pre>
+
+    <p><strong>Example: finding a user by ID</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function findUserById(users, targetId) {
+  for (const user of users) {
+    if (user.id === targetId) {
+      return user;     // exit the loop AND the function as soon as we find it
+    }
+  }
+  return null;          // ran through all users, didn't find one
+}</code></pre>
+
+    <p><strong>Example: validating multiple form fields</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function findFirstError(fields) {
+  for (const field of fields) {
+    if (field.value === "") {
+      return field.name + " is required";
+    }
+    if (field.value.length > 100) {
+      return field.name + " is too long";
+    }
+  }
+  return null;     // no errors found
+}</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-7-0-3-2': `
+    <ul>
+      <li><strong>Why loops exist</strong> → next lesson, the motivation in more depth</li>
+      <li><strong>Repeating code</strong> → the core idea loops solve</li>
+      <li><strong><code>for</code> loop</strong> → the most common counted loop form</li>
+      <li><strong><code>while</code> loop</strong> → for repeating until a condition changes</li>
+      <li><strong><code>for...of</code></strong> → for walking through arrays without a counter</li>
+      <li><strong>Arrays</strong> → the data structure most often paired with loops</li>
+      <li><strong>Conditions</strong> → loops use the same boolean expressions as <code>if</code> statements</li>
+      <li><strong>Infinite loops</strong> → what happens when the condition never becomes false</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-7-0-3-3': `
+    <ul>
+      <li>Why loops exist</li>
+      <li>Repeating code</li>
+      <li><code>for</code> loop</li>
+      <li><code>while</code> loop</li>
+      <li><code>for...of</code></li>
+      <li>Loop counter variable</li>
+      <li>Arrays and lists</li>
+      <li>Infinite loops</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.8.2 Loops → why loops exist
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-7-1-0-0': `
+    <p>Loops exist because programs constantly need to do the same thing more than once. Without them, every repeated action would have to be typed out manually — and most programs would become impossible to write at the scale they need to handle.</p>
+    <p>This lesson is about the reason loops were added to programming languages in the first place: copy-paste doesn't scale, and there's a category of work where you don't even know how many repetitions you'll need until the program is running.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-7-1-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// Without a loop — manual repetition
+sendNotification(users[0]);
+sendNotification(users[1]);
+sendNotification(users[2]);
+sendNotification(users[3]);
+sendNotification(users[4]);
+
+// With a loop — the same work, written once
+for (const user of users) {
+  sendNotification(user);
+}
+
+// the second version handles 5 users, 500 users, or 5 million users
+// without changing a single character.</code></pre>
+    <p>The loop version isn't just shorter — it's the only version that works when the number of users is unknown at the time you write the code.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-7-1-0-2': `
+<pre class="language-javascript"><code class="language-javascript">// The structure that makes a loop "exist" as a concept:
+
+for (const user of users) {        // ← rule for picking what to repeat over
+  sendNotification(user);          // ← the work, written exactly once
+}
+
+// rule for repeating → built into the loop's syntax
+// the work itself     → written one time in the body
+// the data            → can grow or shrink without rewriting anything
+
+// without loops, you'd have to either:
+//   - copy the work line for every possible item (impossible for unknown amounts)
+//   - manually call yourself recursively (much more complex)
+
+// loops separate "what to do" from "how many times to do it" cleanly.</code></pre>
+    <p>That separation is the whole reason loops are a feature. The instruction "send a notification" only appears once. The instruction "do this for every user in the list" is handled by the loop machinery.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-7-1-0-3': `
+    <p>Three categories of work make loops indispensable:</p>
+
+    <p><strong>1. Unknown counts.</strong> When you don't know how many items you'll be dealing with until runtime, you can't write a fixed number of statements. Form submissions, search results, database records, file uploads — all of these come with sizes you can't predict in advance.</p>
+<pre class="language-javascript"><code class="language-javascript">// You don't know how many search results came back until they arrive
+const results = searchProducts(query);
+for (const result of results) {
+  displayResult(result);
+}</code></pre>
+
+    <p><strong>2. Identical or near-identical work.</strong> When the same operation needs to happen for every item in a collection — and the operation only differs by which item it's working with — that's exactly what a loop is for.</p>
+<pre class="language-javascript"><code class="language-javascript">// Same operation, different item each time
+let total = 0;
+for (const item of cart) {
+  total = total + item.price;
+}</code></pre>
+
+    <p><strong>3. Repeating until something changes.</strong> When you need to keep doing something until a condition becomes true (or false), there's no fixed count — you just have to keep checking and acting until the situation changes.</p>
+<pre class="language-javascript"><code class="language-javascript">// Keep retrying until either it works or you've tried enough times
+let attempts = 0;
+let success = false;
+while (attempts < 5 && !success) {
+  success = tryConnection();
+  attempts = attempts + 1;
+}</code></pre>
+
+    <p>If you find yourself in any of these three categories without a loop, you'll either write code that doesn't scale or code that simply can't be written. That's why loops exist as a built-in language feature rather than an optional library or pattern.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-7-1-1-0': `
+    <p>The fundamental problem loops solve is that programs deal with collections of unknown size. A user uploads a list of contacts — could be 10, could be 10,000. A search returns matches — could be 0, could be hundreds. A database query returns records — the count depends on the data, not the code.</p>
+    <p>Without loops, every time the data size changed, the code would need to change too. Loops let one piece of code handle any size, including sizes that didn't exist when the code was written.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-7-1-1-1': `
+    <p>Loops aren't just about saving typing. They make code possible that otherwise wouldn't be:</p>
+<pre class="language-javascript"><code class="language-javascript">// Hardcoded for exactly 3 items
+function showCart3Items(cart) {
+  console.log(cart[0]);
+  console.log(cart[1]);
+  console.log(cart[2]);
+}
+// breaks the moment a cart has 4 items, or 2, or 0.
+
+// Loops adapt automatically
+function showCart(cart) {
+  for (const item of cart) {
+    console.log(item);
+  }
+}
+// works for any size cart, today and forever.</code></pre>
+
+    <p>The loop version isn't a shortcut for the manual version — it's the version that actually works in the real world, where data sizes vary and aren't known ahead of time.</p>
+
+    <p>Loops also keep code maintainable. If you need to change <em>what</em> happens for each item, you change it in one place inside the loop body. With manual repetition, you'd have to update every copy of the same line — and inevitably miss one.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-7-1-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Anywhere data has unknown or variable size
+const messages = inbox.getAllMessages();
+for (const msg of messages) {
+  markAsRead(msg);
+}
+
+// Anywhere the same operation applies to many items
+const inputs = document.querySelectorAll("input");
+for (const input of inputs) {
+  input.disabled = true;
+}
+
+// Anywhere a process should retry or wait
+let pageReady = false;
+while (!pageReady) {
+  pageReady = checkIfPageLoaded();
+}
+
+// Anywhere you're aggregating data
+let totalScore = 0;
+for (const round of game.rounds) {
+  totalScore = totalScore + round.score;
+}
+
+// Anywhere you need a fixed number of repetitions
+for (let i = 0; i < 10; i++) {
+  generateRandomCard();
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-7-1-1-3': `
+    <p>Imagine you're handing out flyers at a busy street corner. You don't write a separate plan for each person — you have one rule: "if a person walks by, hand them a flyer." That one rule covers everyone, no matter how many people show up. One person, ten people, a thousand people — same rule.</p>
+    <p>That's why loops exist. Real situations don't come with a fixed count. You don't know in advance how many users will sign up, how many items will be in someone's cart, or how many search results will come back. Loops let you write the rule once and apply it to whatever shows up.</p>
+    <p>Without loops, you'd have to know the count ahead of time and write that exact number of instructions. That works for trivial cases but falls apart the moment real data is involved.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-7-1-1-4': `
+    <p>Think of a loop like an assembly line at a factory. The line is set up once with a single station that does one specific job — say, attaching a label to a box. The line doesn't know or care how many boxes are coming. Boxes arrive on the conveyor belt, the station does its job on each one, and the boxes move on. When there are no more boxes, the station goes idle.</p>
+    <p>The reason factories use assembly lines instead of having one worker do all the steps for one box at a time is the same reason programs use loops: it's the only way to handle large or unknown quantities efficiently. The setup cost is paid once; after that, scale is free.</p>
+    <p>Without a loop, programming would be like asking the factory worker to write a custom plan for every single box that arrives. That's not just inefficient — it's literally impossible when the boxes don't exist yet.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-7-1-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// A real example of why loops exist:
+// imagine sending a welcome email to every new signup today.
+
+const newSignups = ["alice@x.com", "bob@y.com", "carol@z.com"];
+
+// WITHOUT a loop — only works because you know it's exactly 3:
+sendWelcome(newSignups[0]);
+sendWelcome(newSignups[1]);
+sendWelcome(newSignups[2]);
+
+// WITH a loop — works for any number:
+for (const email of newSignups) {
+  sendWelcome(email);
+}
+
+// Now imagine a week later, 47 new signups arrive in one day.
+// The without-loop version is broken — only emails the first 3.
+// The with-loop version is unchanged and emails all 47.
+
+// JavaScript is thinking (loop version):
+// 1. See the for...of loop. Look at newSignups.
+// 2. Take the first item ("alice@x.com"), assign to email, run body.
+// 3. sendWelcome("alice@x.com") runs.
+// 4. Take next item ("bob@y.com"), assign to email, run body.
+// 5. sendWelcome("bob@y.com") runs.
+// 6. Take next item ("carol@z.com"), assign to email, run body.
+// 7. sendWelcome("carol@z.com") runs.
+// 8. No more items. Exit loop.
+
+// the body ran 3 times today. Tomorrow it'll run 47 times. Same code.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-7-0-2-0': `
+    <p>If you're writing the same line over and over with only a small change, that's a sign you should be using a loop instead. The repetition is a smell — code that grows linearly with the number of items will become unmaintainable fast.</p>
+<pre class="language-javascript"><code class="language-javascript">// Smell: copy-paste with tiny variations
+console.log("user:", users[0].name);
+console.log("user:", users[1].name);
+console.log("user:", users[2].name);
+console.log("user:", users[3].name);
+
+// Cleaner: one body, one rule
+for (const user of users) {
+  console.log("user:", user.name);
+}</code></pre>
+
+    <p>The clue: if you're typing or pasting nearly identical lines, ask yourself "could I describe this with one rule that applies to all of them?" If yes, that's a loop.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-7-1-2-1': `
+    <p>Loops don't exist because typing the same line many times is annoying — though it is. They exist because <em>you can't always know how many lines to type</em>. The data size lives in the runtime, not in the code. Loops are how you write code that doesn't need to know the count in advance.</p>
+    <p>Once you internalize that, loops feel less like a "save typing" feature and more like a fundamental tool for handling unknown amounts of work. They're the bridge between code (fixed text) and data (variable amounts).</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-7-1-2-2': `
+    <p><strong>Confusion: thinking loops are only for "many" items</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Some people only reach for loops when there are many items.
+// But loops also handle ZERO items gracefully:
+for (const item of []) {
+  console.log(item);
+}
+// runs zero times, no error — exactly what you want.
+
+// And they handle ONE item just fine:
+for (const item of [42]) {
+  console.log(item);
+}
+// runs once.
+
+// loops shine because they handle 0, 1, 5, or 5000 with the same code.</code></pre>
+
+    <p><strong>Confusion: thinking copy-paste is "more explicit" so it's better</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// "Looping is too clever — let me just write it out so it's clearer"
+showItem(items[0]);
+showItem(items[1]);
+showItem(items[2]);
+
+// what happens when items[3] is added later? You forget to add showItem(items[3]).
+// what happens when items has only 2? items[2] is undefined, showItem crashes.
+// what looks "explicit" is actually fragile.</code></pre>
+
+    <p><strong>Confusion: thinking loops are inherently slow</strong></p>
+    <p>Loops aren't slow because they're loops — they're slow only when they do too much work per iteration, or when they iterate too many times for the task. A loop running 1,000 times that does a tiny operation each time is fast. A loop running 5 times that triggers a network request each time is slow. The loop isn't the bottleneck; the work inside is.</p>
+
+    <p><strong>Confusion: thinking every loop has to use a counter</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// for...of doesn't expose a counter — it just gives you items
+for (const user of users) {
+  // no "i" variable, no array indexing
+  console.log(user.name);
+}
+
+// while doesn't use a counter either — it checks a condition
+while (!isReady()) {
+  wait();
+}
+// counters are common, not required.</code></pre>
+
+    <p><strong>Confusion: thinking loops can replace functions or vice versa</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Loops repeat the SAME code. Functions package up a chunk of code to call later.
+// They solve different problems and often work together:
+
+function greet(name) {           // function: reusable chunk
+  console.log("hi " + name);
+}
+
+for (const name of names) {       // loop: do that chunk many times
+  greet(name);
+}</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-7-1-2-3': `
+<pre class="language-javascript"><code class="language-javascript">// Manually repeating instead of looping
+const cart = getCartItems();
+total = total + cart[0].price;
+total = total + cart[1].price;
+total = total + cart[2].price;
+// only works for exactly 3 items — silently broken when cart size changes
+// fix: use a loop
+let total = 0;
+for (const item of cart) {
+  total = total + item.price;
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Hardcoding sizes that should be dynamic
+function showFirstFive(items) {
+  for (let i = 0; i < 5; i++) {
+    console.log(items[i]);
+  }
+}
+// crashes or shows undefined when items has fewer than 5
+// fix: tie the loop count to the actual data
+function showAll(items) {
+  for (let i = 0; i < items.length; i++) {
+    console.log(items[i]);
+  }
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Reaching for a loop when one operation is enough
+const numbers = [10];
+let result;
+for (const n of numbers) {
+  result = n * 2;
+}
+// works, but if you KNOW there's exactly one item, just do it directly:
+const result = numbers[0] * 2;
+// loops are for variable amounts — single fixed operations don't need them.</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Avoiding loops because they "look complicated"
+let names = "";
+names = names + users[0].name + ", ";
+names = names + users[1].name + ", ";
+names = names + users[2].name + ", ";
+// fragile and verbose
+// fix: trust the loop, it's clearer once you're used to it
+let names = "";
+for (const user of users) {
+  names = names + user.name + ", ";
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Ignoring the empty case
+function getFirstItem(items) {
+  return items[0];
+}
+// returns undefined when items is empty — silent bug downstream
+// fix: handle the empty case explicitly
+function getFirstItem(items) {
+  if (items.length === 0) {
+    return null;
+  }
+  return items[0];
+}
+// loops naturally handle empty inputs (zero iterations) — manual code often doesn't.</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-7-1-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Without a loop — only works for exact-size lists
+const scores = [85, 92, 78];
+let totalScore = scores[0] + scores[1] + scores[2];
+console.log(totalScore);   // 255
+
+// With a loop — works for any size
+const scores2 = [85, 92, 78, 65, 91, 88];
+let totalScore2 = 0;
+for (const score of scores2) {
+  totalScore2 = totalScore2 + score;
+}
+console.log(totalScore2);   // 499
+
+// Without a loop — manual list rendering
+const tags = ["news", "tech", "javascript"];
+let html = "<li>" + tags[0] + "</li>" +
+           "<li>" + tags[1] + "</li>" +
+           "<li>" + tags[2] + "</li>";
+
+// With a loop — same logic, scales freely
+let html2 = "";
+for (const tag of tags) {
+  html2 = html2 + "<li>" + tag + "</li>";
+}
+
+// Repeating a fixed action a fixed number of times
+for (let i = 0; i < 3; i++) {
+  console.log("retry attempt " + (i + 1));
+}
+
+// Looping until a condition is met (no fixed count)
+let cardsDealt = 0;
+while (cardsDealt < deck.length && !player.busts) {
+  dealCard(player);
+  cardsDealt = cardsDealt + 1;
+}
+
+// Empty-list case — loop just runs zero times, no error
+const noItems = [];
+for (const item of noItems) {
+  console.log("never prints");
+}
+console.log("done");   // prints "done" right away</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-7-1-3-1': `
+    <p><strong>Example: search results from an unknown-size response</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function showSearchResults(results) {
+  const container = document.querySelector(".results");
+  container.innerHTML = "";
+
+  if (results.length === 0) {
+    container.textContent = "No results found";
+    return;
+  }
+
+  for (const result of results) {
+    const card = document.createElement("div");
+    card.className = "result";
+    card.textContent = result.title;
+    container.appendChild(card);
+  }
+}
+// you don't know how many results the API will return — could be 1, 50, or 0.
+// the loop handles all of them with the same code.</code></pre>
+
+    <p><strong>Example: clearing every input on a form</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function clearForm(form) {
+  const inputs = form.querySelectorAll("input, textarea");
+  for (const input of inputs) {
+    input.value = "";
+  }
+}
+// the form might have 3 fields or 30. Same code clears all of them.</code></pre>
+
+    <p><strong>Example: building a daily activity report</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function summarizeActivity(events) {
+  const summary = {
+    logins: 0,
+    purchases: 0,
+    pageViews: 0
+  };
+
+  for (const event of events) {
+    if (event.type === "login") {
+      summary.logins = summary.logins + 1;
+    }
+    if (event.type === "purchase") {
+      summary.purchases = summary.purchases + 1;
+    }
+    if (event.type === "pageview") {
+      summary.pageViews = summary.pageViews + 1;
+    }
+  }
+
+  return summary;
+}
+// events could be an empty array, 100 items, or a million.
+// the same loop produces a correct summary every time.</code></pre>
+
+    <p><strong>Example: retrying a network call until it works</strong></p>
+<pre class="language-javascript"><code class="language-javascript">async function fetchWithRetry(url, maxAttempts) {
+  let attempt = 0;
+  while (attempt < maxAttempts) {
+    const response = await fetch(url);
+    if (response.ok) {
+      return response;
+    }
+    attempt = attempt + 1;
+  }
+  throw new Error("Failed after " + maxAttempts + " attempts");
+}
+// you don't know in advance whether attempt 1, 2, or 5 will succeed.
+// the loop handles "keep going until success or limit" naturally.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-7-1-3-2': `
+    <ul>
+      <li><strong>What loops are</strong> → previous lesson, the basic mechanics</li>
+      <li><strong>Repeating code</strong> → next lesson, the core idea in more depth</li>
+      <li><strong>Arrays</strong> → the most common data type that needs loops</li>
+      <li><strong>Functions</strong> → often combined with loops to apply the same operation many times</li>
+      <li><strong>Variables outside the loop</strong> → how you accumulate results across iterations</li>
+      <li><strong>Empty collections</strong> → loops handle zero-length data without special cases</li>
+      <li><strong>Conditions inside loops</strong> → combining <code>if</code> with loops to filter or branch per item</li>
+      <li><strong>Performance</strong> → why loops aren't inherently slow but their bodies can be</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-7-1-3-3': `
+    <ul>
+      <li>What loops are</li>
+      <li>Repeating code</li>
+      <li>Arrays and lists</li>
+      <li><code>for</code> loop</li>
+      <li><code>for...of</code> loop</li>
+      <li><code>while</code> loop</li>
+      <li>Looping vs copy-paste</li>
+      <li>Empty array handling</li>
+    </ul>
+  `,
+  /* ========================================================= 
+   Sub-lesson: 3.8.3 Loops → repeating code
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-7-2-0-0': `
+    <p>"Repeating code" is the core idea behind every loop: take one block of code and run it more than once. Each repetition is called an <strong>iteration</strong>, and each iteration runs the body in full from top to bottom before starting the next one.</p>
+    <p>The block doesn't change between repetitions — it's the same instructions every time. What changes is the data the block is working on: the counter, the current item, or whatever the loop is tracking.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-7-2-0-1': `
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  console.log("repeat #" + i);
+}
+
+// prints:
+//   repeat #0
+//   repeat #1
+//   repeat #2
+
+// the body — console.log(...) — is one line written ONCE.
+// it ran THREE times, with i being a different value each time.</code></pre>
+    <p>Notice that the only thing different across the three outputs is the value of <code>i</code>. The repeating block is identical; the data flowing through it changes.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-7-2-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const fruits = ["apple", "banana", "cherry"];
+
+for (const fruit of fruits) {
+  console.log("eating: " + fruit);
+}
+
+// prints:
+//   eating: apple
+//   eating: banana
+//   eating: cherry
+
+// One iteration =
+//   1. pick the next item from fruits
+//   2. assign it to the variable named "fruit"
+//   3. run the body once with that value
+//   4. when body finishes, return to step 1
+
+// the body runs three times, but the CODE only exists in one place.
+// the variable "fruit" is what changes — it's reassigned each iteration.</code></pre>
+    <p>The loop machinery handles the "do this again" part. Your code only describes a single round of work — the loop applies that work to each piece of data in turn.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-7-2-0-3': `
+    <p>A few things about repetition that are worth being explicit about:</p>
+
+    <p><strong>Each iteration runs the entire body before the next starts.</strong> JavaScript doesn't run all the iterations in parallel — it finishes one completely, then moves to the next:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  console.log("start", i);
+  console.log("middle", i);
+  console.log("end", i);
+}
+
+// prints:
+//   start 0
+//   middle 0
+//   end 0
+//   start 1
+//   middle 1
+//   end 1
+//   start 2
+//   middle 2
+//   end 2
+
+// not "start 0, start 1, start 2, then middle 0..." — full body per iteration.</code></pre>
+
+    <p><strong>Variables declared inside the body are recreated each iteration.</strong> Anything declared with <code>let</code> or <code>const</code> inside the loop is a fresh variable every round:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  const message = "hello " + i;   // new variable each iteration
+  console.log(message);
+}
+// "message" exists only inside the body, recreated each time.</code></pre>
+
+    <p><strong>Variables declared outside the loop persist across iterations.</strong> This is how you accumulate results — totals, lists, flags — that need to survive between rounds:</p>
+<pre class="language-javascript"><code class="language-javascript">let total = 0;                           // declared OUTSIDE the loop
+for (let i = 1; i <= 5; i++) {
+  total = total + i;                     // updated INSIDE the loop
+}
+console.log(total);   // 15
+
+// total survives all 5 iterations because it lives in the surrounding scope.</code></pre>
+
+    <p>This in/out-of-loop variable distinction is the most useful pattern in repeating code — it's how you turn many small steps into one final result.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-7-2-1-0': `
+    <p>Some kinds of work can't be expressed in a single statement. Adding up a list of numbers requires touching each number once. Showing a card for every product means creating one card per product. These are tasks that are inherently made of many similar steps.</p>
+    <p>Repeating code is the mechanism that lets one description handle all those steps. You write what one step looks like; the loop runs it as many times as needed.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-7-2-1-1': `
+    <p>Anytime work breaks down into "do this for each one of those," repetition is the pattern that fits:</p>
+<pre class="language-javascript"><code class="language-javascript">// Send one email per recipient
+for (const recipient of recipients) {
+  sendEmail(recipient);
+}
+
+// Add up one price per item
+let total = 0;
+for (const item of cart) {
+  total = total + item.price;
+}
+
+// Render one card per result
+for (const result of searchResults) {
+  renderCard(result);
+}
+
+// Validate one field per form input
+for (const field of formFields) {
+  validate(field);
+}</code></pre>
+
+    <p>Each of these has the same shape: a thing to do, applied to each item in a collection. The loop is the bridge between "the action" and "all the items."</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-7-2-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Aggregating — combine many values into one result
+let total = 0;
+for (const order of orders) {
+  total = total + order.amount;
+}
+
+// Transforming — make a new collection from an old one
+const upperNames = [];
+for (const name of names) {
+  upperNames.push(name.toUpperCase());
+}
+
+// Filtering — keep only items that match a rule
+const activeUsers = [];
+for (const user of users) {
+  if (user.isActive) {
+    activeUsers.push(user);
+  }
+}
+
+// Searching — find a specific item
+let matchedOrder = null;
+for (const order of orders) {
+  if (order.id === targetId) {
+    matchedOrder = order;
+    break;
+  }
+}
+
+// Counting — track how many of something
+let errorCount = 0;
+for (const log of logs) {
+  if (log.level === "error") {
+    errorCount = errorCount + 1;
+  }
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-7-2-1-3': `
+    <p>Repeating code is the same idea as a recipe step that says "for each potato, peel it." You don't write a different instruction for each potato. You write one peeling instruction, and the rule says to apply it to every potato in the bag. One potato or twenty, the instruction is the same.</p>
+    <p>The same applies to code. The loop body is the instruction. The collection (or counter range, or condition) is the "for each" part. Whatever's in the body gets applied once per item, with the loop handling the "next one, please" part automatically.</p>
+    <p>What makes it useful is that the instruction stays in one place. If you change how potatoes get peeled, you change one line — and now every potato gets peeled the new way. No hunting through twenty separate instructions to update each one.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-7-2-1-4': `
+    <p>Picture a printer printing a long document. The printer doesn't have separate code for each page — it has one routine: pull paper, lay down ink, eject. That routine runs once per page. Page one runs the routine; page two runs the same routine; page 500 runs the same routine. The routine doesn't change, but the page being printed does.</p>
+    <p>Code repetition works the same way. The loop body is the printing routine. Each iteration is one page. The routine doesn't get rewritten between pages — it just gets executed again with whatever data this round is supposed to handle.</p>
+    <p>Whatever the routine produces — printed pages, accumulated totals, items added to a list — builds up across iterations. By the time the loop ends, you've got the result of running that routine N times, all from one description of what one round looks like.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-7-2-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const numbers = [10, 20, 30];
+let total = 0;
+
+for (const n of numbers) {
+  total = total + n;
+}
+
+console.log(total);   // 60
+
+// JavaScript is thinking:
+// 1. Create the array [10, 20, 30].
+// 2. Create total, value 0.
+// 3. Enter the loop. Pick the first item: 10. Assign to n.
+//    Run body: total = 0 + 10 → total is now 10.
+// 4. Pick the next item: 20. Assign to n.
+//    Run body: total = 10 + 20 → total is now 30.
+// 5. Pick the next item: 30. Assign to n.
+//    Run body: total = 30 + 30 → total is now 60.
+// 6. No more items. Exit the loop.
+// 7. Log total → 60.
+
+// Notice:
+//   - the body "total = total + n" is written once, runs three times.
+//   - n is reassigned each iteration.
+//   - total persists across iterations (declared outside the loop).
+//   - the result (60) is the accumulation of all three rounds.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-7-2-2-0': `
+    <p>If a loop's output looks wrong, the fastest way to see what's happening is to log the data at the start and end of each iteration:</p>
+<pre class="language-javascript"><code class="language-javascript">let total = 0;
+for (const item of cart) {
+  console.log("BEFORE:", "item:", item, "total:", total);
+  total = total + item.price;
+  console.log("AFTER:", "item:", item, "total:", total);
+}
+
+// you'll see something like:
+//   BEFORE: item: { price: 10 } total: 0
+//   AFTER:  item: { price: 10 } total: 10
+//   BEFORE: item: { price: 20 } total: 10
+//   AFTER:  item: { price: 20 } total: 30
+//   ...
+
+// from this you can tell exactly what each iteration did,
+// what state it started with, and what state it ended with.</code></pre>
+
+    <p>Most "the loop produced the wrong result" bugs come from one of two things: the body is doing the wrong work each round, or the variable that holds the running result is being reset somewhere it shouldn't be.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-7-2-2-1': `
+    <p>The loop body is just regular code. It's not a special "loop body" syntax — it's a plain block of statements. The loop's only job is to run that block more than once.</p>
+    <p>Once you see that, the body stops feeling mysterious. Whatever you'd write in a function, you can write in a loop body. Whatever rules apply to variables and conditions outside loops apply inside loops too. The "loop" part is just the wrapper that says "run this again."</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-7-2-2-2': `
+    <p><strong>Confusion: thinking iterations run all at once</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  fetchUser(i);
+}
+// some people picture this as 3 fetches happening simultaneously.
+// what actually happens: iteration 0 finishes (including waiting if synchronous),
+// then iteration 1 starts, then iteration 2.
+// for synchronous code, iterations are strictly one-at-a-time.</code></pre>
+
+    <p><strong>Confusion: redeclaring the accumulator inside the body</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// BUG — total is reset each iteration
+for (const price of prices) {
+  let total = 0;
+  total = total + price;
+}
+// after the loop, total doesn't even exist outside — and it was 0 at the
+// start of every round, so nothing accumulated.
+
+// FIX — declare total OUTSIDE
+let total = 0;
+for (const price of prices) {
+  total = total + price;
+}
+console.log(total);   // accumulated correctly</code></pre>
+
+    <p><strong>Confusion: thinking the body has to be tiny</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Bodies can be as long and complex as needed
+for (const order of orders) {
+  if (!order.paid) {
+    continue;
+  }
+  const customer = lookupCustomer(order.customerId);
+  const summary = formatOrderSummary(order, customer);
+  sendEmail(customer.email, summary);
+  logActivity("order_emailed", order.id);
+}
+// nothing wrong with a multi-step body — sometimes that's exactly what you need.</code></pre>
+
+    <p><strong>Confusion: assuming each iteration "knows" about the others</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (const n of [1, 2, 3]) {
+  // this iteration doesn't know what the previous one did
+  // unless you persist information OUTSIDE the loop
+}
+
+// to share state between iterations, store it in a variable outside:
+let previous = null;
+for (const n of [1, 2, 3]) {
+  console.log("previous was:", previous);
+  previous = n;
+}</code></pre>
+
+    <p><strong>Confusion: thinking loops always need to produce something</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Loops can do work that has no return value — pure side effects
+for (const button of buttons) {
+  button.disabled = true;
+}
+// this loop doesn't accumulate anything; it just modifies each button.
+// loops aren't required to "produce a result" — sometimes they just do work.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-7-2-2-3': `
+<pre class="language-javascript"><code class="language-javascript">for (const item of cart) {
+  let total = 0;
+  total = total + item.price;
+}
+console.log(total);
+// total declared INSIDE — fresh each iteration, doesn't exist outside the loop
+// fix: declare outside, update inside
+let total = 0;
+for (const item of cart) {
+  total = total + item.price;
+}
+console.log(total);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (const item of items) {
+  results = item * 2;
+}
+// each iteration overwrites results — only the LAST one survives
+// fix: collect into a list with .push()
+const results = [];
+for (const item of items) {
+  results.push(item * 2);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const items = [1, 2, 3, 4, 5];
+for (const item of items) {
+  if (item > 2) {
+    items.push(item * 10);
+  }
+}
+// modifying the array you're looping over — can cause surprising behavior
+// items grows during iteration, the loop may never end
+// fix: build a new array instead
+const items = [1, 2, 3, 4, 5];
+const additions = [];
+for (const item of items) {
+  if (item > 2) {
+    additions.push(item * 10);
+  }
+}
+const result = items.concat(additions);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (const user of users) {
+  if (user.id === target) {
+    foundUser = user;
+  }
+}
+// keeps looping even after finding the match — wastes work
+// fix: use break to stop early
+let foundUser = null;
+for (const user of users) {
+  if (user.id === target) {
+    foundUser = user;
+    break;
+  }
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++)
+  console.log(items[i]);
+  console.log("---");
+// the second log isn't part of the loop body — it runs ONCE after the loop
+// fix: use braces around the body, even for one-statement bodies
+for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+  console.log("---");
+}</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-7-2-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Repeating to print
+for (let i = 0; i < 3; i++) {
+  console.log("again");
+}
+
+// Repeating to count
+let count = 0;
+for (const item of items) {
+  count = count + 1;
+}
+console.log("how many items:", count);
+
+// Repeating to accumulate a total
+let total = 0;
+const prices = [9.99, 14.50, 3.75];
+for (const price of prices) {
+  total = total + price;
+}
+console.log("total:", total);   // 28.24
+
+// Repeating to build a new list
+const original = [1, 2, 3];
+const squared = [];
+for (const n of original) {
+  squared.push(n * n);
+}
+console.log(squared);   // [1, 4, 9]
+
+// Repeating with a side effect (no result)
+const buttons = document.querySelectorAll("button");
+for (const btn of buttons) {
+  btn.style.opacity = "0.5";
+}
+
+// Repeating with a state that carries between rounds
+const numbers = [3, 1, 4, 1, 5, 9, 2, 6];
+let max = numbers[0];
+for (const n of numbers) {
+  if (n > max) {
+    max = n;
+  }
+}
+console.log("largest:", max);   // 9</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-7-2-3-1': `
+    <p><strong>Example: building a comma-separated tag list</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function formatTags(tags) {
+  if (tags.length === 0) {
+    return "(no tags)";
+  }
+  let output = "";
+  for (let i = 0; i < tags.length; i++) {
+    output = output + tags[i];
+    if (i < tags.length - 1) {
+      output = output + ", ";
+    }
+  }
+  return output;
+}
+console.log(formatTags(["news", "tech", "css"]));   // "news, tech, css"</code></pre>
+
+    <p><strong>Example: counting words in a list of comments</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function totalWords(comments) {
+  let total = 0;
+  for (const comment of comments) {
+    const words = comment.text.split(" ");
+    total = total + words.length;
+  }
+  return total;
+}
+// the body splits the comment, counts words, adds to total — repeated for each comment.</code></pre>
+
+    <p><strong>Example: filtering a list of products by price range</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function withinPriceRange(products, min, max) {
+  const matches = [];
+  for (const product of products) {
+    if (product.price >= min && product.price <= max) {
+      matches.push(product);
+    }
+  }
+  return matches;
+}
+// each iteration: check one product, add it if it qualifies. Result builds up across rounds.</code></pre>
+
+    <p><strong>Example: applying a CSS class to every active tab</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function highlightActiveTabs(tabs) {
+  for (const tab of tabs) {
+    if (tab.isActive) {
+      tab.element.classList.add("highlighted");
+    } else {
+      tab.element.classList.remove("highlighted");
+    }
+  }
+}
+// pure side effects per iteration — no accumulated result, just a DOM update per tab.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-7-2-3-2': `
+    <ul>
+      <li><strong>Variables outside vs inside the loop</strong> → controls what persists between iterations</li>
+      <li><strong>Accumulator pattern</strong> → starting with a base value and adding to it each round</li>
+      <li><strong>Building lists with <code>.push()</code></strong> → the most common way to collect results across iterations</li>
+      <li><strong>Side effects vs returned values</strong> → loops can either build a result or just do work each round</li>
+      <li><strong>Conditions inside loop bodies</strong> → using <code>if</code> to filter, branch, or skip per iteration</li>
+      <li><strong><code>break</code> and <code>continue</code></strong> → controlling when to stop or skip an iteration</li>
+      <li><strong>Modifying the collection mid-loop</strong> → a frequent source of subtle bugs</li>
+      <li><strong>Performance</strong> → bodies that do expensive work multiply that cost by N iterations</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-7-2-3-3': `
+    <ul>
+      <li>Variables declared inside vs outside loops</li>
+      <li>Accumulator pattern</li>
+      <li>Building arrays with <code>.push()</code></li>
+      <li><code>break</code> and <code>continue</code></li>
+      <li>Conditions inside loop bodies</li>
+      <li>Modifying arrays during iteration</li>
+      <li><code>for</code>, <code>while</code>, and <code>for...of</code></li>
+      <li>Performance considerations in loop bodies</li>
+    </ul>
+  `,
+  /* ========================================================= 
+   Sub-lesson: 3.8.4 Loops → for loop
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-7-3-0-0': `
+    <p>The <code>for</code> loop is the classic counted loop. You give it three pieces of information up front — where to start, when to stop, and how to step forward — and it handles the repetition based on those rules.</p>
+    <p>It's the loop you reach for when you need a counter: doing something a fixed number of times, or walking through items by their position in an array.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-7-3-0-1': `
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 5; i++) {
+  console.log("step " + i);
+}
+
+// prints:
+//   step 0
+//   step 1
+//   step 2
+//   step 3
+//   step 4
+
+// the three pieces inside the parentheses, separated by semicolons:
+//   let i = 0    → setup, runs once before the loop starts
+//   i < 5        → condition, checked before each iteration
+//   i++          → update, runs after each iteration</code></pre>
+    <p>That three-part header is what makes a <code>for</code> loop different from other loop types. All three pieces are visible in one line, so you can see at a glance how the loop is structured.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-7-3-0-2': `
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  console.log("i is " + i);
+}
+
+// for       → keyword that starts the loop
+// (         → opens the header
+//   let i = 0  → SETUP: declare the counter and give it a starting value
+//   ;          → separator
+//   i < 3      → CONDITION: keep looping while this is true
+//   ;          → separator
+//   i++        → UPDATE: what to do after each iteration
+// )         → closes the header
+// {         → opens the body
+//   ...       → BODY: code that runs each iteration
+// }         → closes the body
+
+// the order JavaScript runs them:
+//   1. setup (once)
+//   2. check condition → if false, exit; if true, continue
+//   3. run body
+//   4. run update
+//   5. go back to step 2</code></pre>
+    <p>The semicolons between the three header pieces are mandatory — even if you leave a piece blank, the semicolons stay.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-7-3-0-3': `
+    <p><strong>The setup runs exactly once.</strong> It's where you declare and initialize the counter. Most of the time it's <code>let i = 0</code>, but it can be any starting value:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 10; i > 0; i--) {     // count DOWN from 10
+  console.log(i);
+}
+
+for (let i = 5; i <= 50; i = i + 5) {  // step by 5s
+  console.log(i);
+}</code></pre>
+
+    <p><strong>The condition is checked before every iteration, including the very first one.</strong> If the condition is false at the start, the body never runs:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 0; i++) {
+  console.log("never prints");
+}
+// 0 < 0 is false → loop never enters the body</code></pre>
+
+    <p><strong>The update runs after every iteration's body finishes.</strong> It's how the counter moves forward (or backward, or in any pattern). The most common form is <code>i++</code>, which is shorthand for <code>i = i + 1</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">// These two are identical
+for (let i = 0; i < 5; i++) { ... }
+for (let i = 0; i < 5; i = i + 1) { ... }</code></pre>
+
+    <p><strong>The counter declared with <code>let</code> is scoped to the loop.</strong> It exists only inside the loop's header and body — accessing it after the loop ends is an error:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  console.log(i);   // works
+}
+console.log(i);     // ReferenceError — i doesn't exist out here</code></pre>
+
+    <p><strong>All three header parts can be omitted</strong> (creating an infinite loop you'd then break out of with <code>break</code>), but in practice all three are usually filled in:</p>
+<pre class="language-javascript"><code class="language-javascript">// Technically valid but rare — relies on break to exit
+for (;;) {
+  if (someCondition) {
+    break;
+  }
+}</code></pre>
+
+    <p>You'll see this form occasionally for "loop forever until something happens," but a <code>while (true)</code> is usually clearer when that's the intent.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-7-3-1-0': `
+    <p>A lot of loops need a counter — either to repeat a fixed number of times, or to track which position you're at in a list. The <code>for</code> loop bundles the counter setup, the stop condition, and the counter update into one compact line so all three are visible together.</p>
+    <p>Without that bundling, you'd be writing the counter logic by hand every time: declare it before the loop, check it inside, update it at the bottom of the body. The <code>for</code> loop makes the pattern official and keeps it from getting scattered across the code.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-7-3-1-1': `
+    <p>The <code>for</code> loop is the right choice anytime you need to know <em>which iteration you're on</em>:</p>
+<pre class="language-javascript"><code class="language-javascript">// Doing something a fixed number of times
+for (let i = 0; i < 10; i++) {
+  generateRandomCard();
+}
+
+// Walking an array by index — useful when you need the index
+const items = ["a", "b", "c"];
+for (let i = 0; i < items.length; i++) {
+  console.log(i + ": " + items[i]);
+}
+
+// Stepping through every other item
+for (let i = 0; i < items.length; i = i + 2) {
+  console.log(items[i]);
+}
+
+// Counting in reverse
+for (let i = 10; i >= 1; i--) {
+  console.log(i);
+}
+console.log("liftoff!");</code></pre>
+
+    <p>If you don't need the index — just each item in an array — <code>for...of</code> is usually cleaner. Reach for <code>for</code> when the index actually matters.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-7-3-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Repeating a fixed number of times
+for (let i = 0; i < 3; i++) {
+  console.log("attempt " + (i + 1));
+}
+
+// Walking an array by index when position matters
+const players = ["Alice", "Bob", "Carol"];
+for (let i = 0; i < players.length; i++) {
+  console.log("Player " + (i + 1) + ": " + players[i]);
+}
+
+// Iterating in reverse — useful when removing items
+for (let i = list.length - 1; i >= 0; i--) {
+  if (list[i].deleted) {
+    list.splice(i, 1);
+  }
+}
+
+// Building a multiplication table row
+const x = 7;
+for (let i = 1; i <= 10; i++) {
+  console.log(x + " x " + i + " = " + (x * i));
+}
+
+// Generating IDs or batch-creating elements
+for (let i = 1; i <= 5; i++) {
+  const button = document.createElement("button");
+  button.id = "btn-" + i;
+  button.textContent = "Button " + i;
+  document.body.appendChild(button);
+}
+
+// Stepping by an amount other than 1
+for (let i = 0; i < 100; i = i + 10) {
+  console.log(i);   // 0, 10, 20, 30, ...
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-7-3-1-3': `
+    <p>A <code>for</code> loop is like setting a stopwatch with three rules: where to start, when to stop, and how much time to add each tick. "Start at 0, stop when you reach 10, add 1 each tick." Once you've set those rules, the stopwatch handles the counting on its own.</p>
+    <p>The body of the loop is what you do at each tick. The header is the rules for when to tick and when to stop. JavaScript follows the rules — start, check if you should stop, do the work, update — until the stop condition is met.</p>
+    <p>The reason all three rules are in the loop's header (instead of scattered around) is so you can read them at a glance. Looking at the first line of any <code>for</code> loop tells you the whole shape of the repetition.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-7-3-1-4': `
+    <p>Picture a librarian shelving a stack of books. The librarian has a system: start at slot 1, place a book, move to the next slot, place another book, and keep going until the slots run out or the books run out. They're not making decisions about which slot to use each time — they have a rule, and they follow it.</p>
+    <p>That's a <code>for</code> loop. The slot number is the counter. The rule "stop when slots run out" is the condition. The rule "move to the next slot" is the update. The act of placing a book is the body. Once the librarian sets the system at the start of the day, the rest is mechanical.</p>
+    <p>The reason the system works is that everything is decided up front. The librarian doesn't pause between books to think "where am I now? when should I stop?" — those questions have one answer each, baked into the rules. That's why <code>for</code> loops are so good when you know the structure of the work in advance.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-7-3-1-5': `
+<pre class="language-javascript"><code class="language-javascript">for (let i = 1; i <= 3; i++) {
+  console.log("hello " + i);
+}
+console.log("after loop");
+
+// prints:
+//   hello 1
+//   hello 2
+//   hello 3
+//   after loop
+
+// JavaScript is thinking:
+// 1. Run setup: let i = 1. Counter is now 1.
+// 2. Check condition: 1 <= 3 → true. Enter body.
+// 3. Body: log "hello 1".
+// 4. Run update: i++. Counter is now 2.
+// 5. Check condition: 2 <= 3 → true. Enter body.
+// 6. Body: log "hello 2".
+// 7. Run update: i++. Counter is now 3.
+// 8. Check condition: 3 <= 3 → true. Enter body.
+// 9. Body: log "hello 3".
+// 10. Run update: i++. Counter is now 4.
+// 11. Check condition: 4 <= 3 → false. Exit loop.
+// 12. Continue with code after the loop. Log "after loop".
+
+// notice the order: setup ONCE, then condition→body→update repeats.
+// the update runs at the END of each iteration, not the start.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-7-3-2-0': `
+    <p>If a <code>for</code> loop is running too many or too few times, log the counter at the start of each iteration to see exactly how it's progressing:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i <= items.length; i++) {
+  console.log("i:", i, "items[i]:", items[i]);
+  // ... rest of body
+}
+
+// for items = ["a", "b", "c"], you'd see:
+//   i: 0 items[i]: a
+//   i: 1 items[i]: b
+//   i: 2 items[i]: c
+//   i: 3 items[i]: undefined   ← off-by-one bug visible here!
+
+// the last line reveals the issue: i went one past the array's length
+// because the condition was <= instead of <.
+// fix: change <= to <</code></pre>
+
+    <p>Most <code>for</code> loop bugs are off-by-one mistakes (running one too many or one too few times) and stale counter starts. Logging the counter at every iteration makes both kinds obvious within seconds.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-7-3-2-1': `
+    <p>The three header pieces aren't a special "loop language" — they're just three regular statements. <code>let i = 0</code> declares a variable. <code>i &lt; 5</code> is a condition expression. <code>i++</code> is an update statement. The <code>for</code> loop just collects them into one place because they always appear together for counted loops.</p>
+    <p>Once you see them as three normal statements that the loop calls in a particular order, the structure stops feeling magical. The loop is just an automated way to run "setup, then condition-body-update repeatedly until the condition fails."</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-7-3-2-2': `
+    <p><strong>Confusion: <code>&lt;</code> vs <code>&lt;=</code> in the condition</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Walking an array — use < (because indexes go 0 to length-1)
+for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);   // safe
+}
+
+// Counting up to a target inclusively — use <=
+for (let i = 1; i <= 10; i++) {
+  console.log(i);   // prints 1 through 10
+}
+
+// Mixing them up causes off-by-one bugs:
+for (let i = 0; i <= items.length; i++) {
+  console.log(items[i]);   // last iteration logs undefined
+}</code></pre>
+
+    <p><strong>Confusion: forgetting <code>let</code> in the setup</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Without let — i becomes a global variable (bad)
+for (i = 0; i < 5; i++) {
+  console.log(i);
+}
+// works, but i now lives outside the loop forever — pollutes the surrounding scope
+
+// With let — i is properly scoped to the loop (good)
+for (let i = 0; i < 5; i++) {
+  console.log(i);
+}</code></pre>
+
+    <p><strong>Confusion: thinking the update runs before the body</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  console.log(i);
+}
+// prints 0, 1, 2 — NOT 1, 2, 3
+
+// the order is: setup → check → body → update → check → body → update ...
+// the update runs AFTER each body, then the condition checks again.</code></pre>
+
+    <p><strong>Confusion: using <code>i++</code> when you wanted a different step</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// i++ adds 1 each time — the most common case
+for (let i = 0; i < 10; i++) { ... }    // 0, 1, 2, ..., 9
+
+// i = i + 2 steps by 2
+for (let i = 0; i < 10; i = i + 2) { ... }   // 0, 2, 4, 6, 8
+
+// i-- counts down by 1
+for (let i = 10; i > 0; i--) { ... }    // 10, 9, 8, ..., 1
+
+// the update can be any expression that changes the counter.
+// if you want a step other than 1, the third slot is where you specify it.</code></pre>
+
+    <p><strong>Confusion: putting the wrong work in the header</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// BUG — doing work inside the update slot
+for (let i = 0; i < items.length; processItem(items[i]), i++) {
+  // empty body
+}
+// works, but it's hard to read — the update slot should ONLY change the counter.
+
+// FIX — put the work in the body where it belongs
+for (let i = 0; i < items.length; i++) {
+  processItem(items[i]);
+}</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-7-3-2-3': `
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i <= items.length; i++) {
+  console.log(items[i]);
+}
+// off-by-one: <= goes one past the last valid index, prints undefined at the end
+// fix: use < instead of <=
+for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 1; i < items.length; i++) {
+  console.log(items[i]);
+}
+// starts at 1 — skips items[0]
+// fix: start at 0 unless you intentionally want to skip the first item
+for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 5; i--) {
+  console.log(i);
+}
+// counter goes 0, -1, -2, ... condition stays true forever (negative numbers are < 5)
+// fix: use i++ when counting up
+for (let i = 0; i < 5; i++) {
+  console.log(i);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 5; i++);
+{
+  console.log(i);
+}
+// the semicolon after the header makes the loop body EMPTY
+// the { console.log... } block runs ONCE after the loop, and i doesn't exist there
+// fix: remove the stray semicolon
+for (let i = 0; i < 5; i++) {
+  console.log(i);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  if (items[i].toDelete) {
+    items.splice(i, 1);
+  }
+}
+// modifying the array WHILE looping forward causes skipped items
+// after splice, items shifts down but i still moves up — next item gets missed
+// fix: loop in reverse when removing
+for (let i = items.length - 1; i >= 0; i--) {
+  if (items[i].toDelete) {
+    items.splice(i, 1);
+  }
+}</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-7-3-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Basic counted repetition
+for (let i = 0; i < 3; i++) {
+  console.log("round " + (i + 1));
+}
+
+// Walking through an array by index
+const fruits = ["apple", "banana", "cherry"];
+for (let i = 0; i < fruits.length; i++) {
+  console.log(i + 1 + ". " + fruits[i]);
+}
+
+// Counting backwards
+for (let i = 5; i >= 1; i--) {
+  console.log(i);
+}
+console.log("go!");
+
+// Stepping by a custom amount
+for (let i = 0; i <= 100; i = i + 25) {
+  console.log(i + "%");
+}
+
+// Building up a result
+let total = 0;
+for (let i = 1; i <= 10; i++) {
+  total = total + i;
+}
+console.log("sum of 1-10:", total);   // 55
+
+// Generating elements
+for (let i = 1; i <= 4; i++) {
+  const div = document.createElement("div");
+  div.textContent = "Box " + i;
+  div.id = "box-" + i;
+  document.body.appendChild(div);
+}
+
+// Reverse iteration to safely remove items
+const numbers = [1, 2, 3, 4, 5];
+for (let i = numbers.length - 1; i >= 0; i--) {
+  if (numbers[i] % 2 === 0) {
+    numbers.splice(i, 1);
+  }
+}
+console.log(numbers);   // [1, 3, 5]</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-7-3-3-1': `
+    <p><strong>Example: rendering a leaderboard with rank numbers</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function renderLeaderboard(players) {
+  const list = document.querySelector(".leaderboard");
+  list.innerHTML = "";
+
+  for (let i = 0; i < players.length; i++) {
+    const row = document.createElement("li");
+    const rank = i + 1;
+    row.textContent = rank + ". " + players[i].name + " — " + players[i].score;
+    list.appendChild(row);
+  }
+}
+// the index i is essential here — we need it to display the rank.</code></pre>
+
+    <p><strong>Example: pagination links</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function buildPaginationLinks(totalPages, currentPage) {
+  const container = document.querySelector(".pagination");
+  container.innerHTML = "";
+
+  for (let i = 1; i <= totalPages; i++) {
+    const link = document.createElement("a");
+    link.textContent = i;
+    link.href = "?page=" + i;
+    if (i === currentPage) {
+      link.classList.add("current");
+    }
+    container.appendChild(link);
+  }
+}
+// counting from 1 to totalPages, with the index doubling as the page number.</code></pre>
+
+    <p><strong>Example: removing failed uploads from a queue</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function removeFailedUploads(uploads) {
+  for (let i = uploads.length - 1; i >= 0; i--) {
+    if (uploads[i].status === "failed") {
+      uploads.splice(i, 1);
+    }
+  }
+}
+// reverse iteration is needed because we're removing items from the array as we go.</code></pre>
+
+    <p><strong>Example: a basic countdown timer display</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function logCountdown(seconds) {
+  for (let i = seconds; i > 0; i--) {
+    console.log(i);
+  }
+  console.log("time's up!");
+}
+logCountdown(3);
+// prints: 3, 2, 1, time's up!</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-7-3-3-2': `
+    <ul>
+      <li><strong>Loop counter variable</strong> → the <code>i</code> in <code>for (let i = ...)</code></li>
+      <li><strong><code>i = 0</code></strong> → the standard starting value for array indexing</li>
+      <li><strong><code>i &lt; array.length</code></strong> → the standard stop condition for array walking</li>
+      <li><strong><code>i++</code></strong> → the standard step</li>
+      <li><strong>Indexes starting at 0</strong> → why <code>i = 0</code> and <code>i &lt; length</code> work together</li>
+      <li><strong><code>array[i]</code></strong> → how the counter is used to read the current item</li>
+      <li><strong>Off-by-one errors</strong> → the most common <code>for</code> loop mistake</li>
+      <li><strong><code>for...of</code> loop</strong> → cleaner alternative when you don't need the index</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-7-3-3-3': `
+    <ul>
+      <li>Loop counter variable</li>
+      <li><code>i = 0</code> starting value</li>
+      <li><code>i &lt; array.length</code> stop condition</li>
+      <li><code>i++</code> increment</li>
+      <li>Indexes starting at 0</li>
+      <li><code>array[i]</code> for the current item</li>
+      <li><code>for...of</code> loop</li>
+      <li>Off-by-one errors</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.8.5 Loops → while loop
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-7-4-0-0': `
+    <p>The <code>while</code> loop is the simplest kind of loop. It has just one rule: keep running the body for as long as the condition is true. There's no built-in counter, no fixed number of iterations — just a condition that's checked before each round.</p>
+    <p>It's the loop you reach for when you don't know how many times you'll need to repeat. You just know "keep doing this until something changes."</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-7-4-0-1': `
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+
+while (count < 3) {
+  console.log("count is " + count);
+  count = count + 1;
+}
+
+// prints:
+//   count is 0
+//   count is 1
+//   count is 2
+
+// the structure is just: while (condition) { body }
+// no setup, no update — both are your responsibility inside or outside the loop.</code></pre>
+    <p>Unlike a <code>for</code> loop, there's nothing in the loop's header except the condition. Whatever variables the condition depends on need to be set up before the loop and updated inside it.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-7-4-0-2': `
+<pre class="language-javascript"><code class="language-javascript">let attempts = 0;
+let success = false;
+
+while (!success && attempts < 5) {
+  success = tryConnection();
+  attempts = attempts + 1;
+}
+
+// while       → keyword that starts the loop
+// (           → opens the condition
+//   !success && attempts < 5  → the condition, checked before EACH iteration
+// )           → closes the condition
+// {           → opens the body
+//   body...    → runs once per iteration, as long as condition stays true
+// }           → closes the body
+
+// the order:
+//   1. check condition → if false, exit; if true, continue
+//   2. run body
+//   3. go back to step 1
+
+// notice: the variables that control the condition (success, attempts)
+// must be set up BEFORE the loop and updated INSIDE the loop.</code></pre>
+    <p>The loop has no idea what to track or how to make progress — that's entirely on the body. If the body never changes the variables in the condition, the loop will run forever.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-7-4-0-3': `
+    <p><strong>The condition is checked at the top.</strong> If it's false the very first time, the body never runs at all:</p>
+<pre class="language-javascript"><code class="language-javascript">let count = 5;
+while (count < 3) {
+  console.log("never prints");
+}
+// 5 < 3 is false → body skipped entirely</code></pre>
+
+    <p><strong>The body must make progress toward making the condition false.</strong> If it doesn't, you've got an infinite loop — the most common bug with <code>while</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+while (count < 5) {
+  console.log(count);
+  // forgot to update count → infinite loop
+}</code></pre>
+
+    <p><strong><code>do...while</code> is a variation</strong> that checks the condition at the bottom instead of the top. The body always runs at least once, even if the condition is false from the start:</p>
+<pre class="language-javascript"><code class="language-javascript">let count = 5;
+
+do {
+  console.log("runs once at minimum");
+  count = count + 1;
+} while (count < 3);
+
+// prints "runs once at minimum" — body ran before the condition was even checked.</code></pre>
+
+    <p><strong><code>while (true)</code> is a deliberate infinite loop</strong> — useful when the exit logic is complex enough that the condition would be cluttered. You exit using <code>break</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">while (true) {
+  const input = prompt("type 'quit' to stop");
+  if (input === "quit") {
+    break;
+  }
+  console.log("you typed: " + input);
+}</code></pre>
+
+    <p><strong>The braces around the body aren't optional in real-world style.</strong> A brace-less <code>while</code> body only includes the next single statement, which is a recipe for the same kinds of bugs covered in the <code>if</code> lessons.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-7-4-1-0': `
+    <p>Some loops don't have a known iteration count. You can't say "loop 5 times" because you don't know whether it'll take 1 try or 50 tries. Maybe the user keeps clicking buttons until they're done. Maybe the connection retries until it works. Maybe the puzzle solver keeps guessing until it lands on the right answer.</p>
+    <p><code>while</code> handles all of these. You give it a condition that describes when to stop — "until the connection succeeds," "while there's still input to process," "while the puzzle isn't solved" — and it just keeps going until that condition flips.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-7-4-1-1': `
+    <p>The <code>while</code> loop is the right choice when you can describe the stopping condition but can't predict how many iterations it'll take:</p>
+<pre class="language-javascript"><code class="language-javascript">// Wait for an external state to change
+let isReady = false;
+while (!isReady) {
+  isReady = checkServerStatus();
+}
+
+// Process items until a queue is empty
+while (queue.length > 0) {
+  const item = queue.shift();
+  process(item);
+}
+
+// Keep prompting until the user gives valid input
+let answer = "";
+while (answer !== "yes" && answer !== "no") {
+  answer = prompt("Answer yes or no:");
+}
+
+// Game loop — keep playing until someone wins
+while (!game.isOver) {
+  game.takeTurn();
+}</code></pre>
+
+    <p>If you do know the count in advance, <code>for</code> is usually clearer. <code>while</code> is for the cases where the loop's lifetime depends on something that happens during the loop itself.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-7-4-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Polling until something changes
+let serverReady = false;
+while (!serverReady) {
+  serverReady = ping();
+}
+
+// Draining a queue or stack
+const tasks = ["a", "b", "c", "d"];
+while (tasks.length > 0) {
+  const task = tasks.shift();
+  console.log("processing " + task);
+}
+
+// Reading input until end-of-input signal
+let line = readLine();
+while (line !== null) {
+  processLine(line);
+  line = readLine();
+}
+
+// Searching with no fixed bound
+let guess = 0;
+while (guess * guess < 1000) {
+  guess = guess + 1;
+}
+console.log("smallest n where n*n >= 1000:", guess);
+
+// Game loop
+while (!player.gameOver) {
+  player.update();
+  render();
+}
+
+// Retry pattern with attempt limit
+let attempts = 0;
+let success = false;
+while (!success && attempts < 5) {
+  success = tryThing();
+  attempts = attempts + 1;
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-7-4-1-3': `
+    <p>A <code>while</code> loop is like a sign at the entrance to a room: "while the door is unlocked, keep walking through." You don't count how many times you go through. You just keep going until the door is locked. The "how long" is decided by what's happening with the door, not by you.</p>
+    <p>This is the right shape for situations where you can't say in advance how many tries it'll take. Maybe the door gets locked on the third pass. Maybe the fortieth. The loop doesn't care — it just keeps checking the door every time and stops when the answer changes.</p>
+    <p>The catch: something inside the room has to eventually lock the door. If nothing ever does, you walk through forever. That's the responsibility you take on with <code>while</code> — the body has to do something that eventually makes the condition false.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-7-4-1-4': `
+    <p>Picture a security guard checking a turnstile. The rule is simple: "as long as the green light is on, let the next person through." The guard doesn't know how many people are coming — could be 3, could be 300. They just keep letting people through until the light changes.</p>
+    <p>What changes the light? Something in the system — maybe a timer, maybe a quota, maybe an emergency. The guard doesn't make that decision. They just check the light each time and act accordingly. When the light goes red, the guard stops, and that's the end of the loop.</p>
+    <p>The mental shift from <code>for</code> to <code>while</code> is letting go of the count. With <code>for</code>, you're telling JavaScript "do this exactly N times." With <code>while</code>, you're saying "keep doing this until the light changes — I have no idea when that'll be." The loop just runs as long as it needs to.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-7-4-1-5': `
+<pre class="language-javascript"><code class="language-javascript">let stack = 5;
+
+while (stack > 0) {
+  console.log("stack: " + stack);
+  stack = stack - 1;
+}
+console.log("empty!");
+
+// prints:
+//   stack: 5
+//   stack: 4
+//   stack: 3
+//   stack: 2
+//   stack: 1
+//   empty!
+
+// JavaScript is thinking:
+// 1. Set stack to 5.
+// 2. Check condition: 5 > 0 → true. Enter body.
+// 3. Body: log "stack: 5". Decrement stack to 4.
+// 4. Check condition: 4 > 0 → true. Enter body.
+// 5. Body: log "stack: 4". Decrement stack to 3.
+// 6. ...same pattern continues...
+// 7. Body: log "stack: 1". Decrement stack to 0.
+// 8. Check condition: 0 > 0 → false. Exit loop.
+// 9. Log "empty!".
+
+// notice: the condition is what determined when to stop.
+// if the body forgot to decrement stack, the condition would stay true forever
+// and we'd have an infinite loop.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-7-4-2-0': `
+    <p>If a <code>while</code> loop is running too many times — or worse, never stopping — the bug is almost always that the condition isn't being changed by the body:</p>
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+while (count < 5) {
+  console.log("count:", count);
+  // BUG: forgot to update count
+}
+// infinite loop — count stays 0 forever, condition stays true forever
+
+// fix: update the variable the condition depends on
+let count = 0;
+while (count < 5) {
+  console.log("count:", count);
+  count = count + 1;
+}</code></pre>
+
+    <p>If your browser tab freezes or crashes after running a <code>while</code> loop, that's almost always an infinite loop. Look for the variable in the condition and confirm the body actually changes it.</p>
+
+    <p>If a <code>while</code> loop runs ZERO times when you expected it to run, log the condition before the loop:</p>
+<pre class="language-javascript"><code class="language-javascript">console.log("condition before loop:", queue.length > 0);
+while (queue.length > 0) {
+  // ...
+}
+// if you see "false", the loop body was always going to skip — the input was empty.</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-7-4-2-1': `
+    <p>A <code>while</code> loop is just an <code>if</code> that runs again and again. <code>if (cond) { body }</code> runs the body once if the condition is true. <code>while (cond) { body }</code> runs the body as long as the condition stays true.</p>
+    <p>The whole "loop" part is JavaScript checking the condition repeatedly — once before each iteration. There's no special looping machinery beyond that. It's "run the body, check again, run the body, check again," with the body itself being responsible for eventually making the check fail.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-7-4-2-2': `
+    <p><strong>Confusion: forgetting that something has to change inside the body</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let isLoading = true;
+while (isLoading) {
+  console.log("loading...");
+  // nothing here ever sets isLoading = false → infinite loop
+}
+
+// fix: the body must do something that eventually makes the condition false
+let isLoading = true;
+while (isLoading) {
+  console.log("loading...");
+  isLoading = checkIfLoaded();
+}</code></pre>
+
+    <p><strong>Confusion: thinking <code>while</code> needs a counter</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// You CAN use a counter with while...
+let i = 0;
+while (i < 5) {
+  console.log(i);
+  i = i + 1;
+}
+
+// ...but for is usually clearer when you're counting:
+for (let i = 0; i < 5; i++) {
+  console.log(i);
+}
+
+// reach for while when there ISN'T a clear count — that's its sweet spot.</code></pre>
+
+    <p><strong>Confusion: condition checked at the top vs. bottom</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// while — condition first, body second
+while (false) {
+  console.log("never runs");
+}
+// nothing prints — condition was false on the first check.
+
+// do...while — body first, condition second
+do {
+  console.log("runs once");
+} while (false);
+// prints "runs once" — body always runs at least once, then the condition is checked.</code></pre>
+
+    <p><strong>Confusion: thinking <code>break</code> only works in <code>for</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">// break works in any loop, including while
+while (true) {
+  const input = prompt("enter command:");
+  if (input === "quit") {
+    break;
+  }
+  process(input);
+}
+// while (true) plus break is a common pattern when the exit condition is complex.</code></pre>
+
+    <p><strong>Confusion: using <code>=</code> instead of <code>===</code> in the condition</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let status = "pending";
+while (status = "done") {
+  // BUG: = is assignment — status becomes "done", expression returns "done" (truthy)
+  // → infinite loop
+}
+
+// fix: use === for comparison
+while (status === "done") {
+  // ...
+}</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-7-4-2-3': `
+<pre class="language-javascript"><code class="language-javascript">let i = 0;
+while (i < 5) {
+  console.log(i);
+  // forgot i = i + 1
+}
+// infinite loop — i never changes
+// fix: update the counter inside the body
+let i = 0;
+while (i < 5) {
+  console.log(i);
+  i = i + 1;
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">while (queue.length > 0) {
+  process(queue[0]);
+  // forgot to remove the processed item
+}
+// infinite loop — queue.length never decreases
+// fix: remove the item after processing
+while (queue.length > 0) {
+  const item = queue.shift();
+  process(item);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">let isReady = false;
+while (isReady) {
+  doWork();
+}
+// loop body NEVER runs — condition was false from the start
+// (this might be intentional, but it's often a bug — wrong starting value)
+// fix: start with a value that makes the condition true, or use do...while
+let isReady = true;
+while (isReady) {
+  doWork();
+  isReady = checkIfStillReady();
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">while (count > 0)
+  count = count - 1;
+  console.log("done");
+// the second statement isn't part of the loop body — runs ONCE after the loop
+// fix: always use braces
+while (count > 0) {
+  count = count - 1;
+  console.log("done");
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">while (input = "yes") {
+  doIt();
+}
+// = is assignment — input becomes "yes" each check, expression returns "yes" (truthy)
+// → infinite loop
+// fix: use === for comparison
+while (input === "yes") {
+  doIt();
+}</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-7-4-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Counting down with while
+let count = 5;
+while (count > 0) {
+  console.log(count);
+  count = count - 1;
+}
+console.log("liftoff!");
+
+// Draining a list
+const tasks = ["wash", "fold", "iron"];
+while (tasks.length > 0) {
+  const task = tasks.shift();
+  console.log("doing: " + task);
+}
+
+// Polling for a state change
+let isReady = false;
+while (!isReady) {
+  isReady = checkSomething();
+}
+console.log("ready!");
+
+// Searching with an unknown stop point
+let n = 1;
+while (n * n <= 100) {
+  n = n + 1;
+}
+console.log("first n where n*n > 100:", n);
+
+// Game loop
+let isPlaying = true;
+let score = 0;
+while (isPlaying) {
+  score = score + roll();
+  if (score >= 21) {
+    isPlaying = false;
+  }
+}
+console.log("final score:", score);
+
+// Retry with limit
+let attempts = 0;
+let connected = false;
+while (!connected && attempts < 3) {
+  connected = tryConnect();
+  attempts = attempts + 1;
+}
+
+// while (true) with break
+while (true) {
+  const guess = makeGuess();
+  if (guess === answer) {
+    console.log("got it!");
+    break;
+  }
+}</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-7-4-3-1': `
+    <p><strong>Example: processing a download queue</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function processDownloads(queue) {
+  while (queue.length > 0) {
+    const download = queue.shift();
+    startDownload(download);
+  }
+}
+// the queue's size depends on how many users requested downloads —
+// you don't know in advance, so a while loop fits naturally.</code></pre>
+
+    <p><strong>Example: typing animation that reveals one character at a time</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function typeText(target, text) {
+  let i = 0;
+  const interval = setInterval(function () {
+    target.textContent = target.textContent + text[i];
+    i = i + 1;
+    if (i >= text.length) {
+      clearInterval(interval);
+    }
+  }, 100);
+}
+// (this version uses setInterval instead of while because the work is async,
+// but the same conceptual loop — "keep adding characters until done" — applies.)
+
+// pure while version for synchronous typing into a string:
+function buildTypedString(text) {
+  let output = "";
+  let i = 0;
+  while (i < text.length) {
+    output = output + text[i];
+    i = i + 1;
+  }
+  return output;
+}</code></pre>
+
+    <p><strong>Example: scrolling pagination — keep loading until visible content fills the screen</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function fillViewport(loadMore) {
+  while (document.body.scrollHeight < window.innerHeight) {
+    const moreContent = loadMore();
+    if (moreContent === null) {
+      break;     // no more content available
+    }
+    document.body.appendChild(moreContent);
+  }
+}
+// keeps loading more content until the page fills (or runs out).</code></pre>
+
+    <p><strong>Example: turn-based game logic</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function playRound(game) {
+  while (!game.hasWinner()) {
+    const currentPlayer = game.nextPlayer();
+    const move = currentPlayer.chooseMove();
+    game.applyMove(move);
+  }
+  return game.winner();
+}
+// the number of turns isn't fixed — the game runs as long as it needs to.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-7-4-3-2': `
+    <ul>
+      <li><strong><code>for</code> loop</strong> → use when the iteration count is known; <code>while</code> when it isn't</li>
+      <li><strong>Conditions</strong> → <code>while</code> uses the same boolean expressions as <code>if</code></li>
+      <li><strong>Infinite loops</strong> → the most common <code>while</code> bug; happens when the body doesn't update the condition</li>
+      <li><strong><code>break</code> and <code>continue</code></strong> → control flow inside <code>while</code> works the same as inside <code>for</code></li>
+      <li><strong><code>do...while</code></strong> → variant that always runs the body at least once</li>
+      <li><strong><code>while (true)</code> + <code>break</code></strong> → pattern for "loop forever until something inside says stop"</li>
+      <li><strong>Polling</strong> → <code>while</code> is the natural shape for "keep checking until something changes"</li>
+      <li><strong>Game loops</strong> → the canonical "indefinite repetition" use case</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-7-4-3-3': `
+    <ul>
+      <li><code>for</code> loop</li>
+      <li><code>do...while</code> loop</li>
+      <li><code>break</code> and <code>continue</code></li>
+      <li>Infinite loops</li>
+      <li>Conditions and boolean expressions</li>
+      <li>Polling and game loops</li>
+      <li>Async iteration with <code>setInterval</code></li>
+      <li><code>while (true)</code> pattern</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.8.6 Loops → for...of
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-7-5-0-0': `
+    <p><code>for...of</code> is a loop built specifically for walking through items in a collection — usually an array. It hands you each item one at a time, in order, without making you deal with indexes or counters.</p>
+    <p>It's the cleanest, most readable way to say "for every item in this list, do something." If you don't need to know which position you're at, this is almost always the loop you want.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-7-5-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const fruits = ["apple", "banana", "cherry"];
+
+for (const fruit of fruits) {
+  console.log(fruit);
+}
+
+// prints:
+//   apple
+//   banana
+//   cherry
+
+// the structure: for (const item of collection) { body }
+// the variable "fruit" is automatically assigned to each item, one per iteration.</code></pre>
+    <p>No counter, no <code>length</code> check, no <code>fruits[i]</code>. The loop hands you the item directly.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-7-5-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const scores = [85, 92, 78];
+
+for (const score of scores) {
+  console.log("score: " + score);
+}
+
+// for         → keyword that starts the loop
+// (           → opens the header
+//   const score   → variable that holds the current item (you name it)
+//   of            → keyword separating the variable from the collection
+//   scores        → the array (or any iterable) to walk through
+// )           → closes the header
+// {           → opens the body
+//   body...    → runs once per item, with score holding that item
+// }           → closes the body
+
+// each iteration:
+//   1. take the next item from scores
+//   2. assign it to "score"
+//   3. run the body
+//   4. when no more items, exit</code></pre>
+    <p>The <code>const</code> creates a fresh variable each iteration, automatically assigned to the next item. You don't have to track position, advance the counter, or check when to stop — the loop handles all of that.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-7-5-0-3': `
+    <p><strong>The variable can be declared with <code>const</code>, <code>let</code>, or <code>var</code>.</strong> <code>const</code> is the standard choice — the loop creates a fresh variable each iteration, so you're not actually "reassigning" anything across rounds:</p>
+<pre class="language-javascript"><code class="language-javascript">// Standard
+for (const item of items) {
+  console.log(item);
+}
+
+// Use let if you need to reassign INSIDE one iteration's body
+for (let item of items) {
+  if (item < 0) {
+    item = 0;       // legal because we used let
+  }
+  console.log(item);
+}</code></pre>
+
+    <p><strong>It works on more than just arrays.</strong> <code>for...of</code> can walk through anything that's "iterable" — strings (giving you characters), <code>NodeList</code> from <code>querySelectorAll</code>, <code>Set</code>, <code>Map</code>, and a few others:</p>
+<pre class="language-javascript"><code class="language-javascript">// String — gives one character per iteration
+for (const ch of "hello") {
+  console.log(ch);
+}
+
+// NodeList from the DOM
+const buttons = document.querySelectorAll("button");
+for (const btn of buttons) {
+  btn.disabled = true;
+}
+
+// Set — gives each unique value
+const tags = new Set(["css", "js", "html"]);
+for (const tag of tags) {
+  console.log(tag);
+}</code></pre>
+
+    <p><strong>It does NOT work on plain objects.</strong> Plain objects (<code>{ key: value }</code>) aren't iterable by default. You'd use <code>for...in</code> for that, or <code>Object.keys()</code>/<code>Object.values()</code> with <code>for...of</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Alice", age: 30 };
+
+// This DOESN'T work — TypeError
+for (const item of user) {
+  console.log(item);
+}
+
+// Use Object.keys() to walk an object's keys
+for (const key of Object.keys(user)) {
+  console.log(key, user[key]);
+}</code></pre>
+
+    <p><strong>If you need the index, <code>for...of</code> alone won't give it to you.</strong> Use a regular <code>for</code> loop, or use <code>.entries()</code> with <code>for...of</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">// .entries() gives [index, value] pairs
+const fruits = ["apple", "banana", "cherry"];
+for (const [i, fruit] of fruits.entries()) {
+  console.log(i + ": " + fruit);
+}
+// 0: apple
+// 1: banana
+// 2: cherry</code></pre>
+
+    <p><strong><code>break</code> and <code>continue</code> work the same way</strong> as in any other loop. <code>break</code> exits the loop; <code>continue</code> skips to the next iteration.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-7-5-1-0': `
+    <p>The classic <code>for</code> loop forces you to manage an index variable even when you don't care about positions. You write <code>i = 0</code>, <code>i &lt; array.length</code>, <code>i++</code>, and then <code>array[i]</code> — four pieces of bookkeeping just to get each item.</p>
+    <p><code>for...of</code> strips all of that away. You get straight to the item. The result is shorter, harder to mess up (no off-by-one risk, no forgetting to increment), and reads much closer to how you'd describe the work in plain English.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-7-5-1-1': `
+    <p>For most "do something with each item" cases, <code>for...of</code> is just plainly easier:</p>
+<pre class="language-javascript"><code class="language-javascript">// With a classic for loop
+const orders = [order1, order2, order3];
+for (let i = 0; i < orders.length; i++) {
+  processOrder(orders[i]);
+}
+
+// With for...of — same result, less noise
+for (const order of orders) {
+  processOrder(order);
+}</code></pre>
+
+    <p>Beyond being shorter, <code>for...of</code> removes whole categories of bugs:</p>
+<pre class="language-javascript"><code class="language-javascript">// Possible mistakes with for that don't exist with for...of:
+//   - i <= length instead of i < length (off-by-one)
+//   - forgetting i++ (infinite loop)
+//   - typing array[j] instead of array[i] (using wrong index)
+//   - starting at i = 1 instead of i = 0 (skipping first item)
+
+// for...of has no counter to mess up. The loop just hands you items.</code></pre>
+
+    <p>Reach for <code>for</code> only when you genuinely need the index — for things like building "Item N of M" displays, or removing items mid-iteration in reverse. Otherwise, <code>for...of</code> wins on clarity.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-7-5-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Walking an array of values
+const colors = ["red", "green", "blue"];
+for (const color of colors) {
+  console.log(color);
+}
+
+// Aggregating a total
+let total = 0;
+const prices = [9.99, 14.50, 3.75];
+for (const price of prices) {
+  total = total + price;
+}
+
+// Acting on each DOM element
+const inputs = document.querySelectorAll("input");
+for (const input of inputs) {
+  input.value = "";
+}
+
+// Walking through characters in a string
+for (const ch of "hello") {
+  console.log(ch);
+}
+
+// Searching for a match
+let found = null;
+const users = getUsers();
+for (const user of users) {
+  if (user.email === target) {
+    found = user;
+    break;
+  }
+}
+
+// Filtering into a new array
+const allItems = getItems();
+const expensive = [];
+for (const item of allItems) {
+  if (item.price > 100) {
+    expensive.push(item);
+  }
+}
+
+// Walking unique values in a Set
+const visited = new Set(["/home", "/about", "/contact"]);
+for (const path of visited) {
+  console.log("you visited:", path);
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-7-5-1-3': `
+    <p>Imagine handing someone a stack of cards and saying "look at each one." They go through the stack, picking up the top card, looking at it, setting it aside, and grabbing the next — until the stack is empty. They don't care which number card they're on. They just deal with one card at a time.</p>
+    <p><code>for...of</code> is exactly that. The stack is your collection. The "look at each one" is your loop body. JavaScript hands you each item in turn and runs the body once per item. You don't think about counters or positions — just "what do I do with this one?"</p>
+    <p>It's the loop that gets out of your way. The classic <code>for</code> loop makes you do the math. <code>for...of</code> handles the math and lets you focus on the actual work.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-7-5-1-4': `
+    <p>Picture a buffet line moving past you, one plate at a time. The kitchen pushes a plate forward, you do whatever you do with it — taste, taste-test, stamp it approved — and then the next plate appears. You don't ask "what number plate is this?" You just react to whatever plate is in front of you right now.</p>
+    <p>That's <code>for...of</code>. The collection is the kitchen, your loop body is what you do with each plate, and the loop machinery is the conveyor that keeps pushing the next item forward. When the conveyor is empty, the loop ends.</p>
+    <p>The classic <code>for</code> loop, by contrast, is more like manning the conveyor yourself — checking how many plates are in the kitchen, advancing the belt by hand, asking "is this the right plate to take?" each time. <code>for...of</code> automates all that and lets you focus on the actual work in front of you.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-7-5-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const names = ["Alice", "Bob", "Carol"];
+
+for (const name of names) {
+  console.log("Hello, " + name);
+}
+console.log("done");
+
+// prints:
+//   Hello, Alice
+//   Hello, Bob
+//   Hello, Carol
+//   done
+
+// JavaScript is thinking:
+// 1. Look at the array: ["Alice", "Bob", "Carol"].
+// 2. Take the first item: "Alice". Create a fresh variable "name", assign "Alice".
+// 3. Run body: log "Hello, Alice".
+// 4. Take the next item: "Bob". Create a fresh "name", assign "Bob".
+// 5. Run body: log "Hello, Bob".
+// 6. Take the next item: "Carol". Create a fresh "name", assign "Carol".
+// 7. Run body: log "Hello, Carol".
+// 8. No more items. Exit the loop.
+// 9. Continue with code after. Log "done".
+
+// Notice: there's no counter, no length check, no array[i] indexing.
+// "name" is created fresh each iteration and assigned automatically.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-7-5-2-0': `
+    <p>If a <code>for...of</code> loop is acting strange, the most useful first step is logging the value the loop is handing you each iteration:</p>
+<pre class="language-javascript"><code class="language-javascript">for (const item of items) {
+  console.log("item:", item, "type:", typeof item);
+  // ... rest of body
+}
+
+// the output reveals what each iteration is actually working with.
+// if you expected objects but see strings, the source data is different than you thought.
+// if "item" is undefined, you're iterating over something that doesn't have items.</code></pre>
+
+    <p>If you get a <strong>TypeError</strong> like "items is not iterable," it means whatever you tried to loop over isn't a valid iterable — usually because it's a plain object instead of an array, or because it's <code>null</code>/<code>undefined</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">// TypeError: cars is not iterable
+const cars = { red: 3, blue: 2 };
+for (const car of cars) {     // plain objects aren't iterable
+  console.log(car);
+}
+
+// Fix: convert to a list of keys, values, or entries first
+for (const key of Object.keys(cars)) {
+  console.log(key + ": " + cars[key]);
+}</code></pre>
+
+    <p>If you wanted the index but didn't get it: <code>for...of</code> doesn't give you one. Either switch to a classic <code>for</code> loop, or use <code>.entries()</code> to get <code>[index, value]</code> pairs.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-7-5-2-1': `
+    <p><code>for...of</code> isn't a "shortcut" version of the regular <code>for</code> loop. It's a different tool that handles a different job: walking through iterables. It looks similar because they both start with <code>for</code>, but the inside is completely different.</p>
+    <p>The regular <code>for</code> loop is for counting. <code>for...of</code> is for walking. Once you treat them as separate tools, the choice becomes simple: do I need a number, or do I need each item? If it's the item, use <code>for...of</code>.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-7-5-2-2': `
+    <p><strong>Confusion: thinking it gives you the index</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const fruits = ["apple", "banana", "cherry"];
+
+for (const fruit of fruits) {
+  console.log(fruit);   // "apple", "banana", "cherry" — VALUES, not indexes
+}
+
+// To get indexes, use .entries():
+for (const [i, fruit] of fruits.entries()) {
+  console.log(i, fruit);   // 0 apple, 1 banana, 2 cherry
+}</code></pre>
+
+    <p><strong>Confusion: <code>for...of</code> vs <code>for...in</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">// for...of — gives you VALUES, works on iterables (arrays, strings, etc.)
+const fruits = ["apple", "banana"];
+for (const fruit of fruits) {
+  console.log(fruit);   // "apple", "banana"
+}
+
+// for...in — gives you KEYS/INDEXES, works on object properties
+for (const key in fruits) {
+  console.log(key);     // "0", "1" — string indexes
+}
+
+// for...in is for object keys. for...of is for values from iterables.
+// Mixing them up is a very common bug — they look similar but do different things.</code></pre>
+
+    <p><strong>Confusion: trying to use it on a plain object</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Alice", age: 30 };
+
+// TypeError — plain objects aren't iterable
+for (const item of user) {
+  // ...
+}
+
+// Fix: use Object.entries() (keys+values), keys(), or values()
+for (const [key, value] of Object.entries(user)) {
+  console.log(key + " = " + value);
+}</code></pre>
+
+    <p><strong>Confusion: thinking you can mutate the array safely while iterating</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const items = [1, 2, 3, 4, 5];
+
+for (const item of items) {
+  if (item > 2) {
+    items.push(item * 10);   // BAD — array grows during iteration
+  }
+}
+// behavior is unpredictable; can result in extra iterations or skipped items.
+
+// Fix: build a new array, or collect changes and apply them after
+const additions = [];
+for (const item of items) {
+  if (item > 2) {
+    additions.push(item * 10);
+  }
+}
+items.push(...additions);</code></pre>
+
+    <p><strong>Confusion: <code>const</code> seems wrong because the value "changes"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (const item of items) {
+  // "const item" — but item is different on each iteration!
+}
+
+// it works because each iteration creates a FRESH variable.
+// "item" isn't being reassigned across rounds — it's being newly declared each round.
+// const just means "you can't reassign it WITHIN this iteration."</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-7-5-2-3': `
+<pre class="language-javascript"><code class="language-javascript">for (const i of items) {
+  console.log(items[i]);
+}
+// using "of" but treating "i" as an index — but "i" is the VALUE
+// fix: just use the value directly
+for (const item of items) {
+  console.log(item);
+}
+// or use a regular for loop if you need the index</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Alice", age: 30 };
+for (const prop of user) {
+  console.log(prop);
+}
+// TypeError — plain objects aren't iterable
+// fix: convert to entries, keys, or values first
+for (const [key, value] of Object.entries(user)) {
+  console.log(key, value);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (const item in items) {
+  console.log(item);
+}
+// "in" instead of "of" — gives you indexes (as strings) for arrays, not values
+// fix: use "of" for values
+for (const item of items) {
+  console.log(item);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (const item of items)
+  if (item.isReady) {
+    process(item);
+  }
+  log("done");
+// log("done") looks like part of the loop, but isn't — runs ONCE after the loop
+// fix: always wrap loop bodies in braces
+for (const item of items) {
+  if (item.isReady) {
+    process(item);
+  }
+}
+log("done");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">let items;
+for (const item of items) {
+  console.log(item);
+}
+// TypeError — items is undefined
+// fix: make sure the collection exists, or guard for it
+if (Array.isArray(items)) {
+  for (const item of items) {
+    console.log(item);
+  }
+}</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-7-5-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Walking an array
+const fruits = ["apple", "banana", "cherry"];
+for (const fruit of fruits) {
+  console.log(fruit);
+}
+
+// Summing values
+let total = 0;
+const prices = [9.99, 14.50, 3.75];
+for (const price of prices) {
+  total = total + price;
+}
+console.log("total:", total);
+
+// Walking characters in a string
+let vowels = 0;
+for (const ch of "education") {
+  if ("aeiou".includes(ch)) {
+    vowels = vowels + 1;
+  }
+}
+console.log("vowel count:", vowels);   // 5
+
+// Building a new array
+const numbers = [1, 2, 3, 4];
+const doubled = [];
+for (const n of numbers) {
+  doubled.push(n * 2);
+}
+console.log(doubled);   // [2, 4, 6, 8]
+
+// Searching with break
+const users = [{ id: 1 }, { id: 2 }, { id: 3 }];
+let found = null;
+for (const user of users) {
+  if (user.id === 2) {
+    found = user;
+    break;
+  }
+}
+console.log(found);   // { id: 2 }
+
+// Walking a Set of unique values
+const tags = new Set(["js", "html", "css", "js"]);   // duplicate "js" auto-removed
+for (const tag of tags) {
+  console.log(tag);
+}
+// js, html, css
+
+// Using .entries() to get index + value
+const colors = ["red", "green", "blue"];
+for (const [i, color] of colors.entries()) {
+  console.log(i + ": " + color);
+}</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-7-5-3-1': `
+    <p><strong>Example: rendering a list of products</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function renderProducts(products) {
+  const container = document.querySelector(".products");
+  container.innerHTML = "";
+
+  for (const product of products) {
+    const card = document.createElement("div");
+    card.className = "product-card";
+    card.textContent = product.name + " - $" + product.price;
+    container.appendChild(card);
+  }
+}</code></pre>
+
+    <p><strong>Example: validating every input on a form</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function findFirstError(form) {
+  const inputs = form.querySelectorAll("input[required]");
+
+  for (const input of inputs) {
+    if (input.value === "") {
+      return input.name + " is required";
+    }
+  }
+  return null;
+}</code></pre>
+
+    <p><strong>Example: counting words from a list of comments</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function totalWordCount(comments) {
+  let total = 0;
+  for (const comment of comments) {
+    const words = comment.text.split(" ");
+    total = total + words.length;
+  }
+  return total;
+}</code></pre>
+
+    <p><strong>Example: applying dark mode to every card on the page</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function applyDarkMode() {
+  const cards = document.querySelectorAll(".card");
+  for (const card of cards) {
+    card.classList.add("dark");
+  }
+}
+// querySelectorAll returns a NodeList, which is iterable — for...of works directly.</code></pre>
+
+    <p><strong>Example: building a comma-separated list of names</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function listNames(users) {
+  const names = [];
+  for (const user of users) {
+    names.push(user.name);
+  }
+  return names.join(", ");
+}
+console.log(listNames([{ name: "Alice" }, { name: "Bob" }]));   // "Alice, Bob"</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-7-5-3-2': `
+    <ul>
+      <li><strong><code>for</code> loop</strong> → use this when you need the index; <code>for...of</code> when you don't</li>
+      <li><strong><code>for...in</code></strong> → walks an object's keys; commonly confused with <code>for...of</code></li>
+      <li><strong>Iterables</strong> → arrays, strings, NodeLists, Sets, Maps — anything <code>for...of</code> can walk</li>
+      <li><strong>Plain objects</strong> → not iterable directly; need <code>Object.keys()</code>, <code>Object.values()</code>, or <code>Object.entries()</code></li>
+      <li><strong><code>.entries()</code></strong> → gives <code>[index, value]</code> pairs when you need both</li>
+      <li><strong><code>break</code> and <code>continue</code></strong> → work the same as in any loop</li>
+      <li><strong>Destructuring in loops</strong> → <code>for (const [a, b] of pairs)</code> for arrays of pairs</li>
+      <li><strong>NodeList iteration</strong> → <code>querySelectorAll</code> returns a NodeList; <code>for...of</code> handles it cleanly</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-7-5-3-3': `
+    <ul>
+      <li><code>for</code> loop</li>
+      <li><code>for...in</code> loop</li>
+      <li>Iterables and iterators</li>
+      <li><code>Object.keys()</code>, <code>Object.values()</code>, <code>Object.entries()</code></li>
+      <li>Array <code>.entries()</code></li>
+      <li>Destructuring assignment</li>
+      <li>NodeList iteration</li>
+      <li>Sets and Maps</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.8.7 Loops → nested loops
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-7-6-0-0': `
+    <p>A nested loop is a loop placed inside the body of another loop. The outer loop runs once per round, and on each of those rounds, the inner loop runs all the way through from start to finish.</p>
+    <p>It's how you handle work that has two layers — like checking every cell in a grid, comparing every pair of items, or rendering rows of columns.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-7-6-0-1': `
+<pre class="language-javascript"><code class="language-javascript">for (let i = 1; i <= 3; i++) {
+  for (let j = 1; j <= 2; j++) {
+    console.log("i=" + i + ", j=" + j);
+  }
+}
+
+// prints:
+//   i=1, j=1
+//   i=1, j=2
+//   i=2, j=1
+//   i=2, j=2
+//   i=3, j=1
+//   i=3, j=2
+
+// the outer loop runs 3 times.
+// for each outer round, the inner loop runs 2 times.
+// total iterations of the body: 3 × 2 = 6.</code></pre>
+    <p>Notice the pattern: <code>i</code> stays the same while <code>j</code> goes through all its values, then <code>i</code> moves on and <code>j</code> resets to start over.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-7-6-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const rows = ["row1", "row2"];
+const cols = ["A", "B", "C"];
+
+for (const row of rows) {              // OUTER loop
+  for (const col of cols) {            // INNER loop
+    console.log(row + "-" + col);      // body of the inner loop
+  }
+}
+
+// prints:
+//   row1-A
+//   row1-B
+//   row1-C
+//   row2-A
+//   row2-B
+//   row2-C
+
+// outer loop  → picks a row, holds it
+// inner loop  → walks through every column for that row
+// body        → runs once per (row, column) combination
+
+// total runs of the body = (number of rows) × (number of columns)</code></pre>
+    <p>Each iteration of the outer loop triggers a complete pass of the inner loop. The inner loop runs in full — from start to finish — every single time the outer loop comes around.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-7-6-0-3': `
+    <p><strong>Each loop needs its own counter or item variable.</strong> The convention is <code>i</code> for the outer loop and <code>j</code> for the inner. If you nest a third level, <code>k</code> comes next:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 3; j++) {
+    for (let k = 0; k < 3; k++) {
+      // 3 × 3 × 3 = 27 total iterations of this body
+    }
+  }
+}</code></pre>
+
+    <p><strong>The inner loop's counter resets every time the outer loop iterates.</strong> Each outer round starts a fresh inner loop:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 2; i++) {
+  for (let j = 0; j < 3; j++) {
+    console.log(i, j);
+  }
+}
+// prints:
+//   0 0
+//   0 1
+//   0 2  ← inner loop finished (j went 0→1→2)
+//   1 0  ← outer advanced, inner reset to j=0 again
+//   1 1
+//   1 2</code></pre>
+
+    <p><strong>You can mix loop types when nesting.</strong> A <code>for</code> outside, a <code>for...of</code> inside, a <code>while</code> nested in a <code>for</code> — any combination works:</p>
+<pre class="language-javascript"><code class="language-javascript">// for...of outside, for inside
+for (const team of teams) {
+  for (let i = 0; i < team.players.length; i++) {
+    console.log(team.name + " - player " + (i + 1));
+  }
+}</code></pre>
+
+    <p><strong><code>break</code> only exits the loop it's in.</strong> A <code>break</code> in the inner loop stops the inner loop — the outer loop keeps going. Same for <code>continue</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 3; j++) {
+    if (j === 2) {
+      break;     // exits the INNER loop only
+    }
+    console.log(i, j);
+  }
+}
+// prints:
+//   0 0
+//   0 1   ← inner broke when j=2
+//   1 0
+//   1 1   ← inner broke again
+//   2 0
+//   2 1   ← inner broke again
+
+// outer loop ran all 3 times. break only affected the inner.</code></pre>
+
+    <p><strong>Performance note:</strong> nested loops multiply work. Two loops over 1,000 items each is a million iterations. Three nested loops over 100 items each is also a million. This isn't always a problem, but it's worth being aware of.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-7-6-1-0': `
+    <p>Some kinds of work have two (or more) dimensions. A grid has rows and columns. Comparing items in pairs needs both a "first item" and a "second item." Building a multiplication table needs both a row number and a column number. None of these can be expressed with a single loop.</p>
+    <p>Nested loops handle the pairing automatically. The outer loop fixes one variable; the inner loop walks through every value of the other. The body runs once for every combination, which is exactly what two-dimensional work needs.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-7-6-1-1': `
+    <p>Anytime your work involves "for every X, also do something with every Y," nested loops are the natural fit:</p>
+<pre class="language-javascript"><code class="language-javascript">// For every player, calculate score against every opponent
+for (const player of players) {
+  for (const opponent of opponents) {
+    if (player.id !== opponent.id) {
+      const result = playMatch(player, opponent);
+      recordResult(player, opponent, result);
+    }
+  }
+}
+
+// For every row in a grid, render every cell
+for (let row = 0; row < grid.length; row++) {
+  for (let col = 0; col < grid[row].length; col++) {
+    renderCell(grid[row][col], row, col);
+  }
+}
+
+// For every category, walk through every item in that category
+for (const category of categories) {
+  for (const item of category.items) {
+    indexItem(category.name, item);
+  }
+}</code></pre>
+
+    <p>The pattern is always the same: the outer loop holds one piece steady, and the inner loop walks through everything that pairs with it. Once you recognize that pattern, nesting becomes the obvious tool.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-7-6-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Grids and 2D arrays
+const board = [
+  ["X", "O", "X"],
+  [" ", "X", "O"],
+  ["O", " ", "X"]
+];
+for (let row = 0; row < board.length; row++) {
+  for (let col = 0; col < board[row].length; col++) {
+    console.log(row, col, board[row][col]);
+  }
+}
+
+// All pairs of items
+for (let i = 0; i < items.length; i++) {
+  for (let j = i + 1; j < items.length; j++) {
+    comparePair(items[i], items[j]);
+  }
+}
+
+// Multiplication table
+for (let row = 1; row <= 5; row++) {
+  for (let col = 1; col <= 5; col++) {
+    process.stdout.write((row * col) + "\\t");
+  }
+  console.log("");   // newline at end of each row
+}
+
+// Group → items inside group
+for (const team of teams) {
+  for (const player of team.players) {
+    notify(player, "Your team plays today");
+  }
+}
+
+// Building HTML rows of cells
+for (const row of dataRows) {
+  for (const cell of row.cells) {
+    container.appendChild(makeCellElement(cell));
+  }
+}
+
+// Counting matches across two lists
+let matchCount = 0;
+for (const a of listA) {
+  for (const b of listB) {
+    if (a === b) {
+      matchCount = matchCount + 1;
+    }
+  }
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-7-6-1-3': `
+    <p>Nested loops are the same idea as taking attendance in a school. The principal goes from classroom to classroom (the outer loop). In each classroom, the teacher goes from student to student calling each name (the inner loop). The principal doesn't move to the next classroom until the teacher has finished calling all the students in the current one.</p>
+    <p>That's the rhythm of a nested loop. The outer loop holds steady on one item; the inner loop completes its full pass; then the outer moves on and the inner starts over from the top. Every student in every classroom gets called, by every combination of (classroom, student).</p>
+    <p>If there are 4 classrooms with 25 students each, you call 100 names total. That multiplication — outer count times inner count — is the cost of nesting. It's how you cover all the combinations, but it's also why deep nesting can get expensive fast.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-7-6-1-4': `
+    <p>Picture an old analog clock with two hands. The minute hand and hour hand. The hour hand moves slowly — it advances once for every full sweep of the minute hand. The minute hand moves fast — it makes 60 ticks while the hour hand sits still on one number.</p>
+    <p>That's exactly how nested loops work. The outer loop is the hour hand, ticking forward slowly. The inner loop is the minute hand, racing through all its values for each single position of the hour hand. By the time the hour hand has gone all the way around (12 ticks), the minute hand has ticked 720 times — 12 times 60.</p>
+    <p>Whenever you're nesting loops, you're choosing which variable is the slow one and which is the fast one. The outer loop is the slow context; the inner loop does all its work for each step of that context. Most loop bugs in nested code come from getting these reversed or forgetting that the inner loop runs from scratch each round.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-7-6-1-5': `
+<pre class="language-javascript"><code class="language-javascript">for (let i = 1; i <= 2; i++) {
+  for (let j = 1; j <= 3; j++) {
+    console.log("i=" + i + " j=" + j);
+  }
+}
+
+// prints:
+//   i=1 j=1
+//   i=1 j=2
+//   i=1 j=3
+//   i=2 j=1
+//   i=2 j=2
+//   i=2 j=3
+
+// JavaScript is thinking:
+// 1. Start outer loop. i = 1.
+// 2. Check outer condition: 1 <= 2 → true. Enter outer body.
+// 3.   Start inner loop. j = 1.
+// 4.   Check inner: 1 <= 3 → true. Enter inner body. Log "i=1 j=1".
+// 5.   Inner update: j++. j = 2.
+// 6.   Check inner: 2 <= 3 → true. Log "i=1 j=2".
+// 7.   Inner update: j++. j = 3.
+// 8.   Check inner: 3 <= 3 → true. Log "i=1 j=3".
+// 9.   Inner update: j++. j = 4.
+// 10.  Check inner: 4 <= 3 → false. Exit INNER loop.
+// 11. End of outer body. Outer update: i++. i = 2.
+// 12. Check outer condition: 2 <= 2 → true. Enter outer body.
+// 13.  Start inner loop AGAIN from scratch. j = 1.
+// 14.  Inner runs all 3 iterations again. Logs "i=2 j=1", "i=2 j=2", "i=2 j=3".
+// 15. End of outer body. i++. i = 3.
+// 16. Check outer: 3 <= 2 → false. Exit outer loop.
+
+// the inner loop ran TWICE (once per outer round), 3 iterations each time.
+// total body executions: 2 × 3 = 6.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-7-6-2-0': `
+    <p>If a nested loop isn't producing what you expect, log both counters at the start of each iteration so you can see exactly which combinations are running:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 3; j++) {
+    console.log("OUTER i=" + i + " INNER j=" + j);
+    // ... rest of body
+  }
+}
+
+// the output reveals the pattern:
+//   OUTER i=0 INNER j=0
+//   OUTER i=0 INNER j=1
+//   OUTER i=0 INNER j=2
+//   OUTER i=1 INNER j=0
+//   ...
+
+// from this you can tell:
+//   - is the inner loop completing fully each time? (should see 0,1,2 inside each i)
+//   - is the outer loop running too many or too few times? (count distinct i values)
+//   - are the right combinations happening? (specific (i,j) you expected)</code></pre>
+
+    <p>Common signal: the inner loop only runs once because it forgot to reset, or runs forever because the inner condition depends on a variable from the outer loop. Logging both counters reveals this in seconds.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-7-6-2-1': `
+    <p>A nested loop isn't a special construct. It's just a regular loop that happens to live inside another loop's body. JavaScript treats the inner loop like any other statement in the outer body — it runs the entire inner loop to completion before continuing past it.</p>
+    <p>Once you see that, you can nest as deep as the work needs. Two-dimensional grid? Two loops. Three-dimensional cube? Three loops. The structure follows the shape of the data, not any special rules. The "nesting" is just stacking — the same way you might nest <code>if</code> statements or function calls.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-7-6-2-2': `
+    <p><strong>Confusion: thinking the inner loop runs once across all outer iterations</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 3; j++) {
+    console.log(i, j);
+  }
+}
+
+// some people imagine: i goes 0→1→2, then j goes 0→1→2 (6 prints total)
+// what actually happens: for EACH i, j goes 0→1→2 (9 prints total)
+// the inner loop restarts from the top every outer iteration.</code></pre>
+
+    <p><strong>Confusion: reusing the same counter variable</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// BUG — both loops use i
+for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 3; i++) {     // shadows the outer i
+    console.log(i);
+  }
+}
+
+// Or worse — without let, you really clobber the outer counter
+for (i = 0; i < 3; i++) {
+  for (i = 0; i < 3; i++) {
+    // the outer i and inner i are the SAME variable
+    // the outer loop only runs once because i is at 3 when inner finishes
+  }
+}
+
+// Fix: use different variable names (i, j, k)
+for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 3; j++) {
+    console.log(i, j);
+  }
+}</code></pre>
+
+    <p><strong>Confusion: thinking <code>break</code> exits all the loops</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 5; i++) {
+  for (let j = 0; j < 5; j++) {
+    if (j === 2) {
+      break;     // exits the INNER loop only
+    }
+    console.log(i, j);
+  }
+  // execution continues HERE after inner break, then outer keeps going
+}
+
+// to exit BOTH loops, use a flag or an early return:
+let done = false;
+for (let i = 0; i < 5 && !done; i++) {
+  for (let j = 0; j < 5; j++) {
+    if (someCondition) {
+      done = true;
+      break;
+    }
+  }
+}</code></pre>
+
+    <p><strong>Confusion: nesting too deep when one loop would work</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Sometimes people nest unnecessarily
+for (const user of users) {
+  for (const x of [user]) {     // pointless — only one item
+    console.log(x.name);
+  }
+}
+
+// Or to "find" something — better with break
+for (const user of users) {
+  for (const otherUser of users) {
+    if (user.id === target) {
+      // ... but this doesn't need nesting — only one loop is doing useful work
+    }
+  }
+}
+
+// reach for nested loops only when each level is doing real iteration work.</code></pre>
+
+    <p><strong>Confusion: the outer counter being modified by the inner loop</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 5; i++) {
+  for (let j = 0; j < 5; j++) {
+    i = i + 1;     // BUG — accidentally modifies outer counter
+  }
+}
+// the outer loop's i is the same variable being touched by the inner.
+// usually a typo (meant j, wrote i), but very confusing to debug.
+// fix: be careful which counter you're updating.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-7-6-2-3': `
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < rows.length; i++) {
+  for (let i = 0; i < cols.length; i++) {     // both use i
+    console.log(rows[i], cols[i]);             // wrong — i is now the inner counter
+  }
+}
+// fix: use different names for nested counters
+for (let i = 0; i < rows.length; i++) {
+  for (let j = 0; j < cols.length; j++) {
+    console.log(rows[i], cols[j]);
+  }
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (const row of grid) {
+  for (const cell of row) {
+    if (cell === target) {
+      break;     // exits inner only — outer keeps searching wastefully
+    }
+  }
+}
+// fix: use a flag or wrap in a function and return
+function findInGrid(grid, target) {
+  for (const row of grid) {
+    for (const cell of row) {
+      if (cell === target) {
+        return cell;     // exits both loops at once
+      }
+    }
+  }
+  return null;
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 1000; i++) {
+  for (let j = 0; j < 1000; j++) {
+    expensiveOperation(i, j);    // 1,000,000 calls
+  }
+}
+// nested loops multiply work — this is a million expensive operations
+// fix: think about whether the work needs to be quadratic, or if you can
+// precompute, cache, or restructure to avoid the nested cost</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  for (let j = 0; j < items.length; j++) {
+    if (items[i] === items[j] && i !== j) {
+      console.log("duplicate:", items[i]);
+    }
+  }
+}
+// reports each duplicate pair TWICE (once as (i,j), once as (j,i))
+// fix: start inner at i+1 to only check each pair once
+for (let i = 0; i < items.length; i++) {
+  for (let j = i + 1; j < items.length; j++) {
+    if (items[i] === items[j]) {
+      console.log("duplicate:", items[i]);
+    }
+  }
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < rows.length; i++)
+  for (let j = 0; j < cols.length; j++)
+    console.log(i, j);
+// works but invites bugs — adding a line later breaks the structure
+// fix: always use braces, especially with nesting
+for (let i = 0; i < rows.length; i++) {
+  for (let j = 0; j < cols.length; j++) {
+    console.log(i, j);
+  }
+}</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-7-6-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Walking a 2D grid
+const grid = [
+  [1, 2, 3],
+  [4, 5, 6]
+];
+for (let row = 0; row < grid.length; row++) {
+  for (let col = 0; col < grid[row].length; col++) {
+    console.log("(" + row + "," + col + ") = " + grid[row][col]);
+  }
+}
+
+// Multiplication table
+for (let r = 1; r <= 3; r++) {
+  let line = "";
+  for (let c = 1; c <= 3; c++) {
+    line = line + (r * c) + "\\t";
+  }
+  console.log(line);
+}
+// 1  2  3
+// 2  4  6
+// 3  6  9
+
+// All unique pairs from a list
+const items = ["a", "b", "c"];
+for (let i = 0; i < items.length; i++) {
+  for (let j = i + 1; j < items.length; j++) {
+    console.log(items[i] + "+" + items[j]);
+  }
+}
+// a+b
+// a+c
+// b+c
+
+// Group → items inside group
+const teams = [
+  { name: "Alpha", players: ["A1", "A2"] },
+  { name: "Beta", players: ["B1", "B2", "B3"] }
+];
+for (const team of teams) {
+  for (const player of team.players) {
+    console.log(team.name + ": " + player);
+  }
+}
+
+// Counting matches across two lists
+const a = [1, 2, 3, 4];
+const b = [3, 4, 5, 6];
+let matches = 0;
+for (const x of a) {
+  for (const y of b) {
+    if (x === y) {
+      matches = matches + 1;
+    }
+  }
+}
+console.log("matches:", matches);   // 2
+
+// Building a draw of brackets
+for (const home of teams) {
+  for (const away of teams) {
+    if (home.name !== away.name) {
+      console.log(home.name + " vs " + away.name);
+    }
+  }
+}</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-7-6-3-1': `
+    <p><strong>Example: rendering a calendar grid</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function renderMonth(weeksInMonth, daysPerWeek) {
+  const calendar = document.querySelector(".calendar");
+  for (let week = 0; week < weeksInMonth; week++) {
+    const weekRow = document.createElement("div");
+    weekRow.className = "week";
+    for (let day = 0; day < daysPerWeek; day++) {
+      const dayCell = document.createElement("div");
+      dayCell.className = "day";
+      dayCell.textContent = "W" + week + "D" + day;
+      weekRow.appendChild(dayCell);
+    }
+    calendar.appendChild(weekRow);
+  }
+}
+// outer loop = rows (weeks), inner loop = cells in each row (days).</code></pre>
+
+    <p><strong>Example: showing every comment under every post</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function renderFeed(posts) {
+  const feed = document.querySelector(".feed");
+  for (const post of posts) {
+    const postEl = makePostElement(post);
+    feed.appendChild(postEl);
+
+    for (const comment of post.comments) {
+      const commentEl = makeCommentElement(comment);
+      postEl.appendChild(commentEl);
+    }
+  }
+}
+// outer = posts, inner = comments inside each post.</code></pre>
+
+    <p><strong>Example: comparing every form field for matching values</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function findDuplicateFields(form) {
+  const inputs = form.querySelectorAll("input[type=text]");
+  const duplicates = [];
+
+  for (let i = 0; i < inputs.length; i++) {
+    for (let j = i + 1; j < inputs.length; j++) {
+      if (inputs[i].value && inputs[i].value === inputs[j].value) {
+        duplicates.push([inputs[i].name, inputs[j].name]);
+      }
+    }
+  }
+  return duplicates;
+}
+// j starts at i+1 so we don't compare a field to itself or count pairs twice.</code></pre>
+
+    <p><strong>Example: applying a class to every cell of a tic-tac-toe board</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function highlightWinningRow(board, winRow) {
+  for (let row = 0; row < board.length; row++) {
+    for (let col = 0; col < board[row].length; col++) {
+      const cellEl = document.querySelector(
+        "[data-row='" + row + "'][data-col='" + col + "']"
+      );
+      if (row === winRow) {
+        cellEl.classList.add("winner");
+      } else {
+        cellEl.classList.remove("winner");
+      }
+    }
+  }
+}</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-7-6-3-2': `
+    <ul>
+      <li><strong><code>for</code> and <code>for...of</code> loops</strong> → either type can be the outer or inner loop</li>
+      <li><strong>2D arrays / grids</strong> → the most common reason to nest loops</li>
+      <li><strong>Loop counter variables</strong> → conventionally <code>i</code> outside, <code>j</code> inside, <code>k</code> for triple-nested</li>
+      <li><strong><code>break</code> and <code>continue</code></strong> → only affect the loop they're directly inside</li>
+      <li><strong>Performance and complexity</strong> → nesting multiplies work; two loops over N items = N² operations</li>
+      <li><strong>Pair-wise comparison pattern</strong> → starting inner at <code>i+1</code> avoids counting pairs twice</li>
+      <li><strong>Early return from a function</strong> → the cleanest way to "break out of all loops"</li>
+      <li><strong>Common mistakes</strong> → reusing counter names, miscounting pairs, deep unnecessary nesting</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-7-6-3-3': `
+    <ul>
+      <li><code>for</code> loop</li>
+      <li><code>for...of</code> loop</li>
+      <li>2D arrays</li>
+      <li>Loop counter conventions (<code>i</code>, <code>j</code>, <code>k</code>)</li>
+      <li><code>break</code> and <code>continue</code></li>
+      <li>Algorithm complexity (Big O)</li>
+      <li>Pair iteration patterns</li>
+      <li>Returning from inside a loop</li>
     </ul>
   `,
 
