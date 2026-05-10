@@ -17836,5 +17836,4902 @@ console.log(total);   // 15</code></pre>
       <li>Pre vs post increment (<code>++i</code> vs <code>i++</code>)</li>
     </ul>
   `,
+  /* ========================================================= 
+   Sub-lesson: 3.8.15 Loops → indexes starting at 0
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-7-14-0-0': `
+    <p>An <strong>index</strong> is the number you use to point at a specific item in an array. The first item's index is <code>0</code>, not <code>1</code>. The second item's index is <code>1</code>. The third is <code>2</code>. And so on — every item is one less than the human-counting position you'd expect.</p>
+    <p>This is called <strong>zero-based indexing</strong>, and it's one of the most important rules in JavaScript loops. Almost every off-by-one bug in a loop comes back to forgetting that arrays start counting at zero, while humans start counting at one.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-7-14-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const colors = ["red", "green", "blue"];
+
+console.log(colors[0]);   // "red"     — the FIRST item
+console.log(colors[1]);   // "green"   — the SECOND item
+console.log(colors[2]);   // "blue"    — the THIRD item
+console.log(colors[3]);   // undefined — there is no fourth item
+
+// the index is what goes inside the square brackets.
+// position 1 (first) → index 0.
+// position 2 (second) → index 1.
+// position N → index N - 1.</code></pre>
+    <p>Inside a loop, <code>i</code> usually starts at <code>0</code> for exactly this reason — to line up with the array's first item. The loop counter and the array index speak the same numbering system.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-7-14-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const fruits = ["apple", "banana", "cherry", "date"];
+
+// position vs index:
+//
+//   "apple"    1st item    index 0
+//   "banana"   2nd item    index 1
+//   "cherry"   3rd item    index 2
+//   "date"     4th item    index 3
+//
+// length is 4, but the LAST valid index is 3 (length - 1).
+// length always equals "one more than the highest index."
+
+console.log(fruits.length);              // 4
+console.log(fruits[fruits.length - 1]);  // "date" — the last item</code></pre>
+    <p>The relationship between length and index is the part that trips people up: an array of length <code>N</code> has indexes from <code>0</code> to <code>N - 1</code>. Length tells you how many items, but the last <em>position</em> is one less than that.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-7-14-0-3': `
+    <p><strong>The first item is always at index <code>0</code>, never index <code>1</code>.</strong> This is the rule that loops are built around:</p>
+<pre class="language-javascript"><code class="language-javascript">const cities = ["Tokyo", "Paris", "Cairo"];
+
+// Wrong — skips the first item
+for (let i = 1; i < cities.length; i++) {
+  console.log(cities[i]);   // "Paris", "Cairo" — Tokyo missing
+}
+
+// Right — starts at 0
+for (let i = 0; i < cities.length; i++) {
+  console.log(cities[i]);   // "Tokyo", "Paris", "Cairo"
+}</code></pre>
+
+    <p><strong>The last index is always <code>length - 1</code>, never <code>length</code>.</strong> Reading at <code>length</code> goes one past the end and gives <code>undefined</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">const cities = ["Tokyo", "Paris", "Cairo"];   // length 3
+
+console.log(cities[3]);                  // undefined — past the end
+console.log(cities[cities.length]);      // undefined — same thing
+console.log(cities[cities.length - 1]);  // "Cairo" — the actual last item</code></pre>
+
+    <p><strong>Negative indexes do NOT work like in some other languages.</strong> In Python or Ruby, <code>arr[-1]</code> means "the last item." In JavaScript, it's just <code>undefined</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">const cities = ["Tokyo", "Paris", "Cairo"];
+
+console.log(cities[-1]);   // undefined — NOT the last item
+console.log(cities[-2]);   // undefined
+
+// to get the last item in JavaScript, use length - 1:
+console.log(cities[cities.length - 1]);   // "Cairo"
+
+// or, in modern JavaScript, .at() supports negatives:
+console.log(cities.at(-1));   // "Cairo"
+console.log(cities.at(-2));   // "Paris"</code></pre>
+
+    <p><strong>Indexes are numbers, not strings.</strong> JavaScript will coerce a string index, but writing it as a number is the convention:</p>
+<pre class="language-javascript"><code class="language-javascript">const cities = ["Tokyo", "Paris"];
+
+console.log(cities[0]);     // "Tokyo" — the standard form
+console.log(cities["0"]);   // "Tokyo" — also works, but unusual
+console.log(cities[0.0]);   // "Tokyo" — 0.0 is just 0
+
+// always use plain whole numbers for array indexes.
+// floats like 0.5 don't work as array positions:
+console.log(cities[0.5]);   // undefined</code></pre>
+
+    <p><strong>Strings are also zero-indexed</strong>, so the same rule applies when looping through characters:</p>
+<pre class="language-javascript"><code class="language-javascript">const word = "hello";
+
+console.log(word[0]);   // "h"
+console.log(word[1]);   // "e"
+console.log(word[4]);   // "o" — the last character
+console.log(word[5]);   // undefined — past the end
+
+console.log(word.length);            // 5
+console.log(word[word.length - 1]);  // "o" — same length-1 trick works</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-7-14-1-0': `
+    <p>Zero-based indexing is what makes the most common loop pattern — <code>for (let i = 0; i &lt; arr.length; i++)</code> — work cleanly. The starting value matches the first item's position. The stop condition (<code>&lt; length</code>) matches the rule that the last valid index is <code>length - 1</code>. The whole loop is built around this numbering.</p>
+    <p>If indexes started at 1 instead, every loop would need awkward extra arithmetic — adjusting the start, adjusting the stop, adjusting the access. Zero-based indexing is what lets the natural counter <code>i</code> double as both "iteration number" and "array position" without any conversion.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-7-14-1-1': `
+    <p>Almost every loop pattern depends on this convention:</p>
+<pre class="language-javascript"><code class="language-javascript">// First item — index 0
+console.log(items[0]);
+
+// Last item — index length - 1
+console.log(items[items.length - 1]);
+
+// Walk every item
+for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+}
+
+// Walk every other item
+for (let i = 0; i < items.length; i = i + 2) {
+  console.log(items[i]);
+}
+
+// Walk in reverse
+for (let i = items.length - 1; i >= 0; i--) {
+  console.log(items[i]);
+}
+
+// Convert "human position" to "array index"
+const position = 3;       // user typed "3rd item"
+const item = items[position - 1];   // index is one less than position</code></pre>
+
+    <p>That last conversion — <code>position - 1</code> when going from human counting to array indexing — comes up constantly. Page numbers, table rows, ranking lists. The user thinks "row 5"; the array thinks "index 4."</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-7-14-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Reading a specific item by index
+const winner = leaderboard[0];           // 1st place
+const runnerUp = leaderboard[1];         // 2nd place
+const lastPlace = leaderboard[leaderboard.length - 1];
+
+// Walking the full array (most common use of indexes)
+for (let i = 0; i < users.length; i++) {
+  greet(users[i]);
+}
+
+// Skipping a header row
+for (let i = 1; i < rows.length; i++) {
+  parseRow(rows[i]);
+}
+
+// Pairing each item with its 1-based number for display
+for (let i = 0; i < entries.length; i++) {
+  console.log((i + 1) + ". " + entries[i]);   // "1. ...", "2. ..."
+}
+
+// Comparing each item to the one before it
+for (let i = 1; i < prices.length; i++) {
+  const change = prices[i] - prices[i - 1];
+  console.log("change on day " + i + ": " + change);
+}
+
+// Storing index alongside data for later lookup
+const indexed = [];
+for (let i = 0; i < items.length; i++) {
+  indexed.push({ index: i, value: items[i] });
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-7-14-1-3': `
+    <p>An index is a "how far from the start" number. The first item is zero steps from the start (you're already there). The second item is one step away. The third is two steps. So the index is just the number of steps you'd have to take to reach that item.</p>
+    <p>Humans count by saying "the first," "the second," "the third" — starting at 1 because we count <em>things</em>. Computers index by saying "0 from the start," "1 from the start," "2 from the start" — starting at 0 because they measure <em>distance</em>. Both are right; they're just answering slightly different questions.</p>
+    <p>The bug-prone moment is the translation between the two. When a user says "show me the 3rd item," your code needs to read index <code>2</code>, not index <code>3</code>. When you find a match at index <code>2</code> and want to tell the user, you'd say "match found at position 3," not "position 2." Forgetting to translate is where off-by-one errors come from.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-7-14-1-4': `
+    <p>Think of an array as a row of houses on a street, all on the same side. The first house isn't at "milepost 1" — it's at "milepost 0," because it sits right at the corner where the street starts. The second house is one block down, at milepost 1. The third is two blocks down, at milepost 2.</p>
+    <p>The "house number" is the index. It tells you how far along the street that house sits, measured from the very beginning. The first house is at distance zero because you don't have to walk anywhere to reach it.</p>
+    <p>Length, in this metaphor, is "how long the street is." A street with 4 houses on it has length 4, but the last house is at milepost 3 — because you only walked past 3 houses to get to the last one. The street is longer than the highest milepost by exactly one.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-7-14-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const animals = ["dog", "cat", "fox"];
+
+for (let i = 0; i < animals.length; i++) {
+  console.log("position " + (i + 1) + " is " + animals[i]);
+}
+
+// prints:
+//   position 1 is dog
+//   position 2 is cat
+//   position 3 is fox
+
+// JavaScript is thinking:
+// 1. SETUP: i = 0. Counter starts at 0 (matches the first INDEX).
+// 2. CHECK: 0 < 3 → true.
+// 3. BODY: animals[0] is "dog". (i + 1) is 1. Log "position 1 is dog".
+// 4. UPDATE: i++. i is now 1.
+// 5. CHECK: 1 < 3 → true.
+// 6. BODY: animals[1] is "cat". (i + 1) is 2. Log "position 2 is cat".
+// 7. UPDATE: i++. i is now 2.
+// 8. CHECK: 2 < 3 → true.
+// 9. BODY: animals[2] is "fox". (i + 1) is 3. Log "position 3 is fox".
+// 10. UPDATE: i++. i is now 3.
+// 11. CHECK: 3 < 3 → false. Exit.
+
+// notice TWO numbering systems running side by side:
+//   - i (the index): 0, 1, 2 — matches array positions
+//   - (i + 1): 1, 2, 3 — what we show the user
+// the loop uses i; the display uses i + 1.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-7-14-2-0': `
+    <p>If a loop is producing <code>undefined</code> for one item, missing the first or last item, or showing items shifted by one — log both the index and the item to see exactly what's happening:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i <= items.length; i++) {
+  console.log("i:", i, "item:", items[i]);
+}
+
+// the output will reveal:
+//   - is i ever 0? (if not, you skipped the first item)
+//   - is items[i] ever undefined? (if so, i went too far)
+//   - is the last valid index getting reached? (i should hit length - 1)
+
+// the relationship to remember:
+//   first item   → index 0
+//   last item    → index length - 1
+//   one past end → index length (always undefined)</code></pre>
+
+    <p>Common signal: the loop output is "shifted" by one — every item shows up one slot too early or too late. That's almost always because the code mixed up index (0-based) with position (1-based) somewhere.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-7-14-2-1': `
+    <p>Indexes aren't "the position of an item." They're "how many items come before this one." The first item has zero items before it, so its index is <code>0</code>. The fifth item has four items before it, so its index is <code>4</code>. Once you see indexes as <em>distances</em> rather than <em>positions</em>, the math becomes obvious — including why <code>length - 1</code> is the last index (the last item has <code>length - 1</code> items before it).</p>
+    <p>This also explains why the standard loop condition is <code>i &lt; length</code>: <code>i</code> represents "how far along you are," and you want to keep going as long as you haven't reached the end. The end is <code>length</code>; once you'd be that far, there's nothing left.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-7-14-2-2': `
+    <p><strong>Confusion: thinking index 1 means "the first item"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const days = ["Monday", "Tuesday", "Wednesday"];
+
+console.log(days[1]);   // "Tuesday" — NOT "Monday"
+
+// "the first" is index 0.
+// "index 1" is "the second" in human counting.</code></pre>
+
+    <p><strong>Confusion: thinking the last index is <code>length</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">const days = ["Monday", "Tuesday", "Wednesday"];   // length is 3
+
+console.log(days[3]);            // undefined — past the end
+console.log(days[days.length]);  // undefined — same thing
+
+// the last index is length - 1, not length.
+console.log(days[days.length - 1]);   // "Wednesday"</code></pre>
+
+    <p><strong>Confusion: position vs index in user-facing displays</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const players = ["Alice", "Bob", "Carol"];
+
+// User sees a numbered list: "1. Alice, 2. Bob, 3. Carol"
+// Internally, those are at indexes 0, 1, 2.
+
+// User says "delete player 2" — they mean Bob.
+// In code, Bob is at index 1, NOT index 2.
+
+const userInput = 2;
+const playerToDelete = players[userInput - 1];   // index = position - 1
+console.log(playerToDelete);   // "Bob"</code></pre>
+
+    <p><strong>Confusion: negative indexes</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const items = ["a", "b", "c"];
+
+console.log(items[-1]);   // undefined — NOT "c"
+// JavaScript doesn't support negative indexing on arrays directly.
+
+// to get the last item:
+console.log(items[items.length - 1]);   // "c"
+
+// or use .at() (modern JavaScript):
+console.log(items.at(-1));   // "c"
+console.log(items.at(-2));   // "b"</code></pre>
+
+    <p><strong>Confusion: thinking <code>length</code> equals the highest index</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const items = ["x", "y", "z"];
+
+// length is 3.
+// highest index is 2.
+// these are NOT the same number.
+
+// length tells you HOW MANY items.
+// highest index is length - 1, because indexing started at 0.
+
+// when in doubt: count items vs count steps.
+// length = item count. highest index = step count.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-7-14-2-3': `
+<pre class="language-javascript"><code class="language-javascript">const items = ["a", "b", "c"];
+console.log(items[1]);
+// expected "a" — got "b"
+// fix: index 0 is the first item, not index 1
+console.log(items[0]);   // "a"</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const items = ["a", "b", "c"];
+console.log(items[items.length]);
+// returns undefined — went one past the last index
+// fix: subtract 1
+console.log(items[items.length - 1]);   // "c"</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 1; i <= items.length; i++) {
+  console.log(items[i]);
+}
+// starts at 1 (skips first item) AND goes to items.length (one past end)
+// prints items[1], items[2], items[3] — last is undefined
+// fix: start at 0, use < not <=
+for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const items = ["a", "b", "c"];
+console.log(items[-1]);
+// returns undefined — JavaScript arrays don't use negative indexing
+// fix: use length - 1, or .at(-1)
+console.log(items[items.length - 1]);   // "c"
+console.log(items.at(-1));               // "c"</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// User says "show me the 3rd item"
+const userPosition = 3;
+console.log(items[userPosition]);
+// returns items[3], which is one past the user's intent
+// fix: subtract 1 to convert position to index
+console.log(items[userPosition - 1]);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Listing items as "1, 2, 3..." but using the index directly
+for (let i = 0; i < items.length; i++) {
+  console.log(i + ". " + items[i]);
+}
+// prints "0. a", "1. b", "2. c" — starts at zero, looks weird to humans
+// fix: add 1 for the display number, keep i for the lookup
+for (let i = 0; i < items.length; i++) {
+  console.log((i + 1) + ". " + items[i]);
+}
+// prints "1. a", "2. b", "3. c"</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-7-14-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// First, second, last
+const planets = ["Mercury", "Venus", "Earth", "Mars"];
+console.log(planets[0]);                   // "Mercury" — first
+console.log(planets[1]);                   // "Venus"   — second
+console.log(planets[planets.length - 1]);  // "Mars"    — last
+
+// Length vs last index
+console.log(planets.length);     // 4
+console.log(planets.length - 1); // 3 (the highest valid index)
+
+// .at() for negative indexes
+console.log(planets.at(-1));     // "Mars"
+console.log(planets.at(-2));     // "Earth"
+
+// Walking with index AND position visible
+const tasks = ["wash", "fold", "iron"];
+for (let i = 0; i < tasks.length; i++) {
+  console.log("task " + (i + 1) + " (index " + i + "): " + tasks[i]);
+}
+// task 1 (index 0): wash
+// task 2 (index 1): fold
+// task 3 (index 2): iron
+
+// Strings are zero-indexed too
+const word = "node";
+console.log(word[0]);                 // "n"
+console.log(word[word.length - 1]);   // "e"
+
+// Converting user input to an index
+function getNthRow(rows, n) {
+  return rows[n - 1];   // user says "1st row", code reads index 0
+}
+
+// Comparing each item to the previous
+const temps = [70, 72, 75, 71];
+for (let i = 1; i < temps.length; i++) {
+  console.log("change: " + (temps[i] - temps[i - 1]));
+}
+
+// Building a "with index" pair list
+const labels = ["X", "Y", "Z"];
+const pairs = [];
+for (let i = 0; i < labels.length; i++) {
+  pairs.push({ index: i, label: labels[i] });
+}</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-7-14-3-1': `
+    <p><strong>Example: numbered leaderboard display</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function renderLeaderboard(scores) {
+  const list = document.querySelector(".leaderboard");
+  for (let i = 0; i < scores.length; i++) {
+    const row = document.createElement("li");
+    row.textContent = (i + 1) + ". " + scores[i].name + " — " + scores[i].points;
+    list.appendChild(row);
+  }
+}
+// scores[0] is 1st place, scores[1] is 2nd, etc.
+// the displayed rank is (i + 1) — converting index to human position.</code></pre>
+
+    <p><strong>Example: deleting the user's selected row</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function deleteRow(rows, userInput) {
+  // user typed "delete row 5" — they mean the 5th row
+  const indexToRemove = userInput - 1;
+  rows.splice(indexToRemove, 1);
+}
+// the user's "row 5" is the array's index 4.
+// always subtract 1 when translating from human position to array index.</code></pre>
+
+    <p><strong>Example: getting the latest entry from a log</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getLatestEntry(log) {
+  if (log.length === 0) return null;
+  return log[log.length - 1];
+}
+// the most recent entry is the last item.
+// last index is length - 1, regardless of how big the log is.</code></pre>
+
+    <p><strong>Example: comparing pages of a book</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function findFirstChange(versionA, versionB) {
+  for (let i = 0; i < versionA.length; i++) {
+    if (versionA[i] !== versionB[i]) {
+      return "first change at page " + (i + 1);   // human-numbered
+    }
+  }
+  return "no changes found";
+}
+// loop walks the index (0-based), but reports the page number (1-based).
+// "page 1" is index 0, "page 2" is index 1.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-7-14-3-2': `
+    <ul>
+      <li><strong>Arrays</strong> → the data structure that uses zero-based indexes</li>
+      <li><strong><code>i = 0</code></strong> → why loops conventionally start their counter at 0</li>
+      <li><strong><code>i &lt; array.length</code></strong> → why <code>&lt;</code> (not <code>&lt;=</code>) is the right operator</li>
+      <li><strong><code>array.length</code></strong> → always one more than the highest valid index</li>
+      <li><strong>Reading items with bracket notation</strong> → <code>array[i]</code> uses the index</li>
+      <li><strong>First item / last item</strong> → <code>array[0]</code> and <code>array[length - 1]</code></li>
+      <li><strong>Off-by-one errors</strong> → caused by mixing up index and position</li>
+      <li><strong>Strings as indexable</strong> → same zero-based rule applies to characters</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-7-14-3-3': `
+    <ul>
+      <li>Arrays</li>
+      <li>Bracket notation</li>
+      <li><code>array.length</code></li>
+      <li>First item: <code>array[0]</code></li>
+      <li>Last item: <code>array[array.length - 1]</code></li>
+      <li><code>array.at()</code> for negative indexes</li>
+      <li><code>i &lt; array.length</code> (stop condition)</li>
+      <li>Off-by-one errors</li>
+      <li>Strings as zero-indexed</li>
+    </ul>
+  `,
+  /* ========================================================= 
+   Sub-lesson: 3.8.16 Loops → current item
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-7-15-0-0': `
+    <p>The <strong>current item</strong> is whatever array element the loop is looking at <em>right now</em>, on this iteration. It changes every round — first iteration sees the first item, second iteration sees the second item, and so on. The expression <code>array[i]</code> is how you grab it.</p>
+    <p>The loop counter <code>i</code> changes each iteration, so <code>array[i]</code> means "the item at the index <code>i</code> currently points to." That's the bridge between the loop's counter and the array's contents — the counter walks forward, and <code>array[i]</code> follows it, handing you a different item each time.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-7-15-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const drinks = ["coffee", "tea", "juice"];
+
+for (let i = 0; i < drinks.length; i++) {
+  console.log(drinks[i]);
+}
+
+// prints:
+//   coffee   ← drinks[0]
+//   tea      ← drinks[1]
+//   juice    ← drinks[2]
+
+// "drinks[i]" is the current item.
+// when i is 0, drinks[i] is "coffee".
+// when i is 1, drinks[i] is "tea".
+// when i is 2, drinks[i] is "juice".</code></pre>
+    <p><code>array[i]</code> is the most common pattern in any loop — it's how you actually <em>do something</em> with each item rather than just counting up to <code>length</code>.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-7-15-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const drinks = ["coffee", "tea", "juice"];
+
+for (let i = 0; i < drinks.length; i++) {
+  console.log(drinks[i]);
+}
+
+// breaking down "drinks[i]":
+
+// drinks   → the array variable
+// [        → opens bracket notation
+// i        → the index — the loop counter (changes each iteration)
+// ]        → closes bracket notation
+
+// the result: the value at position i in the drinks array.
+
+// since i changes:
+//   iteration 1 → drinks[0] → "coffee"
+//   iteration 2 → drinks[1] → "tea"
+//   iteration 3 → drinks[2] → "juice"
+
+// the bracket lookup is re-evaluated every iteration, with i's new value.</code></pre>
+    <p>Bracket notation is just a regular array access — the same syntax you'd use outside a loop. What makes it the "current item" is that <code>i</code> is changing, so the same line of code points at a different element each time.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-7-15-0-3': `
+    <p><strong>Save the current item to a named variable when you'll use it more than once.</strong> Repeating <code>array[i]</code> all over the body works, but it gets noisy. A short name reads better:</p>
+<pre class="language-javascript"><code class="language-javascript">// Repetitive — readable but cluttered
+for (let i = 0; i < users.length; i++) {
+  if (users[i].active && users[i].verified) {
+    console.log(users[i].name + " is good to go");
+    sendEmail(users[i].email);
+  }
+}
+
+// Cleaner — name the current item once
+for (let i = 0; i < users.length; i++) {
+  const user = users[i];
+  if (user.active && user.verified) {
+    console.log(user.name + " is good to go");
+    sendEmail(user.email);
+  }
+}</code></pre>
+
+    <p><strong><code>array[i]</code> is a live read, not a snapshot.</strong> If the array changes during the loop, <code>array[i]</code> sees the new value:</p>
+<pre class="language-javascript"><code class="language-javascript">const nums = [10, 20, 30];
+
+for (let i = 0; i < nums.length; i++) {
+  console.log(nums[i]);   // 10, 20, 30
+  nums[i] = nums[i] * 2;  // mutates the array in place
+}
+console.log(nums);   // [20, 40, 60]
+
+// each "nums[i]" reads the array fresh.
+// each "nums[i] = ..." writes back to the array.
+// so you can use bracket notation to BOTH read and update the current item.</code></pre>
+
+    <p><strong>You can index by expressions, not just <code>i</code>.</strong> Anything that evaluates to a number works inside the brackets:</p>
+<pre class="language-javascript"><code class="language-javascript">const items = ["a", "b", "c", "d", "e"];
+
+// The current item
+items[i]
+
+// The previous item
+items[i - 1]
+
+// The next item
+items[i + 1]
+
+// Two ahead
+items[i + 2]
+
+// Mirrored from the end
+items[items.length - 1 - i]
+
+// Useful for comparing each item to its neighbor:
+for (let i = 1; i < items.length; i++) {
+  console.log(items[i - 1], "vs", items[i]);
+}</code></pre>
+
+    <p><strong>Watch out for going past the end.</strong> Looking ahead with <code>array[i + 1]</code> needs a tighter stop condition or a check, otherwise the last iteration will read <code>undefined</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">const items = ["a", "b", "c"];
+
+// Bad — last iteration reads items[3], which is undefined
+for (let i = 0; i < items.length; i++) {
+  console.log(items[i] + " then " + items[i + 1]);
+}
+// prints "a then b", "b then c", "c then undefined"
+
+// Good — stop one early when looking ahead
+for (let i = 0; i < items.length - 1; i++) {
+  console.log(items[i] + " then " + items[i + 1]);
+}
+// prints "a then b", "b then c"</code></pre>
+
+    <p><strong>Bracket notation works on objects inside the array.</strong> If items are objects, you can chain dots/brackets:</p>
+<pre class="language-javascript"><code class="language-javascript">const products = [
+  { name: "shirt", price: 20 },
+  { name: "shoes", price: 50 }
+];
+
+for (let i = 0; i < products.length; i++) {
+  console.log(products[i].name);    // "shirt", "shoes"
+  console.log(products[i]["name"]); // also works — bracket access by key
+  console.log(products[i].price);   // 20, 50
+}</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-7-15-1-0': `
+    <p>The loop's counter <code>i</code> alone is just a number. It tells you "we're on iteration 3" but doesn't actually give you the data you're trying to process. <code>array[i]</code> closes that gap — it converts "iteration number" into "the actual item I'm working on right now."</p>
+    <p>Without this conversion, the loop would just count from 0 to length and do nothing useful. With it, every iteration has access to the specific item that should be processed in this round, and the same body of code automatically handles every item without having to be rewritten for each one.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-7-15-1-1': `
+    <p>The "current item" pattern is what makes the same loop body work for any size of array:</p>
+<pre class="language-javascript"><code class="language-javascript">const orders = [/* could be 5 items, could be 5000 */];
+
+for (let i = 0; i < orders.length; i++) {
+  const order = orders[i];   // the current item
+  charge(order.amount);
+  email(order.customer);
+  log("processed " + order.id);
+}
+
+// the body is written ONCE.
+// it doesn't know if there are 5 orders or 5000.
+// each time around, "orders[i]" hands it a fresh order to work with.</code></pre>
+
+    <p>The pattern also keeps the body code clean. Instead of <code>orders[i].amount</code>, <code>orders[i].customer</code>, <code>orders[i].id</code> repeating everywhere, you grab the current item once into a named variable and the rest of the body reads naturally — <code>order.amount</code>, <code>order.customer</code>, <code>order.id</code>.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-7-15-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Display each item
+for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+}
+
+// Use a named alias for cleaner code
+for (let i = 0; i < items.length; i++) {
+  const item = items[i];
+  doSomethingWith(item);
+}
+
+// Filter — collect items that pass a test
+const matches = [];
+for (let i = 0; i < scores.length; i++) {
+  if (scores[i] >= 90) {
+    matches.push(scores[i]);
+  }
+}
+
+// Transform — build a new array from the current item
+const doubled = [];
+for (let i = 0; i < numbers.length; i++) {
+  doubled.push(numbers[i] * 2);
+}
+
+// Compare current to previous
+for (let i = 1; i < temps.length; i++) {
+  if (temps[i] > temps[i - 1]) {
+    console.log("warmer than yesterday");
+  }
+}
+
+// Update the current item in place
+for (let i = 0; i < items.length; i++) {
+  items[i] = items[i].toUpperCase();
+}
+
+// Search — return on first match
+for (let i = 0; i < users.length; i++) {
+  if (users[i].id === targetId) {
+    return users[i];
+  }
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-7-15-1-3': `
+    <p>The current item is "what the loop is holding in its hand right now." Each round, the loop puts down whatever it was holding and picks up the next thing — but inside the body, you can always reach for <code>array[i]</code> to get whatever's currently in hand.</p>
+    <p>The mechanism is mechanical: <code>i</code> changes every iteration, and bracket notation reads the array using <code>i</code>, so the result naturally changes too. You don't have to do anything special. Just write <code>array[i]</code> wherever you want "this iteration's item," and the loop takes care of substituting the right one.</p>
+    <p>Most loops give the current item a name on the first line of the body — something like <code>const item = array[i]</code>. That's not required, but it makes the rest of the body easier to read. Instead of <code>array[i].name</code> and <code>array[i].price</code> appearing four times each, you get <code>item.name</code> and <code>item.price</code> — same meaning, less visual noise.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-7-15-1-4': `
+    <p>Picture a conveyor belt with packages on it. The belt advances by one position every iteration. <code>i</code> is "how far the belt has moved." The package directly in front of you — the one you can grab and inspect — is the current item.</p>
+    <p>You don't see all the packages at once. You see one. The body of the loop is your work station: whatever's in front of you, you do something to it (read it, change it, throw it out, copy it somewhere else), and then the belt advances and the next package shows up.</p>
+    <p><code>array[i]</code> is just the way you say "give me whatever's currently in front of me." The belt's position (<code>i</code>) plus the array's contents (<code>array</code>) together determine which package that is. Either alone isn't enough — you need both.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-7-15-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const sizes = ["S", "M", "L"];
+
+for (let i = 0; i < sizes.length; i++) {
+  const size = sizes[i];
+  console.log("checking size: " + size);
+}
+
+// prints:
+//   checking size: S
+//   checking size: M
+//   checking size: L
+
+// JavaScript is thinking:
+// 1. SETUP: i = 0.
+// 2. CHECK: 0 < 3 → true.
+// 3. BODY:
+//    - sizes[i] is sizes[0], which is "S". Store in size.
+//    - log "checking size: S".
+// 4. UPDATE: i++. i is now 1.
+// 5. CHECK: 1 < 3 → true.
+// 6. BODY:
+//    - sizes[i] is sizes[1], which is "M". Store in size.
+//    - log "checking size: M".
+// 7. UPDATE: i++. i is now 2.
+// 8. CHECK: 2 < 3 → true.
+// 9. BODY:
+//    - sizes[i] is sizes[2], which is "L". Store in size.
+//    - log "checking size: L".
+// 10. UPDATE: i++. i is now 3.
+// 11. CHECK: 3 < 3 → false. Exit.
+
+// notice: "size" is a brand-new variable each iteration.
+// "const size = sizes[i]" runs every round, declaring a new "size" inside the
+// body's scope. previous values are gone — only the current one is in hand.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-7-15-2-0': `
+    <p>If a loop is doing the wrong thing to items, doing nothing, or crashing on certain iterations — log the current item every round so you can see exactly what the body is processing:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  console.log("i:", i, "current item:", items[i]);
+  // ... rest of body
+}
+
+// the output reveals:
+//   - is the current item what you expect on each iteration?
+//   - is it ever undefined? (i went past the end, or array has gaps)
+//   - is it ever the wrong shape? (item is missing a property)
+//   - is the body skipping or repeating values?
+
+// pair it with logging the property you're using:
+console.log("processing:", items[i].id, "name:", items[i].name);</code></pre>
+
+    <p>Common signal: the loop crashes with "cannot read property X of undefined." That means <code>array[i]</code> returned <code>undefined</code> on some iteration — usually because <code>i</code> went past the end, or because the array has a hole where an item was deleted but the slot wasn't.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-7-15-2-1': `
+    <p><code>array[i]</code> isn't loop-specific syntax — it's just bracket notation, the same access you'd use without a loop. What makes it special inside a loop is that <code>i</code> changes between iterations, so <em>the same expression</em> reads different items each time. The expression doesn't move; the value of <code>i</code> does.</p>
+    <p>Once you see this, the loop body stops feeling like it has "magic access" to a sequence of items. It's just a regular block of code that happens to run multiple times, with <code>i</code> being slightly different on each run. Everything else — including <code>array[i]</code> — is just normal JavaScript reacting to whatever <code>i</code> currently is.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-7-15-2-2': `
+    <p><strong>Confusion: confusing <code>i</code> (the index) with <code>array[i]</code> (the item)</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const fruits = ["apple", "banana", "cherry"];
+
+for (let i = 0; i < fruits.length; i++) {
+  console.log(i);          // 0, 1, 2 — the position
+  console.log(fruits[i]);  // "apple", "banana", "cherry" — the actual item
+}
+
+// i is just a NUMBER (the index).
+// fruits[i] is the VALUE at that position.
+// these are different things — easy to mix up early on.</code></pre>
+
+    <p><strong>Confusion: thinking <code>array[i]</code> is one variable</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// "array[i]" isn't a variable — it's an expression that gets re-evaluated.
+// every time you write it, JavaScript looks up the array at index i fresh.
+
+for (let i = 0; i < items.length; i++) {
+  doA(items[i]);
+  doB(items[i]);   // also reads items[i] — same value, but a fresh read
+  doC(items[i]);   // and again
+}
+
+// if you'll use the item more than once, save it to a variable:
+for (let i = 0; i < items.length; i++) {
+  const item = items[i];   // read once
+  doA(item);
+  doB(item);
+  doC(item);
+}</code></pre>
+
+    <p><strong>Confusion: looking ahead without a tighter condition</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const items = ["a", "b", "c"];
+
+for (let i = 0; i < items.length; i++) {
+  console.log(items[i] + " before " + items[i + 1]);
+}
+// last iteration: items[2] is "c", items[3] is undefined
+// prints "a before b", "b before c", "c before undefined"
+
+// fix: stop one early when peeking ahead
+for (let i = 0; i < items.length - 1; i++) {
+  console.log(items[i] + " before " + items[i + 1]);
+}</code></pre>
+
+    <p><strong>Confusion: looking back without protecting against index <code>-1</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">const items = ["a", "b", "c"];
+
+for (let i = 0; i < items.length; i++) {
+  console.log(items[i - 1] + " then " + items[i]);
+}
+// first iteration: items[-1] is undefined
+// prints "undefined then a", "a then b", "b then c"
+
+// fix: start at 1 when looking back
+for (let i = 1; i < items.length; i++) {
+  console.log(items[i - 1] + " then " + items[i]);
+}</code></pre>
+
+    <p><strong>Confusion: thinking <code>array[i]</code> is a copy</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// for primitives (numbers, strings, booleans), array[i] gives you a copy.
+// for objects, array[i] gives you a REFERENCE to the original.
+
+const list = [{ count: 1 }, { count: 2 }];
+
+for (let i = 0; i < list.length; i++) {
+  const item = list[i];
+  item.count = item.count + 100;   // mutates the original object!
+}
+
+console.log(list);   // [{ count: 101 }, { count: 102 }]
+// the original array's objects were modified — "item" was a reference.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-7-15-2-3': `
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  console.log(i);
+}
+// expected to print the items, but only printed numbers (0, 1, 2...)
+// fix: use items[i] to access the item, not just i
+for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  console.log(items.i);
+}
+// items.i looks for a property named "i" — it's undefined
+// fix: use bracket notation, not dot notation, for index access
+for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < users.length; i++) {
+  console.log(users[i].name.toUpperCase());
+}
+// crashes if any user has no name property — "Cannot read property 'toUpperCase' of undefined"
+// fix: guard against missing properties
+for (let i = 0; i < users.length; i++) {
+  const user = users[i];
+  if (user.name) {
+    console.log(user.name.toUpperCase());
+  }
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  console.log(items[i] + " before " + items[i + 1]);
+}
+// last iteration prints "X before undefined" — peeking past the array
+// fix: stop one short when looking ahead
+for (let i = 0; i < items.length - 1; i++) {
+  console.log(items[i] + " before " + items[i + 1]);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Trying to "swap" two items but using the wrong variable
+for (let i = 0; i < items.length - 1; i++) {
+  items[i] = items[i + 1];
+  items[i + 1] = items[i];   // bug — items[i] was already overwritten
+}
+// fix: use a temp variable to hold the original value
+for (let i = 0; i < items.length - 1; i++) {
+  const temp = items[i];
+  items[i] = items[i + 1];
+  items[i + 1] = temp;
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Removing items while looping forward — current item shifts
+for (let i = 0; i < items.length; i++) {
+  if (items[i].toRemove) {
+    items.splice(i, 1);
+  }
+}
+// after splice, the next item shifts down to index i, but i increments anyway — skipping it
+// fix: walk backwards when removing, OR adjust i after splice
+for (let i = items.length - 1; i >= 0; i--) {
+  if (items[i].toRemove) {
+    items.splice(i, 1);
+  }
+}</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-7-15-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Direct access — no alias
+const songs = ["Song A", "Song B", "Song C"];
+for (let i = 0; i < songs.length; i++) {
+  console.log(songs[i]);
+}
+
+// With a named alias — cleaner for repeated use
+const tracks = [
+  { title: "One", duration: 200 },
+  { title: "Two", duration: 180 }
+];
+for (let i = 0; i < tracks.length; i++) {
+  const track = tracks[i];
+  console.log(track.title + ": " + track.duration + "s");
+}
+
+// Reading a property of the current item
+const cars = [{ make: "Honda" }, { make: "Toyota" }];
+for (let i = 0; i < cars.length; i++) {
+  console.log(cars[i].make);
+}
+
+// Modifying the current item in place
+const prices = [10, 20, 30];
+for (let i = 0; i < prices.length; i++) {
+  prices[i] = prices[i] * 1.1;   // 10% markup
+}
+
+// Comparing current to previous
+const heights = [60, 65, 63, 70];
+for (let i = 1; i < heights.length; i++) {
+  if (heights[i] > heights[i - 1]) {
+    console.log("growing at index " + i);
+  }
+}
+
+// Building a new array from each current item
+const words = ["hello", "world"];
+const upper = [];
+for (let i = 0; i < words.length; i++) {
+  upper.push(words[i].toUpperCase());
+}
+
+// Find — exit on the first matching current item
+const ids = [101, 202, 303];
+for (let i = 0; i < ids.length; i++) {
+  if (ids[i] === 202) {
+    console.log("found at index " + i);
+    break;
+  }
+}
+
+// Two arrays in sync, indexed by the same i
+const names = ["Sam", "Lee"];
+const scores = [88, 95];
+for (let i = 0; i < names.length; i++) {
+  console.log(names[i] + ": " + scores[i]);
+}</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-7-15-3-1': `
+    <p><strong>Example: rendering a feed of posts</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function renderFeed(posts) {
+  const feed = document.querySelector(".feed");
+  for (let i = 0; i < posts.length; i++) {
+    const post = posts[i];
+    const card = document.createElement("article");
+    card.innerHTML =
+      "<h3>" + post.title + "</h3>" +
+      "<p>" + post.summary + "</p>";
+    feed.appendChild(card);
+  }
+}
+// "post" is the current item — aliased on the first line of the body.
+// makes the rest of the body read naturally.</code></pre>
+
+    <p><strong>Example: validating form fields</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function validateAll(fields) {
+  for (let i = 0; i < fields.length; i++) {
+    const field = fields[i];
+    if (field.required && field.value.trim() === "") {
+      field.classList.add("error");
+      return false;
+    }
+  }
+  return true;
+}
+// the loop checks each field — "field" is the current item.
+// returning false on the first failure exits early.</code></pre>
+
+    <p><strong>Example: building a totals row</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function totalCart(items) {
+  let subtotal = 0;
+  for (let i = 0; i < items.length; i++) {
+    subtotal = subtotal + items[i].price * items[i].quantity;
+  }
+  return subtotal;
+}
+// no alias here — the body is short enough that items[i].price reads fine inline.
+// alias when the body grows or you reference the item more than twice.</code></pre>
+
+    <p><strong>Example: highlighting differences in a list</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function highlightChanges(versions) {
+  for (let i = 1; i < versions.length; i++) {
+    const previous = versions[i - 1];
+    const current = versions[i];
+    if (previous.text !== current.text) {
+      console.log("change in version " + i);
+    }
+  }
+}
+// uses BOTH "current" (versions[i]) and "previous" (versions[i - 1]).
+// starts at i = 1 so the first iteration has a valid "previous."</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-7-15-3-2': `
+    <ul>
+      <li><strong>Bracket notation</strong> → <code>array[i]</code> is just a regular array access</li>
+      <li><strong>Loop counter variable</strong> → the <code>i</code> that drives which item is current</li>
+      <li><strong>Indexes starting at 0</strong> → why <code>array[0]</code> is the first current item</li>
+      <li><strong><code>i &lt; array.length</code></strong> → keeps the current item from going past the end</li>
+      <li><strong>Variable scope</strong> → why a <code>const item = array[i]</code> alias resets each iteration</li>
+      <li><strong>Object references</strong> → why mutating <code>array[i]</code> for objects affects the original</li>
+      <li><strong>Looking ahead/back</strong> → <code>array[i + 1]</code> and <code>array[i - 1]</code> for neighbors</li>
+      <li><strong>forEach()</strong> → an alternative that hands you the current item directly without using <code>i</code></li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-7-15-3-3': `
+    <ul>
+      <li>Bracket notation</li>
+      <li>Loop counter variable</li>
+      <li>Indexes starting at 0</li>
+      <li><code>i &lt; array.length</code> (stop condition)</li>
+      <li>Reading items with bracket notation</li>
+      <li>Updating items: <code>array[i] = newValue</code></li>
+      <li>Looking ahead: <code>array[i + 1]</code></li>
+      <li>Looking back: <code>array[i - 1]</code></li>
+      <li><code>forEach()</code></li>
+      <li>Object references in arrays</li>
+    </ul>
+  `,
+  /* ========================================================= 
+   Sub-lesson: 3.8.17 Loops → break
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-7-16-0-0': `
+    <p><code>break</code> is a keyword that immediately exits the loop it's inside, no matter what the stop condition says or how many iterations are left. The moment <code>break</code> runs, the loop stops dead — it doesn't finish the rest of the current iteration, doesn't run the update step, doesn't check the condition again. Execution jumps straight to the line after the loop.</p>
+    <p>The most common use is "stop as soon as you find what you're looking for." Without <code>break</code>, the loop keeps going even after it's done its job, wasting work. With <code>break</code>, you bail out the moment you're done.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-7-16-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const numbers = [10, 20, 30, 40, 50];
+
+for (let i = 0; i < numbers.length; i++) {
+  if (numbers[i] === 30) {
+    console.log("found it!");
+    break;
+  }
+  console.log("checking " + numbers[i]);
+}
+
+// prints:
+//   checking 10
+//   checking 20
+//   found it!
+
+// once break runs, the loop is done.
+// "checking 40" and "checking 50" never print — those iterations don't happen.</code></pre>
+    <p><code>break</code> is just a single word followed by a semicolon. It doesn't take any value — it's a one-way exit, not a return.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-7-16-0-2': `
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < numbers.length; i++) {
+  if (numbers[i] === 30) {
+    break;
+  }
+  console.log(numbers[i]);
+}
+
+// breaking down the flow when break fires:
+
+// 1. condition checked → true. Enter body.
+// 2. inner if's condition matches → true.
+// 3. break runs.
+// 4. JavaScript jumps OUT of the loop entirely.
+//    - the rest of the body (the console.log) is skipped.
+//    - the update step (i++) is skipped.
+//    - the next condition check is skipped.
+// 5. execution continues at the line AFTER the loop.
+
+// break only exits ONE level of loop.
+// if you have nested loops, break only exits the innermost one.</code></pre>
+    <p>Think of <code>break</code> as an emergency exit door in the loop. Hit it, and you're out — instantly, with no cleanup, no goodbye to the remaining iterations.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-7-16-0-3': `
+    <p><strong><code>break</code> only exits the innermost loop it's directly inside.</strong> If you have a loop inside another loop, <code>break</code> only escapes one level:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 3; j++) {
+    if (j === 1) {
+      break;   // exits the INNER loop, not both
+    }
+    console.log(i, j);
+  }
+}
+
+// prints:
+//   0 0
+//   1 0
+//   2 0
+// the outer loop keeps running. break only handled the inner one.</code></pre>
+
+    <p><strong>To break out of multiple levels at once, use a label.</strong> Labels are a name you put in front of a loop, and <code>break labelName</code> exits whichever loop has that label:</p>
+<pre class="language-javascript"><code class="language-javascript">outer: for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 3; j++) {
+    if (j === 1) {
+      break outer;   // exits BOTH loops
+    }
+    console.log(i, j);
+  }
+}
+
+// prints only:
+//   0 0
+// once break outer runs, the entire outer loop exits.
+
+// labels are rarely used in practice — usually you'd refactor with a function or a flag.</code></pre>
+
+    <p><strong><code>break</code> works in <code>switch</code> statements too.</strong> That's actually its other main use — exiting a <code>switch</code> case so it doesn't fall through to the next one:</p>
+<pre class="language-javascript"><code class="language-javascript">switch (color) {
+  case "red":
+    console.log("stop");
+    break;
+  case "green":
+    console.log("go");
+    break;
+  default:
+    console.log("unknown");
+}
+// without break, "red" would fall through and also print "go".</code></pre>
+
+    <p><strong><code>break</code> doesn't return a value.</strong> It's not like <code>return</code> in a function. It just stops the loop. If you want to remember <em>what</em> caused the break, save it to a variable before breaking:</p>
+<pre class="language-javascript"><code class="language-javascript">let foundIndex = -1;
+
+for (let i = 0; i < items.length; i++) {
+  if (items[i].matches) {
+    foundIndex = i;
+    break;
+  }
+}
+
+console.log("matched at index " + foundIndex);
+// foundIndex is set BEFORE the break, so it survives the exit.</code></pre>
+
+    <p><strong>After <code>break</code>, the loop counter keeps its last value.</strong> Useful if you want to know which iteration broke:</p>
+<pre class="language-javascript"><code class="language-javascript">let i;
+for (i = 0; i < items.length; i++) {
+  if (items[i].done) break;
+}
+console.log("stopped at index " + i);   // i still holds the value from the break
+
+// note: this requires declaring i OUTSIDE the loop.
+// "let i = 0" inside the for() scopes i to the loop only.</code></pre>
+
+    <p><strong><code>break</code> can be used in <code>while</code> and <code>do...while</code> too.</strong> It's not specific to <code>for</code> loops:</p>
+<pre class="language-javascript"><code class="language-javascript">while (true) {                     // intentional infinite loop
+  const input = getNext();
+  if (input === null) break;       // break is the only way out
+  process(input);
+}
+
+// "while (true) ... break" is a common pattern when the stop condition
+// is easier to express with break than as a while condition.</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-7-16-1-0': `
+    <p>The normal stop condition (<code>i &lt; length</code>) is fixed when the loop starts. But sometimes you want the loop to stop based on something it discovers <em>during</em> the loop — finding a matching item, hitting an error, exceeding a budget, running into bad data. The condition can't predict those things; <code>break</code> can react to them.</p>
+    <p>Without <code>break</code>, you'd have to keep looping anyway and just ignore the rest of the work — wasteful for big arrays, and forces you to write extra "have I already finished?" checks inside the body. <code>break</code> just stops the loop, cleanly, the moment you know you're done.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-7-16-1-1': `
+    <p>The classic case: searching for an item in an array. As soon as you find it, there's no reason to keep checking the rest:</p>
+<pre class="language-javascript"><code class="language-javascript">// Without break — keeps looping even after finding
+let found = null;
+for (let i = 0; i < users.length; i++) {
+  if (users[i].id === targetId) {
+    found = users[i];
+  }
+}
+// works, but checks every user even after finding the match.
+// for 10 users, no big deal. for 10,000 users, wasteful.
+
+// With break — stops the moment it finds
+let found = null;
+for (let i = 0; i < users.length; i++) {
+  if (users[i].id === targetId) {
+    found = users[i];
+    break;
+  }
+}
+// stops at the first match. faster, cleaner intent.</code></pre>
+
+    <p>Other common reasons to break: detecting bad data and bailing, hitting a maximum count, finding a "stop" sentinel value, or any condition where continuing is pointless or harmful.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-7-16-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Stop on first match
+for (let i = 0; i < users.length; i++) {
+  if (users[i].name === "Sam") {
+    console.log("found Sam at index " + i);
+    break;
+  }
+}
+
+// Stop on first failure
+for (let i = 0; i < tasks.length; i++) {
+  if (!tasks[i].complete) {
+    console.log("hit incomplete task at index " + i);
+    break;
+  }
+}
+
+// Stop after collecting enough items
+const collected = [];
+for (let i = 0; i < items.length; i++) {
+  if (items[i].available) {
+    collected.push(items[i]);
+    if (collected.length >= 5) break;
+  }
+}
+
+// Stop on a sentinel value
+for (let i = 0; i < tokens.length; i++) {
+  if (tokens[i] === "END") break;
+  process(tokens[i]);
+}
+
+// Stop on error
+for (let i = 0; i < records.length; i++) {
+  if (records[i].invalid) {
+    console.error("bad record at " + i);
+    break;
+  }
+  save(records[i]);
+}
+
+// Stop when budget exceeded
+let cost = 0;
+for (let i = 0; i < items.length; i++) {
+  cost = cost + items[i].price;
+  if (cost > BUDGET) {
+    console.log("over budget after " + i + " items");
+    break;
+  }
+}
+
+// Intentional infinite loop with break as the only exit
+while (true) {
+  const data = pollServer();
+  if (data === null) break;
+  handle(data);
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-7-16-1-3': `
+    <p><code>break</code> means "I'm done — stop the loop right now." It's a one-way ticket out. Whatever the loop was scheduled to do for the rest of the current iteration, and however many iterations were still ahead, all of it gets canceled the instant <code>break</code> runs.</p>
+    <p>The reason it's useful is that the normal stop condition is decided at the top of the loop. It looks at the counter and asks "should we keep going?" — but it can't see <em>inside</em> the body, so it can't react to what the body discovers. <code>break</code> fills that gap. The body finds out something, and uses <code>break</code> to tell the loop "I know we'd normally continue, but actually, stop."</p>
+    <p>Most of the time, <code>break</code> is paired with an <code>if</code>. The pattern reads like a sentence: "If this condition is true, break." Loop until the condition appears, then bail. That's basically the entire reason <code>break</code> exists.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-7-16-1-4': `
+    <p>Imagine you're walking down a long hallway, opening every door looking for a specific room. The "loop" is "open the next door, check it." Normally, you'd walk to the end of the hallway just because that's how the loop is built. But once you find the right room, walking the rest of the hallway is pointless — you already found what you came for.</p>
+    <p><code>break</code> is the moment you say "found it, I'm leaving." You don't open the rest of the doors. You don't keep walking. You just exit the hallway and go on with your day.</p>
+    <p>The loop's stop condition is "have I reached the end of the hallway?" That's still there as a backup — if you walk the whole hallway and never find the room, the loop ends naturally. But <code>break</code> is a faster, smarter exit triggered by what you actually <em>found</em>, not by where you happen to be.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-7-16-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const flavors = ["mint", "chocolate", "vanilla", "strawberry"];
+
+for (let i = 0; i < flavors.length; i++) {
+  if (flavors[i] === "vanilla") {
+    console.log("found vanilla!");
+    break;
+  }
+  console.log("checking " + flavors[i]);
+}
+console.log("done searching");
+
+// prints:
+//   checking mint
+//   checking chocolate
+//   found vanilla!
+//   done searching
+
+// JavaScript is thinking:
+// 1. SETUP: i = 0.
+// 2. CHECK: 0 < 4 → true.
+// 3. BODY:
+//    - flavors[0] is "mint". Not "vanilla". if's body skipped.
+//    - log "checking mint".
+// 4. UPDATE: i++. i is now 1.
+// 5. CHECK: 1 < 4 → true.
+// 6. BODY:
+//    - flavors[1] is "chocolate". Not "vanilla". if's body skipped.
+//    - log "checking chocolate".
+// 7. UPDATE: i++. i is now 2.
+// 8. CHECK: 2 < 4 → true.
+// 9. BODY:
+//    - flavors[2] is "vanilla". if's condition true.
+//    - log "found vanilla!".
+//    - break runs. Loop exits IMMEDIATELY.
+//      → "checking vanilla" is NEVER logged.
+//      → i++ is NEVER run.
+//      → flavors[3] ("strawberry") is NEVER checked.
+// 10. log "done searching" (the line after the loop).</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-7-16-2-0': `
+    <p>If a loop seems to run too long even after it should have stopped, OR a loop is exiting too early — log right before and after the break to see exactly when it's firing:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  console.log("iteration", i, "item:", items[i]);
+  if (items[i].matches) {
+    console.log("BREAK firing at i =", i);
+    break;
+  }
+}
+console.log("after loop");
+
+// the output reveals:
+//   - is break firing at all? (if "BREAK firing" never logs, the if was never true)
+//   - is it firing too early? (check what items[i] looks like at that point)
+//   - is "after loop" reached? (if not, the loop is hanging in a different way)</code></pre>
+
+    <p>Common signal: "the loop runs all the way to the end even though I have a break." Almost always means the <code>if</code> condition wrapping the break is wrong, or the data doesn't match what the code expects. Log <code>items[i]</code> on every iteration to see why the condition isn't triggering.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-7-16-2-1': `
+    <p><code>break</code> isn't a clever new feature — it's just a way to short-circuit the normal loop machinery. The loop's normal cycle is body → update → check → body → update → check. <code>break</code> jumps out of that cycle entirely, skipping update, skipping check, skipping any remaining body code.</p>
+    <p>Once you see this clearly, the placement matters. A break at the end of a body means "this iteration finishes, then exit." A break in the middle means "exit now, skip the rest of this body too." There's no magic — just a "go to the end of the loop, immediately" instruction triggered the moment <code>break</code> is reached.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-7-16-2-2': `
+    <p><strong>Confusion: <code>break</code> vs <code>return</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">// break exits the LOOP, not the function.
+function findUser(users, id) {
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].id === id) {
+      break;   // exits the loop. function continues.
+    }
+  }
+  console.log("after loop");   // this still runs after break
+}
+
+// return exits the WHOLE function (which also stops the loop).
+function findUser(users, id) {
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].id === id) {
+      return users[i];   // exits the function entirely
+    }
+  }
+  console.log("after loop");   // this only runs if no match was found
+}
+
+// when searching inside a function, return is usually cleaner than break + variable.</code></pre>
+
+    <p><strong>Confusion: <code>break</code> in nested loops</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 3; j++) {
+    if (j === 1) break;   // exits ONLY the inner loop
+    console.log(i, j);
+  }
+}
+
+// prints:
+//   0 0
+//   1 0
+//   2 0
+// the outer loop keeps going. break exits one level only.
+
+// to break both, use a label or a flag:
+let stop = false;
+for (let i = 0; i < 3 && !stop; i++) {
+  for (let j = 0; j < 3; j++) {
+    if (j === 1) {
+      stop = true;
+      break;
+    }
+  }
+}</code></pre>
+
+    <p><strong>Confusion: putting <code>break</code> outside a loop or switch</strong></p>
+<pre class="language-javascript"><code class="language-javascript">if (x > 5) {
+  break;   // SyntaxError — break needs a loop or switch around it
+}
+
+// break only works inside loops (for, while, do...while) or switch statements.
+// if you want to exit a function, use return, not break.</code></pre>
+
+    <p><strong>Confusion: thinking <code>break</code> finishes the current iteration first</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  if (items[i].bad) {
+    break;
+  }
+  console.log("processing " + items[i].name);   // SKIPPED when break fires
+  saveToLog(items[i]);                          // also SKIPPED
+}
+
+// break is INSTANT. anything below it in the body never runs on that iteration.
+// if you wanted to log a message before exiting, put it BEFORE the break.</code></pre>
+
+    <p><strong>Confusion: <code>break</code> with a value</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  if (items[i] === target) {
+    break items[i];   // SyntaxError — break doesn't take a value
+  }
+}
+
+// break can take a LABEL (like "break outer") but not a value.
+// to "return" something from a loop, save it to a variable before breaking,
+// or use return if you're in a function.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-7-16-2-3': `
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  if (items[i] === target) found = items[i];
+}
+// no break — keeps looping after finding the match
+// fix: add break for early exit
+for (let i = 0; i < items.length; i++) {
+  if (items[i] === target) {
+    found = items[i];
+    break;
+  }
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  break;
+  console.log(items[i]);
+}
+// break is the FIRST thing in the body — loop exits immediately, never processes anything
+// fix: usually break should be inside an if condition
+for (let i = 0; i < items.length; i++) {
+  if (items[i].shouldStop) break;
+  console.log(items[i]);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 3; j++) {
+    if (matrix[i][j] === target) {
+      break;
+    }
+  }
+}
+// break only exits the inner loop — outer keeps going
+// fix: use a flag, label, or return (if in a function)
+let found = false;
+for (let i = 0; i < 3 && !found; i++) {
+  for (let j = 0; j < 3; j++) {
+    if (matrix[i][j] === target) {
+      found = true;
+      break;
+    }
+  }
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function search(arr, target) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === target) break;
+  }
+  return arr[i];   // ReferenceError — i is scoped to the loop
+}
+// can't access i after the loop when declared inside the for()
+// fix: declare i outside, OR use return inside the loop
+function search(arr, target) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === target) return arr[i];
+  }
+  return null;
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (x > 100) break;
+// SyntaxError — break can only be inside a loop or switch
+// fix: if you want to exit a function, use return
+function check(x) {
+  if (x > 100) return;
+  // ...
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  if (items[i].done) {
+    console.log("done at " + i);
+  }
+  break;   // OUTSIDE the if — runs on every iteration
+}
+// break runs unconditionally on the first iteration
+// fix: move break INSIDE the if
+for (let i = 0; i < items.length; i++) {
+  if (items[i].done) {
+    console.log("done at " + i);
+    break;
+  }
+}</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-7-16-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Find first match
+const ages = [12, 17, 21, 35, 42];
+for (let i = 0; i < ages.length; i++) {
+  if (ages[i] >= 18) {
+    console.log("first adult at index " + i);
+    break;
+  }
+}
+
+// Stop at a sentinel
+const commands = ["start", "load", "run", "STOP", "save"];
+for (let i = 0; i < commands.length; i++) {
+  if (commands[i] === "STOP") break;
+  console.log("executing: " + commands[i]);
+}
+
+// Collect up to N
+const evens = [];
+for (let i = 0; i < numbers.length; i++) {
+  if (numbers[i] % 2 === 0) {
+    evens.push(numbers[i]);
+    if (evens.length === 3) break;
+  }
+}
+
+// Bail on first error
+const inputs = ["valid", "valid", "BAD", "valid"];
+for (let i = 0; i < inputs.length; i++) {
+  if (inputs[i] === "BAD") {
+    console.error("input " + i + " is bad — stopping");
+    break;
+  }
+}
+
+// while (true) with break as exit
+let attempts = 0;
+while (true) {
+  attempts++;
+  if (Math.random() > 0.9) break;
+  if (attempts > 100) break;   // safety net
+}
+
+// Save the breaking index
+let breakIndex = -1;
+for (let i = 0; i < log.length; i++) {
+  if (log[i].level === "fatal") {
+    breakIndex = i;
+    break;
+  }
+}
+console.log("fatal at index: " + breakIndex);
+
+// Break inside a switch (different purpose — exits the case)
+const action = "save";
+switch (action) {
+  case "save":
+    console.log("saving");
+    break;   // prevents fall-through to "load"
+  case "load":
+    console.log("loading");
+    break;
+}</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-7-16-3-1': `
+    <p><strong>Example: finding the first selected checkbox</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getFirstSelected(checkboxes) {
+  for (let i = 0; i < checkboxes.length; i++) {
+    if (checkboxes[i].checked) {
+      return checkboxes[i];   // return is even cleaner than break here
+    }
+  }
+  return null;
+}
+// inside a function, return is usually preferred over break.
+// it exits the loop AND hands the result back in one step.</code></pre>
+
+    <p><strong>Example: validating a form, stopping at the first error</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function findFirstError(fields) {
+  let firstError = null;
+  for (let i = 0; i < fields.length; i++) {
+    if (!fields[i].isValid()) {
+      firstError = fields[i];
+      break;
+    }
+  }
+  return firstError;
+}
+// stops as soon as one bad field is found.
+// no need to keep validating once we know there's a problem.</code></pre>
+
+    <p><strong>Example: pagination — collect a page's worth of results</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getPage(items, pageSize) {
+  const page = [];
+  for (let i = 0; i < items.length; i++) {
+    page.push(items[i]);
+    if (page.length === pageSize) break;
+  }
+  return page;
+}
+// collects up to pageSize items, then bails.
+// works whether items has 5 or 5000 entries.</code></pre>
+
+    <p><strong>Example: budget-bound shopping cart</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function fillCart(wishlist, budget) {
+  const cart = [];
+  let total = 0;
+  for (let i = 0; i < wishlist.length; i++) {
+    if (total + wishlist[i].price > budget) break;
+    cart.push(wishlist[i]);
+    total = total + wishlist[i].price;
+  }
+  return cart;
+}
+// adds items until the next one would exceed the budget.
+// break stops cleanly the moment we'd cross the limit.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-7-16-3-2': `
+    <ul>
+      <li><strong><code>continue</code></strong> → break's counterpart, skips the current iteration but keeps the loop going</li>
+      <li><strong><code>return</code></strong> → exits a function entirely; cleaner than break when used inside a function-bodied loop</li>
+      <li><strong>Stop conditions</strong> → break overrides the normal stop, ending the loop based on body logic</li>
+      <li><strong><code>if</code> statements</strong> → break is almost always wrapped in an <code>if</code></li>
+      <li><strong>Nested loops</strong> → break only exits the innermost; labels or flags are needed for outer levels</li>
+      <li><strong><code>switch</code></strong> → break also exits a case to prevent fall-through</li>
+      <li><strong>Searching arrays</strong> → the most common reason to break early</li>
+      <li><strong>Infinite loops</strong> → <code>while (true)</code> with break is a deliberate pattern</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-7-16-3-3': `
+    <ul>
+      <li><code>continue</code></li>
+      <li><code>return</code> from inside a loop</li>
+      <li><code>if</code> statements wrapping break</li>
+      <li>Nested loops</li>
+      <li>Loop labels</li>
+      <li><code>switch</code> statements</li>
+      <li><code>while (true)</code> loops</li>
+      <li><code>Array.prototype.find()</code> as an alternative</li>
+      <li>Searching arrays</li>
+    </ul>
+  `,
+  /* ========================================================= 
+   Sub-lesson: 3.8.18 Loops → continue
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-7-17-0-0': `
+    <p><code>continue</code> is a keyword that skips the rest of the current iteration's body and jumps straight to the next iteration. The loop doesn't end — only the work for <em>this</em> round gets cut short. After <code>continue</code> runs, the update step fires, the condition is checked, and (if it's still true) the body runs again from the top with the next iteration.</p>
+    <p>Where <code>break</code> means "stop the whole loop," <code>continue</code> means "skip just this one." It's how you say "this item doesn't apply to me — move on to the next one" without exiting the loop entirely.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-7-17-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const numbers = [1, 2, 3, 4, 5];
+
+for (let i = 0; i < numbers.length; i++) {
+  if (numbers[i] % 2 === 0) {
+    continue;
+  }
+  console.log(numbers[i]);
+}
+
+// prints:
+//   1
+//   3
+//   5
+
+// when continue runs, the rest of the body is skipped for THAT iteration.
+// the loop moves on to the next index, the next number gets checked.
+// even numbers get continued past — only odd numbers reach the console.log.</code></pre>
+    <p>Like <code>break</code>, <code>continue</code> is a single keyword followed by a semicolon. It doesn't take any value — it's just a "skip to the end of this iteration" instruction.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-7-17-0-2': `
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < numbers.length; i++) {
+  if (numbers[i] % 2 === 0) {
+    continue;
+  }
+  console.log(numbers[i]);
+}
+
+// breaking down the flow when continue fires:
+
+// 1. condition checked → true. Enter body.
+// 2. inner if's condition matches → true.
+// 3. continue runs.
+// 4. JavaScript jumps to the END of the body.
+//    - the rest of the body (the console.log) is SKIPPED.
+//    - the update step (i++) STILL runs.
+//    - the next condition check happens normally.
+// 5. if condition is still true, the body runs again with the new i.
+//    if false, the loop ends.
+
+// continue does NOT exit the loop — it just abandons one iteration.</code></pre>
+    <p>The big difference from <code>break</code>: <code>continue</code> doesn't skip the update step. <code>i++</code> still runs, the condition is still checked, and the loop keeps going. It's a "skip the rest of this round" instruction, not an exit.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-7-17-0-3': `
+    <p><strong><code>continue</code> only skips the rest of the current iteration — the loop keeps going.</strong> This is the core difference from <code>break</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 5; i++) {
+  if (i === 2) continue;   // skip just the i = 2 iteration
+  console.log(i);
+}
+// prints: 0, 1, 3, 4
+// the i = 2 iteration was skipped; the rest still ran.
+
+for (let i = 0; i < 5; i++) {
+  if (i === 2) break;      // stop the entire loop
+  console.log(i);
+}
+// prints: 0, 1
+// the loop ended at i = 2. nothing after.</code></pre>
+
+    <p><strong><code>continue</code> jumps to the update step, not back to the top of the body.</strong> This matters because the update step is what increments <code>i</code> — if you wrote <code>continue</code> in a way that skips the update, you'd get an infinite loop:</p>
+<pre class="language-javascript"><code class="language-javascript">// for loops: continue jumps to the UPDATE step (i++)
+for (let i = 0; i < 5; i++) {
+  if (i === 2) continue;   // i++ STILL runs, so i moves to 3
+  console.log(i);
+}
+
+// while loops: continue jumps to the CONDITION check
+// you have to make sure the counter was already updated, or you'll loop forever
+let i = 0;
+while (i < 5) {
+  if (i === 2) {
+    i++;       // MUST manually update before continue, or infinite loop
+    continue;
+  }
+  console.log(i);
+  i++;
+}
+
+// rule of thumb: in for loops, continue is safe.
+// in while loops, make sure the variable that affects the condition got updated.</code></pre>
+
+    <p><strong><code>continue</code> only affects the innermost loop.</strong> Just like <code>break</code>, a <code>continue</code> inside nested loops only applies to the inner one:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 2; i++) {
+  for (let j = 0; j < 3; j++) {
+    if (j === 1) continue;   // skips just this inner iteration
+    console.log(i, j);
+  }
+}
+
+// prints:
+//   0 0
+//   0 2
+//   1 0
+//   1 2
+// j = 1 was skipped each time, but the outer loop ran normally.</code></pre>
+
+    <p><strong>Labeled <code>continue</code> can skip to an outer loop's next iteration.</strong> Same syntax as labeled break, but it continues the labeled loop instead of breaking it:</p>
+<pre class="language-javascript"><code class="language-javascript">outer: for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 3; j++) {
+    if (j === 1) continue outer;
+    console.log(i, j);
+  }
+}
+
+// prints:
+//   0 0
+//   1 0
+//   2 0
+// when j = 1, the inner loop is abandoned and the OUTER loop moves to its next i.</code></pre>
+
+    <p><strong><code>continue</code> doesn't work inside <code>switch</code>.</strong> It's loop-only:</p>
+<pre class="language-javascript"><code class="language-javascript">// continue is for loops, not switch.
+switch (action) {
+  case "save":
+    continue;   // SyntaxError unless this switch is inside a loop
+}
+
+// inside a loop, you CAN use continue from a switch — it skips the loop iteration:
+for (let i = 0; i < items.length; i++) {
+  switch (items[i].type) {
+    case "skip":
+      continue;   // valid — skips to next loop iteration
+    case "save":
+      save(items[i]);
+      break;     // breaks out of the switch only
+  }
+}</code></pre>
+
+    <p><strong><code>continue</code> can replace nested <code>if</code> blocks for cleaner code.</strong> The "early continue" pattern reduces indentation:</p>
+<pre class="language-javascript"><code class="language-javascript">// Nested ifs — gets deep fast
+for (let i = 0; i < users.length; i++) {
+  if (users[i].active) {
+    if (users[i].verified) {
+      if (users[i].subscribed) {
+        sendNewsletter(users[i]);
+      }
+    }
+  }
+}
+
+// Early continue — flat and readable
+for (let i = 0; i < users.length; i++) {
+  if (!users[i].active) continue;
+  if (!users[i].verified) continue;
+  if (!users[i].subscribed) continue;
+  sendNewsletter(users[i]);
+}
+// each "continue" filters out users who don't qualify.
+// by the time we reach sendNewsletter, all conditions are met.</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-7-17-1-0': `
+    <p>Sometimes you want to process most of an array, but skip certain items based on what you find. Without <code>continue</code>, you'd wrap the body in a big <code>if</code> that excludes those items — adding indentation and making the body harder to read. <code>continue</code> flips it: skip the bad items right at the top, then write the body for the good case.</p>
+    <p>It's also useful when items might be invalid, missing data, or in a state that doesn't apply. Rather than checking inside every line of the body, you check once at the top and continue past anything that doesn't qualify.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-7-17-1-1': `
+    <p>The "early continue" pattern keeps loops flat and readable:</p>
+<pre class="language-javascript"><code class="language-javascript">// Without continue — the real work is buried inside conditions
+for (let i = 0; i < orders.length; i++) {
+  if (orders[i].paid) {
+    if (orders[i].shipped) {
+      if (!orders[i].refunded) {
+        sendThankYou(orders[i]);
+      }
+    }
+  }
+}
+
+// With continue — the disqualifying cases are skipped at the top
+for (let i = 0; i < orders.length; i++) {
+  if (!orders[i].paid) continue;
+  if (!orders[i].shipped) continue;
+  if (orders[i].refunded) continue;
+  sendThankYou(orders[i]);
+}
+
+// the second version reads top-to-bottom: "skip these, skip these, skip these,
+// then do the real work." much easier to follow than nested ifs.</code></pre>
+
+    <p>It's also the cleanest way to skip "holes" in data — empty strings, missing fields, items in a wrong state — without changing how the rest of the loop works.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-7-17-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Skip items that don't qualify
+for (let i = 0; i < users.length; i++) {
+  if (!users[i].active) continue;
+  doSomethingWith(users[i]);
+}
+
+// Skip null or empty entries
+for (let i = 0; i < entries.length; i++) {
+  if (entries[i] === null) continue;
+  if (entries[i] === "") continue;
+  process(entries[i]);
+}
+
+// Skip every other (even though i = i + 2 might be cleaner)
+for (let i = 0; i < items.length; i++) {
+  if (i % 2 === 1) continue;
+  console.log(items[i]);
+}
+
+// Filter while looping
+const adults = [];
+for (let i = 0; i < people.length; i++) {
+  if (people[i].age < 18) continue;
+  adults.push(people[i]);
+}
+
+// Multiple early-out checks (the "guard clause" style)
+for (let i = 0; i < records.length; i++) {
+  if (!records[i]) continue;
+  if (records[i].deleted) continue;
+  if (records[i].pending) continue;
+  archive(records[i]);
+}
+
+// Skip on error, keep processing the rest
+for (let i = 0; i < tasks.length; i++) {
+  if (tasks[i].failed) {
+    console.warn("skipping task " + i);
+    continue;
+  }
+  run(tasks[i]);
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-7-17-1-3': `
+    <p><code>continue</code> means "this one isn't relevant — give me the next one." The loop is still running, the rest of the items still get their turn, but the current iteration gets cut short. Anything below the <code>continue</code> in the body is skipped for that round.</p>
+    <p>It's most useful when most items in an array should be processed, but a few should be skipped over. Rather than wrapping the entire body in an "if it qualifies" check, you put a "skip if it doesn't qualify" continue at the top. The body below assumes the item qualifies, and reads cleanly because of it.</p>
+    <p>The pattern reads like a list of bouncer rules at a club entrance: "no shirt? skip them. underage? skip them. on the banned list? skip them. otherwise — let them in and process them normally."</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-7-17-1-4': `
+    <p>Imagine sorting through a stack of mail. Most envelopes you handle normally — open them, read them, file them. But some are obvious junk — pre-printed flyers, expired coupons, magazines you don't subscribe to. Those, you toss in the recycling without doing the rest of the work.</p>
+    <p><code>continue</code> is the moment you toss the envelope. You don't open it, don't read it, don't file it. You just move on to the next piece of mail. The rest of the mail still gets handled — only that one envelope gets skipped.</p>
+    <p>The loop is your stack of mail. The body is "what to do with each envelope." <code>continue</code> is the recycling bin — for items that don't deserve the full processing.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-7-17-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const grades = [85, null, 92, 78, null, 95];
+
+for (let i = 0; i < grades.length; i++) {
+  if (grades[i] === null) continue;
+  console.log("grade at " + i + ": " + grades[i]);
+}
+
+// prints:
+//   grade at 0: 85
+//   grade at 2: 92
+//   grade at 3: 78
+//   grade at 5: 95
+
+// JavaScript is thinking:
+// 1. SETUP: i = 0.
+// 2. CHECK: 0 < 6 → true.
+// 3. BODY:
+//    - grades[0] is 85. Not null. Skip the continue.
+//    - log "grade at 0: 85".
+// 4. UPDATE: i++. i is now 1.
+// 5. CHECK: 1 < 6 → true.
+// 6. BODY:
+//    - grades[1] is null. continue runs.
+//    - the rest of the body is SKIPPED.
+//      → log line is NOT executed.
+//    - jump straight to the update step.
+// 7. UPDATE: i++. i is now 2.
+// 8. CHECK: 2 < 6 → true.
+// 9. BODY:
+//    - grades[2] is 92. Not null. Skip the continue.
+//    - log "grade at 2: 92".
+// 10. UPDATE: i++. i is now 3.
+// ...and so on through i = 5.
+
+// notice: continue did NOT exit the loop.
+// it skipped the log for index 1, then the loop continued with index 2.
+// the update step still ran every time.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-7-17-2-0': `
+    <p>If a loop is skipping items it shouldn't, processing items it shouldn't, or seems to "miss" iterations — log right before the continue to see when and why it's firing:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  console.log("checking i =", i, "item:", items[i]);
+  if (items[i].skip) {
+    console.log("  CONTINUE firing — skipping this iteration");
+    continue;
+  }
+  console.log("  processing");
+  doWork(items[i]);
+}
+
+// the output reveals:
+//   - which iterations are being skipped
+//   - whether the skip condition is correct
+//   - whether items you expected to skip ARE being skipped (and vice versa)</code></pre>
+
+    <p>Common signal: a <code>while</code> loop hangs when you add a <code>continue</code>. That's almost always because the variable that controls the condition was supposed to be updated <em>after</em> the continue, but the continue skips it. Fix: update the variable before the continue, or move the update to before the skippable code.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-7-17-2-1': `
+    <p><code>continue</code> is just "jump to the bottom of the body." It doesn't exit the loop, doesn't skip the update step (in <code>for</code> loops), doesn't go anywhere magical. It's a fast-forward to the part of the iteration where the loop machinery takes over again.</p>
+    <p>Once you see this, the difference from <code>break</code> stops being abstract. <code>break</code> jumps to <em>after</em> the loop. <code>continue</code> jumps to the <em>end of this iteration</em>. One leaves the loop entirely; the other goes back through the normal cycle (update → check → body).</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-7-17-2-2': `
+    <p><strong>Confusion: <code>continue</code> vs <code>break</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 5; i++) {
+  if (i === 2) continue;   // skip JUST i = 2, keep going
+  console.log(i);
+}
+// prints: 0, 1, 3, 4
+
+for (let i = 0; i < 5; i++) {
+  if (i === 2) break;      // stop the WHOLE loop at i = 2
+  console.log(i);
+}
+// prints: 0, 1
+
+// continue: skip ONE iteration. loop keeps running.
+// break: stop the entire loop. no more iterations.</code></pre>
+
+    <p><strong>Confusion: <code>continue</code> in <code>while</code> loops causing infinite loops</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// In a for loop, continue still runs the update step. Safe.
+for (let i = 0; i < 5; i++) {
+  if (i === 2) continue;   // i++ still happens
+  console.log(i);
+}
+
+// In a while loop, continue jumps to the CONDITION check.
+// the variable doesn't auto-update — you have to update it manually.
+
+let i = 0;
+while (i < 5) {
+  if (i === 2) continue;   // INFINITE LOOP — i is stuck at 2 forever
+  console.log(i);
+  i++;
+}
+
+// fix: update before continuing
+let i = 0;
+while (i < 5) {
+  if (i === 2) {
+    i++;
+    continue;
+  }
+  console.log(i);
+  i++;
+}</code></pre>
+
+    <p><strong>Confusion: thinking <code>continue</code> exits the loop</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  if (items[i].done) continue;
+}
+console.log("loop finished");
+// "loop finished" prints AFTER all iterations.
+// continue did NOT exit early — every iteration ran (some just did nothing).
+// the loop ended naturally when i reached items.length.</code></pre>
+
+    <p><strong>Confusion: <code>continue</code> in nested loops</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 3; j++) {
+    if (j === 1) continue;   // skips just this inner iteration
+    console.log(i, j);
+  }
+}
+// prints:
+//   0 0
+//   0 2
+//   1 0
+//   1 2
+//   2 0
+//   2 2
+
+// continue only affects the inner loop.
+// to skip an outer iteration from inside a nested loop, use a label:
+outer: for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 3; j++) {
+    if (j === 1) continue outer;
+    console.log(i, j);
+  }
+}
+// now when j = 1, the outer loop moves to its next i.</code></pre>
+
+    <p><strong>Confusion: using <code>continue</code> when <code>filter</code> would be cleaner</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Common pattern — collect items that pass a check
+const adults = [];
+for (let i = 0; i < people.length; i++) {
+  if (people[i].age < 18) continue;
+  adults.push(people[i]);
+}
+
+// Functional alternative — filter
+const adults = people.filter(p => p.age >= 18);
+
+// continue is fine when the body does work beyond just collecting.
+// for simple "keep these, drop those," filter is shorter.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-7-17-2-3': `
+<pre class="language-javascript"><code class="language-javascript">let i = 0;
+while (i < 5) {
+  if (i === 2) continue;
+  console.log(i);
+  i++;
+}
+// infinite loop — when i hits 2, continue skips i++ forever
+// fix: update i before continuing, OR put the update before the skip-prone code
+let i = 0;
+while (i < 5) {
+  if (i === 2) {
+    i++;
+    continue;
+  }
+  console.log(i);
+  i++;
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  continue;
+  console.log(items[i]);
+}
+// continue is the FIRST thing in the body — every iteration is skipped, nothing runs
+// fix: usually continue should be inside an if condition
+for (let i = 0; i < items.length; i++) {
+  if (items[i].invalid) continue;
+  console.log(items[i]);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (x < 0) continue;
+// SyntaxError — continue can only be inside a loop
+// fix: continue requires a surrounding loop. if you wanted to exit a function, use return
+function process(x) {
+  if (x < 0) return;
+  // ...
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 3; j++) {
+    if (someCondition) continue;
+  }
+}
+// continue only affects the inner loop — outer keeps going
+// fix: use a label if you want to continue the outer loop
+outer: for (let i = 0; i < 3; i++) {
+  for (let j = 0; j < 3; j++) {
+    if (someCondition) continue outer;
+  }
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  if (items[i].skip) {
+    continue;
+    console.log("skipped");   // dead code — never runs
+  }
+  process(items[i]);
+}
+// any code after continue in the same block is unreachable
+// fix: put the log BEFORE continue
+for (let i = 0; i < items.length; i++) {
+  if (items[i].skip) {
+    console.log("skipped");
+    continue;
+  }
+  process(items[i]);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  if (items[i] === target) {
+    found = true;
+    continue;
+  }
+}
+// continue when you actually wanted break — keeps looping after finding
+// fix: use break to stop on match
+for (let i = 0; i < items.length; i++) {
+  if (items[i] === target) {
+    found = true;
+    break;
+  }
+}</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-7-17-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Skip nulls
+const values = [3, null, 7, null, 11];
+for (let i = 0; i < values.length; i++) {
+  if (values[i] === null) continue;
+  console.log(values[i]);   // 3, 7, 11
+}
+
+// Skip empty strings
+const inputs = ["yes", "", "no", "", "maybe"];
+for (let i = 0; i < inputs.length; i++) {
+  if (inputs[i] === "") continue;
+  console.log(inputs[i]);
+}
+
+// Skip even numbers
+for (let i = 0; i < 10; i++) {
+  if (i % 2 === 0) continue;
+  console.log(i);   // 1, 3, 5, 7, 9
+}
+
+// Multiple guard clauses
+const records = [/* ... */];
+for (let i = 0; i < records.length; i++) {
+  if (!records[i]) continue;
+  if (records[i].deleted) continue;
+  if (records[i].draft) continue;
+  publish(records[i]);
+}
+
+// Skip with logging
+for (let i = 0; i < tasks.length; i++) {
+  if (tasks[i].locked) {
+    console.warn("locked, skipping: " + tasks[i].id);
+    continue;
+  }
+  run(tasks[i]);
+}
+
+// Skip on error, keep going
+const errors = [];
+for (let i = 0; i < jobs.length; i++) {
+  try {
+    runJob(jobs[i]);
+  } catch (err) {
+    errors.push({ index: i, error: err });
+    continue;
+  }
+  console.log("job " + i + " done");
+}
+
+// Process every other character of a string
+const word = "abcdef";
+for (let i = 0; i < word.length; i++) {
+  if (i % 2 === 1) continue;
+  console.log(word[i]);   // a, c, e
+}
+
+// Skip first item
+for (let i = 0; i < items.length; i++) {
+  if (i === 0) continue;
+  console.log(items[i]);
+}</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-7-17-3-1': `
+    <p><strong>Example: rendering only visible products</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function renderVisible(products) {
+  const grid = document.querySelector(".product-grid");
+  for (let i = 0; i < products.length; i++) {
+    if (products[i].hidden) continue;
+    if (products[i].outOfStock) continue;
+    const card = buildProductCard(products[i]);
+    grid.appendChild(card);
+  }
+}
+// hidden and out-of-stock products are skipped without an extra "if visible" block.
+// the bottom of the body assumes the product is good to show.</code></pre>
+
+    <p><strong>Example: tallying scores, ignoring no-shows</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function totalScores(players) {
+  let total = 0;
+  for (let i = 0; i < players.length; i++) {
+    if (players[i].didNotPlay) continue;
+    total = total + players[i].score;
+  }
+  return total;
+}
+// no-shows don't contribute to the total.
+// the body's main work runs only for valid players.</code></pre>
+
+    <p><strong>Example: sending notifications to qualifying users</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function notifySubscribers(users) {
+  for (let i = 0; i < users.length; i++) {
+    if (!users[i].emailVerified) continue;
+    if (!users[i].subscribed) continue;
+    if (users[i].unsubscribedToday) continue;
+    sendEmail(users[i].email, NEWSLETTER);
+  }
+}
+// three guard clauses filter out users who shouldn't be notified.
+// no nested ifs, no else branches — just clean top-down rules.</code></pre>
+
+    <p><strong>Example: parsing a config file with comments and blank lines</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function parseConfig(lines) {
+  const settings = {};
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (line === "") continue;        // skip blanks
+    if (line.startsWith("#")) continue; // skip comments
+    const [key, value] = line.split("=");
+    settings[key] = value;
+  }
+  return settings;
+}
+// blank lines and comments don't get parsed — but they don't crash the loop either.
+// the parsing logic only runs for actual setting lines.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-7-17-3-2': `
+    <ul>
+      <li><strong><code>break</code></strong> → continue's counterpart, exits the loop entirely instead of skipping one iteration</li>
+      <li><strong><code>if</code> statements</strong> → continue is almost always wrapped in an <code>if</code></li>
+      <li><strong>Update step (<code>i++</code>)</strong> → continue jumps to it in <code>for</code> loops; not in <code>while</code> loops</li>
+      <li><strong><code>while</code> loops</strong> → continue can cause infinite loops if the counter isn't updated first</li>
+      <li><strong>Nested loops</strong> → continue only affects the innermost loop unless labeled</li>
+      <li><strong>Guard clauses</strong> → the "early continue" pattern that flattens nested ifs</li>
+      <li><strong><code>filter()</code></strong> → a functional alternative when the only goal is to skip non-matches</li>
+      <li><strong><code>return</code></strong> → exits a function entirely; sometimes a cleaner option than continue when in a function-bodied loop</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-7-17-3-3': `
+    <ul>
+      <li><code>break</code></li>
+      <li><code>if</code> statements wrapping continue</li>
+      <li>Guard clauses</li>
+      <li>Update step in <code>for</code> vs <code>while</code></li>
+      <li>Nested loops</li>
+      <li>Loop labels</li>
+      <li><code>Array.prototype.filter()</code></li>
+      <li>Early returns from functions</li>
+      <li>Skipping invalid data</li>
+    </ul>
+  `,
+  /* ========================================================= 
+   Sub-lesson: 3.8.19 Loops → infinite loops
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-7-18-0-0': `
+    <p>An <strong>infinite loop</strong> is a loop whose stop condition never becomes false. The loop just keeps running forever — body, update, check, body, update, check — without ever exiting. Since JavaScript is single-threaded, this freezes the entire page: clicks stop working, animations halt, the tab stops responding.</p>
+    <p>Sometimes infinite loops are intentional (a <code>while (true)</code> with a <code>break</code> inside is a common pattern). But almost always, when you encounter one, it's a bug — the update step is missing, the condition is wrong, or something inside the body is keeping the condition true forever.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-7-18-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// Infinite loop — missing update step
+for (let i = 0; i < 5; ) {
+  console.log(i);
+}
+// i never changes. condition i < 5 stays true forever. browser freezes.
+
+// Infinite loop — condition can never be false
+for (let i = 0; i >= 0; i++) {
+  console.log(i);
+}
+// i starts at 0 and only goes up. it's always >= 0. forever.
+
+// Infinite loop — wrong direction
+for (let i = 0; i < 5; i--) {
+  console.log(i);
+}
+// i goes 0, -1, -2, -3... condition stays true. forever.</code></pre>
+    <p>Each of these compiles fine and runs without errors — that's what makes them dangerous. JavaScript can't tell that you didn't <em>mean</em> for the loop to run forever. It just runs what you wrote, exactly as written.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-7-18-0-2': `
+<pre class="language-javascript"><code class="language-javascript">// every for loop runs this cycle:
+//   1. setup (once)
+//   2. check
+//   3. body
+//   4. update
+//   5. back to step 2
+
+// for the loop to ever EXIT, step 2 (the check) must eventually be false.
+// that requires:
+//   - the update (step 4) actually changes the variable in the condition
+//   - the change moves the variable TOWARD failing the condition
+//   - the body doesn't undo the change
+
+// any one of these missing → infinite loop.
+
+// example breakdown of an infinite loop:
+for (let i = 0; i < 5; i++) {
+  i = 0;   // body resets i — update increments it, body resets it back
+}
+// i goes: 0 (start) → 0 (body) → 1 (update) → 0 (body) → 1 (update) → ...
+// condition i < 5 stays true forever.</code></pre>
+    <p>The mental model: a loop exits because <em>something</em> changes that makes the condition false. If nothing changes that something, or if it changes the wrong way, the loop runs forever.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-7-18-0-3': `
+    <p><strong>Forgetting <code>i++</code> is the most common cause.</strong> The condition checks <code>i</code>, but if <code>i</code> never changes, the check has no reason to ever be false:</p>
+<pre class="language-javascript"><code class="language-javascript">// Bad — empty update slot
+for (let i = 0; i < 5; ) {
+  console.log(i);
+}
+// i stays 0. browser freezes.
+
+// Good
+for (let i = 0; i < 5; i++) {
+  console.log(i);
+}</code></pre>
+
+    <p><strong>The update direction has to match the condition.</strong> If the condition expects <code>i</code> to grow, the update has to grow it. If the condition expects <code>i</code> to shrink, the update has to shrink it:</p>
+<pre class="language-javascript"><code class="language-javascript">// Counting up — must increment
+for (let i = 0; i < 5; i++) { ... }     // 0, 1, 2, 3, 4 ✓
+
+// Counting down — must decrement
+for (let i = 5; i > 0; i--) { ... }     // 5, 4, 3, 2, 1 ✓
+
+// Mismatched — INFINITE
+for (let i = 0; i < 5; i--) { ... }     // 0, -1, -2, -3 ... still < 5 forever
+for (let i = 5; i > 0; i++) { ... }     // 5, 6, 7, 8 ... still > 0 forever</code></pre>
+
+    <p><strong>The condition has to be <em>reachable</em>.</strong> Some conditions can't ever become false no matter how the variable changes:</p>
+<pre class="language-javascript"><code class="language-javascript">// i++ pushes i higher and higher. it's always >= 0. INFINITE.
+for (let i = 0; i >= 0; i++) { ... }
+
+// length is always positive. i starts at 0 and grows. always positive. INFINITE.
+for (let i = 0; i + 1 > 0; i++) { ... }
+
+// the condition needs to have a possible "false" outcome.
+// if it can't be false, the loop never ends.</code></pre>
+
+    <p><strong>The body must not undo the update.</strong> If the update increments <code>i</code> but the body resets it, the loop never makes progress:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 5; i++) {
+  console.log(i);
+  i = 0;   // body resets i. INFINITE.
+}
+
+// also watch for accidental resets:
+for (let i = 0; i < items.length; i++) {
+  if (someCondition) i = 0;   // intentional? maybe. infinite-loop trap? definitely.
+  process(items[i]);
+}</code></pre>
+
+    <p><strong>The data the condition depends on must not keep growing.</strong> If you're checking against <code>array.length</code> and the body adds to the array, the condition stays true forever:</p>
+<pre class="language-javascript"><code class="language-javascript">const items = [1, 2, 3];
+
+for (let i = 0; i < items.length; i++) {
+  items.push(items[i] * 2);
+}
+// every iteration adds an item. length grows faster than i. INFINITE.
+
+// fix: cache the length, or rethink the logic
+const originalLength = items.length;
+for (let i = 0; i < originalLength; i++) {
+  items.push(items[i] * 2);
+}</code></pre>
+
+    <p><strong>Intentional infinite loops use <code>while (true)</code> with <code>break</code>.</strong> This is a deliberate pattern, not a bug:</p>
+<pre class="language-javascript"><code class="language-javascript">while (true) {
+  const data = pollServer();
+  if (data === null) break;
+  process(data);
+}
+// the condition is permanently true. break is the only way out.
+// useful when the exit condition is more naturally expressed inside the body
+// than as a top-of-loop check.</code></pre>
+
+    <p><strong>Browsers will eventually warn about long-running scripts.</strong> If your page freezes for several seconds, most browsers offer a "stop script" option. But this isn't a safety net — it's a symptom. The underlying loop is broken; the browser is just rescuing you from it.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-7-18-1-0': `
+    <p>Infinite loops aren't something you "use" — they're something you avoid. The reason this topic exists is because they're one of the most common bugs when you're learning loops, and they have one of the most jarring symptoms (the page freezes). Understanding what causes them is what teaches you to write loops that always end.</p>
+    <p>The intentional version (<code>while (true)</code> with <code>break</code>) does solve a real problem: when the exit condition is easier to express inside the body than at the top. But you only need that pattern occasionally. Mostly, this lesson is about recognizing the bug shape so you can spot it before it freezes your page.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-7-18-1-1': `
+    <p>The intentional <code>while (true)</code> + <code>break</code> pattern is useful when:</p>
+<pre class="language-javascript"><code class="language-javascript">// The stop signal comes from inside the body, not from a counter
+while (true) {
+  const input = readNextChunk();
+  if (input === null) break;          // stop when stream ends
+  process(input);
+}
+
+// You're polling for a condition until something happens
+while (true) {
+  const status = checkServerStatus();
+  if (status === "ready") break;
+  if (status === "error") break;
+  wait(1000);
+}
+
+// You're handling user input until they quit
+while (true) {
+  const command = getCommand();
+  if (command === "quit") break;
+  execute(command);
+}
+
+// expressing these as a "while (some-condition)" check would force you to declare
+// and update a flag variable just for the loop. break inside while (true) is cleaner.</code></pre>
+
+    <p>Outside of those cases, you're almost never trying to <em>create</em> an infinite loop. The skill is in <em>not creating one accidentally</em>.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-7-18-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// INTENTIONAL infinite loops with break:
+
+// Polling
+while (true) {
+  if (taskFinished()) break;
+  sleep(100);
+}
+
+// Reading until end-of-stream
+while (true) {
+  const line = readLine();
+  if (line === null) break;
+  parse(line);
+}
+
+// Game loop (in environments with frame timing)
+while (true) {
+  updateGameState();
+  drawFrame();
+  if (gameOver) break;
+}
+
+// Retry-with-backoff
+let attempts = 0;
+while (true) {
+  attempts++;
+  if (attempts > 10) break;       // safety net
+  if (tryConnect()) break;        // success
+  wait(attempts * 1000);
+}
+
+// COMMON ACCIDENTAL infinite loops:
+
+// Forgot the update
+for (let i = 0; i < 5; ) { ... }
+
+// Wrong direction
+for (let i = 5; i > 0; i++) { ... }
+
+// Body undoes update
+for (let i = 0; i < 5; i++) { i--; }
+
+// Condition can't be false
+for (let i = 0; true; i++) { ... }
+
+// Growing data outpaces counter
+for (let i = 0; i < arr.length; i++) { arr.push(...); }</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-7-18-1-3': `
+    <p>An infinite loop happens when the loop has no way to ever end. The condition keeps saying "yes, keep going" forever. Maybe the counter isn't moving. Maybe it's moving the wrong way. Maybe something in the body is undoing the progress. Maybe the condition was written in a way that can never be false.</p>
+    <p>The result is the same in every case: the loop runs over and over, the page can't update, the user can't click anything, and eventually the browser asks if you'd like to kill the script. From the user's perspective, the page is broken.</p>
+    <p>The fix is always one of: add the missing update, fix the wrong direction, stop touching the counter from inside the body, or rethink the condition so it can actually become false. Once you've seen a few infinite loops, the pattern becomes recognizable — almost always one of those four causes.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-7-18-1-4': `
+    <p>Picture a treadmill. The loop is running on it — taking a step, checking if it's reached the end, taking another step, checking again. Normally, the treadmill belt moves forward each time, so eventually the runner reaches the end and steps off.</p>
+    <p>An infinite loop is what happens when the treadmill belt isn't moving. The runner keeps stepping, keeps checking, but the position never changes. They're running in place forever, and the only way to stop them is to pull the plug on the treadmill — which, in browser terms, means closing the tab.</p>
+    <p>So writing a correct loop is really about answering one question: <em>does my treadmill belt actually move?</em> Does the variable in the condition actually change in a way that gets the loop closer to ending? If yes, the loop will end. If no, you've built a loop that runs forever.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-7-18-1-5': `
+<pre class="language-javascript"><code class="language-javascript">for (let i = 5; i > 0; i++) {
+  console.log(i);
+}
+
+// what JavaScript does (forever):
+// 1. SETUP: i = 5.
+// 2. CHECK: 5 > 0 → true. Enter body.
+// 3. BODY: log 5.
+// 4. UPDATE: i++. i is now 6.
+// 5. CHECK: 6 > 0 → true. Enter body.
+// 6. BODY: log 6.
+// 7. UPDATE: i++. i is now 7.
+// 8. CHECK: 7 > 0 → true. Enter body.
+// 9. BODY: log 7.
+// ... and so on. forever.
+
+// the bug: the programmer wrote i++ but the condition was i > 0.
+// i is going UP (5, 6, 7, 8...) but the condition expected i to go DOWN.
+// since i started above 0 and keeps growing, it stays > 0 forever.
+
+// fix: match the update to the condition's direction
+for (let i = 5; i > 0; i--) {
+  console.log(i);
+}
+// now i goes 5, 4, 3, 2, 1, then 0 (which fails > 0). loop exits cleanly.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-7-18-2-0': `
+    <p>Symptoms of an infinite loop: the page freezes, becomes unresponsive, and after a few seconds the browser shows a "page slowing down" or "kill page" dialog. If your code has a loop and the page hangs the moment the loop runs, that's almost certainly your culprit.</p>
+    <p>How to find the cause:</p>
+<pre class="language-javascript"><code class="language-javascript">// Add a safety net counter and a log
+let safety = 0;
+for (let i = 0; i < items.length; i++) {
+  safety++;
+  if (safety > 1000) {
+    console.error("infinite loop detected at i =", i);
+    break;
+  }
+  console.log("i:", i, "items.length:", items.length);
+  // ... rest of body
+}
+
+// the log reveals:
+//   - is i changing? (if i stays the same, no update happened)
+//   - is i moving the right direction?
+//   - is items.length growing? (if so, the loop will never catch up)
+//   - what value is i stuck at?</code></pre>
+
+    <p>Three quick checks for any loop you suspect: (1) does the update step exist? (2) does the update move the counter in the same direction the condition expects? (3) does anything inside the body change the counter or the value the condition depends on? If any answer is "no" or "yes," that's where the bug is.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-7-18-2-1': `
+    <p>An infinite loop isn't a special kind of loop — it's just a regular loop with a condition that never becomes false. The mechanics are exactly the same as any other <code>for</code> or <code>while</code>: setup, check, body, update, repeat. The only thing that changes is whether the check ever fails.</p>
+    <p>Once you internalize this, debugging becomes mechanical. The loop is stuck in some state where the check is true. Find the state. Look at why the check is true in that state. Look at why the state isn't changing in a way that would make the check false. Fix one of those things, and the loop ends. Every infinite loop boils down to that.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-7-18-2-2': `
+    <p><strong>Confusion: thinking the browser will protect you</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Browsers DO eventually show a "kill page" dialog after several seconds.
+// but the page is FROZEN until then — clicks, scrolls, animations all stop.
+// from the user's perspective, this is a broken page.
+
+// the warning is a last resort, not a safety net.
+// don't rely on it. write loops that always end.</code></pre>
+
+    <p><strong>Confusion: <code>while (true)</code> is always bad</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// it looks scary, but it's totally fine when paired with break.
+while (true) {
+  const next = getNext();
+  if (next === null) break;
+  process(next);
+}
+
+// the rule isn't "no infinite-looking loops." the rule is "loops must end."
+// while (true) with a reachable break ends just fine.</code></pre>
+
+    <p><strong>Confusion: thinking <code>i++</code> always saves you</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 5; i++) {
+  if (someCondition) i = 0;   // body resets i
+}
+// i++ runs every iteration, but the body keeps undoing it.
+// i++ alone doesn't guarantee the loop ends — the NET change has to move forward.</code></pre>
+
+    <p><strong>Confusion: condition checks the wrong variable</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let i = 0;
+let j = 0;
+while (i < 5) {
+  console.log(i);
+  j++;   // updating the WRONG variable
+}
+// j changes, but the condition checks i. i never changes. infinite.
+
+// rule: whatever variable is in the condition is the one that has to be updated.
+// always trace the variable from condition to update step to body. they must match.</code></pre>
+
+    <p><strong>Confusion: condition uses something that itself is infinite</strong></p>
+<pre class="language-javascript"><code class="language-javascript">while (Math.random() > 0) {
+  // ...
+}
+// Math.random() returns a value between 0 (inclusive) and 1 (exclusive).
+// it's almost always > 0. the loop will run a very long time before randomly hitting 0.
+
+// conditions should be deterministic — based on values you control.
+// random conditions are a code smell unless paired with a hard limit.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-7-18-2-3': `
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 5; ) {
+  console.log(i);
+}
+// no update — i stays 0 forever
+// fix: add the update step
+for (let i = 0; i < 5; i++) {
+  console.log(i);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 5; i--) {
+  console.log(i);
+}
+// wrong direction — condition expects i to grow, but i-- shrinks it
+// fix: match direction
+for (let i = 0; i < 5; i++) {
+  console.log(i);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">let i = 0;
+while (i < 5) {
+  console.log(i);
+}
+// no i++ inside the body — i never changes
+// fix: increment i in the body
+let i = 0;
+while (i < 5) {
+  console.log(i);
+  i++;
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < arr.length; i++) {
+  arr.push(arr[i] * 2);
+}
+// arr grows every iteration, so length grows too — i never catches up
+// fix: cache the length before the loop
+const len = arr.length;
+for (let i = 0; i < len; i++) {
+  arr.push(arr[i] * 2);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 5; i++) {
+  i = 0;
+}
+// body resets i to 0 every iteration — i++ can never push it past 0
+// fix: don't reassign i in the body
+for (let i = 0; i < 5; i++) {
+  console.log(i);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">let i = 0;
+while (i < 5) {
+  if (i === 2) continue;
+  console.log(i);
+  i++;
+}
+// when i hits 2, continue skips the i++ — loop hangs at i = 2 forever
+// fix: update i BEFORE continue, or restructure
+let i = 0;
+while (i < 5) {
+  if (i === 2) {
+    i++;
+    continue;
+  }
+  console.log(i);
+  i++;
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">while (true) {
+  doWork();
+}
+// no break, no return — runs forever even when there's no work left
+// fix: add an exit condition
+while (true) {
+  if (!hasWork()) break;
+  doWork();
+}</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-7-18-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Intentional infinite loop with break
+let count = 0;
+while (true) {
+  count++;
+  if (count >= 5) break;
+}
+console.log(count);   // 5
+
+// Polling pattern (don't run as-is — needs a real check)
+while (true) {
+  if (isReady()) break;
+  if (hasError()) break;
+}
+
+// Retry with safety net
+let tries = 0;
+while (true) {
+  if (tries >= 10) break;     // safety
+  if (attemptLogin()) break;  // success
+  tries++;
+}
+
+// Reading until end of input
+while (true) {
+  const line = nextLine();
+  if (line === null) break;
+  parse(line);
+}
+
+// Common ACCIDENTS to watch for:
+
+// Off-by-one direction
+for (let i = 0; i >= 0; i++) { /* infinite */ }
+
+// Empty update slot
+for (let i = 0; i < 5; ) { /* infinite — no update */ }
+
+// Body resets the counter
+for (let i = 0; i < 5; i++) { i = 0; /* infinite */ }
+
+// Condition compares to a growing value
+const arr = [1];
+for (let i = 0; i < arr.length; i++) {
+  arr.push(i);   // infinite — array grows every round
+}
+
+// Variable in condition vs variable updated
+let i = 0;
+while (i < 5) {
+  let i = 0;  // shadows outer i — outer i never changes
+  i++;
+  /* infinite — wrong i is incremented */
+}</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-7-18-3-1': `
+    <p><strong>Example: polling for an upload to finish</strong></p>
+<pre class="language-javascript"><code class="language-javascript">async function waitForUpload(uploadId) {
+  let attempts = 0;
+  while (true) {
+    attempts++;
+    if (attempts > 60) {
+      throw new Error("upload timed out after 60 seconds");
+    }
+    const status = await checkUpload(uploadId);
+    if (status === "complete") return true;
+    if (status === "failed") return false;
+    await wait(1000);
+  }
+}
+// while (true) here is intentional — we don't know how long the upload will take.
+// but the safety counter (attempts > 60) and the status checks guarantee an exit.</code></pre>
+
+    <p><strong>Example: parsing a stream of records</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function parseRecords(reader) {
+  const records = [];
+  while (true) {
+    const next = reader.read();
+    if (next === null) break;
+    if (next.type === "EOF") break;
+    records.push(next);
+  }
+  return records;
+}
+// the natural exit is "stream is done" — easier as a break than as a top-of-loop check.</code></pre>
+
+    <p><strong>Example: the bug version of the same logic</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function parseRecords(reader) {
+  const records = [];
+  while (true) {
+    const next = reader.read();
+    records.push(next);
+  }
+  return records;
+}
+// no break — even when reader returns null/EOF, the loop keeps running.
+// this is the kind of loop that freezes the page on the very first call.</code></pre>
+
+    <p><strong>Example: real shopping cart pricing — accidental infinite loop</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function applyDiscounts(cart) {
+  for (let i = 0; i < cart.length; i++) {
+    if (cart[i].coupon) {
+      cart.push({ id: "discount", amount: -cart[i].coupon });
+    }
+  }
+}
+// every coupon adds a new "discount" entry. cart.length grows. i never catches up. INFINITE.
+
+// fix: cache the original length, or use a different structure
+function applyDiscounts(cart) {
+  const original = cart.length;
+  const additions = [];
+  for (let i = 0; i < original; i++) {
+    if (cart[i].coupon) {
+      additions.push({ id: "discount", amount: -cart[i].coupon });
+    }
+  }
+  cart.push(...additions);
+}</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-7-18-3-2': `
+    <ul>
+      <li><strong><code>i++</code></strong> → forgetting it is the #1 cause of infinite loops</li>
+      <li><strong>Stop conditions</strong> → conditions that can never be false produce infinite loops</li>
+      <li><strong><code>break</code></strong> → the deliberate exit for <code>while (true)</code> patterns</li>
+      <li><strong><code>continue</code></strong> → can cause infinite loops in <code>while</code> if it skips the update</li>
+      <li><strong><code>while</code> loops</strong> → easier to write infinite loops in than <code>for</code> because the update is manual</li>
+      <li><strong>Mutating arrays inside loops</strong> → <code>push</code>-ing to the array you're walking can prevent the loop from ending</li>
+      <li><strong>Variable shadowing</strong> → declaring a new variable with the same name as the counter can break the update silently</li>
+      <li><strong>Browser script timeouts</strong> → the warning that appears when a loop runs too long</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-7-18-3-3': `
+    <ul>
+      <li><code>i++</code> (update step)</li>
+      <li><code>i &lt; array.length</code> (stop condition)</li>
+      <li><code>break</code></li>
+      <li><code>continue</code> in <code>while</code> loops</li>
+      <li><code>while (true)</code> patterns</li>
+      <li>Mutating arrays during iteration</li>
+      <li>Variable shadowing</li>
+      <li>Browser long-script warnings</li>
+      <li>Safety counters / max iterations</li>
+    </ul>
+  `,
+  /* ========================================================= 
+   Sub-lesson: 3.8.20 Loops → difference between for and forEach()
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-7-19-0-0': `
+    <p><code>for</code> and <code>forEach()</code> are two different ways to walk through an array. They <em>look</em> like they do the same thing — visit each item, run some code — but they have real, observable differences. Some are stylistic. Some can change whether your code works at all.</p>
+    <p>The short version: <code>for</code> is a language statement, manual and flexible. <code>forEach()</code> is an array <em>method</em> that takes a function and runs it for each item. They share a goal but not a mechanism.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-7-19-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const drinks = ["coffee", "tea", "juice"];
+
+// for loop — manual counter, manual access
+for (let i = 0; i < drinks.length; i++) {
+  console.log(drinks[i]);
+}
+
+// forEach() — pass in a function, get each item handed to you
+drinks.forEach(function (drink) {
+  console.log(drink);
+});
+
+// or with an arrow function:
+drinks.forEach(drink => {
+  console.log(drink);
+});
+
+// both print:
+//   coffee
+//   tea
+//   juice</code></pre>
+    <p>For most "just walk every item and do something" cases, both produce identical output. The differences show up when you need to <em>do</em> something the language statement allows but the method doesn't — or vice versa.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-7-19-0-2': `
+<pre class="language-javascript"><code class="language-javascript">// for loop:
+//   - it's a STATEMENT (built into the language)
+//   - YOU manage the counter (i)
+//   - YOU control when to start, stop, step
+//   - the body is plain code in the same scope as outside
+
+for (let i = 0; i < arr.length; i++) {
+  // body runs in the surrounding scope
+  // can use break, continue, return
+}
+
+// forEach():
+//   - it's a METHOD on arrays
+//   - JavaScript manages iteration internally
+//   - YOU pass in a function (the "callback")
+//   - the function runs once per item, with the item as its argument
+//   - the body is INSIDE a function, with its own scope
+
+arr.forEach(function (item, index) {
+  // body runs as a function call
+  // can NOT use break or continue
+  // return inside here only exits THIS callback, not the surrounding function
+});</code></pre>
+    <p>The for loop body is just code. The forEach callback is its own function. That single difference drives most of the practical differences below.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-7-19-0-3': `
+    <p><strong><code>break</code> and <code>continue</code> only work in <code>for</code>.</strong> <code>forEach()</code> can't be exited early — it always runs to the end of the array:</p>
+<pre class="language-javascript"><code class="language-javascript">// for — break exits the loop
+for (let i = 0; i < items.length; i++) {
+  if (items[i] === target) break;   // works
+  console.log(items[i]);
+}
+
+// forEach — break is a syntax error
+items.forEach(item => {
+  if (item === target) break;   // SyntaxError: break outside loop
+  console.log(item);
+});
+
+// "return" inside a forEach callback only exits THAT callback (skips the rest
+// of THAT iteration), so it acts like continue, not break. there's no break.
+items.forEach(item => {
+  if (item.skip) return;   // skips this iteration only
+  console.log(item);
+});</code></pre>
+
+    <p><strong><code>return</code> inside <code>forEach()</code> doesn't exit the surrounding function.</strong> It only exits the callback for the current item:</p>
+<pre class="language-javascript"><code class="language-javascript">function findFirstNegative(numbers) {
+  numbers.forEach(n => {
+    if (n < 0) {
+      return n;   // returns from the CALLBACK, not findFirstNegative
+    }
+  });
+  return null;   // findFirstNegative always reaches here
+}
+// this function ALWAYS returns null, even when negatives exist.
+// the inner return only exits the callback for that one item.
+
+// to exit the outer function from inside a loop, use a regular for:
+function findFirstNegative(numbers) {
+  for (let i = 0; i < numbers.length; i++) {
+    if (numbers[i] < 0) return numbers[i];
+  }
+  return null;
+}</code></pre>
+
+    <p><strong><code>forEach()</code> gives you the index for free, as the second argument.</strong> No need to write <code>arr[i]</code> manually:</p>
+<pre class="language-javascript"><code class="language-javascript">const drinks = ["coffee", "tea", "juice"];
+
+// for — index and item are separate
+for (let i = 0; i < drinks.length; i++) {
+  console.log(i, drinks[i]);
+}
+
+// forEach — both come in as arguments
+drinks.forEach((drink, index) => {
+  console.log(index, drink);
+});
+
+// the callback can take up to three args: (item, index, fullArray).
+// most code only needs the first one or two.</code></pre>
+
+    <p><strong><code>forEach()</code> doesn't iterate over array "holes."</strong> If an array has empty slots (rare in practice), <code>for</code> visits them; <code>forEach()</code> skips them:</p>
+<pre class="language-javascript"><code class="language-javascript">const sparse = [];
+sparse[0] = "a";
+sparse[3] = "d";   // indexes 1 and 2 are "empty" slots
+
+for (let i = 0; i < sparse.length; i++) {
+  console.log(i, sparse[i]);
+}
+// 0 "a"
+// 1 undefined
+// 2 undefined
+// 3 "d"
+
+sparse.forEach((item, i) => {
+  console.log(i, item);
+});
+// 0 "a"
+// 3 "d"
+// indexes 1 and 2 are skipped — forEach doesn't visit holes.</code></pre>
+
+    <p><strong><code>forEach()</code> doesn't return anything.</strong> It always returns <code>undefined</code>. Don't try to chain it or assign its result:</p>
+<pre class="language-javascript"><code class="language-javascript">const result = arr.forEach(x => x * 2);
+console.log(result);   // undefined
+
+// if you want a new array of transformed values, use map() instead:
+const doubled = arr.map(x => x * 2);
+
+// forEach is for SIDE EFFECTS (logging, modifying things, calling functions).
+// it's not a transformation — it doesn't build a new array.</code></pre>
+
+    <p><strong><code>for</code> works on more than just arrays.</strong> Any iterable structure (strings, NodeLists, Sets, Maps) can be walked with <code>for</code>. <code>forEach()</code> requires the value to actually be an array (or have a forEach method):</p>
+<pre class="language-javascript"><code class="language-javascript">const word = "hello";
+
+// for — works on strings
+for (let i = 0; i < word.length; i++) {
+  console.log(word[i]);
+}
+
+// forEach — strings don't have forEach
+word.forEach(c => console.log(c));   // TypeError: word.forEach is not a function
+
+// for some DOM lists (NodeList from querySelectorAll), forEach works.
+// for older HTMLCollection results, it does NOT — you'd need a regular for.</code></pre>
+
+    <p><strong><code>forEach()</code> reads cleaner when the body is a single, simple action.</strong> <code>for</code> reads cleaner when the body needs full control:</p>
+<pre class="language-javascript"><code class="language-javascript">// forEach — clean when the body is short
+items.forEach(item => console.log(item.name));
+
+// for — clean when the body is long, has early exits, or coordinates multiple variables
+for (let i = 0; i < items.length; i++) {
+  if (items[i].skip) continue;
+  if (items[i].fatal) break;
+  if (items[i].matches) return items[i];
+  process(items[i]);
+}</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-7-19-1-0': `
+    <p>You'll see both forms constantly in real code. Knowing when each is appropriate — and especially when one is the <em>wrong</em> tool for the job — saves you from a category of bugs that look like they should work but don't.</p>
+    <p>The classic example: writing <code>return value</code> inside a <code>forEach</code> callback expecting it to return from the surrounding function. It doesn't. The function silently always returns whatever's after the loop. That kind of bug doesn't crash — it just gives you the wrong answer. Recognizing the difference between <code>for</code> and <code>forEach()</code> stops you from writing code that pattern.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-7-19-1-1': `
+    <p>Pick <code>for</code> when:</p>
+<pre class="language-javascript"><code class="language-javascript">// You need to break or continue
+for (let i = 0; i < items.length; i++) {
+  if (items[i].fatal) break;
+}
+
+// You need to return from the surrounding function
+function find(arr, target) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === target) return i;
+  }
+  return -1;
+}
+
+// You need to step by more than 1, or walk backward
+for (let i = arr.length - 1; i >= 0; i--) { ... }
+
+// You're walking something that's not a real array (string, HTMLCollection)
+for (let i = 0; i < word.length; i++) { ... }</code></pre>
+
+    <p>Pick <code>forEach()</code> when:</p>
+<pre class="language-javascript"><code class="language-javascript">// You're doing one simple thing per item
+arr.forEach(item => render(item));
+
+// You don't need early exits
+users.forEach(user => sendEmail(user.email));
+
+// You want the index without writing arr[i] manually
+items.forEach((item, i) => console.log(i + ": " + item));</code></pre>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-7-19-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// for — early exit cases
+for (let i = 0; i < users.length; i++) {
+  if (users[i].id === targetId) return users[i];
+}
+
+// for — index-driven walks (every other, reversed, in chunks)
+for (let i = 0; i < items.length; i = i + 2) { ... }
+for (let i = items.length - 1; i >= 0; i--) { ... }
+
+// for — strings and non-array iterables
+for (let i = 0; i < text.length; i++) {
+  console.log(text[i]);
+}
+
+// forEach — clean side-effect calls
+buttons.forEach(btn => btn.addEventListener("click", handleClick));
+
+// forEach — logging or rendering each item
+products.forEach(p => console.log(p.name + ": $" + p.price));
+
+// forEach — shorter parallel-array setup
+labels.forEach((label, i) => {
+  values[i] = label.toUpperCase();
+});
+
+// forEach — when nothing about the loop needs early exit
+notifications.forEach(n => sendPushNotification(n));</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-7-19-1-3': `
+    <p>The <code>for</code> loop is a piece of language syntax — you write all the moving parts yourself: the counter, the condition, the update. In return, you get full control: <code>break</code> exits, <code>continue</code> skips, <code>return</code> exits the function you're in, and the body is regular code in the regular scope.</p>
+    <p><code>forEach()</code> is a method on the array. You hand it a function, and it does the iteration internally. You don't write <code>i</code>, you don't write <code>arr[i]</code>, you don't write the condition. In return, you give up some control: there's no break, return only exits the inner function, and you can't easily share early-exit logic with the surrounding code.</p>
+    <p>For simple "do one thing per item" cases, <code>forEach()</code> is shorter and reads cleaner. For anything where the loop needs to react — stop early, return, jump out — <code>for</code> is the right tool because it's the one with the controls. The skill is recognizing which kind of loop you have on your hands.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-7-19-1-4': `
+    <p>Think of <code>for</code> as driving a car with manual transmission. You shift the gears, you watch the road, you decide when to brake, when to accelerate, when to turn off. It takes a little more attention, but you can handle anything — sharp turns, sudden stops, reverses, weird side roads.</p>
+    <p><code>forEach()</code> is more like riding a bus on a fixed route. You hand the driver a packaged instruction ("do this at every stop"), and the bus visits each stop in order. The bus doesn't take detours. You can't tell it to skip three stops or turn around. But you didn't have to drive — you just gave the instruction once, and it played out.</p>
+    <p>For boring, predictable routes, the bus is fine. For anything where you might need to change plans mid-trip, you want the car. Most loops are bus-style trips, which is why <code>forEach()</code> is fine most of the time. But the moment your loop needs to react to what it finds, you want the car.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-7-19-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const colors = ["red", "blue", "green"];
+
+// FOR LOOP — what JavaScript does:
+for (let i = 0; i < colors.length; i++) {
+  console.log(i, colors[i]);
+}
+// 1. SETUP: i = 0.
+// 2. CHECK: 0 < 3 → true. Run body.
+// 3. BODY: log "0 red".
+// 4. UPDATE: i++. i = 1.
+// 5. CHECK: 1 < 3 → true. Run body.
+// 6. BODY: log "1 blue".
+// 7. UPDATE: i++. i = 2.
+// 8. CHECK: 2 < 3 → true. Run body.
+// 9. BODY: log "2 green".
+// 10. UPDATE: i++. i = 3.
+// 11. CHECK: 3 < 3 → false. Exit.
+
+// FOREACH — what JavaScript does:
+colors.forEach((color, index) => {
+  console.log(index, color);
+});
+// 1. JavaScript reads colors.length internally — it's 3.
+// 2. CALL the callback with (colors[0], 0): log "0 red".
+// 3. CALL the callback with (colors[1], 1): log "1 blue".
+// 4. CALL the callback with (colors[2], 2): log "2 green".
+// 5. forEach returns undefined. done.
+
+// notice:
+// - for: the body is part of the surrounding code. break/continue/return all flow normally.
+// - forEach: the body is a function. each iteration is a function CALL.
+//   that's why "return" inside it doesn't behave the same way.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-7-19-2-0': `
+    <p>If your function "isn't returning what it should" and the loop is a <code>forEach()</code>, the bug is almost certainly the return-only-exits-the-callback trap. Switch the loop to a regular <code>for</code> and the early return will work as expected:</p>
+<pre class="language-javascript"><code class="language-javascript">// BUG — always returns undefined no matter what's in the array
+function findFirstAdult(people) {
+  people.forEach(person => {
+    if (person.age >= 18) {
+      return person;   // exits the callback, NOT findFirstAdult
+    }
+  });
+}
+
+// FIX
+function findFirstAdult(people) {
+  for (let i = 0; i < people.length; i++) {
+    if (people[i].age >= 18) return people[i];   // exits findFirstAdult
+  }
+  return null;
+}
+
+// quick check: is your "search" using forEach? if so, that's almost always wrong.
+// search functions should use for, find(), or findIndex().</code></pre>
+
+    <p>Other common signal: "I tried to break out of forEach and it gave me a syntax error." That one's actually helpful — JavaScript caught it for you. Switch to <code>for</code>.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-7-19-2-1': `
+    <p>The reason <code>break</code>, <code>continue</code>, and <code>return</code> behave differently in the two loops is that <code>forEach()</code>'s body isn't really a "loop body" — it's a function. Every iteration is a separate function call. So <code>return</code> exits that single function call, not the loop, and not the function that called <code>forEach()</code> in the first place. <code>break</code> is meaningless in a function context, which is why JavaScript rejects it as a syntax error.</p>
+    <p>Once you see <code>forEach()</code> as "a method that calls a function repeatedly" rather than "another way to write a loop," the rules stop feeling like a list to memorize. The behavior follows directly from the fact that you're inside a function call, not a loop body.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-7-19-2-2': `
+    <p><strong>Confusion: thinking <code>return</code> inside <code>forEach()</code> exits the outer function</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function hasNegative(numbers) {
+  numbers.forEach(n => {
+    if (n < 0) return true;   // returns from the callback, not hasNegative
+  });
+  return false;   // hasNegative ALWAYS reaches here
+}
+// this function always returns false. classic forEach trap.
+
+// fix: use for, or use a method that supports the search pattern (some, find)
+function hasNegative(numbers) {
+  return numbers.some(n => n < 0);
+}</code></pre>
+
+    <p><strong>Confusion: trying to <code>break</code> out of <code>forEach()</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">items.forEach(item => {
+  if (item === target) break;   // SyntaxError
+});
+
+// forEach can't be broken. options:
+// 1. switch to for
+// 2. use find() / findIndex() / some() / every() — designed for early-exit patterns
+const found = items.find(item => item === target);</code></pre>
+
+    <p><strong>Confusion: thinking <code>forEach()</code> returns a new array</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const doubled = numbers.forEach(n => n * 2);
+console.log(doubled);   // undefined
+
+// forEach returns nothing. it's for side effects, not transformations.
+// for "transform every item into a new array," use map():
+const doubled = numbers.map(n => n * 2);</code></pre>
+
+    <p><strong>Confusion: missing index access</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// forEach gives you the index as the second arg — many people forget
+items.forEach(item => {
+  console.log(item);   // no index here
+});
+
+// you can ASK for the index just by adding a parameter:
+items.forEach((item, index) => {
+  console.log(index + ": " + item);
+});</code></pre>
+
+    <p><strong>Confusion: assuming <code>forEach</code> works on everything array-like</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// strings — no forEach
+"hello".forEach(c => console.log(c));   // TypeError
+
+// HTMLCollection (from getElementsByTagName) — no forEach
+const divs = document.getElementsByTagName("div");
+divs.forEach(d => ...);   // TypeError in some browsers
+
+// NodeList (from querySelectorAll) — has forEach in modern browsers
+const buttons = document.querySelectorAll("button");
+buttons.forEach(b => ...);   // works
+
+// when in doubt, use a regular for loop — it works on anything with a length and indexes.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-7-19-2-3': `
+<pre class="language-javascript"><code class="language-javascript">function findUser(users, id) {
+  users.forEach(user => {
+    if (user.id === id) return user;
+  });
+}
+// always returns undefined — return only exits the callback
+// fix: use for, or find()
+function findUser(users, id) {
+  return users.find(user => user.id === id);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">items.forEach(item => {
+  if (item === target) break;
+});
+// SyntaxError — break can't be used in forEach
+// fix: use a regular for loop, or some()/find()
+for (let i = 0; i < items.length; i++) {
+  if (items[i] === target) break;
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const result = items.forEach(item => item * 2);
+console.log(result);   // undefined
+// forEach doesn't return anything
+// fix: use map() to build a new array
+const result = items.map(item => item * 2);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const text = "hello";
+text.forEach(c => console.log(c));
+// TypeError — strings don't have forEach
+// fix: use a for loop, or convert to an array first
+for (let i = 0; i < text.length; i++) {
+  console.log(text[i]);
+}
+// or
+[...text].forEach(c => console.log(c));</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function processSteps(steps) {
+  steps.forEach((step, i) => {
+    if (!step.valid) return;       // returns from callback only
+    if (step.terminal) return;     // same — doesn't stop iteration
+    run(step);
+  });
+}
+// the "returns" act like continue, but if you wanted to STOP after a terminal step,
+// forEach can't do that — every step still gets visited
+// fix: use for if you need early termination
+function processSteps(steps) {
+  for (let i = 0; i < steps.length; i++) {
+    if (!steps[i].valid) continue;
+    if (steps[i].terminal) return;
+    run(steps[i]);
+  }
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">async function processAll(items) {
+  items.forEach(async item => {
+    await save(item);
+  });
+  console.log("all done");   // logs immediately, not after saves finish
+}
+// forEach doesn't await async callbacks — they all start in parallel,
+// and the function moves on without waiting
+// fix: use for...of with await, or Promise.all
+async function processAll(items) {
+  for (let i = 0; i < items.length; i++) {
+    await save(items[i]);
+  }
+  console.log("all done");
+}</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-7-19-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Simple iteration — both work, forEach reads cleaner
+const fruits = ["apple", "banana", "cherry"];
+
+for (let i = 0; i < fruits.length; i++) {
+  console.log(fruits[i]);
+}
+
+fruits.forEach(fruit => console.log(fruit));
+
+// Index AND item with forEach
+fruits.forEach((fruit, i) => console.log(i + ": " + fruit));
+
+// Search — for is the right choice
+function findIndex(arr, target) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === target) return i;
+  }
+  return -1;
+}
+
+// Side effects — forEach is fine
+buttons.forEach(btn => btn.classList.add("ready"));
+
+// Transform — neither! use map()
+const upper = fruits.map(f => f.toUpperCase());
+
+// Walk every other item — for required (forEach has no step control)
+for (let i = 0; i < items.length; i = i + 2) {
+  console.log(items[i]);
+}
+
+// Walk backwards — for required
+for (let i = items.length - 1; i >= 0; i--) {
+  console.log(items[i]);
+}
+
+// Stop on a condition — for or some()
+for (let i = 0; i < items.length; i++) {
+  if (items[i].error) break;
+}
+// or
+const hasError = items.some(item => item.error);
+
+// Logging with index — forEach makes this easy
+fruits.forEach((fruit, i) => {
+  console.log("step " + (i + 1) + ": " + fruit);
+});
+
+// Walking a string — for required (strings have no forEach)
+for (let i = 0; i < "hello".length; i++) {
+  console.log("hello"[i]);
+}</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-7-19-3-1': `
+    <p><strong>Example: forEach is right — wiring up event listeners</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const tabs = document.querySelectorAll(".tab");
+tabs.forEach(tab => {
+  tab.addEventListener("click", () => {
+    activate(tab);
+  });
+});
+// no early exit needed. just a side-effect call per item. forEach is cleanest.</code></pre>
+
+    <p><strong>Example: for is right — searching with early exit</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function findExpired(items) {
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].expired) return items[i];
+  }
+  return null;
+}
+// the moment we find the expired item, we want to return it.
+// forEach can't do this — return only exits the callback.</code></pre>
+
+    <p><strong>Example: forEach is right — rendering a list</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function renderProducts(products) {
+  const container = document.querySelector(".products");
+  products.forEach(product => {
+    const card = document.createElement("div");
+    card.textContent = product.name;
+    container.appendChild(card);
+  });
+}
+// straightforward "do this per item" — no breaks, no returns, no special control flow.</code></pre>
+
+    <p><strong>Example: for is right — sequential async work</strong></p>
+<pre class="language-javascript"><code class="language-javascript">async function uploadAll(files) {
+  for (let i = 0; i < files.length; i++) {
+    await upload(files[i]);
+    console.log("done with " + (i + 1) + " of " + files.length);
+  }
+}
+// each upload waits for the previous one. forEach with async wouldn't wait —
+// all the uploads would start in parallel, and "done" would log immediately.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-7-19-3-2': `
+    <ul>
+      <li><strong><code>for</code> loop</strong> → the manual, language-level way to iterate</li>
+      <li><strong><code>forEach()</code></strong> → the array method that calls a callback per item</li>
+      <li><strong>Callback functions</strong> → what you pass to <code>forEach()</code></li>
+      <li><strong><code>break</code> / <code>continue</code></strong> → only work in <code>for</code>, not in <code>forEach()</code></li>
+      <li><strong><code>return</code> inside loops</strong> → behaves differently in <code>for</code> vs in <code>forEach()</code> callbacks</li>
+      <li><strong><code>map()</code></strong> → use this when you want a transformed new array (forEach won't return one)</li>
+      <li><strong><code>find()</code> / <code>some()</code> / <code>every()</code></strong> → designed for early-exit patterns forEach can't do</li>
+      <li><strong><code>for...of</code></strong> → another iteration form, splits the difference between for and forEach</li>
+      <li><strong>async/await</strong> → works with <code>for</code>, doesn't work as expected with <code>forEach()</code></li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-7-19-3-3': `
+    <ul>
+      <li><code>for</code> loop</li>
+      <li><code>forEach()</code></li>
+      <li>Callback functions</li>
+      <li><code>break</code> / <code>continue</code></li>
+      <li><code>map()</code></li>
+      <li><code>filter()</code></li>
+      <li><code>find()</code> / <code>findIndex()</code></li>
+      <li><code>some()</code> / <code>every()</code></li>
+      <li><code>for...of</code></li>
+      <li>Async iteration patterns</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.8.21 Loops → common mistakes
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-7-20-0-0': `
+    <p>This lesson is a roundup of the most frequent loop mistakes — the ones that show up over and over in real code, even from people who already understand <code>for</code>, <code>forEach</code>, and the rest. Most aren't about misunderstanding the syntax; they're small habits that produce wrong results without throwing errors.</p>
+    <p>Every mistake here has been touched on in earlier lessons. Seeing them all in one place makes them easier to recognize when you're debugging your own code — most loop bugs fit into one of just a few categories.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-7-20-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// The five most common loop mistakes, at a glance:
+
+// 1. Off-by-one — using <= when you meant <
+for (let i = 0; i <= items.length; i++) { ... }   // goes one past the end
+
+// 2. Forgetting the update step
+for (let i = 0; i < 5; ) { ... }                  // infinite loop
+
+// 3. Mutating the array while looping forward
+for (let i = 0; i < arr.length; i++) {
+  if (arr[i].remove) arr.splice(i, 1);            // skips the next item
+}
+
+// 4. Trying to break or return out of forEach
+items.forEach(item => {
+  if (item === target) break;                     // SyntaxError
+});
+
+// 5. Misusing return inside a forEach callback
+function find(arr, target) {
+  arr.forEach(x => { if (x === target) return x; });   // doesn't return from find
+}</code></pre>
+    <p>Each of these compiles cleanly. The code looks right; it just does the wrong thing.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-7-20-0-2': `
+<pre class="language-javascript"><code class="language-javascript">// Anatomy of the most common bug: off-by-one with <= vs <
+
+const items = ["a", "b", "c"];   // length 3, valid indexes 0, 1, 2
+
+for (let i = 0; i <= items.length; i++) {
+  console.log(items[i]);
+}
+
+// What JavaScript actually does:
+//   i = 0  → items[0] is "a"
+//   i = 1  → items[1] is "b"
+//   i = 2  → items[2] is "c"
+//   i = 3  → items[3] is undefined  ← one past the end
+//   i = 4  → check 4 <= 3 → false → exit
+
+// the symptom: "undefined" appears at the end of the output.
+// the cause: array indexes go from 0 to length - 1.
+//   <=  goes UP TO and INCLUDING length, which is one too far.
+//   <   goes UP TO but NOT INCLUDING length — exactly the right stop.
+
+for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);   // "a", "b", "c" — correct
+}
+
+// rule: use <  when comparing to a LENGTH.
+//       use <= when the upper bound is the actual stopping number you want included.</code></pre>
+    <p>Most off-by-one bugs are this exact pattern: <code>&lt;=</code> where <code>&lt;</code> belonged, or <code>length</code> where <code>length - 1</code> belonged (or vice versa). The fix is always one character.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-7-20-0-3': `
+    <p><strong>Mistake 1: Off-by-one with <code>&lt;=</code> vs <code>&lt;</code>.</strong> The most common loop bug, period. Comes from forgetting that array indexes stop at <code>length - 1</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">// Bug
+for (let i = 0; i <= arr.length; i++) { console.log(arr[i]); }
+// last iteration prints undefined
+
+// Fix
+for (let i = 0; i < arr.length; i++) { console.log(arr[i]); }</code></pre>
+
+    <p><strong>Mistake 2: Forgetting to update the counter.</strong> Empty update slot, missing <code>i++</code> in a <code>while</code>, or update slot using a non-assigning expression like <code>i + 1</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">// Bug — empty update slot
+for (let i = 0; i < 5; ) { ... }
+
+// Bug — i + 1 computes but doesn't assign
+for (let i = 0; i < 5; i + 1) { ... }
+
+// Bug — while loop with no update inside body
+let i = 0;
+while (i < 5) { console.log(i); }
+
+// Fix all three
+for (let i = 0; i < 5; i++) { ... }
+let i = 0;
+while (i < 5) { console.log(i); i++; }</code></pre>
+
+    <p><strong>Mistake 3: Mutating the array while looping forward.</strong> Removing items shifts indexes; pushing items extends length:</p>
+<pre class="language-javascript"><code class="language-javascript">// Bug — splicing while walking forward
+for (let i = 0; i < items.length; i++) {
+  if (items[i].toRemove) items.splice(i, 1);   // skips the next item
+}
+
+// Fix — walk backwards
+for (let i = items.length - 1; i >= 0; i--) {
+  if (items[i].toRemove) items.splice(i, 1);
+}
+
+// Bug — pushing to the array you're walking
+for (let i = 0; i < arr.length; i++) {
+  arr.push(arr[i] * 2);   // length keeps growing → infinite loop
+}
+
+// Fix — cache the length
+const len = arr.length;
+for (let i = 0; i < len; i++) {
+  arr.push(arr[i] * 2);
+}</code></pre>
+
+    <p><strong>Mistake 4: Direction mismatch between condition and update.</strong> The condition expects the counter to move one way; the update moves it the other:</p>
+<pre class="language-javascript"><code class="language-javascript">// Bug — condition expects up, update goes down
+for (let i = 0; i < 5; i--) { ... }   // i goes 0, -1, -2... always < 5 → infinite
+
+// Bug — condition expects down, update goes up
+for (let i = 5; i > 0; i++) { ... }   // i goes 5, 6, 7... always > 0 → infinite
+
+// Fix — match the directions
+for (let i = 0; i < 5; i++) { ... }   // counting up
+for (let i = 5; i > 0; i--) { ... }   // counting down</code></pre>
+
+    <p><strong>Mistake 5: Mixing up <code>i</code> (the index) with <code>arr[i]</code> (the item).</strong> Logging the wrong one or comparing the wrong one:</p>
+<pre class="language-javascript"><code class="language-javascript">// Bug
+for (let i = 0; i < items.length; i++) {
+  if (i === target) { ... }     // comparing index to a value — never true
+  console.log(i);                // logging the position, not the item
+}
+
+// Fix
+for (let i = 0; i < items.length; i++) {
+  if (items[i] === target) { ... }
+  console.log(items[i]);
+}</code></pre>
+
+    <p><strong>Mistake 6: Trying to <code>break</code> out of <code>forEach()</code>.</strong> <code>forEach</code> can't be exited early. The body is a function, and <code>break</code> doesn't apply to functions:</p>
+<pre class="language-javascript"><code class="language-javascript">// Bug
+items.forEach(item => {
+  if (item === target) break;   // SyntaxError
+});
+
+// Fix — use a regular for, or a method built for early exit
+for (let i = 0; i < items.length; i++) {
+  if (items[i] === target) break;
+}
+// or
+const found = items.find(item => item === target);</code></pre>
+
+    <p><strong>Mistake 7: Returning from inside a <code>forEach</code> callback expecting it to return from the outer function.</strong> The most subtle forEach bug — no error, just silently wrong:</p>
+<pre class="language-javascript"><code class="language-javascript">// Bug — always returns null
+function findFirst(arr, target) {
+  arr.forEach(item => {
+    if (item === target) return item;   // exits the callback only
+  });
+  return null;                          // findFirst always reaches here
+}
+
+// Fix — use for, or use find()
+function findFirst(arr, target) {
+  return arr.find(item => item === target) ?? null;
+}</code></pre>
+
+    <p><strong>Mistake 8: Off-by-one when looking ahead or behind.</strong> Reading <code>arr[i + 1]</code> at the last iteration, or <code>arr[i - 1]</code> at the first:</p>
+<pre class="language-javascript"><code class="language-javascript">// Bug — last iteration peeks past the end
+for (let i = 0; i < arr.length; i++) {
+  console.log(arr[i] + " then " + arr[i + 1]);   // last is "X then undefined"
+}
+
+// Fix — stop one early when looking ahead
+for (let i = 0; i < arr.length - 1; i++) {
+  console.log(arr[i] + " then " + arr[i + 1]);
+}
+
+// Bug — first iteration peeks before the start
+for (let i = 0; i < arr.length; i++) {
+  console.log(arr[i - 1] + " before " + arr[i]);   // first is "undefined before X"
+}
+
+// Fix — start at 1 when looking back
+for (let i = 1; i < arr.length; i++) {
+  console.log(arr[i - 1] + " before " + arr[i]);
+}</code></pre>
+
+    <p><strong>Mistake 9: <code>continue</code> in a <code>while</code> loop without updating first.</strong> The continue jumps to the condition check, skipping the manual update — and the loop hangs:</p>
+<pre class="language-javascript"><code class="language-javascript">// Bug
+let i = 0;
+while (i < 5) {
+  if (i === 2) continue;   // skips i++ → loop hangs at i = 2
+  console.log(i);
+  i++;
+}
+
+// Fix
+let i = 0;
+while (i < 5) {
+  if (i === 2) { i++; continue; }
+  console.log(i);
+  i++;
+}</code></pre>
+
+    <p><strong>Mistake 10: Async work inside <code>forEach()</code>.</strong> <code>forEach</code> doesn't await — all callbacks fire in parallel and the surrounding code moves on without waiting:</p>
+<pre class="language-javascript"><code class="language-javascript">// Bug — "all done" logs immediately, before any save finishes
+async function saveAll(items) {
+  items.forEach(async item => {
+    await save(item);
+  });
+  console.log("all done");
+}
+
+// Fix — use for, which works with await sequentially
+async function saveAll(items) {
+  for (let i = 0; i < items.length; i++) {
+    await save(items[i]);
+  }
+  console.log("all done");
+}</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-7-20-1-0': `
+    <p>Loop bugs are unusually frustrating because most of them don't crash. The code runs to completion and produces output — just slightly wrong output. An item missed at the end. A function that always returns <code>null</code>. A page that freezes for a second too long. The error stays invisible until you compare the result to what you expected.</p>
+    <p>Knowing the patterns ahead of time means you stop wondering "why is this wrong" and start asking "which of the usual suspects is this?" Almost every loop bug you'll encounter fits one of the categories in this lesson, so recognizing the shape gets you to the fix faster.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-7-20-1-1': `
+    <p>Knowing the common patterns turns debugging from guesswork into a checklist:</p>
+<pre class="language-javascript"><code class="language-javascript">// Symptom: last item shows undefined
+//   → check for <= where < belongs
+
+// Symptom: page freezes when loop runs
+//   → check for missing update, wrong direction, or growing array
+
+// Symptom: function silently always returns the wrong thing
+//   → check if you're using forEach with return inside
+
+// Symptom: removing items skips some
+//   → check if you're walking forward; switch to backward
+
+// Symptom: SyntaxError on break
+//   → you're inside forEach; switch to for or use find/some/every
+
+// Symptom: async loop "all done" logs too early
+//   → forEach doesn't await; switch to for with await</code></pre>
+
+    <p>Most loop bugs aren't unique. They're variations of the same handful of patterns repeating across different codebases. Recognizing the patterns is faster than reading the loop line by line.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-7-20-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Mental checklist when a loop misbehaves:
+
+// 1. Is the stop condition reachable?
+//    - is the counter actually moving?
+//    - is it moving in the right direction?
+//    - does the body undo the update?
+
+// 2. Are the boundaries correct?
+//    - first item: index 0
+//    - last item: index length - 1
+//    - < vs <= when comparing to length
+
+// 3. Am I mutating the array I'm walking?
+//    - removing → walk backwards
+//    - adding → cache the length
+
+// 4. Am I in forEach when I should be in for?
+//    - need break? → for
+//    - need to return from outer function? → for
+//    - using await? → for
+//    - need to step by 2 / walk backward? → for
+
+// 5. Am I confusing index with item?
+//    - i is the position
+//    - arr[i] is the value
+//    - log both when debugging</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-7-20-1-3': `
+    <p>Almost all loop bugs come from a small set of recurring patterns. Off-by-one errors at the boundaries. Counters that don't move or move the wrong way. Modifying the array you're walking. Trying to use language statements (<code>break</code>, <code>return</code>) inside a method (<code>forEach</code>) where they don't behave the same. Mixing up the index with the item.</p>
+    <p>None of these are about understanding loops abstractly — they're about the small details of how loops execute. Once you've seen each pattern with a concrete example, they become recognizable in your own code, even when the surface details look different.</p>
+    <p>The recap version (this lesson) isn't a replacement for the earlier lessons. It's the version you skim later — the one that lives in your head as a checklist for "what could be wrong with this loop?"</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-7-20-1-4': `
+    <p>Think of loop bugs the way a mechanic thinks of car problems: most of them aren't unique mysteries. A car that won't start has maybe ten common causes, and a good mechanic checks them in order — battery, starter, fuel, spark, etc. — before getting into anything exotic.</p>
+    <p>Loops are the same. A misbehaving loop has maybe ten common causes — off-by-one, missing update, direction mismatch, mutation while iterating, forEach return trap, async-without-await — and you can check them in order. By the time you've ruled out all the common patterns, the remaining bug is usually narrow and easy to spot.</p>
+    <p>Without the checklist, you stare at the loop trying to "see" the bug. With the checklist, you ask specific questions: "is the counter moving? is it moving the right way? is the boundary right?" Each question rules out a category of bugs, and within a few questions you're usually at the answer.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-7-20-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// A buggy function. user reports: "removeCompleted leaves some completed tasks behind."
+
+function removeCompleted(tasks) {
+  for (let i = 0; i < tasks.length; i++) {
+    if (tasks[i].completed) {
+      tasks.splice(i, 1);
+    }
+  }
+}
+
+// Walking through the checklist:
+// 1. Is the counter moving? Yes — i++ each iteration.
+// 2. Boundary correct? Yes — < tasks.length.
+// 3. Mutating the array I'm walking? YES — splice removes items.
+//    → this is the bug. removing at index i shifts the next item DOWN to index i,
+//       but i still increments to i+1, so the shifted item is skipped.
+
+// trace through with [A:done, B:done, C:done]:
+//   i = 0: tasks[0] is A:done. splice(0, 1). tasks is now [B:done, C:done].
+//   i = 1: tasks[1] is C:done. splice(1, 1). tasks is now [B:done].
+//   i = 2: 2 < 1 is false. exit.
+// B was skipped — its index became 0 right when i moved to 1.
+
+// Fix — walk backwards
+function removeCompleted(tasks) {
+  for (let i = tasks.length - 1; i >= 0; i--) {
+    if (tasks[i].completed) {
+      tasks.splice(i, 1);
+    }
+  }
+}
+
+// or use filter (creates a new array, doesn't mutate)
+function removeCompleted(tasks) {
+  return tasks.filter(t => !t.completed);
+}</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-7-20-2-0': `
+    <p>The single most useful debugging move for any misbehaving loop: log the index AND the current item AND any value that affects the condition, every iteration:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  console.log("i:", i, "item:", items[i], "length:", items.length);
+  // ... rest of body
+}
+
+// the output reveals which category the bug fits into:
+//
+// - i never changes              → missing or broken update
+// - length grows every iteration → mutating array while walking
+// - i goes the wrong way          → direction mismatch
+// - last item is undefined        → off-by-one (<= vs <)
+// - first or last item missing   → wrong start or wrong stop
+// - one item shows up twice / gets skipped → mutating array, splice trap
+// - condition stays true forever → infinite loop (one of the above)</code></pre>
+
+    <p>One log line, three pieces of information, almost every loop bug ruled out in seconds.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-7-20-2-1': `
+    <p>The mistakes in this lesson aren't separate items to memorize. They all stem from the same underlying truth: a loop is a few moving parts (counter, condition, body, update) and any of them can drift out of alignment. The "common mistakes" are just the most frequent ways alignment gets lost.</p>
+    <p>Once you're comfortable with the parts of a loop and how they fit together, the bugs stop feeling like surprises. You see a loop misbehaving, you mentally step through the parts, and the misalignment usually jumps out. The lesson is really about getting fluent enough to do that quickly.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-7-20-2-2': `
+    <p><strong>Confusion: thinking <code>forEach</code> is "always cleaner"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// forEach IS cleaner for simple "do one thing per item" cases.
+// it's the WRONG tool for searches, async work, early exits, custom step sizes,
+// or anything that needs control flow.
+
+// rough rule: if your body has a "return" or a "break," use for.
+// if it has "await," use for.
+// otherwise, forEach is usually fine.</code></pre>
+
+    <p><strong>Confusion: thinking off-by-one means "you're slightly off"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// off-by-one isn't a small bug — it's a 100% wrong bug for one item.
+// the loop processes the wrong number of items, OR processes the wrong items.
+// the rest of the program may be correct, but that one item is wrong every time.
+
+// in user-facing code, that one item is often "the latest entry" or "the first row" —
+// the most visible position in the data.</code></pre>
+
+    <p><strong>Confusion: treating "common mistakes" as just a beginner topic</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// the specific mistakes shift over time:
+// - beginners hit off-by-one and forgot-to-update most often
+// - intermediate developers hit the forEach return trap and mutate-while-iterating
+// - experienced developers hit async-in-forEach and subtle race conditions
+
+// the underlying pattern (small visual mix-ups producing wrong results) doesn't go away.
+// the lesson stays useful because the bugs evolve as your code gets more complex.</code></pre>
+
+    <p><strong>Confusion: thinking "I'd notice an infinite loop"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// not all infinite loops freeze the page instantly.
+// some loops run a few hundred thousand iterations before browser warning.
+// some only become infinite when the array gets large.
+// some only become infinite based on data that wasn't there during testing.
+
+// the goal isn't to "notice" infinite loops; it's to write loops that can't be infinite.
+// that means: every loop has a clear answer to "what makes the condition false?"</code></pre>
+
+    <p><strong>Confusion: assuming arrays don't change while you walk them</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// most of the time they don't, but when they do, the loop's behavior changes.
+// the array you read at iteration 0 might not be the same array at iteration 5
+// if any code in between (your body, an event handler, a callback) modified it.
+
+// rule: if anything in or near the loop body could mutate the array, write it
+// as if it will. either walk backwards, cache the length, or filter into a new array.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-7-20-2-3': `
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i <= items.length; i++) { console.log(items[i]); }
+// off-by-one — last iteration prints undefined
+// fix: use < instead of <=
+for (let i = 0; i < items.length; i++) { console.log(items[i]); }</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < 5; ) { console.log(i); }
+// missing update — infinite loop
+// fix: include i++
+for (let i = 0; i < 5; i++) { console.log(i); }</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  if (items[i].toRemove) items.splice(i, 1);
+}
+// removing while walking forward — skips the next item
+// fix: walk backwards
+for (let i = items.length - 1; i >= 0; i--) {
+  if (items[i].toRemove) items.splice(i, 1);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">items.forEach(item => {
+  if (item === target) break;
+});
+// SyntaxError — break can't be used in forEach
+// fix: use for, or use find/some
+const match = items.find(item => item === target);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function findEven(arr) {
+  arr.forEach(n => {
+    if (n % 2 === 0) return n;
+  });
+}
+// always returns undefined — return only exits the callback
+// fix: use for, or find
+function findEven(arr) {
+  return arr.find(n => n % 2 === 0);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < arr.length; i++) {
+  console.log(arr[i] + " before " + arr[i + 1]);
+}
+// last iteration prints "X before undefined"
+// fix: stop one short when peeking ahead
+for (let i = 0; i < arr.length - 1; i++) {
+  console.log(arr[i] + " before " + arr[i + 1]);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">async function saveAll(items) {
+  items.forEach(async item => { await save(item); });
+  console.log("done");
+}
+// "done" logs immediately — forEach doesn't await
+// fix: use for with await
+async function saveAll(items) {
+  for (let i = 0; i < items.length; i++) await save(items[i]);
+  console.log("done");
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">let i = 0;
+while (i < 5) {
+  if (i === 2) continue;
+  console.log(i);
+  i++;
+}
+// continue skips i++ — infinite loop at i = 2
+// fix: update before continuing
+let i = 0;
+while (i < 5) {
+  if (i === 2) { i++; continue; }
+  console.log(i);
+  i++;
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 5; i > 0; i++) { console.log(i); }
+// direction mismatch — i grows but condition expects shrinking → infinite
+// fix: match update direction to condition
+for (let i = 5; i > 0; i--) { console.log(i); }</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  if (i === target) console.log("found");
+}
+// comparing index to a value — the index is a number, not the item
+// fix: compare items[i], not i
+for (let i = 0; i < items.length; i++) {
+  if (items[i] === target) console.log("found");
+}</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-7-20-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// The five-second loop audit. Run through these on every loop you write:
+
+// 1. Counter actually moves?
+for (let i = 0; i < 5; i++) { /* yes */ }
+
+// 2. Counter moves the right direction?
+for (let i = 0; i < 5; i++) { /* up to match < */ }
+for (let i = 5; i > 0; i--) { /* down to match > */ }
+
+// 3. Boundary uses < not <= when comparing to length?
+for (let i = 0; i < arr.length; i++) { /* yes */ }
+
+// 4. Body doesn't undo the update or modify the array unsafely?
+for (let i = 0; i < arr.length; i++) {
+  /* doesn't reassign i */
+  /* doesn't push to arr */
+}
+
+// 5. The right loop type for the job?
+//    - searching with early exit → for or find()
+//    - simple side effect → forEach
+//    - need to step by 2 → for
+//    - using await → for
+
+// SAFE PATTERNS for common cases:
+
+// walking forward with no mutation
+for (let i = 0; i < arr.length; i++) {
+  process(arr[i]);
+}
+
+// walking backward to remove items
+for (let i = arr.length - 1; i >= 0; i--) {
+  if (arr[i].remove) arr.splice(i, 1);
+}
+
+// peeking at neighbors
+for (let i = 1; i < arr.length - 1; i++) {
+  console.log(arr[i - 1], arr[i], arr[i + 1]);
+}
+
+// searching with early exit
+function find(arr, target) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === target) return arr[i];
+  }
+  return null;
+}
+
+// async sequential work
+async function processAll(items) {
+  for (let i = 0; i < items.length; i++) {
+    await process(items[i]);
+  }
+}
+
+// simple side effects per item
+items.forEach(item => render(item));</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-7-20-3-1': `
+    <p><strong>Example: a buggy notification system with the most common mistakes</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function sendNotifications(users) {
+  // Bug 1: forEach with async — fires all sends in parallel, doesn't await
+  users.forEach(async user => {
+    // Bug 2: off-by-one in dependency check
+    for (let i = 0; i <= user.subscriptions.length; i++) {
+      const sub = user.subscriptions[i];   // last iteration: undefined → crash
+      if (sub.muted) return;               // Bug 3: return only exits callback
+      await sendPush(user, sub);
+    }
+    // Bug 4: removing while walking forward
+    for (let i = 0; i < user.unread.length; i++) {
+      if (user.unread[i].seen) user.unread.splice(i, 1);
+    }
+  });
+  console.log("all done");   // Bug 5: prints immediately, before any send finishes
+}
+
+// Fixed version
+async function sendNotifications(users) {
+  for (let i = 0; i < users.length; i++) {
+    const user = users[i];
+
+    let muted = false;
+    for (let j = 0; j < user.subscriptions.length; j++) {
+      if (user.subscriptions[j].muted) { muted = true; break; }
+      await sendPush(user, user.subscriptions[j]);
+    }
+    if (muted) continue;
+
+    for (let k = user.unread.length - 1; k >= 0; k--) {
+      if (user.unread[k].seen) user.unread.splice(k, 1);
+    }
+  }
+  console.log("all done");
+}
+// every fix maps to one of the common mistakes from this lesson.</code></pre>
+
+    <p><strong>Example: list rendering, off-by-one in pagination</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Bug — last page shows one too few items, OR shows "undefined" at the end
+function renderPage(items, page, perPage) {
+  const start = page * perPage;
+  for (let i = start; i <= start + perPage; i++) {   // <= bug
+    if (items[i]) renderRow(items[i]);
+  }
+}
+
+// Fix
+function renderPage(items, page, perPage) {
+  const start = page * perPage;
+  const end = Math.min(start + perPage, items.length);
+  for (let i = start; i < end; i++) {
+    renderRow(items[i]);
+  }
+}</code></pre>
+
+    <p><strong>Example: search function returning the wrong thing</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Bug — silently always returns null
+function findActiveUser(users) {
+  users.forEach(user => {
+    if (user.active) return user;   // exits callback only
+  });
+  return null;
+}
+
+// Fix
+function findActiveUser(users) {
+  return users.find(user => user.active) ?? null;
+}</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-7-20-3-2': `
+    <ul>
+      <li><strong><code>i = 0</code></strong> → starting value mistakes (start at 1 when 0 was needed)</li>
+      <li><strong><code>i &lt; array.length</code></strong> → boundary mistakes (<code>&lt;=</code> vs <code>&lt;</code>)</li>
+      <li><strong><code>i++</code></strong> → forgotten or wrong-direction update step</li>
+      <li><strong>Indexes starting at 0</strong> → confusion between index and human position</li>
+      <li><strong>Current item</strong> → mixing up <code>i</code> with <code>arr[i]</code></li>
+      <li><strong><code>break</code></strong> → can't be used in forEach</li>
+      <li><strong><code>continue</code></strong> → can cause infinite loops in <code>while</code></li>
+      <li><strong>Infinite loops</strong> → result of update/condition mistakes</li>
+      <li><strong>For vs forEach</strong> → return-trap and async-trap</li>
+      <li><strong>Mutating arrays during iteration</strong> → splice and push pitfalls</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-7-20-3-3': `
+    <ul>
+      <li>All earlier 3.8 lessons (each common mistake maps to one)</li>
+      <li>Off-by-one errors</li>
+      <li>Infinite loops</li>
+      <li>Mutating arrays during iteration</li>
+      <li>forEach return trap</li>
+      <li>Async iteration patterns</li>
+      <li><code>find()</code> / <code>some()</code> / <code>every()</code></li>
+      <li>Debugging loops</li>
+    </ul>
+  `,
+  /* ========================================================= 
+   Sub-lesson: 3.8.22 Loops → debugging loops
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-7-21-0-0': `
+    <p>Debugging a loop means figuring out <em>why</em> the loop is doing something different from what you expected. The loop runs without crashing, but the output is wrong, items are missing, the page freezes, or a function returns the wrong value. The actual mechanics — counter, condition, body, update — are usually fine; one of them is just doing something slightly different than you thought.</p>
+    <p>The good news: loops are extremely debuggable. Every iteration is a chance to log what's happening, and a well-placed <code>console.log</code> can tell you within a few seconds which moving part has drifted. This lesson is about what to log, where to log it, and how to read the output.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-7-21-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// The all-purpose loop debug log
+for (let i = 0; i < items.length; i++) {
+  console.log("i:", i, "item:", items[i], "length:", items.length);
+  // ... rest of body
+}
+
+// what this single line tells you, at a glance:
+//   - i is moving (or not)
+//   - i is going the right direction (or not)
+//   - what the current item is
+//   - whether the array's length is changing under you
+//   - whether i is past the end (item shows undefined)
+
+// almost every loop bug becomes obvious within a few iterations of this output.</code></pre>
+    <p>One <code>console.log</code> at the top of the body, listing the index, the current item, and the length, is the single most valuable debugging tool for loops. Most bugs reveal themselves in the first few lines of output.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-7-21-0-2': `
+<pre class="language-javascript"><code class="language-javascript">// What to log, and what each tells you:
+
+// 1. The counter (i):
+console.log("i:", i);
+// reveals whether the counter is moving and in what direction.
+
+// 2. The current item (arr[i]):
+console.log("current:", arr[i]);
+// reveals whether the loop is at the position you expected.
+
+// 3. The condition's result, if it's complex:
+console.log("condition:", i < arr.length && !found);
+// reveals which iteration the loop will exit on.
+
+// 4. Anything in the body that might affect the next iteration:
+console.log("found:", found, "length:", arr.length);
+// reveals whether the body is mutating state in unexpected ways.
+
+// 5. A label so you know which loop is logging (when there are several):
+console.log("[outer]", i, "[inner]", j);
+// invaluable when nested loops get tangled.</code></pre>
+    <p>The pattern is always: log enough state that you can reconstruct what the loop "thinks" on each iteration. Five seconds of typing saves an hour of staring at the code.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-7-21-0-3': `
+    <p><strong>Log at the top of the body, before any conditions.</strong> If you log inside an <code>if</code>, you only see the iterations where that branch ran — and you might miss the buggy ones:</p>
+<pre class="language-javascript"><code class="language-javascript">// Bad — only logs when the branch runs
+for (let i = 0; i < items.length; i++) {
+  if (items[i].matches) {
+    console.log("matched at", i);   // misses every other iteration
+    process(items[i]);
+  }
+}
+
+// Good — log everything, then conditionally process
+for (let i = 0; i < items.length; i++) {
+  console.log("i:", i, "item:", items[i]);   // shows ALL iterations
+  if (items[i].matches) {
+    process(items[i]);
+  }
+}</code></pre>
+
+    <p><strong>Use named labels when output gets crowded.</strong> Multiple logs with no labels run together fast:</p>
+<pre class="language-javascript"><code class="language-javascript">// Hard to read
+for (let i = 0; i < users.length; i++) {
+  console.log(i);
+  console.log(users[i].id);
+  console.log(users[i].active);
+}
+
+// Easy to read
+for (let i = 0; i < users.length; i++) {
+  console.log("i:", i, "id:", users[i].id, "active:", users[i].active);
+}
+
+// or use console.table for object arrays:
+console.table(users);   // renders as a real table in DevTools</code></pre>
+
+    <p><strong>Add a safety counter when an infinite loop is suspected.</strong> Lets you log inside the loop without locking up the page:</p>
+<pre class="language-javascript"><code class="language-javascript">let safety = 0;
+while (someCondition) {
+  safety++;
+  if (safety > 1000) {
+    console.error("loop safety triggered — stopped at iteration", safety);
+    break;
+  }
+  // ... rest of body
+}
+
+// without the safety, an infinite loop also produces infinite logs —
+// often crashing DevTools or making the page so slow you can't read them.</code></pre>
+
+    <p><strong>Use breakpoints in DevTools for non-trivial bugs.</strong> Open DevTools → Sources → click the line number to set a breakpoint. The loop pauses there each iteration, and you can hover over <code>i</code>, <code>arr[i]</code>, and any other variable to see its current value:</p>
+<pre class="language-javascript"><code class="language-javascript">// set a breakpoint on the line marked ↓
+for (let i = 0; i < items.length; i++) {
+  process(items[i]);   // ← breakpoint here
+}
+
+// each "Resume" pauses at the next iteration.
+// you can step into process() to see what it does with each item.
+// console.log scales for "what's happening"; breakpoints scale for "why."</code></pre>
+
+    <p><strong>Conditional breakpoints are even better when only some iterations are buggy.</strong> Right-click a line number, "Add conditional breakpoint":</p>
+<pre class="language-javascript"><code class="language-javascript">// Conditional breakpoint condition: i === 17
+//
+// the loop runs normally through iterations 0–16, then pauses at i = 17.
+// this is huge when the bug only happens at one specific iteration —
+// say, when the data has a bad value, or when length suddenly changes.</code></pre>
+
+    <p><strong>Log AFTER the loop, too.</strong> Knowing the final state often pinpoints the bug:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  // ... body
+}
+console.log("after loop, i:", i);                     // ReferenceError if i is scoped to for
+console.log("after loop, items.length:", items.length);
+console.log("after loop, items:", items);
+
+// useful for catching:
+//   - wrong final length (mutation bugs)
+//   - wrong items in the array (overwriting bugs)
+//   - state variables holding the wrong value</code></pre>
+
+    <p><strong>For nested loops, log the indexes together.</strong> Single-letter logs get confusing fast:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < rows.length; i++) {
+  for (let j = 0; j < cols.length; j++) {
+    console.log("(" + i + "," + j + "):", grid[i][j]);
+  }
+}
+
+// the (i,j) format makes it instantly obvious where you are.
+// useful for spotting whether one loop is exiting early, or skipping rows/columns.</code></pre>
+
+    <p><strong>Tag your logs with a unique string so you can find or filter them.</strong> When the console gets noisy, search by tag:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  console.log("[loop-A]", i, items[i]);
+}
+
+// in DevTools, type "loop-A" in the filter bar to show only those logs.
+// remove the tag (or all of them at once with find/replace) when you're done.</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-7-21-1-0': `
+    <p>Loop bugs are hard to see by reading the code, but extremely easy to see in the output. The loop runs many times, and each iteration is a chance to capture what's happening. The whole skill of debugging loops comes down to making that capture happen — putting a log somewhere useful and reading what comes out.</p>
+    <p>Without logs, you stare at the loop trying to mentally simulate every iteration. With logs, JavaScript does the simulation for you and shows you the result. Most bugs become obvious within a few lines of output.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-7-21-1-1': `
+    <p>The right log at the right place turns a mystery into a one-look fix:</p>
+<pre class="language-javascript"><code class="language-javascript">// Symptom: removeCompleted leaves some items behind.
+
+function removeCompleted(tasks) {
+  for (let i = 0; i < tasks.length; i++) {
+    console.log("i:", i, "task:", tasks[i], "length:", tasks.length);
+    if (tasks[i].completed) tasks.splice(i, 1);
+  }
+}
+
+// example output for [{c:T}, {c:T}, {c:T}]:
+//   i: 0 task: {c:T} length: 3
+//   i: 1 task: {c:T} length: 2     ← length dropped, the next item shifted
+//   (loop exits — i = 2, length = 1, condition false)
+
+// the log shows length is changing as items are removed.
+// that immediately points to "splicing while walking forward" — and the fix
+// (walk backwards) becomes obvious.</code></pre>
+
+    <p>Almost every loop bug looks like that: one log shows the unexpected behavior, and the fix follows from what the log revealed. The skill is just knowing what to log, and where.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-7-21-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Standard debug log — top of the body
+for (let i = 0; i < arr.length; i++) {
+  console.log("i:", i, "item:", arr[i]);
+  // ...
+}
+
+// Logging the condition's result for "why isn't this exiting?"
+for (let i = 0; i < arr.length && !done; i++) {
+  console.log("i:", i, "done:", done, "condition still true");
+  // ...
+}
+
+// Logging before AND after a suspicious line
+for (let i = 0; i < arr.length; i++) {
+  console.log("before:", arr[i]);
+  arr[i] = transform(arr[i]);
+  console.log("after:", arr[i]);
+}
+
+// Counting iterations to detect infinite loops
+let count = 0;
+for (let i = 0; i < arr.length; i++) {
+  count++;
+  if (count > 10000) {
+    console.error("LOOP HAS RUN", count, "TIMES — likely infinite");
+    break;
+  }
+  // ...
+}
+
+// console.table for nested object arrays
+console.table(users);
+
+// Logging the index where a search exits
+let found = -1;
+for (let i = 0; i < arr.length; i++) {
+  if (arr[i] === target) { found = i; break; }
+}
+console.log("search exited at index:", found);
+
+// Group output by iteration with console.group
+for (let i = 0; i < arr.length; i++) {
+  console.group("iteration " + i);
+  console.log("item:", arr[i]);
+  console.log("processed:", process(arr[i]));
+  console.groupEnd();
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-7-21-1-3': `
+    <p>Debugging a loop is just watching what it does. You can't see iterations from outside the loop — they happen too fast, and you only see the result. Logs are how you slow it down enough to look. Each <code>console.log</code> is a snapshot of what the loop "thinks" at that moment.</p>
+    <p>The most useful single log is the one at the top of the body, listing the counter, the current item, and the length. That one line covers most of the questions you'd want to ask: is the counter moving, is it pointing at what you expect, is the array changing? When that log shows something surprising, you've usually found the bug — or at least narrowed it to a single line.</p>
+    <p>Beyond logs, breakpoints (in DevTools) let you actually pause the loop and inspect the variables at any moment. They're slower but more powerful, and worth using when a log doesn't immediately reveal the cause.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-7-21-1-4': `
+    <p>Think of a loop as a fast-moving production line. Each iteration is a box flying past on a conveyor. You can stand back and look at the boxes piled at the end (the final result), but you won't be able to tell where things went wrong. To see the bug, you need to slow down the line and inspect each box as it passes.</p>
+    <p><code>console.log</code> is a camera that snaps a photo of every box. You can review the photos afterwards and immediately spot which one is off. Breakpoints are like physically stopping the line and walking around — slower, but lets you examine each box from any angle.</p>
+    <p>The mistake people make is staring at the line and trying to guess what went wrong. The line is too fast and the boxes look mostly the same. Use the camera. Use the stopper. The bug becomes findable the moment you look at one specific iteration.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-7-21-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// User reports: getFirstActive returns null even when active users exist.
+
+function getFirstActive(users) {
+  let result = null;
+  users.forEach(user => {
+    if (user.active) {
+      result = user;
+      return;          // suspected line
+    }
+  });
+  return result;
+}
+
+// Step 1: log everything to see what's happening.
+function getFirstActive(users) {
+  let result = null;
+  users.forEach(user => {
+    console.log("checking:", user.name, "active:", user.active);
+    if (user.active) {
+      console.log("MATCH — setting result");
+      result = user;
+      return;
+    }
+  });
+  console.log("after loop, result:", result);
+  return result;
+}
+
+// Output for [{name:"A",active:false}, {name:"B",active:true}, {name:"C",active:true}]:
+//   checking: A active: false
+//   checking: B active: true
+//   MATCH — setting result
+//   checking: C active: true       ← still iterating after match
+//   MATCH — setting result          ← overwriting with C
+//   after loop, result: C
+
+// Two findings:
+//   1. forEach doesn't stop at the first match — return only exits the callback.
+//   2. result keeps getting overwritten by later matches.
+
+// Wait — the user said it returns null. but our log shows it returns C.
+// Are we testing with the same data?
+
+// If users is empty:
+// Output for []:
+//   after loop, result: null
+//
+// the bug isn't really a bug. for an empty input, the function correctly returns null.
+// for a non-empty input, the function returns the LAST active user, not the first.
+// the user's actual problem might be "I'm getting C instead of B."
+
+// Fix using a real for loop, with early return:
+function getFirstActive(users) {
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].active) return users[i];
+  }
+  return null;
+}
+// now both behaviors are correct: empty input → null, non-empty → first match.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-7-21-2-0': `
+    <p>If a single log doesn't tell you what's wrong, log <em>more</em>. The cost of a few extra logs is nothing compared to the cost of staring at the code:</p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  console.log("--- iteration " + i + " ---");
+  console.log("item:", items[i]);
+  console.log("array length:", items.length);
+  console.log("any external state I care about:", externalCounter);
+  // ... body
+  console.log("end of body, item is now:", items[i]);
+}
+
+// when you don't know what's wrong, log everything.
+// when you've narrowed it down, remove the logs you don't need.
+// don't try to be efficient with logs while debugging — be exhaustive.</code></pre>
+
+    <p>The other key skill: when an iteration's log looks fine but the next iteration's looks wrong, the bug is in the body — between those two log lines. Add another log halfway through to narrow it down. Bisecting the body with logs is the same idea as bisecting a search range: each log cuts the suspect area in half.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-7-21-2-1': `
+    <p>Debugging loops isn't a different skill from debugging anything else. You're just observing what the program does, comparing it to what you expected, and finding the line where they diverge. Loops happen to amplify this because they run the same code many times — so any log inside a loop produces a lot of data, and the data tells the story of every iteration.</p>
+    <p>Once you stop trying to "figure out what's wrong" and start <em>looking</em> at what the loop is doing, debugging becomes mechanical. Log, run, read. Almost every loop bug shows itself within the first ten iterations of well-placed output.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-7-21-2-2': `
+    <p><strong>Confusion: thinking <code>console.log</code> is "for beginners"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// professional developers use console.log constantly. it's not a beginner tool —
+// it's the fastest way to see what code is doing.
+
+// breakpoints are more powerful, but logs scale better when you want to see the
+// shape of an entire run, not just one moment in time.</code></pre>
+
+    <p><strong>Confusion: logs only inside <code>if</code> branches</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Bad — only fires on iterations where the branch runs
+for (let i = 0; i < items.length; i++) {
+  if (items[i].matches) {
+    console.log("processing", items[i]);
+  }
+}
+
+// the log only shows you the matches. you have no idea what happened
+// on the iterations that DIDN'T match — which might be the buggy ones.
+
+// rule: log first (unconditionally), then branch.
+for (let i = 0; i < items.length; i++) {
+  console.log("checking", items[i]);
+  if (items[i].matches) {
+    console.log("matched");
+  }
+}</code></pre>
+
+    <p><strong>Confusion: removing logs too soon</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// when you find a bug, your instinct is to fix it and remove the logs.
+// resist that — first verify the fix actually worked.
+
+// run the code again WITH the logs to confirm the output is now correct.
+// THEN remove the logs.
+
+// removing logs before confirming means you don't know if your fix worked
+// or if a different code path made it look like it did.</code></pre>
+
+    <p><strong>Confusion: logging too little when an infinite loop is suspected</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// when a loop hangs the page, you can't just add logs and re-run —
+// the page will hang again, possibly crashing DevTools too.
+
+// always pair "infinite loop suspect" debugging with a safety counter:
+let safety = 0;
+while (someCondition) {
+  safety++;
+  if (safety > 100) {
+    console.error("infinite loop");
+    break;
+  }
+  console.log("iter:", safety);
+}
+
+// now you get logs without hanging. a hundred lines of output is more than
+// enough to show the bug pattern.</code></pre>
+
+    <p><strong>Confusion: thinking the bug must be "deeper"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// most loop bugs are surface-level: an off-by-one, a missing update, a typo
+// in a property name. they look like they should be subtle, but the fix is
+// almost always one or two characters.
+
+// when a loop is misbehaving, check the obvious causes FIRST:
+//   - is the counter moving?
+//   - is < or <= correct?
+//   - is the right item being accessed?
+//   - is the array being mutated?
+
+// 95% of loop bugs are in this list. don't go looking for clever causes
+// until you've ruled out the boring ones.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-7-21-2-3': `
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  if (items[i].matches) {
+    console.log("matched");
+    process(items[i]);
+  }
+}
+// only logs on matches — can't see why non-matches are weird
+// fix: log before branching
+for (let i = 0; i < items.length; i++) {
+  console.log("i:", i, "item:", items[i]);
+  if (items[i].matches) {
+    process(items[i]);
+  }
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">while (condition) {
+  console.log(state);
+  // body that should change condition...
+}
+// page hangs — infinite loop floods console
+// fix: add a safety counter before logging
+let safety = 0;
+while (condition) {
+  if (++safety > 1000) { console.error("safety hit"); break; }
+  console.log(state);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+}
+// just logs the item — doesn't show the index, length, or context
+// fix: log everything you might need
+for (let i = 0; i < items.length; i++) {
+  console.log("i:", i, "item:", items[i], "length:", items.length);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Found a bug, fixed it, removed logs, didn't re-run
+// fix: ALWAYS verify the fix with logs before removing them
+for (let i = 0; i < items.length; i++) {
+  console.log("verifying fix — i:", i, "item:", items[i]);
+  // ... fixed body
+}
+// run, confirm output is now correct, THEN remove logs.</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < arr.length; i++) {
+  for (let j = 0; j < arr[i].length; j++) {
+    console.log(i);   // which loop is this? unclear
+    console.log(j);
+  }
+}
+// nested logs without labels are confusing
+// fix: combine into one labeled log
+for (let i = 0; i < arr.length; i++) {
+  for (let j = 0; j < arr[i].length; j++) {
+    console.log("(" + i + "," + j + "):", arr[i][j]);
+  }
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Trying to "guess" the bug instead of logging
+function findUser(users, id) {
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].id == id) return users[i];   // is this == or === ? unclear at a glance
+  }
+  return null;
+}
+// fix: log to confirm what's actually happening
+function findUser(users, id) {
+  for (let i = 0; i < users.length; i++) {
+    console.log("comparing", users[i].id, "to", id, "→", users[i].id === id);
+    if (users[i].id === id) return users[i];
+  }
+  return null;
+}
+// log shows the comparison values, the comparison result, and the types if needed.</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-7-21-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// The all-purpose log
+for (let i = 0; i < items.length; i++) {
+  console.log("i:", i, "item:", items[i], "length:", items.length);
+}
+
+// Tagged log for filtering
+for (let i = 0; i < items.length; i++) {
+  console.log("[render]", i, items[i]);
+}
+
+// Group by iteration
+for (let i = 0; i < items.length; i++) {
+  console.group("iteration " + i);
+  console.log("item:", items[i]);
+  console.log("processed:", process(items[i]));
+  console.groupEnd();
+}
+
+// Counting iterations as a sanity check
+let count = 0;
+for (let i = 0; i < items.length; i++) {
+  count++;
+}
+console.log("loop ran " + count + " times");
+
+// Safety counter for infinite-loop suspects
+let safety = 0;
+while (condition) {
+  if (++safety > 1000) {
+    console.error("safety triggered");
+    break;
+  }
+}
+
+// Before/after logs to isolate a buggy line
+for (let i = 0; i < items.length; i++) {
+  console.log("before transform:", items[i]);
+  items[i] = transform(items[i]);
+  console.log("after transform:", items[i]);
+}
+
+// console.table for object arrays
+console.table(users);
+
+// Final state log after the loop
+let total = 0;
+for (let i = 0; i < numbers.length; i++) {
+  total = total + numbers[i];
+}
+console.log("final total:", total);
+
+// Conditional log — only when something specific happens
+for (let i = 0; i < items.length; i++) {
+  if (items[i] == null) {
+    console.warn("null item at index " + i);
+  }
+}
+
+// Nested loop log with combined index
+for (let i = 0; i < rows.length; i++) {
+  for (let j = 0; j < cols.length; j++) {
+    console.log("(" + i + "," + j + "):", grid[i][j]);
+  }
+}</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-7-21-3-1': `
+    <p><strong>Example: debugging a list that renders the wrong number of items</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function renderList(items) {
+  const container = document.querySelector(".list");
+  for (let i = 0; i < items.length; i++) {
+    console.log("[render] i:", i, "item:", items[i]);
+    const li = document.createElement("li");
+    li.textContent = items[i].name;
+    container.appendChild(li);
+  }
+}
+
+// running this with [{name:"A"}, {name:"B"}, null, {name:"C"}]:
+//   [render] i: 0 item: {name:"A"}
+//   [render] i: 1 item: {name:"B"}
+//   [render] i: 2 item: null         ← null! crashes on .name below
+//   Uncaught TypeError: Cannot read property 'name' of null
+
+// the log shows exactly where the bad data is. now you can fix:
+//   - filter out nulls before the loop
+//   - or check inside: if (!items[i]) continue;</code></pre>
+
+    <p><strong>Example: debugging a search that always returns null</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function findActiveUser(users) {
+  let found = null;
+  users.forEach(user => {
+    console.log("checking", user.name, "active:", user.active);
+    if (user.active) {
+      found = user;
+      return;
+    }
+  });
+  console.log("after loop, found:", found);
+  return found;
+}
+
+// output reveals: the loop walks all users, found gets reset by later items, etc.
+// or, if found stays null, you'll see "active" was never true in the data.
+// the log makes the cause obvious without guessing.</code></pre>
+
+    <p><strong>Example: debugging an infinite loop with a safety counter</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function processQueue(queue) {
+  let safety = 0;
+  while (queue.length > 0) {
+    if (++safety > 10000) {
+      console.error("processQueue likely infinite — queue:", queue);
+      break;
+    }
+    const item = queue.shift();
+    if (item.requeue) queue.push(item);   // ← suspect line
+  }
+}
+
+// safety net + log of the queue's state shows that requeued items are
+// keeping queue.length above 0 forever.
+// fix: cap how many times an item can be requeued, or filter requeues out.</code></pre>
+
+    <p><strong>Example: debugging form validation skipping fields</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function validateAll(fields) {
+  for (let i = 0; i < fields.length; i++) {
+    console.log("[validate] i:", i, "field:", fields[i].name);
+    if (!fields[i].isValid()) {
+      console.log("  → invalid");
+      return false;
+    }
+  }
+  return true;
+}
+
+// running: shows every field being checked.
+// if a field is missing from the log, the loop is stopping early or skipping it.
+// if a field appears but its name is wrong, the data structure isn't what you think.
+// the log makes the loop's actual behavior visible.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-7-21-3-2': `
+    <ul>
+      <li><strong><code>console.log</code></strong> → the main tool for inspecting iterations</li>
+      <li><strong><code>console.table</code></strong> → cleaner output for object arrays</li>
+      <li><strong><code>console.group</code> / <code>console.groupEnd</code></strong> → bundle logs by iteration</li>
+      <li><strong>DevTools breakpoints</strong> → pause inside a loop and inspect state</li>
+      <li><strong>Conditional breakpoints</strong> → only pause on specific iterations</li>
+      <li><strong>Safety counters</strong> → guard against infinite loops while debugging</li>
+      <li><strong>Common loop mistakes</strong> → most of what debugging reveals are these patterns</li>
+      <li><strong>The current item</strong> → the value you'll most often want to log</li>
+      <li><strong>Loop counter variable</strong> → log it to see whether iteration is progressing</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-7-21-3-3': `
+    <ul>
+      <li><code>console.log</code></li>
+      <li><code>console.table</code></li>
+      <li><code>console.group</code> / <code>console.groupEnd</code></li>
+      <li><code>console.error</code> / <code>console.warn</code></li>
+      <li>DevTools breakpoints</li>
+      <li>Conditional breakpoints</li>
+      <li>Safety counters</li>
+      <li>Common loop mistakes (3.8.21)</li>
+      <li>Infinite loops (3.8.19)</li>
+      <li>The current item (3.8.16)</li>
+    </ul>
+  `,
 
 });
