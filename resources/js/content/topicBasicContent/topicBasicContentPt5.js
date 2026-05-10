@@ -63,7 +63,8 @@ if (score >= 90) {
   /* 0.3 Syntax Details That Matter */
   'topics-6-0-0-3': `
     <p>The condition goes in parentheses. The code to run goes in curly braces:</p>
-<pre class="language-javascript"><code class="language-javascript">if (age >= 18) {           // condition in ( )
+<pre class="language-javascript"><code class="language-javascript">
+if (age >= 18) {           // condition in ( )
   console.log("adult");    // code in { }
 }</code></pre>
 
@@ -276,8 +277,14 @@ if (age >= 18) {
   /* 2.2 Common confusions */
   'topics-6-0-2-2': `
     <p><strong>Confusion: <code>=</code> vs <code>===</code></strong></p>
-<pre class="language-javascript"><code class="language-javascript">if (age = 18) { ... }     // wrong — = is assignment
-if (age === 18) { ... }   // right — === is comparison
+<pre class="language-javascript"><code class="language-javascript">
+if (age = 18) {
+ ... 
+ }     // wrong — = is assignment
+
+if (age === 18) {
+ ... 
+ }   // right — === is comparison
 
 // the wrong one assigns 18 to age, then evaluates to 18 (truthy) → always runs the block
 // always use === in conditions</code></pre>
@@ -296,27 +303,59 @@ if (score >= 70) {
 
     <p><strong>Confusion: separate ifs vs chained</strong></p>
 <pre class="language-javascript"><code class="language-javascript">// Two SEPARATE ifs — both can run
-if (score >= 70) console.log("passed");
-if (score >= 90) console.log("aced it");
+if (score >= 70) 
+console.log("passed");
+
+if (score >= 90) 
+console.log("aced it");
 // score 95 → both print
 
 // Chained — only ONE runs
-if (score >= 70) console.log("passed");
-else if (score >= 90) console.log("aced it");
+if (score >= 70) 
+console.log("passed");
+else if (score >= 90) 
+console.log("aced it");
 // score 95 → only "passed" prints (and it's wrong because of order)</code></pre>
 
     <p><strong>Confusion: truthy and falsy</strong></p>
-<pre class="language-javascript"><code class="language-javascript">if ("hello") { ... }     // runs — non-empty string is truthy
-if ("") { ... }           // skips — empty string is falsy
-if (0) { ... }            // skips — 0 is falsy
-if (-1) { ... }           // runs — non-zero numbers are truthy
-if ([]) { ... }           // runs — empty array is truthy (gotcha!)
-if ({}) { ... }           // runs — empty object is truthy (gotcha!)</code></pre>
+<pre class="language-javascript"><code class="language-javascript">
+if ("hello") {
+ ... 
+ }     // runs — non-empty string is truthy
+
+if ("") {
+ ... 
+ }           // skips — empty string is falsy
+
+if (0) {
+ ... 
+ }            // skips — 0 is falsy
+
+if (-1) {
+ ... 
+ }           // runs — non-zero numbers are truthy
+
+if ([]) {
+ ... 
+ }           // runs — empty array is truthy (gotcha!)
+
+if ({}) {
+ ... 
+ }           // runs — empty object is truthy (gotcha!)</code></pre>
 
     <p><strong>Confusion: <code>else</code> doesn't take a condition</strong></p>
-<pre class="language-javascript"><code class="language-javascript">if (x > 0) { ... }
-else (x < 0) { ... }      // wrong — else doesn't take a condition
-else { ... }              // correct — else is the catch-all
+<pre class="language-javascript"><code class="language-javascript">
+if (x > 0) {
+ ...
+  }
+
+else (x < 0) {
+ ...
+  }      // wrong — else doesn't take a condition
+
+  else {
+     ...
+   }              // correct — else is the catch-all
 
 // for an alternate condition, use else if
 else if (x < 0) { ... }</code></pre>
@@ -324,26 +363,42 @@ else if (x < 0) { ... }</code></pre>
 
   /* 2.3 Common mistakes */
   'topics-6-0-2-3': `
-<pre class="language-javascript"><code class="language-javascript">if (age = 18) { ... }
+<pre class="language-javascript"><code class="language-javascript">
+if (age = 18) {
+ ... 
+ }
 // wrong: = assigns instead of comparing
 // fix: if (age === 18)</code></pre>
 
-<pre class="language-javascript"><code class="language-javascript">if (score >= 70) { ... }
-else if (score >= 90) { ... }
+<pre class="language-javascript"><code class="language-javascript">
+if (score >= 70) {
+ ... 
+ } else if (score >= 90) { 
+  ... 
+  }
 // score 95 matches the first → "aced" branch never runs
 // fix: order from most specific to least — check >= 90 first</code></pre>
 
-<pre class="language-javascript"><code class="language-javascript">if (x > 0) console.log("positive")
+<pre class="language-javascript"><code class="language-javascript">
+if (x > 0) 
+  console.log("positive")
 else
   console.log("not positive")
 // works, but no braces — risky once you add more lines
 // fix: use { } even for one-line bodies</code></pre>
 
-<pre class="language-javascript"><code class="language-javascript">else (x < 0) { ... }
+<pre class="language-javascript"><code class="language-javascript">
+else (x < 0) {
+ ... 
+ }
 // wrong: else doesn't take a condition
-// fix: else if (x < 0) { ... }</code></pre>
+// fix: else if (x < 0) 
+//          { ... }</code></pre>
 
-<pre class="language-javascript"><code class="language-javascript">if (cart.length = 0) { ... }
+<pre class="language-javascript"><code class="language-javascript">
+if (cart.length = 0) {
+ ... 
+ }
 // wrong: assigns 0 to cart.length AND evaluates to 0 (falsy)
 // fix: if (cart.length === 0)</code></pre>
 
@@ -537,8 +592,14 @@ if (cartCount > 0) {
   /* 0.3 Syntax Details That Matter */
   'topics-6-1-0-3': `
     <p>Parentheses around the condition are required:</p>
-<pre class="language-javascript"><code class="language-javascript">if (age >= 18) { ... }     // correct
-if age >= 18 { ... }       // wrong — SyntaxError</code></pre>
+<pre class="language-javascript"><code class="language-javascript">
+if (age >= 18) {
+ ... 
+ }     // correct
+
+if age >= 18 {
+ ... 
+ }       // wrong — SyntaxError</code></pre>
 
     <p>Curly braces are technically optional for a single statement — but always use them anyway:</p>
 <pre class="language-javascript"><code class="length-javascript">if (isReady) start();          // works for one statement
@@ -560,13 +621,34 @@ if (isReady) {
 
 
     <p>The condition can be any expression that evaluates to truthy or falsy:</p>
-<pre class="language-javascript"><code class="language-javascript">if (true) { ... }              // literal — always runs
-if (age >= 18) { ... }         // comparison
-if (cart.length) { ... }       // truthy check (0 is falsy, anything else is truthy)
-if (user) { ... }              // truthy check (null/undefined are falsy)
-if (!isLoading) { ... }        // negation — runs when isLoading is falsy
-if (a && b) { ... }            // both must be truthy
-if (a || b) { ... }            // at least one must be truthy</code></pre>
+<pre class="language-javascript"><code class="language-javascript">
+if (true) { 
+... 
+}              // literal — always runs
+
+if (age >= 18) {
+ ... 
+ }         // comparison
+
+if (cart.length) {
+ ... 
+ }       // truthy check (0 is falsy, anything else is truthy)
+
+if (user) { 
+... 
+}              // truthy check (null/undefined are falsy)
+
+if (!isLoading) {
+ ... 
+ }        // negation — runs when isLoading is falsy
+
+if (a && b) { 
+... 
+}            // both must be truthy
+
+if (a || b) { 
+... 
+}            // at least one must be truthy</code></pre>
 
     <p><code>if</code> can stand alone — no <code>else</code> required:</p>
 <pre class="language-javascript"><code class="language-javascript">if (cart.length === 0) {
@@ -4322,14 +4404,22 @@ if (score >= 90) {
   'topics-6-9-0-3': `
     <p><code>else</code> goes at the very end — only one per chain, and always last:</p>
 <pre class="language-javascript"><code class="language-javascript">// Correct — single else at the end
-if (a) { ... }
-else if (b) { ... }
-else { ... }
+if (a) {
+ ... 
+ } else if (b) { 
+  ... 
+  } else {
+     ...
+     }
 
 // Wrong — else not at the end
-if (a) { ... }
-else { ... }
-else if (b) { ... }     // SyntaxError</code></pre>
+if (a) {
+ ...
+  } else {
+     ... 
+    } else if (b) {
+     ... 
+     }     // SyntaxError</code></pre>
 
     <p>The <code>else</code> is optional — leave it off if you don't need a fallback:</p>
 <pre class="language-javascript"><code class="language-javascript">// With fallback — guaranteed to run something
