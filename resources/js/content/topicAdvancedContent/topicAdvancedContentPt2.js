@@ -4540,5 +4540,572 @@ console.log(titles);   // ["Welcome", "About Us", "Contact"]
       <li>Live vs static collections</li>
     </ul>
   `,
+/* ========================================================= 
+   Sub-lesson: 3.12.9 DOM → changing text: textContent, innerHTML
+ =======================================================*/
 
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-11-8-0-0': `
+    <p><code>textContent</code> and <code>innerHTML</code> are the two main properties for reading or changing what's <em>inside</em> a DOM element. Both can be used to get the current contents and to replace them. The difference is how they treat HTML markup.</p>
+    <p><code>textContent</code> works with <strong>plain text only</strong> — it ignores tags, treats everything as a string of characters. <code>innerHTML</code> works with <strong>HTML</strong> — tags are parsed and become real elements on the page. They're both useful; knowing when to pick which is the whole point of this lesson.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-11-8-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// HTML:
+// &lt;p id="msg"&gt;Hello, &lt;strong&gt;world&lt;/strong&gt;!&lt;/p&gt;
+
+const msg = document.getElementById("msg");
+
+// READING
+console.log(msg.textContent);   // "Hello, world!"
+                                  // → tags stripped, just the text
+console.log(msg.innerHTML);     // "Hello, &lt;strong&gt;world&lt;/strong&gt;!"
+                                  // → tags preserved, as a string
+
+// WRITING plain text
+msg.textContent = "Goodbye!";
+// page shows: "Goodbye!"
+
+// WRITING markup
+msg.innerHTML = "&lt;em&gt;Goodbye!&lt;/em&gt;";
+// page shows: "Goodbye!" (rendered in italic, because &lt;em&gt; was parsed as a real tag)</code></pre>
+    <p>Same idea — change what's inside an element — but two flavors. <code>textContent</code> is the safe, simple one. <code>innerHTML</code> is more powerful but more dangerous.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-11-8-0-2': `
+<pre class="language-javascript"><code class="language-javascript">
+element.textContent
+//   reading: returns a string with all the text inside (and inside descendants),
+//            tags stripped, whitespace preserved
+//   writing: replaces everything inside with one plain text node
+//            tags in your string appear as LITERAL CHARACTERS
+//
+element.innerHTML
+//   reading: returns a string of the HTML inside, tags and all
+//   writing: parses your string as HTML, creates real elements/text nodes
+//            tags in your string become REAL TAGS on the page
+//
+// example:
+// &lt;p id="x"&gt;Hello&lt;/p&gt;
+//
+// p.textContent = "&lt;strong&gt;Hi&lt;/strong&gt;";
+// → page shows the literal text: &lt;strong&gt;Hi&lt;/strong&gt;
+//
+// p.innerHTML = "&lt;strong&gt;Hi&lt;/strong&gt;";
+// → page shows: Hi (bold, because &lt;strong&gt; was parsed)
+//
+// rule of thumb:
+//   plain text only        → textContent  (safer, faster)
+//   need real HTML tags    → innerHTML    (more powerful, more risk)</code></pre>
+    <p>The two properties look almost interchangeable — both read, both write, both work on the same elements. The actual divide is whether your string is treated as data (textContent) or as code (innerHTML).</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-11-8-0-3': `
+    <p><strong>Writing either one REPLACES everything inside the element.</strong> Both wipe the previous contents:</p>
+<pre class="language-javascript"><code class="language-javascript">// HTML:
+// &lt;div id="box"&gt;
+//   &lt;p&gt;Old paragraph&lt;/p&gt;
+//   &lt;img src="..."&gt;
+// &lt;/div&gt;
+
+const box = document.getElementById("box");
+
+box.textContent = "Reset";
+// HTML: &lt;div id="box"&gt;Reset&lt;/div&gt;
+// the &lt;p&gt; and &lt;img&gt; are GONE
+
+box.innerHTML = "&lt;p&gt;New&lt;/p&gt;";
+// HTML: &lt;div id="box"&gt;&lt;p&gt;New&lt;/p&gt;&lt;/div&gt;
+// also wiped first, then the new HTML is inserted</code></pre>
+
+    <p><strong>Tags in a <code>textContent</code> string appear as literal characters.</strong> No parsing happens:</p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector("p").textContent = "&lt;strong&gt;Bold?&lt;/strong&gt;";
+// the page literally shows: &lt;strong&gt;Bold?&lt;/strong&gt;
+// the user sees the angle brackets — the &lt;strong&gt; doesn't become bold.
+
+// this is why textContent is safe with user input — anything that looks like
+// HTML is shown as plain text, not executed as markup.</code></pre>
+
+    <p><strong>Tags in an <code>innerHTML</code> string get parsed into real elements.</strong> The browser creates new DOM nodes from your string:</p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector("p").innerHTML = "&lt;strong&gt;Bold!&lt;/strong&gt;";
+// the &lt;strong&gt; becomes a real &lt;strong&gt; element.
+// the page shows: Bold! (in bold)
+
+// you can build complex structures in one assignment:
+document.querySelector("#list").innerHTML =
+  "&lt;li&gt;Apple&lt;/li&gt;&lt;li&gt;Banana&lt;/li&gt;&lt;li&gt;Cherry&lt;/li&gt;";</code></pre>
+
+    <p><strong><code>innerHTML</code> with user input is a security risk.</strong> Anything a user typed (or that came from an untrusted source) gets parsed — including <code>&lt;script&gt;</code> tags, event attributes, and other executable HTML:</p>
+<pre class="language-javascript"><code class="language-javascript">// imagine the user typed this into a search field:
+const userInput = "&lt;img src=x onerror='alert(1)'&gt;";
+
+// SAFE — shows the literal text, no script runs
+document.querySelector(".result").textContent = userInput;
+
+// UNSAFE — actually inserts an &lt;img&gt;, the onerror fires, alert pops up
+document.querySelector(".result").innerHTML = userInput;
+
+// rule: NEVER use innerHTML with user-provided content.
+// use textContent, or escape/sanitize the input first.</code></pre>
+
+    <p><strong><code>textContent</code> is faster than <code>innerHTML</code>.</strong> No HTML parser needs to run, no new elements need to be created — just text nodes:</p>
+<pre class="language-javascript"><code class="language-javascript">// fast — replace text only
+element.textContent = "Saved";
+
+// slower — parse HTML, build a tree, insert it
+element.innerHTML = "&lt;span&gt;Saved&lt;/span&gt;";
+
+// for high-frequency updates (timers, animations), textContent is preferred.
+// for one-time renders with real markup, innerHTML is fine.</code></pre>
+
+    <p><strong>Form inputs use <code>.value</code>, not <code>textContent</code> or <code>innerHTML</code>.</strong> Both of those work with the "inside" of an element; inputs don't have an "inside" the same way:</p>
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;input id="name"&gt;
+
+const input = document.getElementById("name");
+
+input.textContent = "Alex";   // doesn't update the field
+input.innerHTML = "Alex";      // doesn't update the field either
+input.value = "Alex";           // ✓ now the field shows "Alex"
+
+// rule: form fields use .value. everything else uses textContent or innerHTML.</code></pre>
+
+    <p><strong>Reading <code>textContent</code> vs <code>innerHTML</code>:</strong> Same element, different views of its contents:</p>
+<pre class="language-javascript"><code class="language-javascript">// HTML:
+// &lt;div id="card"&gt;
+//   &lt;h2&gt;Title&lt;/h2&gt;
+//   &lt;p&gt;Some &lt;em&gt;text&lt;/em&gt;.&lt;/p&gt;
+// &lt;/div&gt;
+
+const card = document.getElementById("card");
+
+console.log(card.textContent);
+// "Title Some text." (tags stripped, whitespace preserved)
+
+console.log(card.innerHTML);
+// "&lt;h2&gt;Title&lt;/h2&gt;&lt;p&gt;Some &lt;em&gt;text&lt;/em&gt;.&lt;/p&gt;"
+// (full HTML as a string)</code></pre>
+
+    <p><strong>NodeList doesn't have either property.</strong> You have to loop over individual elements:</p>
+<pre class="language-javascript"><code class="language-javascript">const items = document.querySelectorAll(".item");
+
+items.textContent = "Hi";   // doesn't error, doesn't work (NodeList has no textContent)
+items.innerHTML = "&lt;b&gt;Hi&lt;/b&gt;";   // same — silent no-op
+
+// fix: loop
+items.forEach(item =&gt; item.textContent = "Hi");
+items.forEach(item =&gt; item.innerHTML = "&lt;b&gt;Hi&lt;/b&gt;");</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-11-8-1-0': `
+    <p>Almost every interactive page eventually needs to update what an element says — a status message, a counter, a search result, a notification badge. <code>textContent</code> and <code>innerHTML</code> are the two basic tools for that.</p>
+    <p>Having two of them is what lets you choose your trade-off. Need just plain text? <code>textContent</code> — safer and faster. Need to drop in real HTML (a link, a bold word, a list)? <code>innerHTML</code> — more flexible but with sharper edges. Understanding both means you can pick the right tool every time.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-11-8-1-1': `
+    <p>The two cover different needs:</p>
+<pre class="language-javascript"><code class="language-javascript">// textContent — the most common case: just text changes
+document.getElementById("status").textContent = "Saving...";
+document.querySelector(".count").textContent = 42;
+document.querySelector(".preview").textContent = userInput;   // safe with user input
+
+// innerHTML — when you need actual HTML
+document.querySelector(".message").innerHTML =
+  "Visit &lt;a href='/help'&gt;our help page&lt;/a&gt; for details.";
+
+document.querySelector(".list").innerHTML =
+  "&lt;li&gt;Item 1&lt;/li&gt;&lt;li&gt;Item 2&lt;/li&gt;&lt;li&gt;Item 3&lt;/li&gt;";
+
+// rule of thumb:
+// can you express it as plain text? → textContent
+// do you need real tags (links, formatting, structure)? → innerHTML
+// is the value from a user or untrusted source? → textContent ALWAYS</code></pre>
+
+    <p>Most production code uses <code>textContent</code> for the simple updates and <code>innerHTML</code> only when actually building markup — and even then, often with trusted/templated strings rather than free-form user input.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-11-8-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// textContent — plain text changes
+document.querySelector(".status").textContent = "Online";
+document.querySelector(".count").textContent = 5;
+document.querySelector(".price").textContent = "$" + price.toFixed(2);
+document.querySelector(".user-name").textContent = user.name;
+document.querySelector(".error").textContent = "";   // clear
+document.querySelector(".time").textContent = new Date().toLocaleTimeString();
+
+// textContent — echoing user input safely
+document.querySelector(".preview").textContent = searchBox.value;
+
+// innerHTML — building markup with mixed text and tags
+document.querySelector(".message").innerHTML =
+  "Hello &lt;strong&gt;" + escape(name) + "&lt;/strong&gt;, welcome back!";
+
+// innerHTML — rendering a list from data
+const html = items.map(item =&gt; "&lt;li&gt;" + escape(item) + "&lt;/li&gt;").join("");
+document.querySelector("ul").innerHTML = html;
+
+// innerHTML — replacing an entire section's structure
+document.querySelector(".card").innerHTML =
+  "&lt;h2&gt;" + title + "&lt;/h2&gt;" +
+  "&lt;p&gt;" + description + "&lt;/p&gt;" +
+  "&lt;button class='btn'&gt;Click me&lt;/button&gt;";
+
+// READING — both directions work
+const text = document.querySelector("p").textContent;
+const html2 = document.querySelector("p").innerHTML;
+
+// clearing an element entirely
+document.querySelector(".list").textContent = "";
+document.querySelector(".list").innerHTML = "";   // also works</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-11-8-1-3': `
+    <p>Both properties answer the question "what's inside this element?" — but they answer it differently. <code>textContent</code> answers in plain text: "the words inside, as a string." <code>innerHTML</code> answers in markup: "the HTML inside, tags and all."</p>
+    <p>When you write to them, the same difference applies. Writing to <code>textContent</code> sets the element's contents to a plain string — no HTML parsing, tags appear as literal characters. Writing to <code>innerHTML</code> tells the browser "treat this string as HTML, parse it, and put the resulting elements inside" — so tags become real tags.</p>
+    <p>The practical guidance: default to <code>textContent</code>. Reach for <code>innerHTML</code> when you specifically need real HTML in the result. Never use <code>innerHTML</code> with user input directly — escape it first, or use <code>textContent</code> instead.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-11-8-1-4': `
+    <p>Imagine two ways to deliver a message to a sign-maker: hand them a typed-out paragraph, or hand them HTML markup with formatting instructions. <code>textContent</code> is the typed paragraph — they put exactly those characters on the sign, even if you wrote "&lt;b&gt;bold&lt;/b&gt;" — they'll put those literal angle brackets up there. <code>innerHTML</code> is the HTML markup — they read the instructions and produce a sign with real formatting.</p>
+    <p>The plain-paragraph approach is safer because there's no "instructions" — whatever the user wrote goes up as-is, no commands hidden inside. The HTML-markup approach is more flexible because you can include real formatting, but you have to trust the source — if a malicious user wrote "&lt;script&gt;steal data&lt;/script&gt;," the sign-maker would dutifully wire up a script.</p>
+    <p>The choice between them is "do I need formatting, and do I trust the input?" If yes to formatting and yes to trust, <code>innerHTML</code>. Otherwise, <code>textContent</code>.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-11-8-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// HTML:
+// &lt;div id="box"&gt;Original&lt;/div&gt;
+
+const box = document.getElementById("box");
+
+// 1. Assign a string with tags to textContent
+box.textContent = "&lt;strong&gt;Hi&lt;/strong&gt;";
+
+// step by step:
+//   a. the element's children are wiped
+//   b. a single text node is created with the literal string "&lt;strong&gt;Hi&lt;/strong&gt;"
+//   c. it becomes the only child
+//   d. the page shows: &lt;strong&gt;Hi&lt;/strong&gt;  (literal angle brackets)
+//
+// HTML in the DOM:
+// &lt;div id="box"&gt;&amp;lt;strong&amp;gt;Hi&amp;lt;/strong&amp;gt;&lt;/div&gt;
+//                ^ characters escaped because the angle brackets are content, not tags
+
+// 2. Assign the same string to innerHTML
+box.innerHTML = "&lt;strong&gt;Hi&lt;/strong&gt;";
+
+// step by step:
+//   a. the element's children are wiped
+//   b. the string is PARSED as HTML
+//   c. a real &lt;strong&gt; element is created, with a text node "Hi" inside
+//   d. that &lt;strong&gt; becomes the box's only child
+//   e. the page shows: Hi (in bold)
+//
+// HTML in the DOM:
+// &lt;div id="box"&gt;&lt;strong&gt;Hi&lt;/strong&gt;&lt;/div&gt;
+//                ^ real &lt;strong&gt; element
+
+// same input string, two different results — that's the entire distinction.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-11-8-2-0': `
+    <p>If your assignment doesn't seem to do what you expected, log both views to see what's actually in the element:</p>
+<pre class="language-javascript"><code class="language-javascript">const el = document.querySelector(".target");
+
+console.log("textContent:", JSON.stringify(el.textContent));
+console.log("innerHTML:", JSON.stringify(el.innerHTML));
+
+// the JSON.stringify wrapper shows whitespace clearly, so you can see:
+//   - is the text empty?
+//   - is there hidden whitespace?
+//   - are there tags inside you didn't realize were there?</code></pre>
+
+    <p>Common patterns of bug:</p>
+<pre class="language-javascript"><code class="language-javascript">// 1. textContent shows literal "&lt;..." instead of formatting
+//    cause: assigned HTML-looking text to textContent; needed innerHTML
+
+// 2. innerHTML inserts but nothing renders / weird structure
+//    cause: malformed HTML in the string (unclosed tag, missing quote)
+
+// 3. Page suddenly missing icons / images after assignment
+//    cause: textContent or innerHTML wiped nested elements you didn't realize were there
+
+// 4. Form field unchanged
+//    cause: used textContent/innerHTML on an &lt;input&gt; — should be .value</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-11-8-2-1': `
+    <p>The two properties aren't different things — they're two views of the same thing. The element's contents exist as a tree of DOM nodes. <code>textContent</code> renders that tree as plain text. <code>innerHTML</code> renders it as HTML markup. When you write to either one, you're rebuilding the contents from a string the browser parses (innerHTML) or treats as literal text (textContent).</p>
+    <p>The choice between them isn't about effects — both replace the element's inside. It's about what your string means. If your string is words, use <code>textContent</code>. If your string is HTML, use <code>innerHTML</code>. If you're not sure or the string came from outside your code, default to <code>textContent</code> for safety.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-11-8-2-2': `
+    <p><strong>Confusion: thinking <code>textContent</code> renders HTML tags</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector("p").textContent = "&lt;strong&gt;Bold&lt;/strong&gt;";
+// page shows the literal text: &lt;strong&gt;Bold&lt;/strong&gt;
+// it does NOT become bold.
+// fix: use innerHTML if you want tags to be parsed
+document.querySelector("p").innerHTML = "&lt;strong&gt;Bold&lt;/strong&gt;";</code></pre>
+
+    <p><strong>Confusion: thinking <code>innerHTML</code> is "just a string"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector("p").innerHTML = userInput;
+// SECURITY RISK — anything the user typed is parsed as HTML.
+// &lt;script&gt; tags, onerror handlers, etc., can run.
+// fix: use textContent for untrusted input
+document.querySelector("p").textContent = userInput;</code></pre>
+
+    <p><strong>Confusion: using textContent or innerHTML on form inputs</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector("input").textContent = "hi";   // doesn't appear in input
+document.querySelector("input").innerHTML = "hi";      // doesn't either
+document.querySelector("input").value = "hi";          // ✓ this works
+
+// rule: inputs use .value, not textContent/innerHTML</code></pre>
+
+    <p><strong>Confusion: appending with assignment</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector("p").textContent = " more text";
+// expected: append " more text"
+// actual:   replaced everything; element now shows " more text" only
+
+// to append:
+const p = document.querySelector("p");
+p.textContent += " more text";
+// or:
+p.textContent = p.textContent + " more text";</code></pre>
+
+    <p><strong>Confusion: assigning innerHTML wipes everything, including event handlers</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;div id="box"&gt;&lt;button&gt;Click&lt;/button&gt;&lt;/div&gt;
+const btn = document.querySelector("button");
+btn.addEventListener("click", () =&gt; console.log("clicked!"));
+
+// later:
+document.getElementById("box").innerHTML = "&lt;button&gt;Click&lt;/button&gt;";
+// the new button is a brand-new element. the old button (with its listener) is GONE.
+// the new button has NO listener.
+
+// rule: reassigning innerHTML destroys child elements and their listeners.
+// re-attach listeners after, or modify just the text you want to change.</code></pre>
+
+    <p><strong>Confusion: NodeList doesn't have these</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelectorAll(".item").textContent = "hi";
+// NodeList has no textContent — silently does nothing useful
+// fix: loop
+document.querySelectorAll(".item").forEach(el =&gt; el.textContent = "hi");</code></pre>
+
+    <p><strong>Confusion: thinking <code>innerHTML</code> reads what you wrote</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector("p").innerHTML = '&lt;span class="x"&gt;hi&lt;/span&gt;';
+console.log(document.querySelector("p").innerHTML);
+// might log it back with slightly different formatting
+// the browser normalizes — attribute quotes, capitalization, attribute order may change
+
+// reading innerHTML gives the BROWSER's serialization of the current DOM,
+// not necessarily byte-identical to what you assigned.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-11-8-2-3': `
+<pre class="language-javascript"><code class="language-javascript">document.querySelector("p").textContent = "&lt;strong&gt;Bold&lt;/strong&gt;";
+// shows literal angle brackets, doesn't become bold
+// fix: innerHTML when you need real tags
+document.querySelector("p").innerHTML = "&lt;strong&gt;Bold&lt;/strong&gt;";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.querySelector(".result").innerHTML = userInput;
+// security risk — user can inject HTML/scripts
+// fix: use textContent for untrusted content
+document.querySelector(".result").textContent = userInput;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.querySelector("input").textContent = "Alex";
+// inputs don't display textContent
+// fix: use .value
+document.querySelector("input").value = "Alex";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;div&gt;&lt;img&gt;&lt;p&gt;Hello&lt;/p&gt;&lt;/div&gt;
+document.querySelector("div").textContent = "Updated";
+// the &lt;img&gt; and &lt;p&gt; are GONE — replaced by plain text
+// fix: target the specific text element
+document.querySelector("div p").textContent = "Updated";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.querySelector(".name").textContent = " Alex";
+// expected to append; actually replaced
+// fix: concat
+const el = document.querySelector(".name");
+el.textContent = el.textContent + " Alex";
+// or:
+el.textContent += " Alex";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// re-render destroys handlers
+document.getElementById("list").innerHTML = generateListHTML();
+// any addEventListener on the previous children is gone
+// fix: re-attach handlers after innerHTML, or use event delegation on the parent</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.querySelectorAll(".item").innerHTML = "&lt;b&gt;hi&lt;/b&gt;";
+// NodeList has no innerHTML
+// fix: loop
+document.querySelectorAll(".item").forEach(el =&gt; el.innerHTML = "&lt;b&gt;hi&lt;/b&gt;");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const el = document.querySelector(".missing");
+el.textContent = "hi";
+// crashes when null
+// fix: check first
+const el = document.querySelector(".missing");
+if (el) el.textContent = "hi";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.querySelector(".result").textContent = userObject;
+// shows "[object Object]"
+// fix: format manually
+document.querySelector(".result").textContent =
+  userObject.name + " (" + userObject.email + ")";</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-11-8-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Reading
+const text = document.querySelector("p").textContent;
+const html = document.querySelector("p").innerHTML;
+
+// Writing plain text
+document.querySelector("h1").textContent = "Welcome";
+document.querySelector(".count").textContent = 5;
+document.querySelector(".price").textContent = "$" + price.toFixed(2);
+document.querySelector(".time").textContent = new Date().toLocaleTimeString();
+
+// Clearing
+document.querySelector(".error").textContent = "";
+document.querySelector(".list").innerHTML = "";
+
+// Writing markup
+document.querySelector(".message").innerHTML =
+  "Click &lt;a href='/help'&gt;here&lt;/a&gt; for help.";
+
+// Building a list
+const items = ["A", "B", "C"];
+const html2 = items.map(i =&gt; "&lt;li&gt;" + i + "&lt;/li&gt;").join("");
+document.querySelector("ul").innerHTML = html2;
+
+// Safe user input echo
+document.querySelector(".echo").textContent = userInput;
+
+// Conditional content
+document.querySelector(".status").textContent = isOnline ? "Online" : "Offline";
+
+// Append text
+const el = document.querySelector(".log");
+el.textContent += "\\nNew entry";
+
+// Number to display
+document.querySelector(".score").textContent = String(score);
+
+// Update via event
+document.querySelector("#save").addEventListener("click", () =&gt; {
+  document.querySelector(".status").textContent = "Saved at " + Date.now();
+});
+
+// Update many
+document.querySelectorAll(".tag").forEach(el =&gt; el.textContent = "•");
+
+// innerHTML for templated render — using concatenation
+document.querySelector(".card").innerHTML =
+  "&lt;h2&gt;" + title + "&lt;/h2&gt;" +
+  "&lt;p&gt;" + description + "&lt;/p&gt;";
+
+// Reading checks
+if (document.querySelector(".msg").textContent.includes("error")) {
+  showRetry();
+}</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-11-8-3-1': `
+    <p><strong>Example: status indicator (textContent)</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function setStatus(text) {
+  document.querySelector(".status").textContent = text;
+}
+
+setStatus("Connecting...");
+fetch("/api/ping")
+  .then(() =&gt; setStatus("Connected"))
+  .catch(() =&gt; setStatus("Failed"));
+// plain text only. textContent is fast, simple, and safe.</code></pre>
+
+    <p><strong>Example: rendering an article from data (innerHTML)</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function renderArticle(data) {
+  const article = document.querySelector("article");
+  article.innerHTML =
+    "&lt;h2&gt;" + escapeHTML(data.title) + "&lt;/h2&gt;" +
+    "&lt;p class='meta'&gt;" + escapeHTML(data.author) + " — " + escapeHTML(data.date) + "&lt;/p&gt;" +
+    "&lt;div class='body'&gt;" + data.body + "&lt;/div&gt;";
+}
+// innerHTML is necessary here because we need real headings, paragraphs, classes.
+// note: any user-provided values go through escapeHTML() to prevent XSS.</code></pre>
+
+    <p><strong>Example: safe live search preview (textContent)</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const search = document.querySelector("input[type=search]");
+const preview = document.querySelector(".preview");
+
+search.addEventListener("input", () =&gt; {
+  preview.textContent = "You searched for: " + search.value;
+});
+// textContent is safe with raw user input.
+// even if they type &lt;script&gt;..., it shows up as literal characters.</code></pre>
+
+    <p><strong>Example: clearing and replacing a list (innerHTML)</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function renderTags(tags) {
+  const container = document.querySelector(".tags");
+  container.innerHTML = tags
+    .map(t =&gt; "&lt;span class='tag'&gt;" + escapeHTML(t) + "&lt;/span&gt;")
+    .join("");
+}
+// one assignment replaces the whole list.
+// innerHTML lets us insert real &lt;span&gt; elements with classes.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-11-8-3-2': `
+    <ul>
+      <li><strong><code>textContent</code></strong> → plain-text version: safer, faster, no parsing</li>
+      <li><strong><code>innerHTML</code></strong> → HTML version: more powerful, can introduce security risks</li>
+      <li><strong><code>innerText</code></strong> → similar to textContent but respects CSS visibility</li>
+      <li><strong><code>.value</code></strong> → for form inputs, separate from these two</li>
+      <li><strong>XSS / safe text rendering</strong> → why textContent matters with user input</li>
+      <li><strong>Escaping HTML</strong> → cleaning input before using innerHTML</li>
+      <li><strong>Template literals</strong> → useful for building innerHTML strings with backticks</li>
+      <li><strong>Replacing children</strong> → both properties wipe existing children when assigned</li>
+      <li><strong>Event handlers</strong> → re-assigning innerHTML removes any listeners on previous children</li>
+      <li><strong>NodeList iteration</strong> → both properties exist on elements, not on NodeList directly</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-11-8-3-3': `
+    <ul>
+      <li><code>textContent</code></li>
+      <li><code>innerHTML</code></li>
+      <li><code>innerText</code></li>
+      <li><code>.value</code> for form fields</li>
+      <li>XSS / safe rendering</li>
+      <li>Escaping HTML</li>
+      <li>Template literals</li>
+      <li>Replacing children</li>
+      <li>Event delegation (alternative to re-attaching listeners after innerHTML)</li>
+      <li>String concatenation / formatting</li>
+    </ul>
+  `,
+  
 });
