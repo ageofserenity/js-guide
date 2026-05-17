@@ -5107,5 +5107,2937 @@ search.addEventListener("input", () =&gt; {
       <li>String concatenation / formatting</li>
     </ul>
   `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.12.10 DOM → changing styles: style, classList
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-11-9-0-0': `
+    <p><code>style</code> and <code>classList</code> are the two main ways to change how an element <em>looks</em> from JavaScript. They both modify visual appearance, but they take very different approaches.</p>
+    <p><code>element.style</code> sets <strong>inline styles</strong> directly on the element — like writing <code>style="color: red"</code> on the HTML tag itself. <code>element.classList</code> toggles <strong>CSS classes</strong> on and off — like adding or removing class names that match rules in your stylesheet. The first is for one-off, dynamic values; the second is for swapping pre-defined looks.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-11-9-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;p id="msg"&gt;Hello&lt;/p&gt;
+
+const p = document.getElementById("msg");
+
+// style — set a CSS property directly on the element
+p.style.color = "red";
+p.style.fontSize = "24px";
+p.style.backgroundColor = "yellow";
+
+// classList — add, remove, or toggle CSS classes
+p.classList.add("highlight");
+p.classList.remove("highlight");
+p.classList.toggle("active");
+p.classList.contains("active");   // true or false
+
+// after style: &lt;p id="msg" style="color: red; font-size: 24px; background-color: yellow"&gt;
+// after classList.add: &lt;p id="msg" class="highlight"&gt;</code></pre>
+    <p>Both update the visual look of the page in real time. The choice between them depends on whether you want to set a specific value (<code>style</code>) or switch between styled states (<code>classList</code>).</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-11-9-0-2': `
+<pre class="language-javascript"><code class="language-javascript">
+element.style
+//   - an object with one property per CSS property
+//   - CSS property names use camelCase: background-color → backgroundColor
+//   - sets INLINE styles (style="..." on the element)
+//   - high specificity — beats stylesheet rules
+//   - one property at a time (or use .cssText to set many)
+//
+element.classList
+//   - an object with methods for manipulating class names
+//   - .add(name)      → add a class
+//   - .remove(name)   → remove a class
+//   - .toggle(name)   → flip it (add if missing, remove if present)
+//   - .contains(name) → check if it's there (true/false)
+//   - .replace(a, b)  → swap one class for another
+//
+// when to use which:
+//   style     → dynamic, computed values: el.style.left = mouseX + "px"
+//   classList → predefined visual states: el.classList.add("error")</code></pre>
+    <p>The two work together. <code>style</code> is for raw CSS values that come from JavaScript logic. <code>classList</code> is for triggering rules you already wrote in CSS. Most production code leans on <code>classList</code> for clean separation of concerns.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-11-9-0-3': `
+    <p><strong>CSS properties in <code>.style</code> use camelCase, not hyphens.</strong> JavaScript identifiers can't contain hyphens, so multi-word CSS properties get converted:</p>
+<pre class="language-javascript"><code class="language-javascript">// CSS                  JavaScript
+// background-color  →  backgroundColor
+// font-size         →  fontSize
+// margin-top        →  marginTop
+// border-radius     →  borderRadius
+// z-index           →  zIndex
+
+el.style.backgroundColor = "blue";
+el.style.fontSize = "18px";
+el.style.marginTop = "20px";
+
+// single-word properties stay the same:
+el.style.color = "red";
+el.style.opacity = "0.5";
+el.style.display = "none";</code></pre>
+
+    <p><strong>Values are strings, including units like <code>"px"</code>, <code>"%"</code>, or <code>"em"</code>.</strong> Forgetting the unit silently fails:</p>
+<pre class="language-javascript"><code class="language-javascript">// Right — string with units
+el.style.width = "200px";
+el.style.fontSize = "1.5em";
+el.style.opacity = "0.8";   // opacity is unitless but still a string
+
+// Wrong — number without units
+el.style.width = 200;        // doesn't apply — needs "px"
+el.style.fontSize = 16;      // doesn't apply
+
+// for numeric values, concatenate:
+el.style.left = mouseX + "px";
+el.style.height = (rows * 40) + "px";</code></pre>
+
+    <p><strong>Reading a style only works if it was set inline.</strong> Styles from a stylesheet don't show up in <code>.style</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">// CSS file:
+// .box { background-color: blue; }
+
+// HTML: &lt;div class="box" style="color: red"&gt;...&lt;/div&gt;
+
+const box = document.querySelector(".box");
+console.log(box.style.color);            // "red" — set inline
+console.log(box.style.backgroundColor);  // "" — set in CSS, not visible to .style
+
+// to read the actual rendered style (including stylesheet rules), use getComputedStyle:
+const styles = getComputedStyle(box);
+console.log(styles.backgroundColor);   // "rgb(0, 0, 255)"
+console.log(styles.color);              // "rgb(255, 0, 0)"</code></pre>
+
+    <p><strong><code>classList.add</code> and <code>.remove</code> are safe to call repeatedly.</strong> Adding a class that's already there or removing a class that isn't there does nothing — no error:</p>
+<pre class="language-javascript"><code class="language-javascript">el.classList.add("active");
+el.classList.add("active");   // already there — no error, no duplicate
+el.classList.add("active");   // still just one "active" class
+
+el.classList.remove("missing");   // not there — no error, just nothing happens
+
+// safe to call without checking first.</code></pre>
+
+    <p><strong><code>classList.toggle</code> flips the class.</strong> Add if missing, remove if present. Optionally takes a boolean to force a state:</p>
+<pre class="language-javascript"><code class="language-javascript">// flip on each call
+el.classList.toggle("open");   // adds "open" if missing, removes if present
+
+// force a state — toggle(name, true) always adds; toggle(name, false) always removes
+el.classList.toggle("open", isExpanded);
+// if isExpanded is true, "open" is added
+// if isExpanded is false, "open" is removed
+// equivalent to:
+//   if (isExpanded) el.classList.add("open");
+//   else el.classList.remove("open");</code></pre>
+
+    <p><strong>You can add or remove multiple classes at once.</strong> Pass them as separate arguments:</p>
+<pre class="language-javascript"><code class="language-javascript">el.classList.add("highlight", "warning", "shake");
+el.classList.remove("loading", "pending");
+
+// not allowed:
+el.classList.add("highlight warning");   // does NOT work — treats it as one class with a space
+// (and modern browsers may throw "InvalidCharacterError")</code></pre>
+
+    <p><strong>Setting <code>style.someProp = ""</code> removes that inline style.</strong> The element falls back to the stylesheet value:</p>
+<pre class="language-javascript"><code class="language-javascript">// CSS file:
+// p { color: black; }
+
+// HTML: &lt;p style="color: red"&gt;Hi&lt;/p&gt;
+
+const p = document.querySelector("p");
+console.log(p.style.color);   // "red"
+
+p.style.color = "";   // remove the inline style
+console.log(p.style.color);   // ""
+// the element now displays its stylesheet color (black).</code></pre>
+
+    <p><strong>Use <code>classList</code> when the styles are defined in CSS; use <code>style</code> when JavaScript is computing the value.</strong> This is the cleanest mental rule:</p>
+<pre class="language-javascript"><code class="language-javascript">// computed, dynamic — use style
+el.style.left = (mouseX - 10) + "px";
+el.style.transform = "rotate(" + angle + "deg)";
+
+// predefined visual state — use classList
+el.classList.add("error");        // CSS has .error { color: red; border: ... }
+el.classList.toggle("collapsed"); // CSS has .collapsed { display: none; }
+
+// the rule isn't strict — but in most codebases, classList changes are easier
+// to maintain because the visual rules live in one place (the CSS file).</code></pre>
+
+    <p><strong>NodeList doesn't have <code>style</code> or <code>classList</code> directly.</strong> Loop to apply changes to many elements:</p>
+<pre class="language-javascript"><code class="language-javascript">const items = document.querySelectorAll(".item");
+
+items.style.color = "red";          // doesn't work — NodeList has no style
+items.classList.add("active");       // doesn't work — NodeList has no classList
+
+// fix: loop
+items.forEach(item =&gt; item.style.color = "red");
+items.forEach(item =&gt; item.classList.add("active"));</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-11-9-1-0': `
+    <p>HTML and CSS handle the initial appearance of a page. But once the page is running, anything that needs to change visually — a button highlighting on hover, an error message turning red, a modal sliding open — has to happen through JavaScript. <code>style</code> and <code>classList</code> are how that happens.</p>
+    <p>Having two tools means you can pick the right approach. Set one specific property dynamically? <code>style</code>. Swap between defined visual states? <code>classList</code>. The two cover almost every "make the page look different" task, and they cooperate cleanly with the CSS you already wrote.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-11-9-1-1': `
+    <p>Each tool fits different jobs:</p>
+<pre class="language-javascript"><code class="language-javascript">// style — for one-off, computed values
+el.style.left = mouseX + "px";              // dynamic positioning
+el.style.transform = "rotate(" + deg + "deg)";   // computed rotation
+el.style.opacity = progress;                 // animated fade
+
+// classList — for visual states defined in CSS
+el.classList.add("error");        // matches .error { ... } in CSS
+el.classList.toggle("expanded");   // expand/collapse a panel
+el.classList.remove("loading");    // hide a spinner
+
+// rule of thumb:
+//   - if the VALUE comes from JavaScript logic → style
+//   - if the LOOK is one of a few preset states → classList</code></pre>
+
+    <p>Using <code>classList</code> when you can is generally cleaner because it keeps styling in the CSS file. JavaScript only flips switches; CSS decides what those switches mean visually.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-11-9-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// style — dynamic positioning
+el.style.left = x + "px";
+el.style.top = y + "px";
+
+// style — computed values
+el.style.width = (count * 20) + "px";
+el.style.transform = "scale(" + zoom + ")";
+
+// style — color from data
+el.style.backgroundColor = product.color;
+
+// style — clearing inline styles
+el.style.color = "";   // fall back to stylesheet
+
+// classList — visual states
+el.classList.add("active");
+el.classList.add("loading");
+el.classList.add("error");
+
+// classList — toggling
+el.classList.toggle("open");
+el.classList.toggle("dark-mode");
+
+// classList — checking
+if (el.classList.contains("disabled")) { ... }
+
+// classList — multiple at once
+el.classList.add("primary", "large", "rounded");
+el.classList.remove("loading", "pending");
+
+// classList — replace one for another
+el.classList.replace("old", "new");
+
+// classList — force a state with a boolean
+el.classList.toggle("hidden", isHidden);
+// adds "hidden" if isHidden is true, removes it otherwise
+
+// loop for many elements
+document.querySelectorAll(".tab").forEach(t =&gt; t.classList.remove("active"));</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-11-9-1-3': `
+    <p><code>style</code> is the JavaScript version of writing <code>style="..."</code> directly on an HTML tag. Each CSS property is a property on the <code>.style</code> object — you assign string values, including units. The element gets that exact inline styling, which beats stylesheet rules.</p>
+    <p><code>classList</code> is a wrapper around the element's <code>class</code> attribute. Adding a class is like writing <code>class="foo"</code> on the tag. Removing is like deleting it. Toggling flips it on or off. The actual styles tied to that class live in your CSS file — JavaScript just decides which classes apply.</p>
+    <p>Most of the time, <code>classList</code> is the better choice. It keeps your CSS in one place and your JavaScript focused on "what state is this in?" instead of "what color should it be?" Use <code>style</code> when you genuinely need a value that JavaScript computes — positions, sizes, dynamic colors — that wouldn't make sense as a fixed class.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-11-9-1-4': `
+    <p>Picture each element as having two layers of styling. The <strong>class layer</strong> is a set of labels (CSS classes), each one connected to a stylesheet rule that says "anything labeled X should look like this." Adding or removing labels with <code>classList</code> changes which rules apply.</p>
+    <p>The <strong>inline layer</strong> sits on top of everything else — direct paint orders written on the element itself. <code>style</code> writes orders to this layer. Inline orders always win, because they're attached directly to the element instead of described in a separate document.</p>
+    <p>Most of the time, you change classes — flip labels on and off, let the stylesheet do the heavy lifting. Reach for inline styles only when you need a specific value that classes can't express, like "move to this exact pixel" or "use this color the user just picked."</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-11-9-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;div id="alert" class="message"&gt;Heads up!&lt;/div&gt;
+// CSS:
+//   .message { padding: 10px; }
+//   .message.error { background-color: #ffe; border: 1px solid red; color: red; }
+
+const alert = document.getElementById("alert");
+
+// 1. Add a class — the .error rule kicks in
+alert.classList.add("error");
+// HTML now: &lt;div id="alert" class="message error"&gt;Heads up!&lt;/div&gt;
+// the element displays with the .error background, border, and color.
+
+// 2. Inline style — overrides the class for a specific property
+alert.style.fontSize = "20px";
+// HTML now: &lt;div id="alert" class="message error" style="font-size: 20px"&gt;...&lt;/div&gt;
+// font is bigger; everything else is still from the CSS rules.
+
+// 3. Toggle the class — remove "error"
+alert.classList.toggle("error");
+// HTML now: &lt;div id="alert" class="message" style="font-size: 20px"&gt;...&lt;/div&gt;
+// the .error styles are gone. font-size is still 20px (it was set inline).
+
+// 4. Clear the inline style
+alert.style.fontSize = "";
+// HTML now: &lt;div id="alert" class="message" style=""&gt;...&lt;/div&gt;
+// inline styles are gone. element shows just the .message base styles.
+
+// the two systems coexist:
+//   - classList controls which CSS rules apply
+//   - style sets inline overrides on top</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-11-9-2-0': `
+    <p>If <code>el.style.X = ...</code> doesn't seem to work, check three things in order:</p>
+<pre class="language-javascript"><code class="language-javascript">// 1. Did you spell the CSS property in camelCase?
+el.style.background-color = "red";   // SyntaxError — hyphens aren't valid JS
+el.style.backgroundColor = "red";     // ✓
+
+// 2. Did you include units?
+el.style.width = 200;       // doesn't apply
+el.style.width = "200px";    // ✓
+
+// 3. Is the property actually visible? Some require display modes:
+el.style.transform = "rotate(45deg)";   // requires display: block, inline-block, etc.
+// inline elements don't transform unless you set display first</code></pre>
+
+    <p>If <code>classList.add</code> doesn't seem to do anything visible:</p>
+<pre class="language-javascript"><code class="language-javascript">// Check the class is actually getting added:
+el.classList.add("foo");
+console.log(el.classList.contains("foo"));   // true
+console.log(el.className);                    // shows the class string
+
+// if class is there but no visual change, the CSS rule isn't matching:
+//   - is the class name spelled right in BOTH places?
+//   - is your stylesheet actually loaded?
+//   - is another rule overriding (check specificity)?
+//
+// open DevTools → Elements panel → inspect the element to see what styles are applied.</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-11-9-2-1': `
+    <p><code>style</code> and <code>classList</code> aren't competing tools — they're different layers of the same styling system. The class layer connects an element to your CSS rules. The inline layer is JavaScript writing direct orders. They stack: classes provide the base look, inline styles override specific properties on top.</p>
+    <p>The right tool depends on whether the styling is part of a defined visual state (use classes) or a one-off value JavaScript is computing in the moment (use inline style). In most modern code, classes do 90% of the work, and inline styles handle the few cases where a specific computed value is needed.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-11-9-2-2': `
+    <p><strong>Confusion: using hyphens in <code>style</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">el.style.background-color = "red";   // SyntaxError
+el.style.font-size = "20px";          // SyntaxError
+
+// fix: camelCase
+el.style.backgroundColor = "red";
+el.style.fontSize = "20px";
+
+// alternative — bracket notation with the CSS name as a string
+el.style["background-color"] = "red";   // also works, less common</code></pre>
+
+    <p><strong>Confusion: forgetting units</strong></p>
+<pre class="language-javascript"><code class="language-javascript">el.style.width = 200;          // silently fails — needs "px"
+el.style.width = "200px";       // ✓
+el.style.width = 200 + "px";    // also ✓ (build the string)
+
+// most numeric CSS properties need units. exceptions:
+el.style.opacity = "0.5";       // unitless
+el.style.zIndex = "10";          // unitless
+el.style.flex = "1";             // unitless</code></pre>
+
+    <p><strong>Confusion: <code>className</code> vs <code>classList</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">// className is a STRING of all the classes
+console.log(el.className);   // "btn primary active"
+
+// classList is an OBJECT with methods
+el.classList.add("new");
+el.classList.remove("active");
+el.classList.toggle("highlighted");
+
+// you CAN assign to className, but it replaces ALL classes:
+el.className = "fresh";   // wipes everything else, only "fresh" remains
+el.className = "fresh primary";   // can set multiple, separated by spaces
+
+// prefer classList for adding/removing single classes.
+// className is fine when you're setting the full class string at once.</code></pre>
+
+    <p><strong>Confusion: reading <code>el.style.X</code> when it was set in CSS</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// CSS: .box { color: blue; }
+
+el.style.color;   // "" — empty, because the color wasn't set INLINE
+
+// to read the actual color used:
+const styles = getComputedStyle(el);
+console.log(styles.color);   // "rgb(0, 0, 255)"
+
+// rule:
+//   .style       → only inline styles (style="..." attribute)
+//   getComputedStyle → final computed value, including from stylesheets</code></pre>
+
+    <p><strong>Confusion: <code>classList.add("foo bar")</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">el.classList.add("foo bar");
+// modern browsers throw: InvalidCharacterError
+// (the space isn't allowed inside one class name)
+
+// fix: pass them as separate arguments
+el.classList.add("foo", "bar");</code></pre>
+
+    <p><strong>Confusion: thinking inline styles "remove" class styles</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// CSS: .red-text { color: red; }
+
+// HTML: &lt;p class="red-text"&gt;Hi&lt;/p&gt;
+el.style.color = "blue";
+// the inline style is BLUE — wins for color
+// the .red-text class is still there — but its color is overridden
+
+// setting style doesn't remove classes:
+console.log(el.classList.contains("red-text"));   // still true
+console.log(el.style.color);   // "blue"
+
+// to actually remove the class:
+el.classList.remove("red-text");</code></pre>
+
+    <p><strong>Confusion: NodeList doesn't have these</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const items = document.querySelectorAll(".item");
+items.style.color = "red";           // doesn't work
+items.classList.add("active");        // doesn't work
+
+// fix: loop
+items.forEach(item =&gt; {
+  item.style.color = "red";
+  item.classList.add("active");
+});</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-11-9-2-3': `
+<pre class="language-javascript"><code class="language-javascript">el.style.background-color = "red";
+// SyntaxError — hyphens not allowed in property names
+// fix: camelCase
+el.style.backgroundColor = "red";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.style.width = 200;
+// silently fails — width needs a unit
+// fix: include "px" or another unit
+el.style.width = "200px";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.classList.add("foo bar");
+// throws InvalidCharacterError — can't include a space in one class name
+// fix: separate arguments
+el.classList.add("foo", "bar");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.className = "active";
+// wipes ALL existing classes — keeps only "active"
+// fix: use classList for non-destructive changes
+el.classList.add("active");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// CSS: .box { background: blue; }
+console.log(el.style.background);
+// "" — style only shows inline values
+// fix: getComputedStyle for actual rendered values
+const styles = getComputedStyle(el);
+console.log(styles.background);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.querySelectorAll(".tab").classList.add("ready");
+// NodeList has no classList
+// fix: loop
+document.querySelectorAll(".tab").forEach(t =&gt; t.classList.add("ready"));</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (el.classList === "active") { ... }
+// classList isn't a string — it's an object
+// fix: use .contains()
+if (el.classList.contains("active")) { ... }</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.style.color = "red";
+// later, trying to "reset" — but you forgot you set it
+el.style.color = null;
+// becomes the string "null" in some cases, doesn't reset properly
+// fix: use empty string to clear an inline style
+el.style.color = "";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.classList.toggle("open");
+el.classList.toggle("open");
+el.classList.toggle("open");
+// each call flips — three flips ends up adding it
+// fix: use the boolean form to force a specific state
+el.classList.toggle("open", shouldBeOpen);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const el = document.querySelector(".missing");
+el.classList.add("highlight");
+// crashes if .missing isn't there
+// fix: check first
+const el = document.querySelector(".missing");
+if (el) el.classList.add("highlight");</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-11-9-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Inline style — single property
+el.style.color = "red";
+el.style.backgroundColor = "yellow";
+el.style.fontSize = "20px";
+
+// Inline style — with computed values
+el.style.left = (mouseX - 10) + "px";
+el.style.transform = "rotate(" + angle + "deg)";
+el.style.opacity = String(progress);
+
+// Inline style — clearing
+el.style.color = "";
+
+// classList — basics
+el.classList.add("active");
+el.classList.remove("active");
+el.classList.toggle("active");
+
+// classList — checking
+if (el.classList.contains("active")) {
+  console.log("it is active");
+}
+
+// classList — multiple
+el.classList.add("primary", "large", "rounded");
+el.classList.remove("loading", "pending");
+
+// classList — replace
+el.classList.replace("old", "new");
+
+// classList — force a state
+el.classList.toggle("hidden", isHidden);
+
+// Reading classes
+console.log(el.className);              // "btn primary active"
+console.log(el.classList.length);        // 3
+console.log([...el.classList]);          // ["btn", "primary", "active"]
+
+// Toggle dark mode
+document.body.classList.toggle("dark-mode");
+
+// Update many elements
+document.querySelectorAll(".tab").forEach(t =&gt; t.classList.remove("active"));
+clickedTab.classList.add("active");
+
+// Get computed style
+const rendered = getComputedStyle(el);
+console.log(rendered.color);             // "rgb(255, 0, 0)"
+console.log(rendered.fontSize);           // "16px"</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-11-9-3-1': `
+    <p><strong>Example: tab switcher</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function showTab(name) {
+  document.querySelectorAll(".tab").forEach(t =&gt; t.classList.remove("active"));
+  document.querySelectorAll(".panel").forEach(p =&gt; p.classList.add("hidden"));
+
+  document.querySelector(".tab[data-tab='" + name + "']").classList.add("active");
+  document.querySelector(".panel[data-tab='" + name + "']").classList.remove("hidden");
+}
+// classList handles every visual state change.
+// the CSS file has rules for .active, .hidden — JS just flips the labels.</code></pre>
+
+    <p><strong>Example: dynamic positioning of a tooltip</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function positionTooltip(tooltip, target) {
+  const rect = target.getBoundingClientRect();
+  tooltip.style.left = (rect.left + rect.width / 2) + "px";
+  tooltip.style.top = (rect.bottom + 5) + "px";
+  tooltip.classList.add("visible");
+}
+// style — for computed numeric positions (no class could express this)
+// classList — for "is it visible or not" (defined in CSS)</code></pre>
+
+    <p><strong>Example: dark mode toggle</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector("#dark-toggle").addEventListener("click", () =&gt; {
+  const isDark = document.body.classList.toggle("dark");
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+});
+// one class flip switches the whole theme.
+// the CSS handles every visual change (.dark body, .dark .card, etc.).</code></pre>
+
+    <p><strong>Example: progress bar fill</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function updateProgress(percent) {
+  const bar = document.querySelector(".progress-bar");
+  bar.style.width = percent + "%";
+  bar.classList.toggle("complete", percent &gt;= 100);
+}
+// style — for the dynamic width based on the current percent
+// classList — for the "complete" visual state (color change, checkmark) at 100%</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-11-9-3-2': `
+    <ul>
+      <li><strong><code>style</code></strong> → inline styles, for computed or dynamic values</li>
+      <li><strong><code>classList</code></strong> → toggling CSS classes, the cleaner everyday choice</li>
+      <li><strong>CSS specificity</strong> → inline styles beat stylesheet rules by default</li>
+      <li><strong><code>getComputedStyle</code></strong> → for reading the final rendered style, not just inline</li>
+      <li><strong><code>className</code></strong> → the string form; setting it replaces all classes at once</li>
+      <li><strong>CSS variables</strong> → setting <code>style.setProperty("--my-var", "10px")</code></li>
+      <li><strong>Transitions</strong> → CSS transitions trigger when classList changes</li>
+      <li><strong>CSS naming conventions</strong> → camelCase for JavaScript, hyphens in CSS</li>
+      <li><strong>NodeList iteration</strong> → for applying changes to many elements</li>
+      <li><strong>Optional chaining</strong> → for safe access when an element might not exist</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-11-9-3-3': `
+    <ul>
+      <li><code>style</code></li>
+      <li><code>classList</code></li>
+      <li><code>className</code></li>
+      <li><code>getComputedStyle</code></li>
+      <li>CSS specificity</li>
+      <li>CSS transitions</li>
+      <li>CSS variables (custom properties)</li>
+      <li>Inline vs stylesheet styles</li>
+      <li>camelCase property names</li>
+      <li>Pixel units and other CSS values</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.12.11 DOM → adding classes
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-11-10-0-0': `
+    <p><code>classList.add()</code> is the method for <strong>adding a CSS class to an element</strong> from JavaScript. It's how you switch an element into a styled state defined in your CSS — like marking a form field as <code>.error</code>, a button as <code>.primary</code>, or a panel as <code>.expanded</code>.</p>
+    <p>The new class joins whatever classes the element already has. It doesn't replace anything, doesn't wipe other classes — just appends. The visual change happens because your CSS file has a rule for that class.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-11-10-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;button class="btn"&gt;Save&lt;/button&gt;
+
+const btn = document.querySelector("button");
+
+btn.classList.add("primary");
+// HTML now: &lt;button class="btn primary"&gt;Save&lt;/button&gt;
+
+btn.classList.add("large");
+// HTML now: &lt;button class="btn primary large"&gt;Save&lt;/button&gt;
+
+// the existing "btn" class is preserved.
+// the new classes are added alongside.</code></pre>
+    <p>One call, one (or more) new classes appended to the element. The element keeps whatever it already had.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-11-10-0-2': `
+<pre class="language-javascript"><code class="language-javascript">
+element.classList.add(name)
+//   - name: a class name string (no dots, no spaces)
+//   - adds the class to the element's class list
+//   - if the class is already there, nothing changes
+//   - if the class is new, it appears at the end of the class list
+element.classList.add(name1, name2, name3)
+//   - add multiple classes in one call
+//   - each as a separate argument
+//
+// the result is reflected in:
+//   - the element's "class" attribute in the HTML
+//   - element.classList (the DOMTokenList object)
+//   - element.className (the full class string)
+//
+// example progression:
+//   start:        class=""
+//   add("btn"):   class="btn"
+//   add("big"):   class="btn big"
+//   add("btn"):   class="btn big"  (already there — no change)</code></pre>
+    <p>Adding is idempotent — calling <code>add</code> with a class that's already there is safe and has no effect. You don't need to check first.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-11-10-0-3': `
+    <p><strong>Pass class names without dots.</strong> The <code>.</code> is only for CSS selectors, not for class names:</p>
+<pre class="language-javascript"><code class="language-javascript">// Wrong — the dot becomes part of the class name
+el.classList.add(".active");
+// element gets class=".active" — invalid, CSS rule .active won't match
+
+// Right — just the name
+el.classList.add("active");
+// element gets class="active" — matches the .active CSS rule</code></pre>
+
+    <p><strong>Add multiple classes by passing multiple arguments.</strong> Each one is a separate string:</p>
+<pre class="language-javascript"><code class="language-javascript">// Good — multiple arguments
+el.classList.add("primary", "large", "rounded");
+// element gets all three classes added
+
+// Bad — one string with spaces
+el.classList.add("primary large rounded");
+// throws "InvalidCharacterError" — a class name can't contain spaces</code></pre>
+
+    <p><strong>Adding a class that's already there does nothing.</strong> No error, no duplicate:</p>
+<pre class="language-javascript"><code class="language-javascript">el.classList.add("active");
+el.classList.add("active");
+el.classList.add("active");
+// element ends up with class="active" — just once
+
+// you don't need to check first:
+if (!el.classList.contains("active")) el.classList.add("active");   // unnecessary
+el.classList.add("active");   // same effect, simpler</code></pre>
+
+    <p><strong>Class names are case-sensitive.</strong> "Active" and "active" are different classes:</p>
+<pre class="language-javascript"><code class="language-javascript">// CSS:
+// .active { ... }
+
+el.classList.add("active");   // ✓ matches .active in CSS
+el.classList.add("Active");   // adds a SEPARATE class — won't match .active
+el.classList.add("ACTIVE");   // another separate class
+
+// rule: pick a casing convention (usually all lowercase) and stick to it.</code></pre>
+
+    <p><strong>The visual change comes from CSS — JavaScript just adds the class.</strong> If you don't see the change, the CSS rule isn't matching:</p>
+<pre class="language-javascript"><code class="language-javascript">el.classList.add("highlight");
+// adds class="highlight" to the element
+
+// but the user sees no change UNLESS your CSS has:
+//   .highlight { background-color: yellow; }
+// or similar.
+
+// to verify the class is actually getting added:
+console.log(el.classList.contains("highlight"));   // true
+console.log(el.className);   // shows the full class string</code></pre>
+
+    <p><strong>You can add classes you'll only use temporarily.</strong> Combined with <code>remove</code> later, this is the standard pattern for animations and transient states:</p>
+<pre class="language-javascript"><code class="language-javascript">// CSS:
+// .shake { animation: shake 0.5s; }
+
+const el = document.querySelector(".error-field");
+el.classList.add("shake");
+
+setTimeout(() =&gt; el.classList.remove("shake"), 500);
+// the animation plays once, then the class is removed
+// adding it again later (e.g., on the next failed submission) re-triggers it</code></pre>
+
+    <p><strong>NodeList doesn't have <code>classList</code>.</strong> You have to loop over individual elements:</p>
+<pre class="language-javascript"><code class="language-javascript">const items = document.querySelectorAll(".item");
+items.classList.add("highlight");   // doesn't error, doesn't work
+
+// fix: loop
+items.forEach(item =&gt; item.classList.add("highlight"));</code></pre>
+
+    <p><strong>If the element might not exist, check before calling.</strong> <code>classList.add</code> on <code>null</code> crashes:</p>
+<pre class="language-javascript"><code class="language-javascript">const el = document.querySelector(".missing");
+el.classList.add("active");
+// TypeError: Cannot read property 'classList' of null
+
+// fix: check first
+const el = document.querySelector(".missing");
+if (el) el.classList.add("active");</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-11-10-1-0': `
+    <p>Most UI states aren't hard-coded into the HTML — they appear and disappear based on what the user does. A form field shouldn't start out with an "error" look; it should get that look <em>after</em> validation fails. <code>classList.add()</code> is the moment that change happens.</p>
+    <p>Compared to using <code>style</code>, adding a class keeps your styling in CSS where it belongs. JavaScript only decides "this element is now in the error state" — your stylesheet decides what "error state" looks like. Cleaner, easier to maintain, easier to theme.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-11-10-1-1': `
+    <p>Most "make this look different" tasks are one <code>classList.add</code> call:</p>
+<pre class="language-javascript"><code class="language-javascript">// Mark a field as having an error
+input.classList.add("error");
+
+// Show a loading state on a button
+btn.classList.add("loading");
+
+// Activate a navigation item
+link.classList.add("active");
+
+// Apply a theme
+document.body.classList.add("dark-mode");
+
+// Highlight a search match
+match.classList.add("found");
+
+// Open a modal
+modal.classList.add("open");
+
+// in every case, the visual rule lives in CSS. JavaScript just flips the switch.</code></pre>
+
+    <p>It's also additive — adding "loading" doesn't remove "primary." That makes it safe to stack states without thinking about what's already there.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-11-10-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Single class
+el.classList.add("active");
+
+// Multiple classes at once
+el.classList.add("primary", "large", "rounded");
+
+// Conditionally
+if (user.isAdmin) {
+  banner.classList.add("admin-only");
+}
+
+// On an event
+btn.addEventListener("click", () =&gt; {
+  btn.classList.add("clicked");
+});
+
+// To start an animation
+el.classList.add("fade-in");
+
+// To mark validation failures
+input.classList.add("invalid");
+
+// To enable a feature flag visually
+document.body.classList.add("beta-features");
+
+// To loop over many elements
+document.querySelectorAll(".tab").forEach(t =&gt; t.classList.add("ready"));
+
+// To respond to data
+products.forEach(p =&gt; {
+  if (p.onSale) p.element.classList.add("sale");
+});
+
+// As part of a state transition
+function showLoading() {
+  document.body.classList.add("loading");
+}
+function hideLoading() {
+  document.body.classList.remove("loading");
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-11-10-1-3': `
+    <p><code>classList.add</code> sticks a label on an element. The label by itself doesn't change anything visually — but CSS rules are listening for those labels. The moment you stick the "highlight" label on, every CSS rule that targets <code>.highlight</code> kicks in and styles the element accordingly.</p>
+    <p>The labels stack. An element can have any number of labels at once, and each one can match a different CSS rule. So you might have "btn" (base styles), "primary" (color), "large" (size), "loading" (transient state) — all four classes contributing to how the element looks at this moment.</p>
+    <p>Adding a label that's already there does nothing. Adding a new label appends it. Removing a label takes it off (next lesson). It's just a list, and <code>add</code> is "put this in the list."</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-11-10-1-4': `
+    <p>Picture an element wearing a stack of name tags. Each tag is a class. The element's look is the combined effect of every name tag it's wearing — the CSS file has a description for each tag, and the element wears all of them at once.</p>
+    <p><code>classList.add</code> hands the element one more name tag. The element doesn't take off any of its existing tags; it just adds the new one to the stack. If the new tag has a matching CSS rule, the element's look updates instantly. If not, nothing visible happens — but the tag is still on the element, ready for any rule that might reference it later.</p>
+    <p>If you try to hand the element a tag it already has, nothing happens. You can't double-up on the same name tag. This means you can call <code>add</code> safely without checking first — there's no risk of duplicating.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-11-10-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;input id="email" class="field"&gt;
+// CSS:
+//   .field { border: 1px solid gray; }
+//   .field.error { border-color: red; background: #ffe; }
+//   .field.required { font-weight: bold; }
+
+const input = document.getElementById("email");
+
+// Step 1: input has class "field" only
+console.log(input.className);    // "field"
+
+// Step 2: add the "required" class
+input.classList.add("required");
+console.log(input.className);    // "field required"
+// element now has BOTH "field" and "required" — both CSS rules apply
+
+// Step 3: validation fails, add "error"
+input.classList.add("error");
+console.log(input.className);    // "field required error"
+// now THREE classes — all three CSS rules apply
+
+// step 4: try to add "error" again
+input.classList.add("error");
+console.log(input.className);    // "field required error" — no duplicate
+
+// the visual result:
+//   - red border (from .field.error)
+//   - light yellow background (from .field.error)
+//   - bold text (from .field.required)
+//   - base border (from .field, overridden by .error for border-color)
+//
+// adding classes stacks them. each class connects to its own CSS rule.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-11-10-2-0': `
+    <p>If <code>classList.add</code> "isn't doing anything visible," confirm the class is actually being added before suspecting your JavaScript:</p>
+<pre class="language-javascript"><code class="language-javascript">el.classList.add("highlight");
+console.log(el.classList.contains("highlight"));   // should be true
+console.log(el.className);                          // should include "highlight"
+
+// if both are correct but nothing visible changed, the CSS isn't matching:
+//   - is the stylesheet actually loaded?
+//   - is "highlight" spelled the same in both files?
+//   - is some other rule overriding it (specificity)?
+//   - is the parent hiding the element (display: none)?
+//
+// open DevTools → Elements → click the element → "Styles" tab shows which rules apply.</code></pre>
+
+    <p>Common silent-failure causes:</p>
+<pre class="language-javascript"><code class="language-javascript">// 1. Including the dot
+el.classList.add(".active");
+// adds the literal class ".active", not "active" — won't match CSS rule .active
+
+// 2. Spaces in one argument
+el.classList.add("primary large");
+// throws InvalidCharacterError
+
+// 3. Element doesn't exist
+document.querySelector(".missing").classList.add("active");
+// TypeError on null
+
+// 4. Stylesheet typo
+// CSS has ".activ" (typo); JS adds "active" — they don't match</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-11-10-2-1': `
+    <p><code>classList.add</code> doesn't change how the element looks — it changes which CSS rules <em>apply</em> to the element. The visual change is downstream: CSS rules match the new class, the browser recomputes styles, the element repaints. JavaScript's only job is to update the class list.</p>
+    <p>This separation is what makes <code>classList</code> so clean to work with. Your JavaScript code stays focused on "what state should this element be in?" Your CSS code stays focused on "what does each state look like?" Two clear responsibilities, one tiny method call to bridge them.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-11-10-2-2': `
+    <p><strong>Confusion: including the dot</strong></p>
+<pre class="language-javascript"><code class="language-javascript">el.classList.add(".btn");   // adds literal class ".btn" — bad
+el.classList.add("btn");     // ✓ adds class "btn"
+
+// the dot is for SELECTORS, not for class names.</code></pre>
+
+    <p><strong>Confusion: multiple classes in one string</strong></p>
+<pre class="language-javascript"><code class="language-javascript">el.classList.add("btn primary");   // throws InvalidCharacterError
+
+// to add multiple, pass separate arguments:
+el.classList.add("btn", "primary");</code></pre>
+
+    <p><strong>Confusion: thinking <code>add</code> replaces existing classes</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;p class="msg"&gt;Hi&lt;/p&gt;
+
+el.classList.add("error");
+// p still has "msg" — now class="msg error"
+// add does NOT replace, only appends.
+
+// to replace ALL classes:
+el.className = "error";
+
+// to swap one for another:
+el.classList.replace("msg", "error");</code></pre>
+
+    <p><strong>Confusion: case sensitivity</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// CSS: .active { ... }
+
+el.classList.add("Active");
+// adds class "Active" (capital A) — does NOT match .active in CSS
+
+// rule: keep casing consistent. typically all-lowercase.</code></pre>
+
+    <p><strong>Confusion: nothing happens visually</strong></p>
+<pre class="language-javascript"><code class="language-javascript">el.classList.add("highlight");
+// no change on screen
+
+// most common cause: there's no .highlight rule in your CSS.
+// JavaScript adding a class only changes appearance if the stylesheet has matching rules.
+
+// fix: write the CSS rule that matches the class.</code></pre>
+
+    <p><strong>Confusion: <code>classList</code> vs <code>className</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">// classList is the OBJECT with methods (.add, .remove, .toggle, .contains)
+// className is the STRING of all classes joined together
+
+el.classList.add("new");          // adds without disturbing other classes
+el.className = "new";              // REPLACES all classes with just "new"
+
+// prefer classList for adding/removing.
+// className is fine when you want to set the full class string at once.</code></pre>
+
+    <p><strong>Confusion: NodeList doesn't have classList</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelectorAll(".tab").classList.add("ready");
+// NodeList has no classList — silently does nothing useful
+
+// fix: loop
+document.querySelectorAll(".tab").forEach(t =&gt; t.classList.add("ready"));</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-11-10-2-3': `
+<pre class="language-javascript"><code class="language-javascript">el.classList.add(".active");
+// adds the literal string ".active" — won't match CSS rule .active
+// fix: drop the dot
+el.classList.add("active");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.classList.add("btn primary");
+// throws InvalidCharacterError — can't have spaces in one class
+// fix: separate arguments
+el.classList.add("btn", "primary");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.className.add("active");
+// className is a STRING — strings don't have .add()
+// fix: use classList for adding
+el.classList.add("active");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.querySelectorAll(".tab").classList.add("active");
+// NodeList has no classList
+// fix: loop
+document.querySelectorAll(".tab").forEach(t =&gt; t.classList.add("active"));</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const el = document.querySelector(".missing");
+el.classList.add("active");
+// crashes if .missing isn't there
+// fix: check first
+const el = document.querySelector(".missing");
+if (el) el.classList.add("active");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.classList.add("Active");
+// CSS rule is .active (lowercase) — they don't match
+// fix: match the casing in your stylesheet
+el.classList.add("active");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (!el.classList.contains("active")) {
+  el.classList.add("active");
+}
+// the check is unnecessary — add is idempotent
+// fix: just add
+el.classList.add("active");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.classList.add("");
+// empty string — throws SyntaxError
+// fix: don't pass empty strings; validate input first
+if (className) el.classList.add(className);</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-11-10-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Single class
+el.classList.add("active");
+
+// Multiple at once
+el.classList.add("primary", "large", "rounded");
+
+// Conditionally
+if (user.isAdmin) el.classList.add("admin");
+if (item.featured) card.classList.add("featured");
+
+// On an event
+btn.addEventListener("click", () =&gt; btn.classList.add("clicked"));
+
+// Animation trigger
+el.classList.add("fade-in");
+
+// Validation marker
+input.classList.add("invalid");
+
+// Page-wide theme
+document.body.classList.add("dark-mode");
+
+// In a loop
+document.querySelectorAll(".tab").forEach(t =&gt; t.classList.add("ready"));
+
+// From data
+products.forEach(p =&gt; {
+  if (p.onSale) p.element.classList.add("sale");
+});
+
+// Safe with null check
+const el = document.querySelector(".target");
+if (el) el.classList.add("active");
+
+// Verify after adding
+el.classList.add("highlight");
+console.log(el.classList.contains("highlight"));   // true
+
+// Combined with other DOM work
+const div = document.createElement("div");
+div.classList.add("card", "elevated");
+div.textContent = "Hello";
+document.body.appendChild(div);
+
+// Temporary state (remove later)
+el.classList.add("shake");
+setTimeout(() =&gt; el.classList.remove("shake"), 500);</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-11-10-3-1': `
+    <p><strong>Example: marking an invalid form field</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function validate(input) {
+  if (input.value.trim() === "") {
+    input.classList.add("error");
+  }
+}
+
+document.querySelectorAll("input[required]").forEach(input =&gt; {
+  input.addEventListener("blur", () =&gt; validate(input));
+});
+// when the user leaves a required field empty, "error" gets added.
+// the CSS rule .error styles the field in red.</code></pre>
+
+    <p><strong>Example: switching to a "loading" state on a button</strong></p>
+<pre class="language-javascript"><code class="language-javascript">async function handleSave() {
+  const btn = document.querySelector("#save");
+  btn.classList.add("loading");
+  btn.disabled = true;
+  await save();
+  btn.classList.remove("loading");
+  btn.disabled = false;
+}
+// "loading" is a CSS class that shows a spinner and dims the button.
+// adding it visually communicates that something's in progress.</code></pre>
+
+    <p><strong>Example: enabling dark mode site-wide</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector("#dark-toggle").addEventListener("click", () =&gt; {
+  document.body.classList.add("dark-mode");
+  localStorage.setItem("theme", "dark");
+});
+// the dark-mode class on &lt;body&gt; cascades to every descendant via CSS.
+// one class add changes the entire page's look.</code></pre>
+
+    <p><strong>Example: highlighting items that match a search</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function highlightMatches(query) {
+  document.querySelectorAll(".item").forEach(item =&gt; {
+    if (item.textContent.toLowerCase().includes(query.toLowerCase())) {
+      item.classList.add("match");
+    }
+  });
+}
+// for each match, add the "match" class.
+// CSS rule .match { background: yellow } visually highlights them.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-11-10-3-2': `
+    <ul>
+      <li><strong><code>classList</code></strong> → the object that holds <code>add</code> and other methods</li>
+      <li><strong><code>classList.remove</code></strong> → the opposite operation, covered next</li>
+      <li><strong><code>classList.toggle</code></strong> → flip a class on or off</li>
+      <li><strong><code>classList.contains</code></strong> → check if a class is present</li>
+      <li><strong><code>className</code></strong> → the string version; replaces all classes when assigned</li>
+      <li><strong>CSS classes</strong> → the labels that JavaScript adds, defined in your stylesheet</li>
+      <li><strong>CSS specificity</strong> → which class rule wins when multiple apply</li>
+      <li><strong>CSS transitions</strong> → adding a class can trigger a smooth animation</li>
+      <li><strong>NodeList iteration</strong> → for adding the same class to many elements</li>
+      <li><strong>State management</strong> → using classes to represent UI state (active, loading, error)</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-11-10-3-3': `
+    <ul>
+      <li><code>classList.remove</code></li>
+      <li><code>classList.toggle</code></li>
+      <li><code>classList.contains</code></li>
+      <li><code>classList.replace</code></li>
+      <li><code>className</code></li>
+      <li>CSS classes</li>
+      <li>CSS specificity</li>
+      <li>CSS transitions</li>
+      <li>State-based styling</li>
+      <li>Conditional class application</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.12.12 DOM → removing classes
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-11-11-0-0': `
+    <p><code>classList.remove()</code> is the method for <strong>taking a CSS class off an element</strong>. It's the counterpart to <code>add</code>: where <code>add</code> puts an element <em>into</em> a styled state, <code>remove</code> pulls it out.</p>
+    <p>Use it to clear errors after fixing them, hide loading spinners when work finishes, deactivate previously selected tabs, or undo any visual state that JavaScript set earlier. Only the named class goes away — all other classes on the element stay put.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-11-11-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;button class="btn primary loading"&gt;Save&lt;/button&gt;
+
+const btn = document.querySelector("button");
+
+btn.classList.remove("loading");
+// HTML now: &lt;button class="btn primary"&gt;Save&lt;/button&gt;
+
+btn.classList.remove("primary");
+// HTML now: &lt;button class="btn"&gt;Save&lt;/button&gt;
+
+// other classes stay. only the named class is taken off.</code></pre>
+    <p>Pick the class name; the method removes it. Everything else the element was wearing stays exactly as it was.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-11-11-0-2': `
+<pre class="language-javascript"><code class="language-javascript">
+element.classList.remove(name)
+//   - name: a class name string (no dots, no spaces)
+//   - removes that class from the element's class list
+//   - if the class isn't there, nothing happens (no error)
+//   - other classes are not affected
+//
+element.classList.remove(name1, name2, name3)
+//   - remove multiple classes in one call
+//   - each as a separate argument
+//
+// example progression:
+//   start:            class="btn primary loading"
+//   remove("loading"): class="btn primary"
+//   remove("primary"): class="btn"
+//   remove("btn"):     class=""
+//   remove("foo"):     class=""  (foo wasn't there — no change)</code></pre>
+    <p>Like <code>add</code>, it's idempotent — calling <code>remove</code> on a class that isn't there is safe and has no effect. No need to check first.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-11-11-0-3': `
+    <p><strong>Pass class names without dots.</strong> Same rule as <code>add</code> — the dot is for CSS selectors only:</p>
+<pre class="language-javascript"><code class="language-javascript">// Wrong
+el.classList.remove(".active");
+// tries to remove the literal class ".active" (which isn't there)
+// the actual "active" class is NOT removed
+
+// Right
+el.classList.remove("active");</code></pre>
+
+    <p><strong>Remove multiple classes by passing multiple arguments.</strong> Each one a separate string:</p>
+<pre class="language-javascript"><code class="language-javascript">// Good
+el.classList.remove("loading", "pending", "hidden");
+
+// Bad — one string with spaces
+el.classList.remove("loading pending");
+// throws "InvalidCharacterError" — class names can't have spaces</code></pre>
+
+    <p><strong>Removing a class that isn't there does nothing.</strong> No error, no warning, no problem:</p>
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;p class="msg"&gt;Hi&lt;/p&gt;
+
+el.classList.remove("error");
+// "error" wasn't on the element — nothing happens
+// no exception, no console warning
+
+// you don't need to check first:
+if (el.classList.contains("error")) el.classList.remove("error");   // unnecessary
+el.classList.remove("error");   // same effect, simpler</code></pre>
+
+    <p><strong>Class names are case-sensitive.</strong> "Active" and "active" are different:</p>
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;div class="active"&gt;...&lt;/div&gt;
+
+el.classList.remove("Active");
+// "Active" (capital A) isn't on the element — does nothing
+// the lowercase "active" stays.
+
+el.classList.remove("active");
+// ✓ removes the actual class.</code></pre>
+
+    <p><strong>Removing a class doesn't affect inline styles.</strong> Inline <code>style</code> overrides win regardless of class changes:</p>
+<pre class="language-javascript"><code class="language-javascript">// CSS: .red { color: red; }
+// HTML: &lt;p class="red" style="color: green"&gt;Hi&lt;/p&gt;
+
+const p = document.querySelector("p");
+p.classList.remove("red");
+// the .red rule no longer applies
+// but the inline style="color: green" is still there
+// the text is still green
+
+// to clear the inline style too:
+p.style.color = "";</code></pre>
+
+    <p><strong>Common pairing with <code>add</code> — start a state, then clean it up later.</strong> The two together cover most "show then hide" flows:</p>
+<pre class="language-javascript"><code class="language-javascript">// show a loading state
+btn.classList.add("loading");
+
+// later, when work is done
+btn.classList.remove("loading");
+
+// or for a temporary animation
+el.classList.add("shake");
+setTimeout(() =&gt; el.classList.remove("shake"), 500);</code></pre>
+
+    <p><strong>To clear ALL classes at once, use <code>className = ""</code> instead.</strong> <code>classList.remove</code> takes specific names, not "everything":</p>
+<pre class="language-javascript"><code class="language-javascript">// remove specific classes
+el.classList.remove("a", "b", "c");
+
+// remove EVERY class
+el.className = "";
+
+// alternative: remove every class by spreading the current list
+el.classList.remove(...el.classList);
+// works, but reads weirder than just el.className = ""</code></pre>
+
+    <p><strong>NodeList doesn't have <code>classList</code>.</strong> Loop over individual elements:</p>
+<pre class="language-javascript"><code class="language-javascript">const items = document.querySelectorAll(".item");
+items.classList.remove("active");   // doesn't work — NodeList has no classList
+
+// fix: loop
+items.forEach(item =&gt; item.classList.remove("active"));</code></pre>
+
+    <p><strong>Check before calling on possibly-missing elements.</strong> <code>classList.remove</code> on <code>null</code> crashes:</p>
+<pre class="language-javascript"><code class="language-javascript">const el = document.querySelector(".missing");
+el.classList.remove("active");
+// TypeError: Cannot read property 'classList' of null
+
+// fix:
+const el = document.querySelector(".missing");
+if (el) el.classList.remove("active");</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-11-11-1-0': `
+    <p>States that JavaScript sets shouldn't last forever. An error message that pops up needs to disappear once the user fixes the field. A loading spinner needs to vanish when the data arrives. A selected tab needs to be deselected when the user picks a different one. <code>classList.remove</code> is the cleanup half of that pattern.</p>
+    <p>It's also surgical — only the named class goes away. If your element has five classes for different reasons, removing one leaves the other four intact. No accidental wiping of base styles or unrelated state.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-11-11-1-1': `
+    <p>Anytime you've set a class with <code>add</code>, you usually want to undo it later:</p>
+<pre class="language-javascript"><code class="language-javascript">// Clear an error after the field is fixed
+input.classList.remove("error");
+
+// Hide a loading spinner when fetch finishes
+btn.classList.remove("loading");
+
+// Deactivate a previously-active tab
+oldTab.classList.remove("active");
+
+// Close a modal
+modal.classList.remove("open");
+
+// Stop highlighting after the search is cleared
+items.forEach(item =&gt; item.classList.remove("match"));
+
+// Turn off dark mode
+document.body.classList.remove("dark-mode");</code></pre>
+
+    <p>It's also the "deactivate the others" half of many selection patterns — before activating a new item, remove the "active" class from all the previous ones.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-11-11-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Single class
+el.classList.remove("active");
+
+// Multiple at once
+el.classList.remove("loading", "pending", "draft");
+
+// In an event handler
+btn.addEventListener("click", () =&gt; {
+  btn.classList.remove("disabled");
+});
+
+// After validation passes
+input.classList.remove("error");
+
+// As cleanup after a temporary state
+el.classList.add("shake");
+setTimeout(() =&gt; el.classList.remove("shake"), 500);
+
+// Deactivate before activating something else
+document.querySelectorAll(".tab").forEach(t =&gt; t.classList.remove("active"));
+clickedTab.classList.add("active");
+
+// Reverse a feature flag
+document.body.classList.remove("beta-features");
+
+// Clear a "matched" highlight
+document.querySelectorAll(".item").forEach(i =&gt; i.classList.remove("match"));
+
+// Pair with add for toggling between states
+function showSpinner() {
+  document.body.classList.add("loading");
+}
+function hideSpinner() {
+  document.body.classList.remove("loading");
+}
+
+// Conditionally
+if (user.subscriptionExpired) {
+  premium.classList.remove("unlocked");
+}
+
+// Safe with null check
+const el = document.querySelector(".target");
+if (el) el.classList.remove("highlighted");</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-11-11-1-3': `
+    <p><code>classList.remove</code> takes a label off an element. The element still has every other label it was wearing — just not the one you removed. Any CSS rules that depended on that specific label stop applying; rules tied to the remaining labels keep doing their thing.</p>
+    <p>It's safe to call whether or not the label is actually there. Removing a label that isn't on the element is a quiet no-op, not an error. That makes it easy to write cleanup code without first checking what state the element is in.</p>
+    <p>The most common pattern: pair <code>add</code> and <code>remove</code> to flip between states. Set "loading" with <code>add</code>, clear it with <code>remove</code>. Mark "error" with <code>add</code>, unmark it with <code>remove</code>. Same element, same other classes — just one label turning on and off as needed.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-11-11-1-4': `
+    <p>Going back to the name-tag metaphor: <code>classList.add</code> hands the element a new name tag, <code>classList.remove</code> takes one off. The other name tags stay exactly where they are — only the one you named gets unpinned.</p>
+    <p>If you ask the element to remove a name tag it doesn't have, it just shrugs. No error, no scolding. This is intentional — it means you can call <code>remove</code> as part of cleanup code without first confirming the tag was ever there. Either it's there and gets removed, or it wasn't and nothing changes.</p>
+    <p>The CSS rules tied to that tag stop applying the moment the tag is gone. The element's look updates instantly. Rules tied to the other tags it's still wearing keep working — the change is isolated to whatever the removed class was responsible for.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-11-11-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;input id="email" class="field error required"&gt;
+// CSS:
+//   .field { border: 1px solid gray; }
+//   .field.required { font-weight: bold; }
+//   .field.error { border-color: red; background: #ffe; }
+
+const input = document.getElementById("email");
+
+// Step 1: input has three classes
+console.log(input.className);    // "field error required"
+// visual: bold text, red border, light yellow background
+
+// Step 2: user fixes the field, validation passes
+input.classList.remove("error");
+console.log(input.className);    // "field required"
+// the .error rule no longer applies
+// visual: bold text, gray border, normal background
+// "field" and "required" are still there — bold text stays
+
+// Step 3: try to remove "error" again
+input.classList.remove("error");
+console.log(input.className);    // "field required" — no change, no error
+
+// Step 4: remove a class that was never there
+input.classList.remove("disabled");
+console.log(input.className);    // "field required" — still unchanged, no error
+
+// classList.remove is targeted and safe.
+// only the named class is affected. missing classes are silently ignored.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-11-11-2-0': `
+    <p>If <code>classList.remove</code> "doesn't seem to do anything," confirm the class was actually on the element first:</p>
+<pre class="language-javascript"><code class="language-javascript">console.log(el.className);   // shows the full class string
+console.log(el.classList.contains("loading"));   // true or false
+
+el.classList.remove("loading");
+
+console.log(el.classList.contains("loading"));   // should be false
+console.log(el.className);
+
+// if the class wasn't there to begin with, remove is a no-op.
+// if you see the class still in className after remove, look for typos —
+// "Loading" vs "loading", trailing spaces, etc.</code></pre>
+
+    <p>Common failure patterns:</p>
+<pre class="language-javascript"><code class="language-javascript">// 1. Including the dot
+el.classList.remove(".active");
+// tries to remove ".active" (a class with a dot in its name) — not "active"
+
+// 2. Case mismatch
+el.classList.remove("Active");
+// the class is "active" — case doesn't match, nothing removed
+
+// 3. Trying to remove from null
+document.querySelector(".missing").classList.remove("active");
+// TypeError on null
+
+// 4. The class was never added with classList — it's only set inline as style
+el.style.color = "red";
+el.classList.remove("red");   // doesn't change the inline color (that's not a class)
+// fix: clear the inline style instead
+el.style.color = "";</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-11-11-2-1': `
+    <p><code>classList.remove</code> is the natural counterpart to <code>classList.add</code>. They're not separate concepts — they're two halves of "managing class state on an element." One puts a label on, the other takes it off. Together they cover almost every visual state transition you'll need.</p>
+    <p>The "silently does nothing if the class isn't there" rule is intentional, not a quirk. It means cleanup code can be lazy: just call <code>remove</code>, don't worry about whether the class is currently on the element. The result is the same either way — the class is no longer there afterwards.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-11-11-2-2': `
+    <p><strong>Confusion: including the dot</strong></p>
+<pre class="language-javascript"><code class="language-javascript">el.classList.remove(".active");
+// tries to remove a class literally named ".active" — not "active"
+// fix:
+el.classList.remove("active");</code></pre>
+
+    <p><strong>Confusion: thinking <code>remove</code> clears all classes</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;p class="btn primary large"&gt;...&lt;/p&gt;
+
+el.classList.remove("primary");
+// only "primary" is removed
+// element still has "btn" and "large"
+
+// to remove all classes:
+el.className = "";
+// or:
+el.classList.remove(...el.classList);   // spreads each into separate arguments</code></pre>
+
+    <p><strong>Confusion: multiple classes in one string</strong></p>
+<pre class="language-javascript"><code class="language-javascript">el.classList.remove("btn primary");
+// throws InvalidCharacterError
+
+// pass separate arguments:
+el.classList.remove("btn", "primary");</code></pre>
+
+    <p><strong>Confusion: case sensitivity</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// HTML: class="active"
+
+el.classList.remove("Active");   // does nothing — capital A doesn't match
+el.classList.remove("active");   // ✓ matches and removes
+
+// keep all class casing consistent in your stylesheet and JS.</code></pre>
+
+    <p><strong>Confusion: remove vs <code>className = ""</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">// classList.remove → takes a specific class off, keeps others
+// className = "" → wipes ALL classes
+
+el.className = "loading active primary";
+
+el.classList.remove("loading");
+// → "active primary"
+
+el.className = "";
+// → "" (nothing — everything wiped)</code></pre>
+
+    <p><strong>Confusion: thinking <code>remove</code> removes the element</strong></p>
+<pre class="language-javascript"><code class="language-javascript">el.classList.remove("active");
+// removes the CLASS, not the element
+// the element is still on the page
+
+// to remove the ELEMENT:
+el.remove();</code></pre>
+
+    <p><strong>Confusion: NodeList doesn't have classList</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelectorAll(".tab").classList.remove("active");
+// NodeList has no classList — silently does nothing
+
+// fix: loop
+document.querySelectorAll(".tab").forEach(t =&gt; t.classList.remove("active"));</code></pre>
+
+    <p><strong>Confusion: trying to remove a class that came from an inline style</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;p style="color: red"&gt;Hi&lt;/p&gt;
+
+el.classList.remove("color: red");   // not a class — does nothing
+el.style.color = "";                  // ✓ this clears the inline style
+
+// classes and inline styles are two different systems.
+// classList.remove only handles classes.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-11-11-2-3': `
+<pre class="language-javascript"><code class="language-javascript">el.classList.remove(".active");
+// tries to remove class ".active" — not "active"
+// fix: drop the dot
+el.classList.remove("active");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.classList.remove("btn primary");
+// throws InvalidCharacterError
+// fix: separate arguments
+el.classList.remove("btn", "primary");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.className.remove("active");
+// className is a STRING — strings don't have .remove()
+// fix: use classList
+el.classList.remove("active");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.querySelectorAll(".tab").classList.remove("active");
+// NodeList has no classList
+// fix: loop
+document.querySelectorAll(".tab").forEach(t =&gt; t.classList.remove("active"));</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const el = document.querySelector(".missing");
+el.classList.remove("active");
+// crashes if .missing isn't there
+// fix: check first
+const el = document.querySelector(".missing");
+if (el) el.classList.remove("active");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.classList.remove("Active");
+// HTML class is "active" — case mismatch
+// fix: match the case
+el.classList.remove("active");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (el.classList.contains("active")) {
+  el.classList.remove("active");
+}
+// unnecessary check — remove is safe even when class isn't there
+// fix: just remove
+el.classList.remove("active");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.classList.remove("");
+// empty string — throws SyntaxError
+// fix: validate before calling
+if (className) el.classList.remove(className);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.classList.remove("active");
+// expected the element to disappear — but only the class was removed
+// fix: if you want to delete the element entirely
+el.remove();</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-11-11-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Single class
+el.classList.remove("active");
+
+// Multiple at once
+el.classList.remove("loading", "pending", "draft");
+
+// Clear an error
+input.classList.remove("error");
+
+// Stop showing loading
+btn.classList.remove("loading");
+
+// Close a modal
+modal.classList.remove("open");
+
+// Reset a temporary highlight
+match.classList.remove("highlight");
+
+// Undo a previous selection
+document.querySelectorAll(".tab").forEach(t =&gt; t.classList.remove("active"));
+
+// Conditional removal
+if (user.signedOut) banner.classList.remove("logged-in");
+
+// Pair with add for state changes
+function clearErrors(input) {
+  input.classList.remove("error", "warning", "invalid");
+}
+
+// On an event
+input.addEventListener("input", () =&gt; {
+  input.classList.remove("error");
+});
+
+// In a timeout (temporary state)
+el.classList.add("shake");
+setTimeout(() =&gt; el.classList.remove("shake"), 500);
+
+// Loop over many
+document.querySelectorAll(".item").forEach(i =&gt; i.classList.remove("hidden"));
+
+// Safe null check
+const el = document.querySelector(".target");
+if (el) el.classList.remove("done");
+
+// Verify after removal
+el.classList.remove("done");
+console.log(el.classList.contains("done"));   // false
+
+// Replace one with another
+el.classList.remove("old");
+el.classList.add("new");
+// or:
+el.classList.replace("old", "new");</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-11-11-3-1': `
+    <p><strong>Example: clearing an error as the user types</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelectorAll("input").forEach(input =&gt; {
+  input.addEventListener("input", () =&gt; {
+    input.classList.remove("error");
+  });
+});
+// as soon as the user starts editing, the error class is removed.
+// the visual feedback disappears immediately, encouraging the user.</code></pre>
+
+    <p><strong>Example: hiding a loading spinner when work completes</strong></p>
+<pre class="language-javascript"><code class="language-javascript">async function loadData() {
+  const container = document.querySelector(".content");
+  container.classList.add("loading");
+
+  const data = await fetch("/api/data").then(r =&gt; r.json());
+  render(data);
+
+  container.classList.remove("loading");
+}
+// add at the start, remove at the end. simple show-and-hide pattern.</code></pre>
+
+    <p><strong>Example: deselecting before reselecting</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function selectTab(tab) {
+  document.querySelectorAll(".tab").forEach(t =&gt; t.classList.remove("active"));
+  tab.classList.add("active");
+}
+// first remove "active" from every tab, then add it to the new one.
+// the "remove from all, add to one" pattern is everywhere in selection UIs.</code></pre>
+
+    <p><strong>Example: dismissing a notification</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector(".banner .close").addEventListener("click", () =&gt; {
+  document.querySelector(".banner").classList.remove("visible");
+});
+// removing "visible" triggers the CSS transition that fades the banner out.
+// pairs naturally with adding "visible" when the banner first appears.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-11-11-3-2': `
+    <ul>
+      <li><strong><code>classList.add</code></strong> → the counterpart that puts classes on</li>
+      <li><strong><code>classList.toggle</code></strong> → covered next; combines add and remove based on current state</li>
+      <li><strong><code>classList.contains</code></strong> → check whether a class is present</li>
+      <li><strong><code>classList.replace</code></strong> → remove one class and add another in one call</li>
+      <li><strong><code>className</code></strong> → setting to "" removes ALL classes at once</li>
+      <li><strong>CSS classes</strong> → the labels that classList.remove takes off</li>
+      <li><strong>CSS transitions</strong> → removing a class can trigger a smooth animation</li>
+      <li><strong>Inline styles</strong> → classList.remove doesn't touch them; use <code>style.X = ""</code></li>
+      <li><strong>NodeList iteration</strong> → for removing the same class from many elements</li>
+      <li><strong>State management</strong> → using classes to track UI state, removed when state ends</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-11-11-3-3': `
+    <ul>
+      <li><code>classList.add</code></li>
+      <li><code>classList.toggle</code></li>
+      <li><code>classList.contains</code></li>
+      <li><code>classList.replace</code></li>
+      <li><code>className</code></li>
+      <li>CSS classes</li>
+      <li>CSS transitions</li>
+      <li>Inline styles vs classes</li>
+      <li>State cleanup patterns</li>
+      <li><code>element.remove()</code></li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.12.13 DOM → toggling classes
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-11-12-0-0': `
+    <p><code>classList.toggle()</code> is the method for <strong>flipping a class on or off</strong> based on whether it's currently there. If the class is present, <code>toggle</code> removes it. If it's missing, <code>toggle</code> adds it. One method, two outcomes, decided automatically by the element's current state.</p>
+    <p>It's the natural choice for any "on/off" UI pattern — opening and closing a menu, switching dark mode, expanding and collapsing a panel, marking and unmarking favorites. Instead of writing separate add/remove logic, <code>toggle</code> handles the back-and-forth for you.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-11-12-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;div id="menu" class=""&gt;...&lt;/div&gt;
+
+const menu = document.getElementById("menu");
+
+menu.classList.toggle("open");
+// "open" wasn't there → it gets ADDED
+// HTML now: &lt;div id="menu" class="open"&gt;...&lt;/div&gt;
+
+menu.classList.toggle("open");
+// "open" was there → it gets REMOVED
+// HTML now: &lt;div id="menu" class=""&gt;...&lt;/div&gt;
+
+menu.classList.toggle("open");
+// flipped back ON
+// HTML now: &lt;div id="menu" class="open"&gt;...&lt;/div&gt;</code></pre>
+    <p>Each call flips the class. No need to check the current state — <code>toggle</code> checks for you and does the right thing.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-11-12-0-2': `
+<pre class="language-javascript"><code class="language-javascript">
+element.classList.toggle(name)
+//   - if name is currently in the class list → REMOVE it
+//   - if name is currently missing → ADD it
+//   - returns: true if the class is now PRESENT, false if it was removed
+//
+element.classList.toggle(name, force)
+//   - second argument forces a specific state, ignoring the current state
+//   - force = true  → always ADD (like classList.add)
+//   - force = false → always REMOVE (like classList.remove)
+//   - useful when you already know the desired state
+//
+equivalent code without toggle:
+//   if (el.classList.contains(name)) {
+//     el.classList.remove(name);
+//   } else {
+//     el.classList.add(name);
+//   }
+//
+// toggle does this in one line.</code></pre>
+    <p>The return value (<code>true</code> if the class ended up present, <code>false</code> if removed) is sometimes useful — e.g., to save the new state to localStorage.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-11-12-0-3': `
+    <p><strong>Without a second argument, <code>toggle</code> flips based on current state.</strong> First call adds, next removes, next adds, etc.:</p>
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;div class=""&gt;
+el.classList.toggle("open");   // adds → class="open"
+el.classList.toggle("open");   // removes → class=""
+el.classList.toggle("open");   // adds → class="open"
+el.classList.toggle("open");   // removes → class=""
+
+// every call flips. unpredictable to "know what state it's in" if you've called it
+// multiple times — usually used with click handlers where each click flips.</code></pre>
+
+    <p><strong>The second argument forces a specific outcome.</strong> Useful when state is computed elsewhere:</p>
+<pre class="language-javascript"><code class="language-javascript">// force ADD (acts like classList.add)
+el.classList.toggle("open", true);   // adds "open", no matter what
+
+// force REMOVE (acts like classList.remove)
+el.classList.toggle("open", false);  // removes "open", no matter what
+
+// the typical pattern: pass a boolean expression
+el.classList.toggle("open", isMenuOpen);
+// if isMenuOpen is true, "open" is added
+// if isMenuOpen is false, "open" is removed
+// no need to write if/else around add/remove</code></pre>
+
+    <p><strong>The return value tells you the new state.</strong> True if the class is now there, false if it was removed:</p>
+<pre class="language-javascript"><code class="language-javascript">const isOpen = menu.classList.toggle("open");
+console.log(isOpen);   // true if menu is now open, false if now closed
+
+// useful to update something based on the new state:
+if (isOpen) {
+  localStorage.setItem("menu", "open");
+} else {
+  localStorage.setItem("menu", "closed");
+}
+
+// or even more compactly:
+localStorage.setItem("menu", menu.classList.toggle("open") ? "open" : "closed");</code></pre>
+
+    <p><strong>Same syntax rules as <code>add</code> and <code>remove</code>.</strong> No dots, no spaces inside one name, case-sensitive, NodeList not supported:</p>
+<pre class="language-javascript"><code class="language-javascript">// Right
+el.classList.toggle("active");
+
+// Wrong — with dot
+el.classList.toggle(".active");   // toggles ".active" (with a literal dot)
+
+// Wrong — multiple in one string
+el.classList.toggle("active highlighted");   // InvalidCharacterError
+
+// Case-sensitive
+el.classList.toggle("Active");   // different class from "active"
+
+// NodeList doesn't have classList
+document.querySelectorAll(".tab").classList.toggle("active");   // doesn't work
+// fix: loop
+document.querySelectorAll(".tab").forEach(t =&gt; t.classList.toggle("active"));</code></pre>
+
+    <p><strong>Unlike <code>add</code> and <code>remove</code>, <code>toggle</code> takes ONE class name at a time.</strong> Multiple arguments don't work the way you might expect:</p>
+<pre class="language-javascript"><code class="language-javascript">// Bad — second argument is the force value, NOT a second class
+el.classList.toggle("open", "highlighted");
+// the string "highlighted" is truthy → forces "open" to be added
+// "highlighted" itself is NOT toggled
+
+// to toggle multiple classes, call separately:
+el.classList.toggle("open");
+el.classList.toggle("highlighted");
+
+// or use a loop:
+["open", "highlighted", "expanded"].forEach(c =&gt; el.classList.toggle(c));</code></pre>
+
+    <p><strong><code>toggle</code> is great with CSS transitions.</strong> Flipping a class can trigger smooth animations:</p>
+<pre class="language-javascript"><code class="language-javascript">// CSS:
+//   .menu { max-height: 0; transition: max-height 0.3s; overflow: hidden; }
+//   .menu.open { max-height: 500px; }
+
+document.querySelector(".trigger").addEventListener("click", () =&gt; {
+  document.querySelector(".menu").classList.toggle("open");
+});
+// each click flips the class.
+// the CSS transition animates the height change smoothly.</code></pre>
+
+    <p><strong>Safe with possibly-missing elements? Always check first.</strong> <code>toggle</code> on <code>null</code> crashes just like <code>add</code> and <code>remove</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">const el = document.querySelector(".missing");
+el.classList.toggle("active");
+// TypeError: Cannot read property 'classList' of null
+
+// fix:
+const el = document.querySelector(".missing");
+if (el) el.classList.toggle("active");</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-11-12-1-0': `
+    <p>Many UI elements have two states: open or closed, visible or hidden, selected or unselected, on or off. Without <code>toggle</code>, you'd have to check the current state and then call either <code>add</code> or <code>remove</code> — three or four lines for what should be one decision.</p>
+    <p><code>toggle</code> compresses that pattern into a single method call. The element flips between its two states with no manual checking. It's the cleanest way to express "switch this on or off, whichever applies right now."</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-11-12-1-1': `
+    <p>Toggle is the natural fit for binary UI states:</p>
+<pre class="language-javascript"><code class="language-javascript">// Open / close a menu
+menuTrigger.addEventListener("click", () =&gt; {
+  menu.classList.toggle("open");
+});
+
+// Dark mode switch
+darkBtn.addEventListener("click", () =&gt; {
+  document.body.classList.toggle("dark-mode");
+});
+
+// Show / hide a panel
+expandBtn.addEventListener("click", () =&gt; {
+  panel.classList.toggle("expanded");
+});
+
+// Mark / unmark a favorite
+starBtn.addEventListener("click", () =&gt; {
+  star.classList.toggle("favorited");
+});
+
+// every one of these is "switch this on or off." perfect toggle territory.</code></pre>
+
+    <p>It's also nice for the "force a state" version — when you've already computed whether something should be on or off, pass the boolean as the second argument and skip writing the if/else yourself.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-11-12-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Pure on/off flip
+el.classList.toggle("active");
+
+// On a click event
+btn.addEventListener("click", () =&gt; {
+  btn.classList.toggle("pressed");
+});
+
+// Force a state with a boolean
+el.classList.toggle("hidden", shouldHide);
+
+// React to a checkbox
+checkbox.addEventListener("change", () =&gt; {
+  preview.classList.toggle("disabled", !checkbox.checked);
+});
+
+// Toggle dark mode and remember the choice
+darkBtn.addEventListener("click", () =&gt; {
+  const isDark = document.body.classList.toggle("dark-mode");
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+});
+
+// Show details on click
+title.addEventListener("click", () =&gt; {
+  details.classList.toggle("visible");
+});
+
+// Sidebar collapse
+toggleBtn.addEventListener("click", () =&gt; {
+  sidebar.classList.toggle("collapsed");
+});
+
+// Conditional toggle (force state from data)
+items.forEach(item =&gt; {
+  item.classList.toggle("complete", item.done);
+});
+
+// Toggle multiple — call separately
+function flipAll(el) {
+  el.classList.toggle("open");
+  el.classList.toggle("highlighted");
+}
+
+// Use return value
+const isExpanded = panel.classList.toggle("expanded");
+saveState(isExpanded);</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-11-12-1-3': `
+    <p><code>classList.toggle</code> is "flip this class." If it's there, take it off. If it's not, put it on. The method figures out which one applies by checking the element's current state. You don't have to think about it.</p>
+    <p>This is the right tool when an element has a clear "on" state and a clear "off" state, controlled by the presence or absence of one class. Click a button → menu opens. Click again → menu closes. One handler, one <code>toggle</code> call, both directions covered.</p>
+    <p>The second argument changes the behavior to "force this state." If you pass <code>true</code>, the class is always added. If you pass <code>false</code>, it's always removed. This is useful when you've already decided what the new state should be — typically from data or some other variable — and you just want a clean way to apply it without an if/else.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-11-12-1-4': `
+    <p>Picture a light switch. <code>toggle</code> is the act of flipping the switch — you don't tell it whether to turn the light on or off. It flips. If the light was off, it's now on. If it was on, it's now off. The switch knows its current state and reverses it.</p>
+    <p>The optional second argument is like an override button. Press <code>toggle(name, true)</code> and you've forced the light on, no matter what state it was in. Press <code>toggle(name, false)</code> and it's forced off. The flip becomes a direct command instead of a reverse.</p>
+    <p>And just like flipping a switch tells you nothing about what was happening before — only what's true now — the return value of <code>toggle</code> tells you the <em>new</em> state. True if the class is now on, false if it's now off. Useful when you want to record the new state somewhere.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-11-12-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;div id="panel"&gt;...&lt;/div&gt;
+// CSS:
+//   .panel { display: none; }
+//   .panel.open { display: block; }
+
+const panel = document.getElementById("panel");
+const trigger = document.getElementById("trigger");
+
+trigger.addEventListener("click", () =&gt; {
+  const isOpen = panel.classList.toggle("open");
+  console.log("panel is now:", isOpen ? "open" : "closed");
+});
+
+// step by step (each click):
+//
+// Click 1:
+//   - toggle checks: does panel have "open"? No.
+//   - adds "open" to classList.
+//   - HTML: &lt;div id="panel" class="open"&gt;
+//   - returns true.
+//   - logs "panel is now: open"
+//   - CSS .panel.open kicks in: display: block. user sees the panel.
+//
+// Click 2:
+//   - toggle checks: does panel have "open"? Yes.
+//   - removes "open".
+//   - HTML: &lt;div id="panel" class=""&gt;
+//   - returns false.
+//   - logs "panel is now: closed"
+//   - CSS .panel.open no longer applies. display: none. user no longer sees it.
+//
+// Click 3, 4, 5... same flip each time.
+//
+// the magic is that the same line of code handles BOTH directions.
+// you don't have to track state yourself or write if/else.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-11-12-2-0': `
+    <p>If <code>toggle</code> is "doing the wrong thing" — adding when you expected remove, or vice versa — log the state before and after the call:</p>
+<pre class="language-javascript"><code class="language-javascript">console.log("before:", el.classList.contains("open"));
+const result = el.classList.toggle("open");
+console.log("after:", el.classList.contains("open"), "(toggle returned:", result, ")");
+
+// the first call tells you the starting state.
+// the second confirms what toggle did.
+// the return value confirms the new state.
+
+// if "before" doesn't match what you expected, the bug is upstream — some other
+// code already added or removed the class.</code></pre>
+
+    <p>Common pattern of confusion: calling <code>toggle</code> twice and being surprised the class is gone. Each call flips. Two flips return you to the original state:</p>
+<pre class="language-javascript"><code class="language-javascript">el.classList.toggle("open");   // off → on
+el.classList.toggle("open");   // on → off
+
+// to be deterministic, use the force argument:
+el.classList.toggle("open", true);   // always on
+el.classList.toggle("open", false);  // always off</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-11-12-2-1': `
+    <p><code>toggle</code> isn't a separate concept from <code>add</code> and <code>remove</code> — it's a convenience that combines them based on current state. Internally, it's roughly "if the class is there, remove it; otherwise add it." You could write that yourself; <code>toggle</code> just saves you the keystrokes.</p>
+    <p>The two-argument form (with the force boolean) is the version that's <em>most</em> like <code>add</code>/<code>remove</code>, but with the destination computed from a variable. When you have a variable that says "should this be on or off?", <code>toggle(name, variable)</code> applies it directly. Cleaner than <code>if (x) add else remove</code>.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-11-12-2-2': `
+    <p><strong>Confusion: thinking the second argument is a second class name</strong></p>
+<pre class="language-javascript"><code class="language-javascript">el.classList.toggle("open", "highlighted");
+// the string "highlighted" is truthy, so it forces "open" to be ADDED
+// "highlighted" itself is NOT toggled
+
+// to toggle multiple classes:
+el.classList.toggle("open");
+el.classList.toggle("highlighted");
+// or:
+["open", "highlighted"].forEach(c =&gt; el.classList.toggle(c));</code></pre>
+
+    <p><strong>Confusion: getting the return value mixed up</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const result = el.classList.toggle("open");
+// result === true  → "open" is NOW on the element
+// result === false → "open" is NOW off
+
+// not "true means it was added" — true means it's currently there.
+// useful for saving state:
+localStorage.setItem("menuOpen", el.classList.toggle("open"));</code></pre>
+
+    <p><strong>Confusion: forgetting the force argument exists</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Verbose
+if (shouldHide) {
+  el.classList.add("hidden");
+} else {
+  el.classList.remove("hidden");
+}
+
+// Same effect, one line
+el.classList.toggle("hidden", shouldHide);</code></pre>
+
+    <p><strong>Confusion: thinking toggle is symmetric</strong></p>
+<pre class="language-javascript"><code class="language-javascript">el.classList.toggle("active");
+el.classList.toggle("active");
+// back to where you started — two flips cancel out
+
+// but ONE call always changes state. you can't toggle "to the same state."
+
+// to set a specific state regardless of starting state, use the force argument:
+el.classList.toggle("active", true);
+el.classList.toggle("active", true);
+// both calls leave "active" on the element — no flipping</code></pre>
+
+    <p><strong>Confusion: dot in the class name</strong></p>
+<pre class="language-javascript"><code class="language-javascript">el.classList.toggle(".active");
+// toggles a class literally named ".active" — not "active"
+
+// fix:
+el.classList.toggle("active");</code></pre>
+
+    <p><strong>Confusion: case sensitivity</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// element class is "active"
+el.classList.toggle("Active");
+// "Active" is a different class — adds it (since it's missing)
+// "active" stays untouched
+
+// keep casing consistent.</code></pre>
+
+    <p><strong>Confusion: NodeList doesn't have classList</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelectorAll(".tab").classList.toggle("active");
+// silently doesn't work — NodeList has no classList
+
+// fix:
+document.querySelectorAll(".tab").forEach(t =&gt; t.classList.toggle("active"));</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-11-12-2-3': `
+<pre class="language-javascript"><code class="language-javascript">el.classList.toggle("open", "highlighted");
+// the second argument is a force boolean, not another class
+// fix: separate toggle calls
+el.classList.toggle("open");
+el.classList.toggle("highlighted");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.classList.toggle(".active");
+// toggles class with literal dot in its name
+// fix: drop the dot
+el.classList.toggle("active");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.classList.toggle("open active");
+// throws InvalidCharacterError — no spaces inside one class name
+// fix: call separately
+el.classList.toggle("open");
+el.classList.toggle("active");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.querySelectorAll(".tab").classList.toggle("active");
+// NodeList has no classList
+// fix: loop
+document.querySelectorAll(".tab").forEach(t =&gt; t.classList.toggle("active"));</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const el = document.querySelector(".missing");
+el.classList.toggle("active");
+// crashes if .missing isn't there
+// fix: check first
+const el = document.querySelector(".missing");
+if (el) el.classList.toggle("active");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// trying to "set" a class with toggle when you know the desired state
+if (shouldBeOpen) el.classList.toggle("open");
+// only flips IF shouldBeOpen is true — incorrect if class is already on
+// fix: use the force argument
+el.classList.toggle("open", shouldBeOpen);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.classList.toggle("active");
+el.classList.toggle("active");
+// two flips = no net change
+// if you meant "ensure active is on", use the force form
+el.classList.toggle("active", true);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const wasAdded = el.classList.toggle("open");
+// wasAdded === true means "open" is NOW present (just added or already there)
+// it does NOT specifically mean "I just added it"
+// for the operation type, compare before/after:
+const wasPresent = el.classList.contains("open");
+el.classList.toggle("open");
+const operation = wasPresent ? "removed" : "added";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.classList.toggle("Active");
+// CSS rule is .active (lowercase)
+// case mismatch — toggles a DIFFERENT class, won't affect styling
+// fix: match the case
+el.classList.toggle("active");</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-11-12-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Basic flip
+el.classList.toggle("active");
+
+// Force on
+el.classList.toggle("active", true);
+
+// Force off
+el.classList.toggle("active", false);
+
+// Force based on a variable
+el.classList.toggle("hidden", shouldHide);
+
+// Use the return value
+const isOpen = menu.classList.toggle("open");
+
+// Click handler
+btn.addEventListener("click", () =&gt; {
+  btn.classList.toggle("pressed");
+});
+
+// Dark mode toggle
+darkBtn.addEventListener("click", () =&gt; {
+  document.body.classList.toggle("dark-mode");
+});
+
+// Checkbox-driven
+checkbox.addEventListener("change", () =&gt; {
+  preview.classList.toggle("disabled", !checkbox.checked);
+});
+
+// Toggle on data
+items.forEach(item =&gt; {
+  item.classList.toggle("done", item.completed);
+});
+
+// Loop over many elements
+document.querySelectorAll(".task").forEach(t =&gt; t.classList.toggle("complete"));
+
+// Combined with classList.add/remove
+el.classList.add("loading");
+process().then(() =&gt; {
+  el.classList.remove("loading");
+  el.classList.toggle("success", didSucceed);
+});
+
+// Safe with null check
+const el = document.querySelector(".target");
+if (el) el.classList.toggle("highlighted");
+
+// Save state alongside toggle
+const isExpanded = panel.classList.toggle("expanded");
+localStorage.setItem("expanded", isExpanded);
+
+// Conditional toggle in a single line
+document.querySelector(".btn").classList.toggle("disabled", !isReady);</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-11-12-3-1': `
+    <p><strong>Example: dropdown menu open/close</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector(".dropdown-trigger").addEventListener("click", () =&gt; {
+  document.querySelector(".dropdown-menu").classList.toggle("open");
+});
+// one click opens, one click closes. one line of JavaScript.
+// the CSS rules for .dropdown-menu.open handle the visual change.</code></pre>
+
+    <p><strong>Example: dark mode with persistence</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector("#dark-toggle").addEventListener("click", () =&gt; {
+  const isDark = document.body.classList.toggle("dark-mode");
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+});
+
+// on page load:
+const savedTheme = localStorage.getItem("theme");
+document.body.classList.toggle("dark-mode", savedTheme === "dark");
+// the force form is perfect here — we know exactly what state we want.</code></pre>
+
+    <p><strong>Example: showing details on hover</strong></p>
+<pre class="language-javascript"><code class="language-javascript">card.addEventListener("mouseenter", () =&gt; {
+  card.classList.toggle("expanded", true);
+});
+card.addEventListener("mouseleave", () =&gt; {
+  card.classList.toggle("expanded", false);
+});
+// using the force argument makes the intent explicit: "expand on enter, collapse on leave."
+// no ambiguity about which direction the toggle is flipping.</code></pre>
+
+    <p><strong>Example: marking favorites</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelectorAll(".star").forEach(star =&gt; {
+  star.addEventListener("click", () =&gt; {
+    const isFavorited = star.classList.toggle("favorited");
+    saveToServer(star.dataset.id, isFavorited);
+  });
+});
+// the return value tells us whether the item is now favorited or not.
+// pass that to the API call so the server knows the new state.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-11-12-3-2': `
+    <ul>
+      <li><strong><code>classList.add</code></strong> → the "always add" half of toggle</li>
+      <li><strong><code>classList.remove</code></strong> → the "always remove" half</li>
+      <li><strong><code>classList.contains</code></strong> → check the current state without changing it</li>
+      <li><strong>force argument</strong> → the second parameter that makes toggle act like add or remove explicitly</li>
+      <li><strong>Return value</strong> → true if the class is now present, false if removed</li>
+      <li><strong>CSS transitions</strong> → toggling can trigger smooth animations on state changes</li>
+      <li><strong>Binary UI state</strong> → open/closed, on/off, selected/unselected</li>
+      <li><strong>Event handlers</strong> → toggle is most often used in click/change events</li>
+      <li><strong>localStorage / persistence</strong> → save the new state from toggle's return value</li>
+      <li><strong>NodeList iteration</strong> → for toggling the same class on many elements</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-11-12-3-3': `
+    <ul>
+      <li><code>classList.add</code></li>
+      <li><code>classList.remove</code></li>
+      <li><code>classList.contains</code></li>
+      <li><code>classList.replace</code></li>
+      <li>CSS transitions</li>
+      <li>Binary state in UI</li>
+      <li>Event-driven class changes</li>
+      <li>localStorage</li>
+      <li><code>className</code></li>
+      <li>Force form vs flip form</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.12.14 DOM → creating elements: createElement()
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-11-13-0-0': `
+    <p><code>document.createElement()</code> is the method for <strong>making a new DOM element from scratch</strong>. You give it a tag name, and it gives you back a brand-new element object. The element exists in memory immediately — you can read it, modify it, configure it — but the user doesn't see it yet.</p>
+    <p>The "doesn't see it yet" part is important. <code>createElement</code> only handles half the job: it builds the element. To actually put it on the page, you also need to attach it somewhere using <code>appendChild</code> or one of its cousins (next lesson). For now, this lesson focuses on the building step.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-11-13-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// Create a new element — exists in memory, not on the page yet
+const div = document.createElement("div");
+
+console.log(div);          // &lt;div&gt;&lt;/div&gt;
+console.log(div.tagName);   // "DIV"
+console.log(div.parentNode); // null — not attached to anything yet
+
+// you can configure it
+div.textContent = "Hello";
+div.classList.add("card");
+div.id = "my-card";
+
+console.log(div);
+// &lt;div id="my-card" class="card"&gt;Hello&lt;/div&gt;
+// — exists in memory, fully configured, still not on the page.</code></pre>
+    <p>The result is a real, working element. You can do anything to it that you'd do to an on-page element — set text, change classes, attach event listeners, even append children to it. None of those changes are visible to the user until you attach the element to the DOM.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-11-13-0-2': `
+<pre class="language-javascript"><code class="language-javascript">// document.createElement(tagName)
+//   - tagName: a string with an HTML tag name (case-insensitive but conventionally lowercase)
+//   - returns: a brand-new element object
+//   - the element has:
+//       - the given tag name
+//       - no children
+//       - no attributes (except those implied by the tag)
+//       - no parent (parentNode is null)
+//       - default styles for that tag
+//
+// you can then configure the element:
+//   element.textContent = "..."
+//   element.innerHTML = "..."
+//   element.classList.add("...")
+//   element.id = "..."
+//   element.setAttribute("attr", "value")
+//   element.style.color = "..."
+//   element.addEventListener("click", fn)
+//   element.appendChild(child)
+//
+// all of these work on the new element BEFORE it's on the page.
+// the user only sees the element after you attach it (next lesson).</code></pre>
+    <p>The pattern is always: create, configure, attach. <code>createElement</code> is just the first step.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-11-13-0-3': `
+    <p><strong>Pass a tag name, not a selector.</strong> No prefixes, no attributes, just the tag:</p>
+<pre class="language-javascript"><code class="language-javascript">// Right — plain tag names
+document.createElement("div");
+document.createElement("li");
+document.createElement("button");
+document.createElement("img");
+document.createElement("a");
+
+// Wrong — selectors with prefixes
+document.createElement(".btn");      // creates a tag literally named ".btn" (invalid HTML)
+document.createElement("#title");    // creates a tag literally named "#title"
+document.createElement("button.primary");   // creates "button.primary" tag
+
+// to add a class or id to the new element, do it AFTER:
+const btn = document.createElement("button");
+btn.classList.add("primary");
+btn.id = "save-btn";</code></pre>
+
+    <p><strong>The element starts empty.</strong> No text, no children, no classes — just a default tag:</p>
+<pre class="language-javascript"><code class="language-javascript">const li = document.createElement("li");
+
+console.log(li.textContent);   // "" — empty
+console.log(li.children);      // empty HTMLCollection
+console.log(li.className);     // ""
+
+// to give it content, configure it:
+li.textContent = "First item";</code></pre>
+
+    <p><strong>The new element isn't connected to anything.</strong> Its <code>parentNode</code> is <code>null</code> until you attach it:</p>
+<pre class="language-javascript"><code class="language-javascript">const div = document.createElement("div");
+console.log(div.parentNode);   // null
+console.log(document.body.contains(div));   // false — not on the page
+
+// after appending (covered in the next lesson):
+document.body.appendChild(div);
+console.log(div.parentNode);   // &lt;body&gt;
+console.log(document.body.contains(div));   // true</code></pre>
+
+    <p><strong>You can build a whole tree before attaching anything.</strong> Append children to your new element while it's still off-page:</p>
+<pre class="language-javascript"><code class="language-javascript">// Build a card structure entirely in memory
+const card = document.createElement("div");
+card.classList.add("card");
+
+const title = document.createElement("h2");
+title.textContent = "Welcome";
+card.appendChild(title);
+
+const body = document.createElement("p");
+body.textContent = "Glad you're here.";
+card.appendChild(body);
+
+// at this point, the whole card tree exists — h2 inside div, p inside div —
+// but none of it is on the page yet.
+
+// one append puts it all on at once:
+document.body.appendChild(card);</code></pre>
+
+    <p><strong>Tag names are case-insensitive (in HTML documents), but lowercase is the convention.</strong> The browser stores the tag name uppercase no matter what you pass in:</p>
+<pre class="language-javascript"><code class="language-javascript">document.createElement("div");    // ✓
+document.createElement("DIV");    // also works
+document.createElement("Div");    // also works
+
+const el = document.createElement("DIV");
+console.log(el.tagName);   // "DIV" — always uppercase when read back
+
+// stick with lowercase in your code — it matches the rest of HTML/CSS conventions.</code></pre>
+
+    <p><strong>Common element-specific properties work on the new element too.</strong> Things like <code>src</code> for images, <code>href</code> for links, <code>value</code> for inputs:</p>
+<pre class="language-javascript"><code class="language-javascript">// Image
+const img = document.createElement("img");
+img.src = "/photo.jpg";
+img.alt = "A photo";
+
+// Link
+const a = document.createElement("a");
+a.href = "/about";
+a.textContent = "About us";
+
+// Input
+const input = document.createElement("input");
+input.type = "email";
+input.value = "user@example.com";
+input.placeholder = "Email";
+
+// Button
+const btn = document.createElement("button");
+btn.type = "submit";
+btn.textContent = "Submit";</code></pre>
+
+    <p><strong>Event listeners attached before the element is on the page still work.</strong> They wait, attached to the element, until it's on the page and the events fire:</p>
+<pre class="language-javascript"><code class="language-javascript">const btn = document.createElement("button");
+btn.textContent = "Click me";
+btn.addEventListener("click", () =&gt; console.log("clicked!"));
+
+// element is in memory with a click handler attached. nothing happens yet.
+
+document.body.appendChild(btn);
+
+// now the button is on the page. clicking it fires the handler.</code></pre>
+
+    <p><strong>For setting non-standard attributes, use <code>setAttribute</code>.</strong> Common patterns include <code>data-*</code> attributes:</p>
+<pre class="language-javascript"><code class="language-javascript">const div = document.createElement("div");
+div.setAttribute("data-user-id", "42");
+div.setAttribute("aria-label", "User profile");
+div.setAttribute("role", "button");
+
+// for standard properties, direct assignment is cleaner:
+div.id = "profile";        // instead of setAttribute("id", "profile")
+div.className = "card";     // instead of setAttribute("class", "card")</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-11-13-1-0': `
+    <p>HTML files set up the page's initial structure. Anything that gets added dynamically — new chat messages, search results, items pushed onto a list, modals that appear on demand — needs to be built by JavaScript at runtime. <code>createElement</code> is the start of every dynamic insertion.</p>
+    <p>The "build first, attach later" split also serves a practical purpose: you can fully configure an element off-page, then attach it in one finished state. The user never sees half-built elements flicker on screen — just the final result appearing all at once.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-11-13-1-1': `
+    <p>Anything created dynamically uses <code>createElement</code> at the start:</p>
+<pre class="language-javascript"><code class="language-javascript">// A new chat bubble
+const bubble = document.createElement("div");
+bubble.classList.add("message");
+bubble.textContent = newMessage.text;
+
+// A new todo item
+const li = document.createElement("li");
+li.textContent = todoText;
+li.classList.add("todo");
+
+// A toast notification
+const toast = document.createElement("div");
+toast.classList.add("toast");
+toast.textContent = "Saved!";
+
+// A dynamically built form field
+const input = document.createElement("input");
+input.type = "text";
+input.name = "username";
+
+// each starts with createElement, gets configured, and (in the next lesson) gets attached.</code></pre>
+
+    <p>Compared to building an HTML string and using <code>innerHTML</code>, <code>createElement</code> is safer (no parsing of user-controlled strings as HTML) and gives you direct control over event handlers — you can attach them right at creation time, before the element is on the page.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-11-13-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Basic element types
+document.createElement("div");
+document.createElement("span");
+document.createElement("p");
+document.createElement("button");
+document.createElement("a");
+document.createElement("img");
+document.createElement("input");
+document.createElement("textarea");
+document.createElement("select");
+document.createElement("option");
+document.createElement("li");
+document.createElement("table");
+
+// Configuring after creation
+const div = document.createElement("div");
+div.textContent = "Hello";
+div.classList.add("card");
+div.id = "card-1";
+div.style.color = "blue";
+div.setAttribute("data-id", "42");
+div.addEventListener("click", handler);
+
+// Building a tree before attaching
+const card = document.createElement("div");
+const title = document.createElement("h2");
+title.textContent = "Title";
+card.appendChild(title);
+// card now contains the title — all in memory, not yet on the page
+
+// In a loop — creating many elements
+const items = [];
+for (let i = 0; i &lt; 5; i++) {
+  const li = document.createElement("li");
+  li.textContent = "Item " + i;
+  items.push(li);
+}
+// items is an array of 5 elements, none on the page yet
+
+// As part of a render function
+function buildCard(data) {
+  const card = document.createElement("div");
+  card.classList.add("card");
+  card.textContent = data.title;
+  return card;
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-11-13-1-3': `
+    <p><code>createElement</code> is "make me a new element." You tell the browser what kind (a div, a button, an image), and it hands back a fresh, blank element of that type. The element is real — it has all the properties and methods of any element on the page — but it's not on the page yet. Nobody can see it.</p>
+    <p>This in-memory existence is the whole point. It lets you build and configure the element privately before showing it to the user. Set the text, add the classes, attach the event listeners, even build child elements inside it — all without the user seeing any of it. When you're done preparing, attaching it to the page (next lesson) shows the finished element in one clean step.</p>
+    <p>Without <code>createElement</code>, you'd be stuck with whatever HTML the page started with. With it, you can add anything, anywhere, at any time during your script's life.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-11-13-1-4': `
+    <p>Imagine ordering a custom prop from a workshop. <code>createElement("div")</code> is placing the order — you specify the type ("I want a div"), and the workshop hands you back a blank prop. It's a real div, but it's not part of any scene yet. It's sitting on the workbench.</p>
+    <p>You can customize the prop while it's on the workbench: paint it, attach things to it, label it, wire it up. Nobody watching the scene can see the prop yet. They'll see it for the first time when you carry it onto the stage (the "attach" step, covered next lesson).</p>
+    <p>This separation gives you control over <em>when</em> the prop appears on stage, and ensures it appears in its finished state. The audience never sees the unpainted version, the half-wired version, or the empty version — only the polished result you decided to reveal.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-11-13-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// Goal: create a styled button with text and a click handler, ready to be added.
+
+const btn = document.createElement("button");
+
+// step by step:
+// 1. document.createElement("button")
+//    → browser creates a new &lt;button&gt; element in memory
+//    → returns the element object
+//    → btn now refers to this empty button
+//    → it has no text, no class, no listener, no parent
+
+// 2. btn.textContent = "Save";
+btn.textContent = "Save";
+//    → sets the button's text to "Save"
+//    → still not on the page
+
+// 3. btn.classList.add("btn", "primary");
+btn.classList.add("btn", "primary");
+//    → adds two classes
+//    → still not on the page
+
+// 4. btn.id = "save-btn";
+btn.id = "save-btn";
+//    → sets the id
+//    → still not on the page
+
+// 5. btn.addEventListener("click", () =&gt; console.log("saved"));
+btn.addEventListener("click", () =&gt; console.log("saved"));
+//    → attaches a click handler
+//    → still not on the page — but the listener is wired and ready
+
+// at this point, btn is a fully formed button:
+//   &lt;button id="save-btn" class="btn primary"&gt;Save&lt;/button&gt;
+// but the user can't see it. it's in memory, waiting.
+
+// the user sees it ONLY after:
+document.body.appendChild(btn);   // covered in the next lesson</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-11-13-2-0': `
+    <p>If <code>createElement</code> gave you back something that doesn't look right, log it and check its properties:</p>
+<pre class="language-javascript"><code class="language-javascript">const el = document.createElement("div");
+console.log(el);              // &lt;div&gt;&lt;/div&gt;
+console.log(el.tagName);       // "DIV"
+console.log(el.outerHTML);     // "&lt;div&gt;&lt;/div&gt;"
+
+// common bugs:
+//   - typo in the tag name → console shows a tag you didn't intend
+//   - passed a selector instead of a tag → element has a weird name like ".btn"</code></pre>
+
+    <p>If the new element "isn't showing up on the page," it's almost always because you forgot to append it:</p>
+<pre class="language-javascript"><code class="language-javascript">const div = document.createElement("div");
+div.textContent = "Hello";
+// ...where is it?
+console.log(div.parentNode);   // null — it's not on the page
+
+// fix:
+document.body.appendChild(div);   // now it shows up</code></pre>
+
+    <p>To check whether an element is currently on the page:</p>
+<pre class="language-javascript"><code class="language-javascript">document.body.contains(element);   // true if it's in the DOM, false if floating
+element.isConnected;                // also returns true/false (same idea)</code></pre>
+  `,
+  
+
+  /* 2.1 The part that makes it click */
+  'topics-11-13-2-1': `
+    <p>The element exists from the moment you call <code>createElement</code>. It's already a real DOM object with all the usual methods and properties — it just isn't connected to the visible page yet. "On the page" is a property of being <em>attached</em> to a parent that's on the page, not a property of being <em>created</em>.</p>
+    <p>This separation between "exists" and "visible" is what lets you build complex structures off-page, attach event listeners early, and reveal everything in one finished state. Once you accept that creation and attachment are two separate steps, the entire dynamic-content pattern becomes obvious.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-11-13-2-2': `
+    <p><strong>Confusion: passing a selector instead of a tag name</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.createElement(".btn");
+// creates an element with tag name ".btn" — invalid HTML, won't render normally
+
+// fix: pass the tag, add the class separately
+const btn = document.createElement("button");
+btn.classList.add("btn");</code></pre>
+
+    <p><strong>Confusion: thinking the element shows up on the page right away</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const div = document.createElement("div");
+div.textContent = "Hello";
+// looking for the div... nothing on the page.
+
+// fix: append it to the DOM
+document.body.appendChild(div);
+
+// createElement only BUILDS the element. attach is a separate step.</code></pre>
+
+    <p><strong>Confusion: trying to query for the new element right away</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.createElement("div");
+// note: didn't even save the reference
+
+document.querySelector("div");   // finds an EXISTING div on the page, not the new one
+
+// the new element only becomes findable AFTER it's appended.
+// always save the reference returned from createElement:
+const newDiv = document.createElement("div");
+document.body.appendChild(newDiv);   // now it's findable</code></pre>
+
+    <p><strong>Confusion: trying to use HTML inside <code>createElement</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.createElement("&lt;div class='card'&gt;Hello&lt;/div&gt;");
+// invalid — the tag name can't contain angle brackets or attributes
+
+// fix: createElement only takes a tag name. configure separately.
+const div = document.createElement("div");
+div.classList.add("card");
+div.textContent = "Hello";
+
+// if you want to create from an HTML string, use a different pattern:
+const tmp = document.createElement("div");
+tmp.innerHTML = "&lt;div class='card'&gt;Hello&lt;/div&gt;";
+const card = tmp.firstElementChild;</code></pre>
+
+    <p><strong>Confusion: thinking the element is "lost" if you don't save it</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.createElement("div");
+// without saving the reference, you can't do anything with the element.
+// it's not lost (it exists), but it's unreachable.
+
+// fix: assign it to a variable
+const div = document.createElement("div");
+// now you can configure and append it.</code></pre>
+
+    <p><strong>Confusion: thinking <code>createElement</code> needs the parent to exist</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// you can call createElement at any time, even before the DOM is ready.
+document.addEventListener("DOMContentLoaded", () =&gt; {
+  // ...
+});
+
+// createElement works immediately:
+const div = document.createElement("div");
+// it doesn't need any specific parent — the parent only matters when you APPEND.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-11-13-2-3': `
+<pre class="language-javascript"><code class="language-javascript">document.createElement(".btn");
+// creates an element with the tag name ".btn" — invalid HTML
+// fix: pass a real tag name, then add the class
+const btn = document.createElement("button");
+btn.classList.add("btn");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const div = document.createElement("div");
+div.textContent = "Hello";
+// expected to see "Hello" on the page — it's not there
+// fix: append the element
+document.body.appendChild(div);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.createElement("&lt;p&gt;hello&lt;/p&gt;");
+// can't pass HTML markup — only a tag name
+// fix: create, then set text
+const p = document.createElement("p");
+p.textContent = "hello";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.createElement();
+// missing tag name — throws TypeError
+// fix: always pass a tag name
+document.createElement("div");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.createElement("div").textContent = "Hi";
+// nothing wrong syntactically, but you lost the reference
+// fix: save the reference if you need to use the element later
+const div = document.createElement("div");
+div.textContent = "Hi";
+document.body.appendChild(div);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const list = document.createElement("ul");
+list.children.push(li);
+// .children isn't an array — no .push method
+// fix: use appendChild
+list.appendChild(li);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const el = document.createElement("DIV");
+console.log(el.tagName === "DIV");   // true
+console.log(el.tagName === "div");   // false (case mismatch)
+// fix: compare with toLowerCase() if you need to
+console.log(el.tagName.toLowerCase() === "div");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const div = document.createElement("div");
+div.id = "card";
+const found = document.getElementById("card");
+console.log(found);   // null — div isn't on the page yet
+// fix: append before querying
+document.body.appendChild(div);
+const found2 = document.getElementById("card");   // ✓ found</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-11-13-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Simple
+const div = document.createElement("div");
+
+// With text
+const p = document.createElement("p");
+p.textContent = "Hello";
+
+// With class and id
+const btn = document.createElement("button");
+btn.classList.add("primary");
+btn.id = "save";
+btn.textContent = "Save";
+
+// Image with src and alt
+const img = document.createElement("img");
+img.src = "/photo.jpg";
+img.alt = "Photo";
+
+// Link with href
+const a = document.createElement("a");
+a.href = "/about";
+a.textContent = "About";
+
+// Input with type
+const input = document.createElement("input");
+input.type = "email";
+input.placeholder = "Email";
+input.required = true;
+
+// With event listener
+const btn2 = document.createElement("button");
+btn2.textContent = "Click";
+btn2.addEventListener("click", () =&gt; console.log("clicked"));
+
+// With data attribute
+const card = document.createElement("div");
+card.setAttribute("data-user-id", "42");
+
+// Building a tree off-page
+const card2 = document.createElement("div");
+card2.classList.add("card");
+
+const title = document.createElement("h3");
+title.textContent = "Title";
+card2.appendChild(title);
+
+const body = document.createElement("p");
+body.textContent = "Content";
+card2.appendChild(body);
+
+// Generic factory function
+function makeCard(title, body) {
+  const card = document.createElement("div");
+  card.classList.add("card");
+
+  const h = document.createElement("h3");
+  h.textContent = title;
+  card.appendChild(h);
+
+  const p = document.createElement("p");
+  p.textContent = body;
+  card.appendChild(p);
+
+  return card;
+}
+
+const newCard = makeCard("Hello", "Welcome");
+// newCard is fully built but not yet on the page
+
+// Checking the new element
+const el = document.createElement("div");
+console.log(el.tagName);          // "DIV"
+console.log(el.parentNode);        // null
+console.log(el.isConnected);       // false
+console.log(document.body.contains(el));   // false</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-11-13-3-1': `
+    <p><strong>Example: a factory function for building cards</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function buildCard(data) {
+  const card = document.createElement("article");
+  card.classList.add("card");
+
+  const title = document.createElement("h2");
+  title.textContent = data.title;
+  card.appendChild(title);
+
+  const desc = document.createElement("p");
+  desc.textContent = data.description;
+  card.appendChild(desc);
+
+  const btn = document.createElement("button");
+  btn.textContent = "Open";
+  btn.addEventListener("click", () =&gt; open(data.id));
+  card.appendChild(btn);
+
+  return card;
+}
+// the function returns a fully-built card ready to be appended.
+// the caller decides when and where to place it on the page.</code></pre>
+
+    <p><strong>Example: creating a temporary toast notification</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function toast(message) {
+  const note = document.createElement("div");
+  note.classList.add("toast");
+  note.textContent = message;
+  document.body.appendChild(note);
+
+  setTimeout(() =&gt; note.remove(), 3000);
+}
+toast("Saved!");
+// each call creates a fresh element with the message.
+// the element is configured fully before being placed on the page.</code></pre>
+
+    <p><strong>Example: building options for a dropdown from data</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function populateSelect(select, items) {
+  items.forEach(item =&gt; {
+    const option = document.createElement("option");
+    option.value = item.id;
+    option.textContent = item.label;
+    select.appendChild(option);
+  });
+}
+// each option is created in memory and appended.
+// the data shape (id + label) maps cleanly to the option element's properties.</code></pre>
+
+    <p><strong>Example: dynamically adding form fields</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector("#add-field").addEventListener("click", () =&gt; {
+  const input = document.createElement("input");
+  input.type = "text";
+  input.name = "extra[]";
+  input.classList.add("dynamic-field");
+  document.querySelector("form").appendChild(input);
+});
+// every click creates a new input and adds it to the form.
+// because the inputs all share the same name, the form will submit them as an array.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-11-13-3-2': `
+    <ul>
+      <li><strong><code>appendChild</code> / <code>append</code></strong> → the next step; puts the created element on the page</li>
+      <li><strong><code>textContent</code></strong> → set the new element's text before attaching</li>
+      <li><strong><code>classList</code></strong> → add classes during configuration</li>
+      <li><strong><code>setAttribute</code></strong> → for non-standard attributes like <code>data-*</code> or <code>aria-*</code></li>
+      <li><strong><code>addEventListener</code></strong> → attach event handlers before the element is on the page</li>
+      <li><strong><code>cloneNode</code></strong> → duplicate an existing element instead of building from scratch</li>
+      <li><strong><code>createTextNode</code></strong> → another way to create a text node directly</li>
+      <li><strong><code>createDocumentFragment</code></strong> → a temporary off-page container, useful for batching</li>
+      <li><strong>Element-specific properties</strong> → <code>src</code>, <code>href</code>, <code>value</code>, <code>type</code></li>
+      <li><strong>Off-page vs on-page</strong> → the element is real either way, but only visible after attachment</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-11-13-3-3': `
+    <ul>
+      <li><code>appendChild</code> / <code>append</code></li>
+      <li><code>textContent</code></li>
+      <li><code>innerHTML</code></li>
+      <li><code>classList</code></li>
+      <li><code>setAttribute</code></li>
+      <li><code>cloneNode</code></li>
+      <li><code>createTextNode</code></li>
+      <li><code>createDocumentFragment</code></li>
+      <li>Element-specific properties (<code>src</code>, <code>href</code>, <code>value</code>)</li>
+      <li>Factory functions for building elements</li>
+    </ul>
+  `,
   
 });
