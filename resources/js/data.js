@@ -997,6 +997,34 @@ const DEEP_TOPICS = {
       ], TOPIC_CARD_CHUNKS)
     },
 
+    // -------- 3.14 Window --------
+    {
+      groupTitle: '3.14 Window',
+      groupPreview: 'The browser tab itself.',
+      items: withChunks([
+        { title: 'what window is',                            preview: 'The browser tab as a JavaScript object.' },
+        { title: 'window as the global object',               preview: 'Globals live on window.' },
+        { title: 'window vs document',                        preview: 'The tab vs the page inside it.' },
+        { title: 'alert, confirm, prompt',                    preview: 'Simple modal dialogs.' },
+        { title: 'setTimeout',                                preview: 'Run code once after a delay.' },
+        { title: 'setInterval',                               preview: 'Run code repeatedly on a timer.' },
+        { title: 'clearTimeout, clearInterval',               preview: 'Cancel a scheduled timer.' },
+        { title: 'window.location',                           preview: 'The current page URL.' },
+        { title: 'navigating to a new page',                  preview: 'location.href = "/path".' },
+        { title: 'reloading the page',                        preview: 'location.reload().' },
+        { title: 'localStorage basics',                       preview: 'setItem, getItem, persist data.' },
+        { title: 'sessionStorage',                            preview: 'Like localStorage, but cleared when tab closes.' },
+        { title: 'storing objects (JSON.stringify/parse)',    preview: 'Storage only holds strings.' },
+        { title: 'window.innerWidth, innerHeight',            preview: 'Viewport size.' },
+        { title: 'scroll position: scrollX, scrollY',         preview: 'Where the user is on the page.' },
+        { title: 'window events: load, resize, scroll',       preview: 'Reacting to browser state.' },
+        { title: 'beforeunload',                              preview: 'Warn before leaving the page.' },
+        { title: 'opening new tabs: window.open',             preview: 'Open a URL in another tab.' },
+        { title: 'common mistakes',                           preview: 'Storage holds strings, timers leak, blocking dialogs.' },
+        { title: 'debugging window',                          preview: 'console.log window, check storage, inspect timers.' }
+      ], TOPIC_CARD_CHUNKS)
+    },
+
     // -------- 3.15 Forms --------
     {
       groupTitle: '3.15 Forms',

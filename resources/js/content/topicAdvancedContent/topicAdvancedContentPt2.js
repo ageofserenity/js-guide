@@ -12663,5 +12663,682 @@ textarea.addEventListener("input", () =&gt; {
       <li>DOMContentLoaded / load event</li>
     </ul>
   `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.13.2 Events → events as user/browser actions
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-12-1-0-0': `
+    <p>Events fall into two big buckets based on where they come from: <strong>user actions</strong> and <strong>browser actions</strong>. User-action events fire because of something the user did — clicking, typing, hovering, scrolling, submitting a form. Browser-action events fire because of something the browser did on its own — finishing loading the page, completing a network request, resizing the window, the timer hitting.</p>
+    <p>Both kinds use the same <code>addEventListener</code> mechanism. The difference is just <em>where the signal comes from</em>. Knowing which category an event belongs to helps you figure out where to attach the listener and when to expect it to fire.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-12-1-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// USER ACTION events — fire because the user did something
+btn.addEventListener("click", handleClick);
+input.addEventListener("input", handleType);
+form.addEventListener("submit", handleSubmit);
+window.addEventListener("scroll", handleScroll);
+document.addEventListener("keydown", handleKey);
+
+// BROWSER ACTION events — fire because of the browser
+window.addEventListener("load", handlePageLoaded);
+window.addEventListener("resize", handleResize);
+document.addEventListener("DOMContentLoaded", handleDOMReady);
+
+// the addEventListener pattern is the same for both kinds.
+// the difference is in the event NAME — it tells the browser what to watch for.</code></pre>
+    <p>Same syntax, two sources. The event name tells the browser whether to watch for the user or for itself.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-12-1-0-2': `
+<pre class="language-javascript"><code class="language-javascript">// USER ACTION events
+//
+//   Mouse events
+//     click           → mouse click (or tap)
+//     dblclick        → double-click
+//     mouseenter      → cursor entered the element
+//     mouseleave      → cursor left the element
+//     mousemove       → cursor moved
+//     mousedown       → mouse button pressed
+//     mouseup         → mouse button released
+//     contextmenu     → right-click
+//
+//   Keyboard events
+//     keydown         → key pressed
+//     keyup           → key released
+//     keypress        → (deprecated, avoid)
+//
+//   Form events
+//     input           → text changed (every keystroke)
+//     change          → value committed (after blur, or selection change)
+//     submit          → form submitted
+//     focus           → field gained focus
+//     blur            → field lost focus
+//
+//   Touch events (mobile)
+//     touchstart, touchend, touchmove
+//
+// BROWSER ACTION events
+//
+//   Page lifecycle
+//     DOMContentLoaded → HTML finished parsing (DOM is ready)
+//     load             → everything loaded (HTML + images + CSS)
+//     beforeunload     → user is about to navigate away
+//     unload           → page is being torn down
+//
+//   Window state
+//     resize           → window size changed
+//     scroll           → page or element scrolled
+//     focus / blur     → window gained / lost focus (on the tab itself)
+//
+//   Async results (covered later)
+//     fetch responses, timer callbacks, etc.
+
+// user actions are usually attached to specific elements.
+// browser actions are usually attached to window or document.</code></pre>
+    <p>The categories aren't rules — they're hints about where the event "comes from." Click belongs to a button; load belongs to the page itself. Knowing this makes it easier to choose where to attach the listener.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-12-1-0-3': `
+    <p><strong>User-action events fire when the user does the action.</strong> They're tied directly to user input, and your handler runs essentially instantly:</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", () =&gt; console.log("clicked"));
+// fires every time the user clicks the button — no other trigger
+// runs immediately on the click — no delay
+
+input.addEventListener("input", () =&gt; console.log("typed"));
+// fires on EVERY keystroke that changes the input
+// also fires for paste, autocomplete, etc.</code></pre>
+
+    <p><strong>Browser-action events fire when the browser decides to.</strong> No user input required — they happen as part of the page's lifecycle:</p>
+<pre class="language-javascript"><code class="language-javascript">window.addEventListener("load", () =&gt; {
+  console.log("page is fully loaded");
+});
+// fires once, automatically, when the page finishes loading.
+// the user didn't "do" anything — the browser detected the load completed.
+
+window.addEventListener("resize", () =&gt; {
+  console.log("window resized");
+});
+// fires whenever the window changes size — could be user dragging,
+// or could be the OS rotating a phone, or maximizing a window, etc.</code></pre>
+
+    <p><strong>Some events are "almost-user, almost-browser."</strong> <code>scroll</code> can be triggered by user scrolling, but also by JavaScript code calling <code>scrollTo</code>. <code>resize</code> can be from a drag or from <code>window.resizeTo</code>. The listener doesn't care which:</p>
+<pre class="language-javascript"><code class="language-javascript">window.addEventListener("scroll", () =&gt; {
+  console.log("scroll position:", window.scrollY);
+});
+
+// fires when:
+//   - the user scrolls with the mouse wheel
+//   - the user drags the scrollbar
+//   - the user uses the keyboard (arrow keys, page down)
+//   - JavaScript calls window.scrollTo() or element.scrollIntoView()
+//   - some accessibility tools trigger scroll
+//
+// you can't tell which source triggered it from the event alone.</code></pre>
+
+    <p><strong>User-action events usually attach to specific elements; browser-action events to <code>window</code> or <code>document</code>.</strong> Not a hard rule, but a strong default:</p>
+<pre class="language-javascript"><code class="language-javascript">// elements — for events tied to that element
+btn.addEventListener("click", handler);
+input.addEventListener("input", handler);
+form.addEventListener("submit", handler);
+
+// window — for events about the browser tab itself
+window.addEventListener("load", handler);
+window.addEventListener("resize", handler);
+window.addEventListener("scroll", handler);   // page scroll
+
+// document — for global events that don't have a specific element
+document.addEventListener("DOMContentLoaded", handler);
+document.addEventListener("keydown", handler);   // any key, anywhere
+document.addEventListener("click", handler);     // any click, anywhere (event delegation)</code></pre>
+
+    <p><strong>The event object tells you what happened.</strong> Different event types provide different details:</p>
+<pre class="language-javascript"><code class="language-javascript">// click: where the click happened
+btn.addEventListener("click", e =&gt; {
+  console.log("clicked at", e.clientX, e.clientY);
+  console.log("target element:", e.target);
+});
+
+// keydown: which key was pressed
+document.addEventListener("keydown", e =&gt; {
+  console.log("key:", e.key);          // "a", "Enter", "Escape", etc.
+  console.log("ctrl held:", e.ctrlKey);
+  console.log("shift held:", e.shiftKey);
+});
+
+// input: read the current value
+input.addEventListener("input", e =&gt; {
+  console.log("new value:", e.target.value);
+});
+
+// scroll: read current position
+window.addEventListener("scroll", () =&gt; {
+  console.log("scroll Y:", window.scrollY);
+});
+
+// resize: read new dimensions
+window.addEventListener("resize", () =&gt; {
+  console.log("size:", window.innerWidth, "x", window.innerHeight);
+});</code></pre>
+
+    <p><strong>Some events fire constantly — be careful what you do inside.</strong> <code>scroll</code>, <code>mousemove</code>, and <code>resize</code> can fire hundreds of times per second:</p>
+<pre class="language-javascript"><code class="language-javascript">window.addEventListener("scroll", () =&gt; {
+  // this runs MANY times as the user scrolls
+  // heavy operations in here will slow the page noticeably
+});
+
+window.addEventListener("mousemove", e =&gt; {
+  // this runs on EVERY pixel of mouse movement
+  // moving across the screen can fire 100+ times
+});
+
+// for these, throttle or debounce — but that's a later lesson.
+// for now: keep the handlers fast and simple.</code></pre>
+
+    <p><strong>Page lifecycle events fire in a specific order.</strong> Knowing the order helps you pick the right one:</p>
+<pre class="language-javascript"><code class="language-javascript">// the order during page load:
+//
+//   1. HTML starts parsing
+//   2. (scripts in the body run as they're encountered)
+//   3. DOMContentLoaded fires — HTML fully parsed, DOM ready
+//   4. images, stylesheets, fonts finish loading
+//   5. load fires — everything is loaded
+//
+// during unload:
+//
+//   6. user clicks a link or closes the tab
+//   7. beforeunload fires — last chance to warn or save
+//   8. unload fires — page is being destroyed
+//
+// pick the event that matches what you need:
+//   - DOM elements available? → DOMContentLoaded
+//   - image sizes known? → load
+//   - need to save before user leaves? → beforeunload</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-12-1-1-0': `
+    <p>Categorizing events as "user actions" vs "browser actions" isn't just an academic distinction — it's a guide for where to attach your listeners. User-action events typically attach to specific elements (the button you want to react to clicks on). Browser-action events typically attach to <code>window</code> or <code>document</code> because they're about the whole page or tab.</p>
+    <p>It also helps you set expectations. Click handlers run essentially instantly. Load handlers might fire late (after images load). Scroll handlers might fire hundreds of times per second. Knowing the kind of event helps you write code that handles its timing correctly.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-12-1-1-1': `
+    <p>Recognizing the source of an event helps you write better code:</p>
+<pre class="language-javascript"><code class="language-javascript">// USER ACTIONS — attach to the specific element
+btn.addEventListener("click", handleSave);          // button — click handler
+form.addEventListener("submit", handleSubmit);       // form — submit handler
+input.addEventListener("input", handleType);         // input — input handler
+card.addEventListener("mouseenter", showTooltip);    // card — hover handler
+
+// BROWSER ACTIONS — usually on window or document
+window.addEventListener("load", initApp);
+window.addEventListener("resize", relayout);
+document.addEventListener("DOMContentLoaded", setup);
+
+// the pattern emerges naturally:
+//   - if the event is about a specific thing → attach to that thing
+//   - if the event is about the page/browser → attach to window/document</code></pre>
+
+    <p>You'll also start noticing that "user actions" are usually one-shot (one click, one submit), while "browser actions" can fire continuously (resize during a drag, scroll while reading). That changes how you write the handler — fast and simple for high-frequency events; can be more complex for one-shot events.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-12-1-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// USER ACTIONS
+
+// Buttons and links — click
+btn.addEventListener("click", handler);
+
+// Form inputs — input, change, focus, blur
+input.addEventListener("input", validateField);
+input.addEventListener("blur", finalCheck);
+select.addEventListener("change", updateOptions);
+
+// Forms — submit
+form.addEventListener("submit", e =&gt; {
+  e.preventDefault();
+  submitData();
+});
+
+// Keyboard shortcuts
+document.addEventListener("keydown", e =&gt; {
+  if (e.key === "Escape") closeModal();
+});
+
+// Hover effects
+card.addEventListener("mouseenter", showInfo);
+card.addEventListener("mouseleave", hideInfo);
+
+// Right-click custom menus
+el.addEventListener("contextmenu", e =&gt; {
+  e.preventDefault();
+  showCustomMenu();
+});
+
+// BROWSER ACTIONS
+
+// Page ready — DOMContentLoaded
+document.addEventListener("DOMContentLoaded", initApp);
+
+// Full load (including images)
+window.addEventListener("load", setupHeroSlider);
+
+// Window resize — responsive layout
+window.addEventListener("resize", relayout);
+
+// Scroll — lazy load, sticky headers
+window.addEventListener("scroll", revealLazyImages);
+
+// Before leaving — warn unsaved changes
+window.addEventListener("beforeunload", e =&gt; {
+  if (hasUnsavedChanges) {
+    e.preventDefault();
+    e.returnValue = "";
+  }
+});
+
+// Tab visibility — pause/resume features
+document.addEventListener("visibilitychange", () =&gt; {
+  if (document.hidden) pauseVideo();
+  else resumeVideo();
+});</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-12-1-1-3': `
+    <p>Every event happens for a reason. Either the user did something — clicked, typed, scrolled, hovered — or the browser itself reached some state — finished loading, got resized, lost focus. Both kinds use the same listener mechanism, but they tend to live in different places. User events attach to the element the user is interacting with. Browser events attach to <code>window</code> or <code>document</code> because they're about the whole environment.</p>
+    <p>Once you split events into these two groups in your head, it becomes obvious where to attach what. "I want to react when the save button is clicked" — that's a user action on a specific element, so the listener goes on the button. "I want to do something when the page is fully loaded" — that's the browser telling you the load finished, so the listener goes on <code>window</code>.</p>
+    <p>The grouping also predicts how often the handler will run. User actions tend to be discrete (click, click, click — one fire each). Browser actions can be continuous (resize fires repeatedly as the user drags, scroll fires many times per second). That changes how heavy you can afford to make the handler.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-12-1-1-4': `
+    <p>Think of events as two streams of signals coming into your code. One stream is the user — every click, key press, hover, scroll. The other stream is the browser — page-loaded, resized, network-finished, timer-expired. Your job is to subscribe to the signals you care about and ignore the rest.</p>
+    <p>The user stream is bursty and tied to specific elements — they click <em>this</em> button, type in <em>that</em> field. Subscribe to the element. The browser stream is ambient and tied to the page or tab as a whole — the page loaded, the window resized. Subscribe to <code>window</code> or <code>document</code>.</p>
+    <p>Some signals straddle both streams: <code>scroll</code> can come from the user or from a script. The listener doesn't care which; it just hears the signal. What matters is that you know the signal can come from either source, so your handler should work for both cases.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-12-1-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// USER ACTION example: save button click
+//
+// HTML: &lt;button id="save"&gt;Save&lt;/button&gt;
+
+document.getElementById("save").addEventListener("click", () =&gt; {
+  console.log("user clicked save");
+});
+
+// timeline:
+//   1. script runs, registers click handler on the button
+//   2. nothing else happens until the user interacts
+//   3. user clicks
+//   4. browser detects click on #save
+//   5. handler runs: logs "user clicked save"
+//   6. waiting for next user click
+
+
+// BROWSER ACTION example: window resize
+//
+// no HTML needed — window is always there
+
+window.addEventListener("resize", () =&gt; {
+  console.log("new size:", window.innerWidth);
+});
+
+// timeline:
+//   1. script runs, registers resize handler on window
+//   2. no resize yet — handler waits
+//   3. user (or OS) resizes the window
+//   4. browser fires "resize" event on window
+//   5. handler runs: logs the new width
+//   6. user keeps resizing → handler fires AGAIN, and AGAIN, rapidly
+//
+// notice the difference:
+//   - click fired ONCE per user click
+//   - resize fires MANY times during a single drag
+//
+// both use the same addEventListener, but the timing patterns are very different.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-12-1-2-0': `
+    <p>If a handler isn't firing, ask: is this a user action or a browser action? That tells you where to look for the bug:</p>
+<pre class="language-javascript"><code class="language-javascript">// User action not firing?
+//   - is the event attached to the RIGHT element?
+//   - is the element actually clickable (no CSS pointer-events: none)?
+//   - is something covering it (z-index, overlay)?
+
+// Browser action not firing?
+//   - is the timing right? (DOMContentLoaded already fired? you missed it)
+//   - is the event attached to window/document, not an element?
+//   - is the browser in a state where this event makes sense?
+
+// log to confirm:
+btn.addEventListener("click", () =&gt; console.log("click fired"));
+window.addEventListener("resize", () =&gt; console.log("resize fired"));</code></pre>
+
+    <p>If a handler fires too often (page feels slow), it's probably a continuous browser-action event like <code>scroll</code>, <code>resize</code>, or <code>mousemove</code>. Move heavy logic out, or look up "throttle" or "debounce" — covered later.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-12-1-2-1': `
+    <p>Events aren't a special category of API — they're just signals about things happening in the browser. Some come from the user, some come from the browser itself. The mechanism for handling them is identical (<code>addEventListener</code>), but the source determines where you attach the listener and what kind of timing to expect.</p>
+    <p>Once you know which events are user-driven and which are browser-driven, the rest follows. Click handlers go on the things being clicked. Page-load handlers go on <code>window</code>. Heavy computation has no business inside a <code>scroll</code> handler because <code>scroll</code> fires constantly. The category tells you everything you need to write good code for that event.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-12-1-2-2': `
+    <p><strong>Confusion: attaching window-level events to specific elements</strong></p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("load", handler);
+// "load" fires when the BROWSER finishes loading — not on a button
+// the handler never fires for a button
+
+// fix: attach load to window
+window.addEventListener("load", handler);</code></pre>
+
+    <p><strong>Confusion: attaching element-level events to window</strong></p>
+<pre class="language-javascript"><code class="language-javascript">window.addEventListener("submit", handler);
+// "submit" is a form event — attaching to window catches submits from ANY form on the page,
+// which might or might not be what you want. usually you want a specific form.
+
+// fix: attach to the form
+form.addEventListener("submit", handler);</code></pre>
+
+    <p><strong>Confusion: thinking <code>input</code> and <code>change</code> are the same</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// input → fires on EVERY keystroke (live updates as user types)
+// change → fires after the value is COMMITTED (after blur, or after selecting an option)
+
+input.addEventListener("input", () =&gt; {
+  // runs on each character typed
+});
+
+input.addEventListener("change", () =&gt; {
+  // runs only after the user clicks away or presses Enter
+});
+
+// for "live as I type" → input
+// for "user finalized their choice" → change</code></pre>
+
+    <p><strong>Confusion: <code>load</code> vs <code>DOMContentLoaded</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">// DOMContentLoaded → HTML parsed, DOM ready (FAST)
+//                    images, CSS may still be loading
+// load              → EVERYTHING loaded (slower)
+//                    HTML, images, CSS, fonts
+
+// for DOM-only setup → DOMContentLoaded
+// for code that needs image sizes → load</code></pre>
+
+    <p><strong>Confusion: thinking <code>scroll</code> is only a user event</strong></p>
+<pre class="language-javascript"><code class="language-javascript">window.addEventListener("scroll", () =&gt; console.log("scrolled"));
+
+// the user can scroll → fires
+// JS calls window.scrollTo(...) → also fires
+// scrollIntoView() on a child element → also fires
+// browser auto-scrolls to a focused element → also fires
+
+// scroll is a "thing happened to the page" event, regardless of source.</code></pre>
+
+    <p><strong>Confusion: attaching <code>keydown</code> to a regular element expecting it to fire</strong></p>
+<pre class="language-javascript"><code class="language-javascript">div.addEventListener("keydown", handler);
+// won't fire unless the div is focused (which it usually isn't by default)
+
+// for global keyboard shortcuts:
+document.addEventListener("keydown", handler);
+// fires for any key press, regardless of focus.
+
+// for an element-specific key handler:
+input.addEventListener("keydown", handler);
+// fires when the input has focus.</code></pre>
+
+    <p><strong>Confusion: browser-action events firing "too early" or "too late"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// DOMContentLoaded — fires once, when DOM is ready.
+// if you add a listener AFTER it already fired, you miss it.
+
+document.addEventListener("DOMContentLoaded", () =&gt; {
+  console.log("ready");   // might not fire if DOM is already ready
+});
+
+// fix: check readyState
+if (document.readyState !== "loading") {
+  init();
+} else {
+  document.addEventListener("DOMContentLoaded", init);
+}</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-12-1-2-3': `
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("load", handler);
+// "load" doesn't fire on regular elements (some special ones like &lt;img&gt; do)
+// fix: attach to window
+window.addEventListener("load", handler);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">window.addEventListener("click", handler);
+// fires for ALL clicks anywhere — usually not what you want
+// fix: attach to the specific element
+btn.addEventListener("click", handler);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">input.addEventListener("change", () =&gt; updatePreview());
+// only fires on blur — preview won't update live as user types
+// fix: use "input" for live updates
+input.addEventListener("input", () =&gt; updatePreview());</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.addEventListener("DOMContentLoaded", init);
+// if your script ran AFTER DOMContentLoaded already fired, init never runs
+// fix: check readyState
+if (document.readyState !== "loading") init();
+else document.addEventListener("DOMContentLoaded", init);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">window.addEventListener("resize", () =&gt; recalculateEverything());
+// fires hundreds of times per second during a drag — slow
+// fix: throttle or debounce (later lesson), or keep handler very light</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">div.addEventListener("keydown", handler);
+// won't fire unless div has focus (regular divs don't get focus)
+// fix: attach to document for global shortcuts
+document.addEventListener("keydown", handler);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">window.addEventListener("submit", handler);
+// catches submits from ANY form — usually wrong
+// fix: attach to the specific form
+form.addEventListener("submit", handler);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("hover", handler);
+// "hover" is a CSS pseudo-class, not a JS event
+// fix: use mouseenter/mouseleave
+btn.addEventListener("mouseenter", handler);
+btn.addEventListener("mouseleave", handler);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">window.addEventListener("scroll", () =&gt; {
+  document.querySelectorAll(".lazy").forEach(checkVisibility);
+});
+// runs many times per second — pulling DOM elements each time is wasteful
+// fix: cache the list outside the handler
+const lazyEls = document.querySelectorAll(".lazy");
+window.addEventListener("scroll", () =&gt; {
+  lazyEls.forEach(checkVisibility);
+});</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-12-1-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// USER ACTIONS
+
+// Click
+btn.addEventListener("click", () =&gt; console.log("clicked"));
+
+// Double-click
+el.addEventListener("dblclick", () =&gt; console.log("double clicked"));
+
+// Right-click
+el.addEventListener("contextmenu", e =&gt; {
+  e.preventDefault();
+  showMenu();
+});
+
+// Mouse over / out
+card.addEventListener("mouseenter", () =&gt; card.classList.add("hover"));
+card.addEventListener("mouseleave", () =&gt; card.classList.remove("hover"));
+
+// Mouse move (high frequency!)
+canvas.addEventListener("mousemove", e =&gt; {
+  draw(e.offsetX, e.offsetY);
+});
+
+// Input typing
+input.addEventListener("input", () =&gt; console.log(input.value));
+
+// Form submit
+form.addEventListener("submit", e =&gt; {
+  e.preventDefault();
+  save();
+});
+
+// Field focus / blur
+input.addEventListener("focus", showHint);
+input.addEventListener("blur", hideHint);
+
+// Select change
+dropdown.addEventListener("change", e =&gt; updateView(e.target.value));
+
+// Keyboard
+document.addEventListener("keydown", e =&gt; {
+  if (e.key === "Escape") closeModal();
+});
+
+// BROWSER ACTIONS
+
+// DOM ready
+document.addEventListener("DOMContentLoaded", setup);
+
+// Full page load
+window.addEventListener("load", initApp);
+
+// Window resize
+window.addEventListener("resize", relayout);
+
+// Scroll
+window.addEventListener("scroll", checkLazyLoad);
+
+// Tab visibility
+document.addEventListener("visibilitychange", () =&gt; {
+  if (document.hidden) pauseVideo();
+  else resumeVideo();
+});
+
+// Before leaving the page
+window.addEventListener("beforeunload", e =&gt; {
+  if (hasUnsavedChanges) {
+    e.preventDefault();
+    e.returnValue = "";
+  }
+});
+
+// Image loaded
+img.addEventListener("load", () =&gt; console.log("image loaded"));
+
+// Image failed to load
+img.addEventListener("error", () =&gt; console.log("image error"));</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-12-1-3-1': `
+    <p><strong>Example: live form validation (user action)</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelectorAll("input[required]").forEach(input =&gt; {
+  input.addEventListener("input", () =&gt; {
+    if (input.value.trim()) {
+      input.classList.remove("error");
+    } else {
+      input.classList.add("error");
+    }
+  });
+});
+// every keystroke updates the error state — live feedback.</code></pre>
+
+    <p><strong>Example: setup when DOM is ready (browser action)</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.addEventListener("DOMContentLoaded", () =&gt; {
+  attachEventListeners();
+  restoreSavedState();
+  fetchInitialData();
+});
+// fires once, when the HTML is parsed.
+// safe to query and modify the DOM from inside.</code></pre>
+
+    <p><strong>Example: responsive layout on resize (browser action)</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function adjustLayout() {
+  if (window.innerWidth &lt; 600) {
+    sidebar.classList.add("mobile");
+  } else {
+    sidebar.classList.remove("mobile");
+  }
+}
+
+window.addEventListener("resize", adjustLayout);
+adjustLayout();   // run once at start
+// fires whenever the window changes size.
+// also called once initially so the layout is correct on first load.</code></pre>
+
+    <p><strong>Example: warn before leaving with unsaved changes (browser action)</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let dirty = false;
+
+document.querySelector("form").addEventListener("input", () =&gt; {
+  dirty = true;
+});
+
+window.addEventListener("beforeunload", e =&gt; {
+  if (dirty) {
+    e.preventDefault();
+    e.returnValue = "";   // browser shows its own warning text
+  }
+});
+// user action (input) flags state.
+// browser action (beforeunload) reads the state and warns if needed.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-12-1-3-2': `
+    <ul>
+      <li><strong>User-action events</strong> → click, input, submit, hover, keydown — tied to user input</li>
+      <li><strong>Browser-action events</strong> → load, DOMContentLoaded, resize, scroll — tied to browser state</li>
+      <li><strong><code>window</code> events</strong> → most browser-action events live on window</li>
+      <li><strong><code>document</code> events</strong> → DOMContentLoaded, keydown for global keys</li>
+      <li><strong>Element events</strong> → user-action events live on the specific element</li>
+      <li><strong>Event frequency</strong> → user actions are bursty, browser actions can be continuous</li>
+      <li><strong>The event object</strong> → different details for different event types</li>
+      <li><strong><code>preventDefault</code></strong> → cancel a default browser behavior (submit, contextmenu, etc.)</li>
+      <li><strong>Throttle / debounce</strong> → patterns for handling high-frequency events</li>
+      <li><strong>Event delegation</strong> → handle many user actions with one parent listener</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-12-1-3-3': `
+    <ul>
+      <li><code>addEventListener</code></li>
+      <li>Event object (<code>e</code>)</li>
+      <li>Click, input, submit, change, focus, blur, keydown</li>
+      <li>DOMContentLoaded, load, resize, scroll, beforeunload</li>
+      <li>visibilitychange, online, offline</li>
+      <li><code>preventDefault</code></li>
+      <li>Throttle / debounce</li>
+      <li>Event delegation</li>
+      <li>High-frequency event handling</li>
+      <li>Touch events (mobile)</li>
+    </ul>
+  `,
   
 });
