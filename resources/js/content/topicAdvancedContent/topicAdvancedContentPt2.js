@@ -8039,5 +8039,1971 @@ toast("Saved!");
       <li>Factory functions for building elements</li>
     </ul>
   `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.12.15 DOM → adding elements: appendChild(), append()
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-11-14-0-0': `
+    <p><code>appendChild()</code> and <code>append()</code> are the methods for <strong>putting elements onto the page</strong>. They're the second half of the create-and-attach pattern: <code>createElement</code> builds the element in memory; these methods place it inside a parent that's already on the page, making it visible.</p>
+    <p>Both add elements as the last child of a parent. <code>appendChild</code> is the older method — takes one node, returns it. <code>append</code> is the newer one — takes any number of nodes or strings, returns nothing. For most code, they're interchangeable; <code>append</code> is just more flexible.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-11-14-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// Setup: create an element in memory
+const li = document.createElement("li");
+li.textContent = "New task";
+
+// Get the parent that's already on the page
+const list = document.querySelector("ul");
+
+// appendChild — classic version
+list.appendChild(li);
+// the &lt;li&gt; is now the LAST child of the &lt;ul&gt;.
+// it appears at the bottom of the list on the page.
+
+// append — newer, more flexible
+list.append(li2);                       // single element, same as appendChild
+list.append(li3, li4, li5);              // multiple elements at once
+list.append("plain text");                // strings become text nodes
+list.append(li6, " — ", li7);            // mix elements and strings</code></pre>
+    <p>One call attaches the element to the page. Whatever was already inside the parent stays — the new element is added at the end, not in place of what was there.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-11-14-0-2': `
+<pre class="language-javascript"><code class="language-javascript">
+parent.appendChild(child)
+//   - child:  must be a NODE (element, text node, comment, etc.)
+//   - cannot pass strings — throws TypeError
+//   - cannot pass multiple — only takes one argument
+//   - returns the child element (useful for chaining)
+//   - the child becomes the LAST child of parent
+//
+parent.append(...nodesOrStrings)
+//   - accepts any number of arguments
+//   - each argument can be a node OR a string
+//   - strings become text nodes automatically
+//   - returns nothing (undefined)
+//   - all arguments become children, in order, appended to the end
+//
+// what they share:
+//   - the new content goes to the END of the parent
+//   - existing children are NOT removed
+//   - if the node was already on the page, it's MOVED (not copied)
+//
+// quick pick:
+//   appendChild → older code, single node, when you need the return value
+//   append      → modern code, more flexible, accepts strings and multiples</code></pre>
+    <p>For most everyday code, the difference doesn't matter — pick one and be consistent. The fact that <code>append</code> handles strings is occasionally handy ("append this text node alongside this element"), but most of the time you create elements and append them one at a time.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-11-14-0-3': `
+    <p><strong>The new element goes at the END of the parent's children.</strong> Whatever was there before stays in place; the new element joins at the bottom:</p>
+<pre class="language-javascript"><code class="language-javascript">// HTML:
+// &lt;ul id="list"&gt;
+//   &lt;li&gt;A&lt;/li&gt;
+//   &lt;li&gt;B&lt;/li&gt;
+// &lt;/ul&gt;
+
+const li = document.createElement("li");
+li.textContent = "C";
+document.getElementById("list").appendChild(li);
+
+// HTML now:
+// &lt;ul id="list"&gt;
+//   &lt;li&gt;A&lt;/li&gt;
+//   &lt;li&gt;B&lt;/li&gt;
+//   &lt;li&gt;C&lt;/li&gt;   ← new li added at the end
+// &lt;/ul&gt;</code></pre>
+
+    <p><strong>To insert at the beginning, use <code>prepend</code>.</strong> Same idea, opposite end:</p>
+<pre class="language-javascript"><code class="language-javascript">// HTML:
+// &lt;ul&gt;&lt;li&gt;A&lt;/li&gt;&lt;li&gt;B&lt;/li&gt;&lt;/ul&gt;
+
+const li = document.createElement("li");
+li.textContent = "first";
+
+document.querySelector("ul").prepend(li);
+
+// HTML now:
+// &lt;ul&gt;
+//   &lt;li&gt;first&lt;/li&gt;   ← inserted at the START
+//   &lt;li&gt;A&lt;/li&gt;
+//   &lt;li&gt;B&lt;/li&gt;
+// &lt;/ul&gt;</code></pre>
+
+    <p><strong>To insert at a specific position, use <code>before</code> or <code>after</code> on a reference element.</strong> These are element-relative:</p>
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;ul&gt;&lt;li id="anchor"&gt;Middle&lt;/li&gt;&lt;/ul&gt;
+const anchor = document.getElementById("anchor");
+const newLi = document.createElement("li");
+newLi.textContent = "Inserted";
+
+anchor.before(newLi);
+// HTML: &lt;ul&gt;&lt;li&gt;Inserted&lt;/li&gt;&lt;li id="anchor"&gt;Middle&lt;/li&gt;&lt;/ul&gt;
+
+anchor.after(newLi);
+// (this would MOVE newLi, since it can only exist in one place)
+// HTML: &lt;ul&gt;&lt;li id="anchor"&gt;Middle&lt;/li&gt;&lt;li&gt;Inserted&lt;/li&gt;&lt;/ul&gt;</code></pre>
+
+    <p><strong><code>appendChild</code> returns the appended child.</strong> Sometimes useful for chaining or capturing the reference inline:</p>
+<pre class="language-javascript"><code class="language-javascript">const li = document.querySelector("ul").appendChild(document.createElement("li"));
+li.textContent = "Hi";
+// li is the just-appended element, ready to configure.
+
+// vs. append, which returns nothing:
+const ul = document.querySelector("ul");
+ul.append(li);
+console.log(ul.append(li));   // undefined</code></pre>
+
+    <p><strong>If you append an element that's already on the page, it MOVES.</strong> The browser only allows one parent per element:</p>
+<pre class="language-javascript"><code class="language-javascript">// HTML:
+// &lt;div id="from"&gt;&lt;p id="msg"&gt;Hi&lt;/p&gt;&lt;/div&gt;
+// &lt;div id="to"&gt;&lt;/div&gt;
+
+const p = document.getElementById("msg");
+document.getElementById("to").appendChild(p);
+
+// HTML now:
+// &lt;div id="from"&gt;&lt;/div&gt;            ← p is GONE from here
+// &lt;div id="to"&gt;&lt;p id="msg"&gt;Hi&lt;/p&gt;&lt;/div&gt;   ← p moved here
+
+// the p didn't get cloned — it changed parents.
+// to actually duplicate, use cloneNode first:
+const copy = p.cloneNode(true);
+document.getElementById("to").appendChild(copy);</code></pre>
+
+    <p><strong><code>append</code> accepts strings and creates text nodes from them.</strong> <code>appendChild</code> won't accept strings:</p>
+<pre class="language-javascript"><code class="language-javascript">// Bad with appendChild
+list.appendChild("Hello");   // TypeError — needs a node
+
+// Good with append
+list.append("Hello");        // ✓ "Hello" becomes a text node
+
+// Workaround for appendChild
+list.appendChild(document.createTextNode("Hello"));
+
+// useful when mixing:
+list.append("Items: ", li1, ", ", li2);
+// inserts text, then element, then text, then element — all in order.</code></pre>
+
+    <p><strong>The parent must be on the page (or itself eventually attached) for the child to be visible.</strong> Appending to an off-page element doesn't render anything:</p>
+<pre class="language-javascript"><code class="language-javascript">const ghostDiv = document.createElement("div");
+const li = document.createElement("li");
+li.textContent = "Hidden";
+ghostDiv.appendChild(li);
+// li is inside ghostDiv, but ghostDiv isn't on the page
+// → nothing visible
+
+// to make it visible, attach the wrapper:
+document.body.appendChild(ghostDiv);
+// now both ghostDiv and its li are on the page</code></pre>
+
+    <p><strong>For batch inserts, build off-page first then append once.</strong> The browser only re-renders after the final attachment:</p>
+<pre class="language-javascript"><code class="language-javascript">// Slow — page re-renders 100 times
+for (let i = 0; i &lt; 100; i++) {
+  const li = document.createElement("li");
+  li.textContent = "Item " + i;
+  list.appendChild(li);
+}
+
+// Fast — build in a fragment, append once (1 render)
+const fragment = document.createDocumentFragment();
+for (let i = 0; i &lt; 100; i++) {
+  const li = document.createElement("li");
+  li.textContent = "Item " + i;
+  fragment.appendChild(li);
+}
+list.appendChild(fragment);
+// the fragment is a temporary off-page container.
+// appending the fragment transfers all its children to the parent in one go.</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-11-14-1-0': `
+    <p>Without a way to attach elements, <code>createElement</code> would be useless — you'd build elements no one could see. <code>appendChild</code> and <code>append</code> are how creations actually appear on the page. They take an element that exists in memory and connect it to the rendered DOM tree.</p>
+    <p>They also handle the structural side of dynamic content: where new elements go relative to existing ones. The default behavior (append to the end) covers most cases — new chat messages at the bottom, new list items below existing ones, new search results stacking up. For other positions, you have <code>prepend</code>, <code>before</code>, and <code>after</code>.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-11-14-1-1': `
+    <p>Every dynamic insertion ends with one of these methods:</p>
+<pre class="language-javascript"><code class="language-javascript">// New chat message
+const msg = document.createElement("div");
+msg.textContent = "Hello";
+document.querySelector(".chat").appendChild(msg);
+
+// Toast notification
+const toast = document.createElement("div");
+toast.textContent = "Saved!";
+document.body.appendChild(toast);
+
+// Search result
+const card = buildResultCard(data);
+document.querySelector(".results").appendChild(card);
+
+// Modal
+const modal = createModal();
+document.body.appendChild(modal);
+
+// every line above is "build, then attach." appendChild/append is the attach step.</code></pre>
+
+    <p><code>append</code> is also nice for mixing text and elements in one call — a common pattern when building inline content like "<span>name</span> sent a message at <span>time</span>."</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-11-14-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Basic append
+parent.appendChild(child);
+parent.append(child);
+
+// Multiple children at once (append only)
+parent.append(child1, child2, child3);
+
+// Mix elements and strings (append only)
+parent.append("Welcome, ", nameSpan, "!");
+
+// Prepend at the start
+parent.prepend(child);
+
+// Insert before/after a reference
+referenceEl.before(newEl);
+referenceEl.after(newEl);
+
+// Insert before a child (older API)
+parent.insertBefore(newEl, referenceChild);
+
+// Build a tree, then attach in one go
+const card = document.createElement("div");
+const title = document.createElement("h2");
+title.textContent = "Title";
+card.appendChild(title);
+document.body.appendChild(card);
+
+// Document fragment for many items
+const frag = document.createDocumentFragment();
+items.forEach(item =&gt; {
+  const li = document.createElement("li");
+  li.textContent = item;
+  frag.appendChild(li);
+});
+list.appendChild(frag);
+
+// Capture the return value (appendChild)
+const li = list.appendChild(document.createElement("li"));
+li.textContent = "New";
+
+// Move an existing element
+const archive = document.querySelector(".archive");
+archive.appendChild(document.querySelector(".item"));   // moves, not copies
+
+// Clone before appending (true duplicate)
+const original = document.querySelector(".template");
+const copy = original.cloneNode(true);
+document.body.appendChild(copy);</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-11-14-1-3': `
+    <p><code>appendChild</code> and <code>append</code> are how you make an element part of the page. Until you call one of them, your element is floating in memory — built and ready, but invisible. The call connects it to a parent, which connects it to the page, which makes it appear.</p>
+    <p>The default is "at the end of the parent's children." That's why a new chat message shows up at the bottom, not the top. If you want a different position, you use <code>prepend</code> (at the start), <code>before</code> or <code>after</code> (next to a specific reference element), or <code>insertBefore</code> (the older positional API).</p>
+    <p><code>append</code> is the newer, more forgiving version: pass strings, pass multiple things, mix them freely. <code>appendChild</code> is the classic version: one node at a time, returns the node. Functionally similar for everyday tasks; pick one and stay consistent.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-11-14-1-4': `
+    <p>Picture a row of identical drawers — that's the parent, with each drawer being a slot for one child element. <code>appendChild</code> takes your prepared item from the workbench and slides it into the next empty drawer at the end of the row. The existing drawers stay full; one more drawer becomes occupied.</p>
+    <p>If the item was already in a drawer somewhere else, sliding it into a new spot empties the old one — the item can only be in one drawer at a time. To have two of the same item, you'd have to make a copy (clone) first and slide the copy into the new drawer.</p>
+    <p><code>append</code> works the same way, but it's a bigger funnel: you can drop in multiple items at once, and you can even drop in scraps of paper (strings) that get tucked between the items. The drawer behavior is the same — everything ends up at the end of the row, in the order you handed it over.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-11-14-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// HTML on the page:
+// &lt;ul id="tasks"&gt;
+//   &lt;li&gt;Buy milk&lt;/li&gt;
+// &lt;/ul&gt;
+
+// Goal: add a new task to the list.
+
+// Step 1: create the new element in memory
+const li = document.createElement("li");
+li.textContent = "Walk dog";
+
+// at this moment:
+//   - li exists as an object
+//   - li.parentNode is null
+//   - the user sees only "Buy milk" on the page
+
+// Step 2: find the parent that's already on the page
+const list = document.getElementById("tasks");
+
+// Step 3: append the new element to the parent
+list.appendChild(li);
+
+// what just happened:
+//   - the browser placed li as the LAST child of #tasks
+//   - li.parentNode is now the &lt;ul&gt;
+//   - the &lt;ul&gt; now has TWO &lt;li&gt; children
+//   - the browser re-renders the list
+//
+// HTML now:
+// &lt;ul id="tasks"&gt;
+//   &lt;li&gt;Buy milk&lt;/li&gt;
+//   &lt;li&gt;Walk dog&lt;/li&gt;   ← added by appendChild
+// &lt;/ul&gt;
+//
+// the user sees "Walk dog" appear at the bottom of the list.
+
+// the equivalent with append (slightly more modern):
+list.append(li);
+// same outcome. just a different method name.
+
+// or all in one expression:
+document.getElementById("tasks").append(li);</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-11-14-2-0': `
+    <p>If you appended an element but "nothing happens" on the page, check two things:</p>
+<pre class="language-javascript"><code class="language-javascript">// 1. Did the append actually run?
+const li = document.createElement("li");
+li.textContent = "Test";
+list.appendChild(li);
+
+console.log(li.parentNode);              // should be the list element
+console.log(document.body.contains(li));  // should be true
+
+// 2. Is the parent itself on the page?
+console.log(document.body.contains(list));   // should be true
+// if false, the parent isn't attached — child won't be visible either.</code></pre>
+
+    <p>Other common bugs:</p>
+<pre class="language-javascript"><code class="language-javascript">// 1. Appending to null (parent doesn't exist)
+const parent = document.querySelector(".missing");   // null
+parent.appendChild(li);   // TypeError on null
+
+// fix: check the parent exists
+if (parent) parent.appendChild(li);
+
+// 2. Trying to append a string with appendChild
+list.appendChild("Hello");   // TypeError
+// fix: use append, or createTextNode
+list.append("Hello");
+list.appendChild(document.createTextNode("Hello"));
+
+// 3. Appending an element that was already on the page elsewhere
+// → moves, doesn't copy. if you expected two copies, use cloneNode first.
+
+// 4. Appending elements in a loop without a fragment — slow with many items.</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-11-14-2-1': `
+    <p>The two-step pattern — create with <code>createElement</code>, attach with <code>appendChild</code>/<code>append</code> — is the foundation of all dynamic content. Once you internalize it, every "add something to the page" task fits the same shape: build the element privately, configure it, then attach it where it belongs.</p>
+    <p>The fact that elements can only have one parent isn't a limitation — it's why moving an element with <code>appendChild</code> just works. You don't have to remove it from its old spot first; appending it to a new parent automatically reassigns it. To have two of an element, clone it. Otherwise, all the positional methods (<code>append</code>, <code>prepend</code>, <code>before</code>, <code>after</code>, <code>insertBefore</code>) just move existing elements around.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-11-14-2-2': `
+    <p><strong>Confusion: thinking <code>appendChild</code> accepts strings</strong></p>
+<pre class="language-javascript"><code class="language-javascript">list.appendChild("Hello");
+// TypeError: parameter 1 is not of type 'Node'
+
+// fix: use append (which does accept strings)
+list.append("Hello");
+
+// or create a text node explicitly
+list.appendChild(document.createTextNode("Hello"));</code></pre>
+
+    <p><strong>Confusion: thinking <code>appendChild</code> takes multiple arguments</strong></p>
+<pre class="language-javascript"><code class="language-javascript">list.appendChild(li1, li2, li3);
+// only li1 gets appended — extra arguments are ignored
+
+// fix: use append for multiple
+list.append(li1, li2, li3);
+
+// or call appendChild for each
+[li1, li2, li3].forEach(li =&gt; list.appendChild(li));</code></pre>
+
+    <p><strong>Confusion: thinking appending duplicates the element</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;ul id="a"&gt;&lt;li id="x"&gt;Hi&lt;/li&gt;&lt;/ul&gt; &lt;ul id="b"&gt;&lt;/ul&gt;
+
+const li = document.getElementById("x");
+document.getElementById("b").appendChild(li);
+
+// HTML now:
+// &lt;ul id="a"&gt;&lt;/ul&gt;       ← li is GONE
+// &lt;ul id="b"&gt;&lt;li id="x"&gt;Hi&lt;/li&gt;&lt;/ul&gt;
+
+// only ONE li exists. it moved.
+
+// to duplicate:
+const copy = li.cloneNode(true);
+document.getElementById("b").appendChild(copy);</code></pre>
+
+    <p><strong>Confusion: <code>append</code> vs <code>appendChild</code> return values</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const a = list.appendChild(li);   // returns the appended li
+const b = list.append(li);         // returns undefined
+
+console.log(a);   // &lt;li&gt;...&lt;/li&gt;
+console.log(b);   // undefined
+
+// don't try to chain off the return value of append:
+list.append(li).classList.add("x");   // TypeError — undefined has no classList
+
+// if you need the return value, use appendChild or capture the element separately:
+const newLi = document.createElement("li");
+list.append(newLi);
+newLi.classList.add("x");</code></pre>
+
+    <p><strong>Confusion: appending to an off-page element doesn't show anything</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const ghost = document.createElement("div");
+const li = document.createElement("li");
+li.textContent = "Where am I?";
+ghost.appendChild(li);
+// nothing visible — ghost itself isn't on the page
+
+// fix: attach the parent too
+document.body.appendChild(ghost);
+// now both are visible</code></pre>
+
+    <p><strong>Confusion: thinking insertion replaces existing content</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;div id="box"&gt;Already here&lt;/div&gt;
+const span = document.createElement("span");
+span.textContent = "New";
+document.getElementById("box").appendChild(span);
+
+// HTML now:
+// &lt;div id="box"&gt;Already here&lt;span&gt;New&lt;/span&gt;&lt;/div&gt;
+//                          ^ span is added AT THE END, not replacing
+
+// to replace the contents, clear first:
+const box = document.getElementById("box");
+box.textContent = "";   // wipe everything inside
+box.appendChild(span);  // now only the span is inside</code></pre>
+
+    <p><strong>Confusion: order matters for sequential appends</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// the order you append in is the order they appear:
+list.appendChild(a);   // list: [a]
+list.appendChild(b);   // list: [a, b]
+list.appendChild(c);   // list: [a, b, c]
+
+// not by alphabetical order, not by some hidden priority — just call order.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-11-14-2-3': `
+<pre class="language-javascript"><code class="language-javascript">list.appendChild("Hello");
+// TypeError — appendChild needs a node
+// fix: use append, or createTextNode
+list.append("Hello");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">list.appendChild(li1, li2);
+// only li1 gets appended; li2 is silently ignored
+// fix: use append for multiples
+list.append(li1, li2);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const parent = document.querySelector(".missing");
+parent.appendChild(li);
+// crashes if .missing isn't there
+// fix: check first
+if (parent) parent.appendChild(li);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const result = list.append(li);
+result.classList.add("x");
+// TypeError — append returns undefined
+// fix: capture the element before appending
+const li = document.createElement("li");
+list.append(li);
+li.classList.add("x");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Trying to append the same element twice (expecting two copies)
+const li = document.createElement("li");
+listA.appendChild(li);
+listB.appendChild(li);
+// li ends up only in listB — it moved
+// fix: clone if you want duplicates
+listA.appendChild(li);
+listB.appendChild(li.cloneNode(true));</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Appending many items in a loop, one at a time
+for (let i = 0; i &lt; 1000; i++) {
+  const li = document.createElement("li");
+  li.textContent = "Item " + i;
+  list.appendChild(li);   // page re-renders after EACH
+}
+// fix: use a document fragment
+const frag = document.createDocumentFragment();
+for (let i = 0; i &lt; 1000; i++) {
+  const li = document.createElement("li");
+  li.textContent = "Item " + i;
+  frag.appendChild(li);
+}
+list.appendChild(frag);   // one render</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.appendChild(li);
+// document can only have one child (html); usually wrong place to append
+// fix: use document.body or another container
+document.body.appendChild(li);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Appending before the DOM is ready
+const li = document.createElement("li");
+document.querySelector("ul").appendChild(li);
+// fails if the script runs before &lt;ul&gt; is parsed (returns null)
+// fix: wait for DOMContentLoaded, or place script at end of body
+document.addEventListener("DOMContentLoaded", () =&gt; {
+  document.querySelector("ul").appendChild(li);
+});</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const box = document.querySelector(".box");
+box.appendChild(span);
+// span shows up at the END of box's content
+// if you wanted it at the start:
+box.prepend(span);
+// or at a specific position:
+referenceChild.before(span);</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-11-14-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Simplest case
+const li = document.createElement("li");
+li.textContent = "New";
+document.querySelector("ul").appendChild(li);
+
+// Same with append
+document.querySelector("ul").append(li);
+
+// Multiple at once
+list.append(li1, li2, li3);
+
+// Mix with strings
+list.append("Total: ", countSpan, " items");
+
+// At the beginning
+list.prepend(newFirstItem);
+
+// Before / after a reference
+reference.before(newItem);
+reference.after(newItem);
+
+// Build and attach a small tree
+const card = document.createElement("div");
+card.classList.add("card");
+
+const title = document.createElement("h3");
+title.textContent = "Title";
+card.appendChild(title);
+
+const body = document.createElement("p");
+body.textContent = "Content";
+card.appendChild(body);
+
+document.querySelector(".feed").appendChild(card);
+
+// Fragment for batching
+const frag = document.createDocumentFragment();
+items.forEach(text =&gt; {
+  const li = document.createElement("li");
+  li.textContent = text;
+  frag.appendChild(li);
+});
+list.appendChild(frag);
+
+// Capture the appended element (appendChild)
+const li = list.appendChild(document.createElement("li"));
+li.textContent = "Hi";
+
+// Move an existing element
+archive.appendChild(item);   // moves item from old parent
+
+// Clone before appending (duplicate)
+const copy = original.cloneNode(true);
+document.body.appendChild(copy);
+
+// Replace contents (clear, then append)
+container.textContent = "";
+container.append(newContent);
+
+// Safe with null check
+const parent = document.querySelector(".target");
+if (parent) parent.appendChild(child);
+
+// Chained creation + append
+document.body.appendChild(document.createElement("div"));
+
+// Append a text node directly (rare; usually use textContent)
+list.appendChild(document.createTextNode("Hello"));</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-11-14-3-1': `
+    <p><strong>Example: adding a new todo to a list</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector("#add").addEventListener("click", () =&gt; {
+  const input = document.querySelector("#new-todo");
+  const text = input.value.trim();
+  if (!text) return;
+
+  const li = document.createElement("li");
+  li.textContent = text;
+  document.querySelector("#todo-list").appendChild(li);
+
+  input.value = "";
+});
+// every click builds a new li and appends it to the bottom of the list.</code></pre>
+
+    <p><strong>Example: rendering search results from data</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function render(results) {
+  const container = document.querySelector(".results");
+  container.textContent = "";   // clear previous
+
+  const frag = document.createDocumentFragment();
+  results.forEach(item =&gt; {
+    const card = document.createElement("article");
+    card.classList.add("result");
+
+    const heading = document.createElement("h3");
+    heading.textContent = item.title;
+    card.appendChild(heading);
+
+    frag.appendChild(card);
+  });
+  container.appendChild(frag);
+}
+// fragment + one append = single render, even for hundreds of results.</code></pre>
+
+    <p><strong>Example: chat messages appending in real time</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function addMessage(author, text) {
+  const msg = document.createElement("div");
+  msg.classList.add("message");
+
+  const name = document.createElement("strong");
+  name.textContent = author + ": ";
+
+  const body = document.createElement("span");
+  body.textContent = text;
+
+  msg.append(name, body);   // append accepts multiple — clean one-liner
+  document.querySelector(".chat").appendChild(msg);
+}
+// every new message gets appended at the bottom — the natural chat flow.</code></pre>
+
+    <p><strong>Example: tooltip insertion near a target element</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function showTooltip(target, message) {
+  const tip = document.createElement("div");
+  tip.classList.add("tooltip");
+  tip.textContent = message;
+
+  target.after(tip);   // insert immediately after the target
+
+  setTimeout(() =&gt; tip.remove(), 2000);
+}
+// "after" places the tooltip right next to the target, instead of at the end of the document.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-11-14-3-2': `
+    <ul>
+      <li><strong><code>createElement</code></strong> → the step that builds what you'll append</li>
+      <li><strong><code>appendChild</code></strong> → classic, single-node, returns the child</li>
+      <li><strong><code>append</code></strong> → modern, accepts multiple and strings</li>
+      <li><strong><code>prepend</code></strong> → adds to the START instead of the end</li>
+      <li><strong><code>before</code> / <code>after</code></strong> → element-relative positioning</li>
+      <li><strong><code>insertBefore</code></strong> → older positional API (parent-relative)</li>
+      <li><strong><code>cloneNode</code></strong> → for duplicating elements instead of moving them</li>
+      <li><strong><code>createDocumentFragment</code></strong> → off-page container for batched appends</li>
+      <li><strong><code>remove</code></strong> → the counterpart for taking elements off the page</li>
+      <li><strong><code>replaceWith</code></strong> → swap an element for a new one in place</li>
+      <li><strong>One parent rule</strong> → elements can only exist in one place; appending moves them</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-11-14-3-3': `
+    <ul>
+      <li><code>createElement</code></li>
+      <li><code>appendChild</code></li>
+      <li><code>append</code></li>
+      <li><code>prepend</code></li>
+      <li><code>before</code> / <code>after</code></li>
+      <li><code>insertBefore</code></li>
+      <li><code>cloneNode</code></li>
+      <li><code>createDocumentFragment</code></li>
+      <li><code>remove</code></li>
+      <li><code>replaceWith</code></li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.12.16 DOM → removing elements
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-11-15-0-0': `
+    <p><code>element.remove()</code> is the method for <strong>taking an element off the page</strong>. One call, no arguments — the element disappears from the DOM, along with anything inside it. It's the natural counterpart to <code>appendChild</code>/<code>append</code>: those put elements on the page; <code>remove</code> takes them off.</p>
+    <p>Once an element is removed, the user can't see it anymore. It still exists as a JavaScript object if you have a reference to it (you could re-append it later), but it's no longer connected to the visible page.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-11-15-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// HTML:
+// &lt;ul&gt;
+//   &lt;li id="a"&gt;A&lt;/li&gt;
+//   &lt;li id="b"&gt;B&lt;/li&gt;
+//   &lt;li id="c"&gt;C&lt;/li&gt;
+// &lt;/ul&gt;
+
+document.getElementById("b").remove();
+
+// HTML now:
+// &lt;ul&gt;
+//   &lt;li id="a"&gt;A&lt;/li&gt;
+//   &lt;li id="c"&gt;C&lt;/li&gt;
+// &lt;/ul&gt;
+// the &lt;li id="b"&gt; is gone. A and C close the gap.
+
+// no arguments needed. you call .remove() on the element you want gone.</code></pre>
+    <p>Simple: the element calls <code>.remove()</code> on itself, and it goes away. Whatever was around it stays — only the named element disappears.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-11-15-0-2': `
+<pre class="language-javascript"><code class="language-javascript">
+element.remove()
+//   - no arguments
+//   - returns: undefined
+//   - removes the element from its parent
+//   - removes all of the element's descendants too (everything inside)
+//   - the element's reference still exists in JS, but parentNode is null
+//
+// what happens to the element after remove:
+//   - el.parentNode becomes null
+//   - document.body.contains(el) becomes false
+//   - the element is no longer rendered
+//   - event listeners on the element still exist (attached to the JS object)
+//   - if you re-append it later, it works again
+//
+// older equivalent (still works in any browser):
+//   el.parentNode.removeChild(el);
+//
+// the modern .remove() is shorter and doesn't need the parent reference.</code></pre>
+    <p>Calling <code>remove</code> doesn't destroy the element; it just disconnects it from the DOM. The element is still a real JavaScript object — just floating, the same way a freshly created element floats before it's appended.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-11-15-0-3': `
+    <p><strong>Call <code>.remove()</code> on the element itself, not on its parent.</strong> The modern API is element-relative — the element knows how to remove itself:</p>
+<pre class="language-javascript"><code class="language-javascript">// Modern way — element removes itself
+const li = document.getElementById("task-1");
+li.remove();
+
+// Older way — parent removes child (still works everywhere)
+const li = document.getElementById("task-1");
+li.parentNode.removeChild(li);
+
+// both achieve the same thing. use .remove() in new code — it's shorter and clearer.</code></pre>
+
+    <p><strong>Removing an element also removes everything inside it.</strong> Children, grandchildren, deeply nested content — all gone:</p>
+<pre class="language-javascript"><code class="language-javascript">// HTML:
+// &lt;div id="card"&gt;
+//   &lt;h2&gt;Title&lt;/h2&gt;
+//   &lt;p&gt;Some &lt;em&gt;text&lt;/em&gt;.&lt;/p&gt;
+//   &lt;button&gt;Click&lt;/button&gt;
+// &lt;/div&gt;
+
+document.getElementById("card").remove();
+// the whole card is gone — h2, p, em, text, button, all of it.
+// you can't "remove the card but keep the button on the page" without moving the button first.</code></pre>
+
+    <p><strong>Calling <code>remove</code> doesn't delete the JavaScript object.</strong> The reference still works; only the DOM connection is gone:</p>
+<pre class="language-javascript"><code class="language-javascript">const li = document.querySelector("li");
+console.log(li.parentNode);   // &lt;ul&gt;
+
+li.remove();
+
+console.log(li.parentNode);   // null — no longer attached
+console.log(li.textContent);   // still works — the object still exists
+console.log(li.tagName);       // "LI"
+
+// you can even re-append it:
+document.querySelector("ul").appendChild(li);
+console.log(li.parentNode);   // &lt;ul&gt; — back on the page</code></pre>
+
+    <p><strong>Event listeners survive removal.</strong> They're attached to the JavaScript object, not to its position in the DOM:</p>
+<pre class="language-javascript"><code class="language-javascript">const btn = document.querySelector("button");
+btn.addEventListener("click", () =&gt; console.log("clicked"));
+
+btn.remove();
+// the button is off the page. but if you re-append it later:
+document.body.appendChild(btn);
+// clicks still log "clicked" — the listener is still wired up.</code></pre>
+
+    <p><strong>To clear all children of an element without removing the parent, set <code>textContent</code> to "" or <code>innerHTML</code> to "".</strong> Or loop and remove each:</p>
+<pre class="language-javascript"><code class="language-javascript">// goal: empty the &lt;ul&gt;, but keep the &lt;ul&gt; itself
+
+const list = document.querySelector("ul");
+
+// option A — simple but nuclear
+list.textContent = "";
+
+// option B — equivalent
+list.innerHTML = "";
+
+// option C — remove each child explicitly
+while (list.firstChild) {
+  list.firstChild.remove();
+}
+
+// all three leave you with: &lt;ul&gt;&lt;/ul&gt;</code></pre>
+
+    <p><strong>You can <code>remove</code> any element — including the body, html, or document root.</strong> Just usually not what you want:</p>
+<pre class="language-javascript"><code class="language-javascript">document.body.remove();
+// removes the entire body from the page — the user sees a blank screen
+
+// don't do this unless you mean it. it works, but you've wiped your whole UI.</code></pre>
+
+    <p><strong>Removing an element from a NodeList is a one-by-one operation.</strong> The NodeList doesn't have a <code>removeAll</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">// remove every .stale element
+document.querySelectorAll(".stale").forEach(el =&gt; el.remove());
+
+// or, to remove with a filter:
+document.querySelectorAll(".item").forEach(el =&gt; {
+  if (el.dataset.expired) el.remove();
+});
+
+// when removing during iteration, NodeList from querySelectorAll is static —
+// removing an element doesn't break the loop (unlike live HTMLCollections).</code></pre>
+
+    <p><strong>If the element isn't on the page, <code>remove</code> does nothing.</strong> No error, no warning — just a no-op:</p>
+<pre class="language-javascript"><code class="language-javascript">const li = document.createElement("li");
+li.remove();   // li wasn't on the page; nothing to remove
+// no error, no side effects.
+
+// safe to call even when you don't know if it's still attached.</code></pre>
+
+    <p><strong>If the element might not exist at all, check first.</strong> Calling <code>remove</code> on <code>null</code> still crashes:</p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector(".missing").remove();
+// TypeError: Cannot read property 'remove' of null
+
+// fix:
+document.querySelector(".missing")?.remove();
+// optional chaining — does nothing if querySelector returns null.</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-11-15-1-0': `
+    <p>Anything that gets added to a page eventually needs to be removable. Toast notifications dismiss themselves after a few seconds. Items removed from a cart should disappear from the list. Closed modals should vanish from the DOM (not just hide). Old chat messages get pruned when the list gets too long.</p>
+    <p><code>element.remove()</code> is the cleanest way to handle all of these. No need to find the parent, no need to track positions — the element handles its own departure.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-11-15-1-1': `
+    <p>Removing is the natural finish for many UI flows:</p>
+<pre class="language-javascript"><code class="language-javascript">// Dismiss a toast after a delay
+const toast = createToast("Saved!");
+document.body.appendChild(toast);
+setTimeout(() =&gt; toast.remove(), 3000);
+
+// Delete a todo item
+deleteBtn.addEventListener("click", () =&gt; {
+  todoItem.remove();
+});
+
+// Close a modal (and let the next open re-create it)
+closeBtn.addEventListener("click", () =&gt; modal.remove());
+
+// Clean up old messages
+document.querySelectorAll(".message.old").forEach(m =&gt; m.remove());
+
+// Remove a banner the user dismissed
+banner.querySelector(".dismiss").addEventListener("click", () =&gt; banner.remove());</code></pre>
+
+    <p>Compared to "hiding" an element (with <code>display: none</code> or a "hidden" class), <code>remove</code> actually frees the DOM space. Hiding leaves the element in place, just invisible. Removing takes it out of the tree entirely — useful when you don't expect it to come back, or when keeping it would clutter the DOM.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-11-15-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Self-removal on a delete button
+btn.addEventListener("click", () =&gt; {
+  card.remove();
+});
+
+// Auto-dismiss after a timeout
+setTimeout(() =&gt; toast.remove(), 3000);
+
+// Remove based on a class
+document.querySelectorAll(".obsolete").forEach(el =&gt; el.remove());
+
+// Remove all items
+document.querySelectorAll(".item").forEach(el =&gt; el.remove());
+
+// Pair with a confirmation
+if (confirm("Delete this?")) {
+  item.remove();
+}
+
+// Remove on event
+document.querySelector(".overlay").addEventListener("click", e =&gt; {
+  if (e.target === e.currentTarget) {
+    modal.remove();
+  }
+});
+
+// Safe call with optional chaining
+document.querySelector(".banner")?.remove();
+
+// Remove an element then re-append later
+const li = document.querySelector("li");
+li.remove();
+// ... later
+list.appendChild(li);
+
+// Clear an entire container
+document.querySelector("ul").textContent = "";
+// or
+document.querySelectorAll("ul &gt; li").forEach(li =&gt; li.remove());
+
+// Remove with cleanup (e.g., revoke object URLs)
+img.addEventListener("load", () =&gt; URL.revokeObjectURL(img.src));
+img.remove();</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-11-15-1-3': `
+    <p><code>element.remove()</code> is "take this off the page." Whatever element you call it on disappears, along with everything inside it. The parent still exists, the siblings still exist — only this one element (and its descendants) goes away.</p>
+    <p>The element itself isn't gone from JavaScript's memory — if you saved a reference, you can still inspect it, modify it, even put it back on the page later. <code>remove</code> only severs the connection between the element and the DOM. The element becomes "floating" again, just like a freshly created element that hasn't been appended yet.</p>
+    <p>This is different from "hiding" an element with CSS. Hiding keeps the element in the DOM but makes it invisible. Removing actually takes it out of the structure. Hiding is reversible by un-hiding; removing is reversible by re-appending — they're not the same thing, and the choice depends on whether you expect the element to come back.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-11-15-1-4': `
+    <p>Picture the DOM as a wall full of framed pictures. <code>element.remove()</code> is taking one picture off the wall. Once you take it down, no one walking by sees it anymore. The other pictures stay where they are. The wall has a gap where the picture used to be, but the rest of the gallery is intact.</p>
+    <p>The picture itself isn't destroyed — you're holding it in your hand. You could hang it back up on the same wall, or a different wall, or just keep it in storage. Until something specifically discards it, the picture exists. <code>remove</code> only changes where it lives.</p>
+    <p>If the picture had smaller pictures glued to it (child elements), they come down too. You can't take down the frame without taking down everything attached to it. To save a piece of it, you'd have to detach that piece first, then remove the frame.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-11-15-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// HTML:
+// &lt;ul id="tasks"&gt;
+//   &lt;li class="task"&gt;Buy milk
+//     &lt;button class="delete"&gt;X&lt;/button&gt;
+//   &lt;/li&gt;
+//   &lt;li class="task"&gt;Walk dog
+//     &lt;button class="delete"&gt;X&lt;/button&gt;
+//   &lt;/li&gt;
+// &lt;/ul&gt;
+
+// Goal: when a delete button is clicked, remove its task.
+
+document.querySelectorAll(".delete").forEach(btn =&gt; {
+  btn.addEventListener("click", () =&gt; {
+    btn.parentElement.remove();
+  });
+});
+
+// step by step (user clicks the second X):
+//
+// 1. The click handler fires for that button.
+// 2. btn.parentElement is the &lt;li class="task"&gt; containing "Walk dog".
+// 3. .remove() detaches that &lt;li&gt; from its parent (the &lt;ul&gt;).
+// 4. The &lt;ul&gt; now has only ONE &lt;li&gt; child instead of two.
+// 5. The browser re-renders: "Walk dog" disappears.
+//
+// HTML now:
+// &lt;ul id="tasks"&gt;
+//   &lt;li class="task"&gt;Buy milk
+//     &lt;button class="delete"&gt;X&lt;/button&gt;
+//   &lt;/li&gt;
+// &lt;/ul&gt;
+//
+// note: the &lt;button class="delete"&gt; inside the removed li went with it.
+// you don't have to remove it separately.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-11-15-2-0': `
+    <p>If "<code>remove</code>" doesn't seem to do anything, check that you're calling it on a real element:</p>
+<pre class="language-javascript"><code class="language-javascript">const el = document.querySelector(".target");
+console.log(el);   // is this null, or a real element?
+
+if (el) {
+  el.remove();
+}
+
+// common bugs:
+//   - el is null because the selector didn't match — querySelector returns null
+//   - el is an array/NodeList — NodeList doesn't have .remove()
+//   - el is a string — strings don't have DOM methods at all</code></pre>
+
+    <p>If you're trying to remove many at once, remember <code>remove</code> is per-element:</p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelectorAll(".old").remove();   // doesn't work — NodeList has no .remove()
+
+// fix: loop
+document.querySelectorAll(".old").forEach(el =&gt; el.remove());</code></pre>
+
+    <p>If the element disappears and reappears in a loop, you might be removing it and a parent script is re-rendering it. Look for re-render code that runs on a timer or event.</p>
+
+    <p>To confirm an element is actually gone:</p>
+<pre class="language-javascript"><code class="language-javascript">console.log(document.body.contains(el));   // false if removed
+console.log(el.parentNode);                  // null if removed
+console.log(el.isConnected);                  // false if removed</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-11-15-2-1': `
+    <p><code>remove</code> doesn't destroy the element — it just disconnects it. That's the key thing to internalize. The JavaScript object still exists in memory; its position in the DOM is what changed. You can store the reference, modify the element after removal, and re-attach it later if you want.</p>
+    <p>This also explains why <code>remove</code> is so clean to use: there's no "where was this?" bookkeeping. The element knows its own parent, so it can detach itself with a single method call. No arguments, no parent lookups, no positional logic — just "take this off the page."</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-11-15-2-2': `
+    <p><strong>Confusion: thinking <code>remove</code> deletes the element entirely</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const li = document.querySelector("li");
+li.remove();
+
+console.log(li);              // still a real element object
+console.log(li.textContent);   // still works
+li.textContent = "Updated";    // works — element still exists in memory
+
+// remove disconnects from the DOM. it doesn't destroy the JS object.
+// to fully "free" the object, drop all references to it:
+let li = ...;
+li.remove();
+li = null;   // now the garbage collector can clean it up</code></pre>
+
+    <p><strong>Confusion: calling <code>remove</code> on a NodeList</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelectorAll(".item").remove();   // doesn't work
+// NodeList has no .remove() method.
+
+// fix: loop
+document.querySelectorAll(".item").forEach(el =&gt; el.remove());</code></pre>
+
+    <p><strong>Confusion: <code>remove</code> vs <code>removeChild</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">// remove — the modern, element-relative API
+el.remove();
+
+// removeChild — the older, parent-relative API
+parent.removeChild(el);
+
+// both have the same effect.
+// remove() is shorter; use it in new code.
+// removeChild still works everywhere — fine in older codebases.</code></pre>
+
+    <p><strong>Confusion: thinking <code>remove</code> only removes the element, not its contents</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// HTML:
+// &lt;div&gt;
+//   &lt;p&gt;Important text&lt;/p&gt;
+// &lt;/div&gt;
+
+document.querySelector("div").remove();
+// the &lt;p&gt; goes with it. there's no "remove the wrapper but keep the content" version.
+
+// to remove a wrapper but keep the inside:
+const div = document.querySelector("div");
+const p = div.querySelector("p");
+div.parentNode.insertBefore(p, div);   // move p out before removing
+div.remove();</code></pre>
+
+    <p><strong>Confusion: thinking removed elements have no event listeners</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const btn = document.createElement("button");
+btn.addEventListener("click", () =&gt; console.log("clicked"));
+btn.remove();
+
+// the listener is still attached. if you re-append later:
+document.body.appendChild(btn);
+// clicking it logs "clicked" — the listener never went away.
+
+// removing doesn't disconnect listeners; only removeEventListener does.</code></pre>
+
+    <p><strong>Confusion: <code>remove</code> vs <code>display: none</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">// remove — element is GONE from the DOM, takes no space, can't be styled
+el.remove();
+
+// display: none — element is hidden but still in the DOM, can be re-shown
+el.style.display = "none";
+// or
+el.classList.add("hidden");   // assuming .hidden { display: none } in CSS
+
+// pick based on intent:
+//   - permanently gone? → remove
+//   - might come back? → display: none</code></pre>
+
+    <p><strong>Confusion: <code>remove</code> on null</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector(".missing").remove();
+// TypeError on null
+
+// fix: check first, or use optional chaining
+document.querySelector(".missing")?.remove();</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-11-15-2-3': `
+<pre class="language-javascript"><code class="language-javascript">document.querySelectorAll(".old").remove();
+// NodeList has no .remove()
+// fix: loop
+document.querySelectorAll(".old").forEach(el =&gt; el.remove());</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.querySelector(".missing").remove();
+// crashes if .missing isn't there
+// fix: optional chaining
+document.querySelector(".missing")?.remove();</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const li = document.querySelector("li");
+li.remove();
+li.textContent = "Still here";
+document.body.appendChild(li);
+// works — but is it what you wanted? remove doesn't destroy; the li is reusable.
+// nothing's broken, just be aware: removed elements can be re-appended.</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.querySelector(".card").remove();
+// expected to keep some children — but they go too
+// fix: move children OUT before removing the wrapper
+const card = document.querySelector(".card");
+const keep = card.querySelector(".keep");
+card.parentNode.insertBefore(keep, card);
+card.remove();</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// removing inside a forEach over a LIVE collection
+const items = document.getElementsByClassName("item");   // live HTMLCollection
+for (let i = 0; i &lt; items.length; i++) {
+  items[i].remove();   // skips every other item — the collection updates as you remove
+}
+// fix: use querySelectorAll (static) or iterate backwards
+document.querySelectorAll(".item").forEach(el =&gt; el.remove());</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.parentNode.remove();
+// removes the PARENT, not the element
+// fix: just el.remove()
+el.remove();</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// thinking remove triggers an "unmount" or "destroy" callback
+el.remove();
+// nothing fires. no event, no callback. the element is just detached.
+// to run cleanup code, do it explicitly before calling remove:
+cleanup(el);
+el.remove();</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// trying to remove document.body or document.documentElement
+document.body.remove();
+// works — but the entire visible page goes blank
+// fix: usually you wanted to clear the body's contents instead
+document.body.textContent = "";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// expecting remove to also remove from arrays you stored references in
+const list = [el1, el2, el3];
+el2.remove();
+console.log(list);   // still [el1, el2, el3] — the array doesn't update
+// remove only changes the DOM. your JS arrays/sets/maps don't auto-sync.
+// fix: manage your own data structure too
+const idx = list.indexOf(el2);
+if (idx !== -1) list.splice(idx, 1);
+el2.remove();</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-11-15-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Simplest
+el.remove();
+
+// Safe with null check
+document.querySelector(".target")?.remove();
+
+// On a button click
+btn.addEventListener("click", () =&gt; card.remove());
+
+// Auto-dismiss
+setTimeout(() =&gt; toast.remove(), 3000);
+
+// Remove all matching
+document.querySelectorAll(".obsolete").forEach(el =&gt; el.remove());
+
+// Remove by class
+document.querySelectorAll(".error").forEach(el =&gt; el.remove());
+
+// Remove after animation
+el.classList.add("fade-out");
+setTimeout(() =&gt; el.remove(), 300);
+
+// Remove with confirmation
+if (confirm("Delete?")) item.remove();
+
+// Empty a container (multiple options)
+parent.textContent = "";
+parent.innerHTML = "";
+while (parent.firstChild) parent.firstChild.remove();
+parent.querySelectorAll(":scope &gt; *").forEach(el =&gt; el.remove());
+
+// Remove self via parent button
+deleteBtn.addEventListener("click", () =&gt; {
+  deleteBtn.closest(".card").remove();
+});
+
+// Remove and re-append later (move via detach)
+const li = list.querySelector("li");
+li.remove();
+otherList.appendChild(li);
+
+// Check it's gone
+console.log(document.body.contains(el));   // false
+console.log(el.isConnected);                // false
+
+// Combined with cleanup
+function dismissModal() {
+  modal.querySelectorAll("video").forEach(v =&gt; v.pause());
+  modal.remove();
+}
+
+// Remove based on data
+document.querySelectorAll("[data-expired='true']").forEach(el =&gt; el.remove());
+
+// Filter and remove
+document.querySelectorAll(".item").forEach(el =&gt; {
+  if (el.textContent.trim() === "") el.remove();
+});</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-11-15-3-1': `
+    <p><strong>Example: toast notification with auto-dismiss</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function toast(message) {
+  const note = document.createElement("div");
+  note.classList.add("toast");
+  note.textContent = message;
+  document.body.appendChild(note);
+  setTimeout(() =&gt; note.remove(), 3000);
+}
+toast("Saved!");
+// create → append → wait → remove. the most common pattern for temporary UI.</code></pre>
+
+    <p><strong>Example: delete button on a todo item</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelectorAll(".todo .delete").forEach(btn =&gt; {
+  btn.addEventListener("click", () =&gt; {
+    btn.closest(".todo").remove();
+  });
+});
+// each delete button finds its parent .todo and removes it.
+// closest walks up the DOM until it finds a match.</code></pre>
+
+    <p><strong>Example: dismissing a closeable banner</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelectorAll(".banner .dismiss").forEach(btn =&gt; {
+  btn.addEventListener("click", () =&gt; {
+    btn.parentElement.remove();
+    localStorage.setItem("bannerDismissed", "true");
+  });
+});
+// the banner is gone from the DOM, and we remember the choice so it stays gone.</code></pre>
+
+    <p><strong>Example: cleaning up old chat messages</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function trimChat(maxMessages) {
+  const messages = document.querySelectorAll(".chat .message");
+  const toRemove = messages.length - maxMessages;
+  for (let i = 0; i &lt; toRemove; i++) {
+    messages[i].remove();
+  }
+}
+trimChat(100);
+// keeps the chat fast by removing old messages once it grows beyond the limit.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-11-15-3-2': `
+    <ul>
+      <li><strong><code>appendChild</code> / <code>append</code></strong> → the counterpart that adds elements; <code>remove</code> reverses them</li>
+      <li><strong><code>removeChild</code></strong> → the older, parent-relative API; same effect</li>
+      <li><strong><code>replaceWith</code></strong> → swap an element for a new one (remove + insert in one step)</li>
+      <li><strong><code>closest</code></strong> → walk up to find the right element to remove</li>
+      <li><strong>Optional chaining (<code>?.</code>)</strong> → safe removal when the element might not exist</li>
+      <li><strong><code>textContent = ""</code></strong> → clear all children without removing the parent</li>
+      <li><strong>CSS <code>display: none</code></strong> → "hide" alternative when you want the element to potentially come back</li>
+      <li><strong>NodeList iteration</strong> → for removing many elements at once</li>
+      <li><strong>Memory & references</strong> → removed elements still exist in JS if a reference is held</li>
+      <li><strong>Event listeners</strong> → remain attached to removed elements; use <code>removeEventListener</code> to detach</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-11-15-3-3': `
+    <ul>
+      <li><code>element.remove()</code></li>
+      <li><code>removeChild</code></li>
+      <li><code>replaceWith</code></li>
+      <li><code>appendChild</code> / <code>append</code></li>
+      <li><code>closest</code></li>
+      <li>Optional chaining (<code>?.</code>)</li>
+      <li>Clearing children (<code>textContent = ""</code>)</li>
+      <li>Hiding vs removing (CSS <code>display: none</code>)</li>
+      <li><code>removeEventListener</code></li>
+      <li>NodeList iteration patterns</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.12.17 DOM → DOM loaded timing
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-11-16-0-0': `
+    <p><strong>DOM loaded timing</strong> is the rule that JavaScript can only interact with elements that <em>already exist</em> in the DOM. If your script runs before the browser has parsed the HTML containing those elements, your queries will return <code>null</code> — even though the elements are written in the HTML file.</p>
+    <p>The browser reads HTML top to bottom. When it hits a <code>&lt;script&gt;</code> tag, it pauses parsing, runs the script, then continues. So a script in the <code>&lt;head&gt;</code> runs before any of the <code>&lt;body&gt;</code> elements exist. The fix is either to delay the script (put it at the end of <code>&lt;body&gt;</code>, or wait for the <code>DOMContentLoaded</code> event) — or to use the <code>defer</code> attribute on the script tag.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-11-16-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// Option 1: place the script at the END of &lt;body&gt;, after the elements you'll use
+// &lt;body&gt;
+//   &lt;button id="save"&gt;Save&lt;/button&gt;
+//   &lt;script&gt;
+//     document.getElementById("save").addEventListener("click", () =&gt; { ... });
+//   &lt;/script&gt;
+// &lt;/body&gt;
+
+// Option 2: wait for DOMContentLoaded
+// (works even if the script is in &lt;head&gt;)
+document.addEventListener("DOMContentLoaded", () =&gt; {
+  document.getElementById("save").addEventListener("click", () =&gt; { ... });
+});
+
+// Option 3: add "defer" to the script tag in HTML
+// &lt;head&gt;
+//   &lt;script src="app.js" defer&gt;&lt;/script&gt;
+// &lt;/head&gt;
+// the browser waits to run the script until the DOM is fully parsed.</code></pre>
+    <p>The goal in every case is the same: your code runs only after the elements it touches actually exist.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-11-16-0-2': `
+<pre class="language-javascript"><code class="language-javascript">// The browser's loading sequence:
+//
+//   1. Receive the HTML file from the server
+//   2. Start parsing HTML top to bottom
+//   3. When a &lt;script&gt; tag is hit:
+//        - by default, parsing PAUSES
+//        - the script runs immediately
+//        - parsing resumes after the script finishes
+//   4. When parsing reaches the end of &lt;/html&gt;:
+//        - the "DOMContentLoaded" event fires
+//        - means: the DOM tree is fully built
+//   5. After CSS, images, and other resources finish loading:
+//        - the "load" event fires
+//        - means: the page is FULLY loaded (rare to need this)
+//
+// key points:
+//   - DOMContentLoaded → "the HTML is parsed and the DOM is ready"
+//   - load              → "everything is loaded, including images"
+//   - most DOM code waits for DOMContentLoaded.
+//
+// the four ways to make sure a script runs after the DOM is ready:
+//   1. put the &lt;script&gt; tag at the END of &lt;body&gt;
+//   2. wait for DOMContentLoaded inside the script
+//   3. use the "defer" attribute on the script tag
+//   4. use the "async" attribute (rarely the right choice — runs whenever)</code></pre>
+    <p>Most production projects use <code>defer</code> or a script at the end of <code>&lt;body&gt;</code>. <code>DOMContentLoaded</code> is the runtime fallback for cases where you can't control script placement.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-11-16-0-3': `
+    <p><strong>A script in <code>&lt;head&gt;</code> without <code>defer</code> runs before any <code>&lt;body&gt;</code> element exists.</strong> The DOM has only the <code>&lt;head&gt;</code> at that point:</p>
+<pre class="language-javascript"><code class="language-javascript">// HTML:
+// &lt;head&gt;
+//   &lt;script&gt;
+//     console.log(document.body);   // null
+//     document.getElementById("btn");   // null — not parsed yet
+//   &lt;/script&gt;
+// &lt;/head&gt;
+// &lt;body&gt;
+//   &lt;button id="btn"&gt;Click&lt;/button&gt;
+// &lt;/body&gt;
+
+// to fix without moving the script:
+//   - use defer attribute
+//   - or wrap your code in DOMContentLoaded</code></pre>
+
+    <p><strong><code>DOMContentLoaded</code> fires once, when the DOM is ready.</strong> Listening for it is the universal way to delay your code until that point:</p>
+<pre class="language-javascript"><code class="language-javascript">document.addEventListener("DOMContentLoaded", () =&gt; {
+  // safe to query and modify the DOM here
+  const btn = document.getElementById("save");
+  btn.addEventListener("click", save);
+});
+
+// if the script runs AFTER the DOM is already ready, the event has already fired.
+// the listener you just added never fires.
+// modern best practice: check first (rarely needed, but safe):
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init);
+} else {
+  init();   // DOM is already ready
+}</code></pre>
+
+    <p><strong>The <code>defer</code> attribute on a <code>&lt;script&gt;</code> tag delays execution until after the DOM is parsed.</strong> Equivalent to placing the script at the end of <code>&lt;body&gt;</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">// &lt;head&gt;
+//   &lt;script src="app.js" defer&gt;&lt;/script&gt;
+// &lt;/head&gt;
+
+// what happens:
+//   1. browser sees the script tag, starts downloading app.js (in the background)
+//   2. parsing continues normally — doesn't pause for the script
+//   3. when the DOM is fully parsed, the deferred script runs
+//   4. multiple deferred scripts run in the order they appear
+
+// inside the script, no need for DOMContentLoaded — the DOM is already ready:
+const btn = document.getElementById("btn");   // ✓ works immediately</code></pre>
+
+    <p><strong>The <code>async</code> attribute also delays execution — but runs whenever the script finishes downloading, not waiting for the DOM.</strong> Rarely the right choice for DOM-touching code:</p>
+<pre class="language-javascript"><code class="language-javascript">// &lt;script src="analytics.js" async&gt;&lt;/script&gt;
+//
+// downloads in parallel with parsing
+// runs as soon as it finishes downloading — could be BEFORE the DOM is ready
+// good for independent scripts (analytics, etc.)
+// bad for scripts that need the DOM
+
+// for DOM scripts, prefer defer.</code></pre>
+
+    <p><strong>The <code>load</code> event fires later than <code>DOMContentLoaded</code>.</strong> It waits for images, CSS, fonts — everything:</p>
+<pre class="language-javascript"><code class="language-javascript">// fires when DOM is parsed (HTML done, but images may not be loaded yet)
+document.addEventListener("DOMContentLoaded", () =&gt; { ... });
+
+// fires when EVERYTHING is loaded (images, stylesheets, etc.)
+window.addEventListener("load", () =&gt; { ... });
+
+// 99% of DOM code uses DOMContentLoaded.
+// "load" is for code that depends on image sizes being known, or full-page measurements.</code></pre>
+
+    <p><strong>Scripts run in order, top to bottom, unless modified.</strong> A script later in the HTML can use variables defined earlier:</p>
+<pre class="language-javascript"><code class="language-javascript">// &lt;script&gt;const x = 10;&lt;/script&gt;
+// &lt;script&gt;console.log(x);&lt;/script&gt;   // 10
+
+// with defer:
+// &lt;script src="a.js" defer&gt;&lt;/script&gt;
+// &lt;script src="b.js" defer&gt;&lt;/script&gt;
+// → a.js runs first, b.js runs after, both after DOM is parsed
+
+// with async:
+// &lt;script src="a.js" async&gt;&lt;/script&gt;
+// &lt;script src="b.js" async&gt;&lt;/script&gt;
+// → unpredictable order — whichever downloads first runs first</code></pre>
+
+    <p><strong>If you can't change the HTML, use <code>DOMContentLoaded</code> in your script.</strong> It's the runtime fix that works regardless of script placement:</p>
+<pre class="language-javascript"><code class="language-javascript">// universal pattern — works whether script is in head or body
+function init() {
+  document.getElementById("btn").addEventListener("click", handleClick);
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init);
+} else {
+  init();   // already past loading
+}</code></pre>
+
+    <p><strong>Dynamically added scripts can run anytime.</strong> A script you append with JavaScript runs as soon as it loads — the browser is already past parsing:</p>
+<pre class="language-javascript"><code class="language-javascript">// if you do this much later:
+const s = document.createElement("script");
+s.src = "/extra.js";
+document.body.appendChild(s);
+
+// extra.js runs as soon as it finishes downloading.
+// the DOM is already fully parsed at this point — no timing concerns.</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-11-16-1-0': `
+    <p>HTML parsing is sequential. A script in the page runs when the browser reaches it — not after the page is "done." That means scripts placed early in the HTML can run before the elements they want to touch even exist. The result is the classic beginner bug: <code>querySelector</code> returning <code>null</code> on elements that are clearly in the HTML file.</p>
+    <p>Knowing the timing rules — and the four ways to delay your code — fixes this once and for all. You either move the script, attach <code>defer</code>, or wait for <code>DOMContentLoaded</code>. After that, your selectors always find what they're looking for.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-11-16-1-1': `
+    <p>The choice of timing pattern depends on the project:</p>
+<pre class="language-javascript"><code class="language-javascript">// Small inline scripts → put them at the end of &lt;body&gt;
+// &lt;body&gt;
+//   ... content ...
+//   &lt;script&gt;
+//     document.querySelector("button").addEventListener(...);
+//   &lt;/script&gt;
+// &lt;/body&gt;
+// simplest, most direct. fine for small projects.
+
+// External scripts → use defer
+// &lt;head&gt;
+//   &lt;script src="app.js" defer&gt;&lt;/script&gt;
+// &lt;/head&gt;
+// the standard for production. keeps scripts in &lt;head&gt;, runs them after DOM is ready,
+// downloads in parallel with parsing for speed.
+
+// Code you can't move → wrap in DOMContentLoaded
+document.addEventListener("DOMContentLoaded", () =&gt; {
+  // ... your code ...
+});
+// the runtime fallback. works regardless of placement.
+
+// Whichever you pick, the result is the same: code runs when the DOM exists.</code></pre>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-11-16-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// DOMContentLoaded — for any DOM-touching code
+document.addEventListener("DOMContentLoaded", () =&gt; {
+  document.getElementById("btn").addEventListener("click", save);
+});
+
+// Page-load initialization
+document.addEventListener("DOMContentLoaded", initApp);
+
+// Multiple listeners — all fire when DOM is ready
+document.addEventListener("DOMContentLoaded", setupTabs);
+document.addEventListener("DOMContentLoaded", setupModal);
+document.addEventListener("DOMContentLoaded", restoreUserPreferences);
+
+// Defer attribute (in HTML, not JS — shown here for completeness)
+// &lt;script src="app.js" defer&gt;&lt;/script&gt;
+
+// Async (for analytics, etc.)
+// &lt;script src="analytics.js" async&gt;&lt;/script&gt;
+
+// load event — for full-page resources (images, CSS, fonts)
+window.addEventListener("load", () =&gt; {
+  const totalHeight = document.body.scrollHeight;
+  console.log("total content height:", totalHeight);
+});
+
+// Detect current state
+console.log(document.readyState);
+//   "loading"     → still parsing HTML
+//   "interactive" → DOM parsed (DOMContentLoaded has/will fire)
+//   "complete"    → fully loaded (load has/will fire)
+
+// Universal "run when ready" pattern
+function ready(fn) {
+  if (document.readyState !== "loading") {
+    fn();
+  } else {
+    document.addEventListener("DOMContentLoaded", fn);
+  }
+}
+ready(init);</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-11-16-1-3': `
+    <p>The browser reads the HTML file from top to bottom. When it hits a script tag, it runs that script right then — not after the whole file is done. So if your script tries to find a button that's later in the HTML, the button doesn't exist yet. <code>querySelector</code> returns <code>null</code>, and your code crashes when it tries to do something with that null.</p>
+    <p>The fix is to delay your script's execution until the HTML is fully parsed. The three main ways: put the script at the end of <code>&lt;body&gt;</code> (so the elements come first), add <code>defer</code> to the script tag (tells the browser "wait until parsing is done"), or wrap your code in a <code>DOMContentLoaded</code> listener (waits for the "DOM is ready" event from inside the script).</p>
+    <p>Once you understand this, the rule is simple: any code that touches the DOM has to run after the DOM exists. Pick a pattern, use it everywhere, and you'll never hit "null is not a function" again.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-11-16-1-4': `
+    <p>Picture the browser as a worker reading instructions on a scroll, top to bottom. Each HTML element on the scroll gets built into a real piece of the page as the worker reads it. Each script tag is a "drop everything and run this code now" command — the worker stops, runs the script, then keeps reading.</p>
+    <p>If a script appears early on the scroll and asks "where's the button labeled save?" — that button hasn't been built yet. It's further down on the scroll, in a section the worker hasn't reached. The worker shrugs, says "no button," and your script either crashes or silently fails.</p>
+    <p>The four timing strategies are different ways to make sure your script runs at the right moment:</p>
+    <ul>
+      <li><strong>Put the script at the bottom of the scroll</strong> — by the time the worker reaches it, everything else has been built.</li>
+      <li><strong>Tell the worker to defer this script</strong> — they'll set it aside and run it only after they've finished reading the whole scroll.</li>
+      <li><strong>Wait for the "scroll finished" announcement</strong> — listen for <code>DOMContentLoaded</code>, then act.</li>
+      <li><strong>Wait for the "everything's loaded" announcement</strong> — listen for <code>load</code>, then act. (Slower, but waits for images and CSS too.)</li>
+    </ul>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-11-16-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// THE BUG (script runs too early)
+//
+// &lt;head&gt;
+//   &lt;script&gt;
+//     // browser is here, in the head, parsing
+//     // the body hasn't been parsed yet — &lt;button id="save"&gt; doesn't exist
+//     const btn = document.getElementById("save");
+//     console.log(btn);   // null
+//     btn.addEventListener("click", () =&gt; { ... });
+//     // TypeError: Cannot read property 'addEventListener' of null
+//   &lt;/script&gt;
+// &lt;/head&gt;
+// &lt;body&gt;
+//   &lt;button id="save"&gt;Save&lt;/button&gt;
+// &lt;/body&gt;
+
+// FIX 1: move the script to the end of &lt;body&gt;
+// &lt;body&gt;
+//   &lt;button id="save"&gt;Save&lt;/button&gt;
+//   &lt;script&gt;
+//     // by now, the button exists — querySelector works
+//     document.getElementById("save").addEventListener("click", () =&gt; { ... });
+//   &lt;/script&gt;
+// &lt;/body&gt;
+
+// FIX 2: add defer
+// &lt;head&gt;
+//   &lt;script src="app.js" defer&gt;&lt;/script&gt;
+// &lt;/head&gt;
+// &lt;body&gt;
+//   &lt;button id="save"&gt;Save&lt;/button&gt;
+// &lt;/body&gt;
+// defer tells the browser to wait until the body is parsed before running app.js.
+
+// FIX 3: use DOMContentLoaded inside the script
+// &lt;head&gt;
+//   &lt;script&gt;
+//     document.addEventListener("DOMContentLoaded", () =&gt; {
+//       document.getElementById("save").addEventListener("click", () =&gt; { ... });
+//     });
+//   &lt;/script&gt;
+// &lt;/head&gt;
+// the callback runs after the DOM is fully built — the button exists by then.
+
+// in all three fixes, the result is the same:
+// JavaScript runs AFTER the elements it touches exist in the DOM.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-11-16-2-0': `
+    <p>If <code>querySelector</code> or <code>getElementById</code> returns <code>null</code> for an element that's clearly in your HTML, the cause is almost always timing. The script ran before the element existed:</p>
+<pre class="language-javascript"><code class="language-javascript">const btn = document.getElementById("save");
+console.log(btn);   // null
+console.log(document.readyState);   // "loading"
+// readyState "loading" means the parser hasn't finished — your element isn't in the DOM yet.
+
+// fix: wrap in DOMContentLoaded
+document.addEventListener("DOMContentLoaded", () =&gt; {
+  const btn = document.getElementById("save");
+  console.log(btn);   // ✓ found
+});
+
+// or move the script to the end of body, or add defer.</code></pre>
+
+    <p>Other timing-related symptoms:</p>
+<pre class="language-javascript"><code class="language-javascript">// "Uncaught TypeError: Cannot read property 'addEventListener' of null"
+// → the selector returned null because the element didn't exist yet
+
+// "My click handler doesn't fire"
+// → the script ran too late: DOMContentLoaded already fired, your listener never got attached
+//   fix: check document.readyState first, OR don't listen for DOMContentLoaded if it's already fired
+
+// "Some queries work, others don't"
+// → mixed timing: some elements are above the script, some below
+//   fix: always wait for DOMContentLoaded, or move the script after ALL the elements</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-11-16-2-1': `
+    <p>The browser builds the DOM as it parses the HTML, top to bottom. Scripts can run at any point during that process — including before the elements they want to use exist. <code>DOMContentLoaded</code>, <code>defer</code>, and "script at end of body" are all variations on the same idea: delay the script until the DOM is fully built.</p>
+    <p>Once you internalize the "scripts run when the parser reaches them" rule, all the timing patterns make sense. They're not separate magic features — they're just different ways to say "wait until everything's parsed before running this code."</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-11-16-2-2': `
+    <p><strong>Confusion: thinking the HTML "loads" all at once</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// the browser parses HTML SEQUENTIALLY, top to bottom.
+// when it hits your script, it runs immediately — using whatever's been parsed so far.
+// elements below the script don't exist yet.</code></pre>
+
+    <p><strong>Confusion: <code>DOMContentLoaded</code> vs <code>load</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">// DOMContentLoaded → fires when HTML is fully parsed (DOM tree exists)
+//                     fast — usually fires before images load
+//
+// load → fires when EVERYTHING is loaded (HTML + images + CSS + fonts)
+//        slower — waits for big images, slow stylesheets
+//
+// rule: use DOMContentLoaded unless you specifically need full-page measurements
+// (image sizes, total page height, etc.)</code></pre>
+
+    <p><strong>Confusion: thinking <code>defer</code> means "run later, async"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// defer → download in parallel, run AFTER DOM is parsed, in HTML order
+// async → download in parallel, run AS SOON AS DOWNLOADED, in unpredictable order
+
+// defer:  predictable, DOM-safe, ordered
+// async:  unpredictable, DOM may or may not be ready when it runs
+// for code that touches the DOM, prefer defer.</code></pre>
+
+    <p><strong>Confusion: adding <code>DOMContentLoaded</code> listener too late</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// if your script runs AFTER the DOM is already ready (e.g., dynamically loaded later),
+// the DOMContentLoaded event has already fired. your listener won't trigger.
+
+setTimeout(() =&gt; {
+  document.addEventListener("DOMContentLoaded", () =&gt; {
+    console.log("ready");
+  });
+  // 5 seconds in, the DOM was already ready long ago — the listener never fires
+}, 5000);
+
+// fix: check readyState
+function whenReady(fn) {
+  if (document.readyState !== "loading") {
+    fn();
+  } else {
+    document.addEventListener("DOMContentLoaded", fn);
+  }
+}</code></pre>
+
+    <p><strong>Confusion: thinking inline scripts are "deferred"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// the defer attribute ONLY works on EXTERNAL scripts (with src):
+// &lt;script src="app.js" defer&gt;&lt;/script&gt;   ✓ deferred
+
+// &lt;script defer&gt;
+//   document.getElementById("btn");
+// &lt;/script&gt;
+// the defer is IGNORED — inline scripts always run immediately when parsed.
+
+// for inline scripts: place them at the end of body, or wrap in DOMContentLoaded.</code></pre>
+
+    <p><strong>Confusion: thinking <code>DOMContentLoaded</code> fires after dynamically added elements</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// DOMContentLoaded fires ONCE — when the INITIAL HTML is parsed.
+// dynamically added elements (via createElement + appendChild) come later.
+// the event does NOT re-fire when you modify the DOM.
+
+// if you need to react to dynamic changes:
+//   - run your setup code when you ADD the elements
+//   - or use MutationObserver to watch for DOM changes</code></pre>
+
+    <p><strong>Confusion: putting <code>defer</code> on inline scripts</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// &lt;script defer&gt;
+//   console.log("hi");
+// &lt;/script&gt;
+// the defer attribute is IGNORED on inline scripts — only works with src.
+
+// fix: move the script to the end of body, or use DOMContentLoaded.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-11-16-2-3': `
+<pre class="language-javascript"><code class="language-javascript">// Script in head, no defer, trying to access body
+// &lt;head&gt;&lt;script&gt;document.body.classList.add("loaded");&lt;/script&gt;&lt;/head&gt;
+// TypeError — document.body is null
+// fix: defer, move to end of body, or DOMContentLoaded</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.getElementById("btn").addEventListener("click", save);
+// crashes if btn doesn't exist yet
+// fix: wait for DOM
+document.addEventListener("DOMContentLoaded", () =&gt; {
+  document.getElementById("btn").addEventListener("click", save);
+});</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Using "load" when DOMContentLoaded is enough
+window.addEventListener("load", initApp);
+// waits for ALL images, fonts, CSS — slower start
+// fix: use DOMContentLoaded for DOM-only initialization
+document.addEventListener("DOMContentLoaded", initApp);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Adding DOMContentLoaded after it already fired
+setTimeout(() =&gt; {
+  document.addEventListener("DOMContentLoaded", () =&gt; {
+    console.log("ready");   // never fires
+  });
+}, 5000);
+// fix: check readyState
+if (document.readyState !== "loading") {
+  init();
+} else {
+  document.addEventListener("DOMContentLoaded", init);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Using async for DOM-dependent code
+// &lt;script src="app.js" async&gt;&lt;/script&gt;
+// runs whenever it downloads — DOM may not be ready
+// fix: use defer instead
+// &lt;script src="app.js" defer&gt;&lt;/script&gt;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// defer on inline scripts (ignored)
+// &lt;script defer&gt;
+//   document.getElementById("btn").addEventListener(...);
+// &lt;/script&gt;
+// defer is ignored for inline scripts
+// fix: move to end of body, or wrap in DOMContentLoaded</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Expecting DOMContentLoaded to fire again after adding elements
+document.addEventListener("DOMContentLoaded", () =&gt; console.log("ready"));
+addNewElement();
+// console.log fires ONCE — DOMContentLoaded only fires for the initial parse
+// fix: run setup code where you actually add the elements</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Querying elements at module top-level (e.g., in a module loaded in &lt;head&gt;)
+const btn = document.getElementById("save");
+btn.addEventListener("click", save);
+// crashes if the module runs before the button is parsed
+// fix: defer the script, or move the code inside a function called from DOMContentLoaded</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-11-16-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Wait for DOM to be ready
+document.addEventListener("DOMContentLoaded", () =&gt; {
+  // safe to query DOM here
+});
+
+// Same with named function
+function init() {
+  document.getElementById("btn").addEventListener("click", save);
+}
+document.addEventListener("DOMContentLoaded", init);
+
+// Wait for fully loaded page (images, etc.)
+window.addEventListener("load", () =&gt; {
+  console.log("page fully loaded");
+});
+
+// Check current state
+console.log(document.readyState);   // "loading", "interactive", or "complete"
+
+// Universal "run when ready" pattern
+function ready(fn) {
+  if (document.readyState !== "loading") {
+    fn();
+  } else {
+    document.addEventListener("DOMContentLoaded", fn);
+  }
+}
+ready(init);
+
+// Defer attribute (in HTML, shown here as a comment)
+// &lt;script src="app.js" defer&gt;&lt;/script&gt;
+
+// Async attribute (for analytics, independent scripts)
+// &lt;script src="analytics.js" async&gt;&lt;/script&gt;
+
+// Multiple init handlers
+document.addEventListener("DOMContentLoaded", setupNav);
+document.addEventListener("DOMContentLoaded", setupForm);
+document.addEventListener("DOMContentLoaded", restoreState);
+
+// Removing the listener after firing (rare)
+function onReady() {
+  document.removeEventListener("DOMContentLoaded", onReady);
+  init();
+}
+document.addEventListener("DOMContentLoaded", onReady);
+
+// Combine with optional chaining for safe queries
+document.addEventListener("DOMContentLoaded", () =&gt; {
+  document.querySelector(".maybe")?.classList.add("ready");
+});
+
+// Detect if running in browser
+if (typeof document !== "undefined") {
+  document.addEventListener("DOMContentLoaded", init);
+}
+
+// Use defer for many scripts — they run in order
+// &lt;script src="lib.js" defer&gt;&lt;/script&gt;
+// &lt;script src="app.js" defer&gt;&lt;/script&gt;
+// lib.js runs first, app.js second, both after DOM is ready
+
+// Polling alternative (rarely needed; modern browsers all support DOMContentLoaded)
+const wait = setInterval(() =&gt; {
+  if (document.readyState !== "loading") {
+    clearInterval(wait);
+    init();
+  }
+}, 50);</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-11-16-3-1': `
+    <p><strong>Example: app initialization on page load</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.addEventListener("DOMContentLoaded", () =&gt; {
+  attachEventListeners();
+  restoreFromLocalStorage();
+  fetchInitialData();
+});
+// every setup task runs once, after the DOM is fully built.</code></pre>
+
+    <p><strong>Example: deferred script in &lt;head&gt;</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// In HTML:
+// &lt;head&gt;
+//   &lt;link rel="stylesheet" href="app.css"&gt;
+//   &lt;script src="app.js" defer&gt;&lt;/script&gt;
+// &lt;/head&gt;
+
+// In app.js:
+document.getElementById("save").addEventListener("click", save);
+// no need for DOMContentLoaded — defer guarantees the DOM is ready by the time this runs.
+// also: downloads in parallel with HTML parsing, so the page loads faster.</code></pre>
+
+    <p><strong>Example: universal "ready" wrapper used in libraries</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function ready(fn) {
+  if (document.readyState !== "loading") {
+    fn();   // already past loading — run immediately
+  } else {
+    document.addEventListener("DOMContentLoaded", fn);
+  }
+}
+
+ready(() =&gt; {
+  // safe to query DOM. works whether the script is loaded eagerly or after DOM is ready.
+  document.querySelectorAll(".widget").forEach(initWidget);
+});
+// the pattern most JS libraries use internally — survives any script placement.</code></pre>
+
+    <p><strong>Example: scripts that need image sizes</strong></p>
+<pre class="language-javascript"><code class="language-javascript">window.addEventListener("load", () =&gt; {
+  document.querySelectorAll(".gallery img").forEach(img =&gt; {
+    if (img.naturalWidth &gt; img.naturalHeight) {
+      img.classList.add("wide");
+    } else {
+      img.classList.add("tall");
+    }
+  });
+});
+// uses the "load" event because we need the IMAGES themselves to be loaded
+// (their naturalWidth/Height are only available once loaded).</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-11-16-3-2': `
+    <ul>
+      <li><strong><code>DOMContentLoaded</code> event</strong> → fires when HTML parsing finishes</li>
+      <li><strong><code>load</code> event</strong> → fires when everything (images, CSS) finishes loading</li>
+      <li><strong><code>defer</code> attribute</strong> → on script tag, delays execution until after parsing</li>
+      <li><strong><code>async</code> attribute</strong> → on script tag, runs whenever; not DOM-safe by default</li>
+      <li><strong>Script placement</strong> → top vs bottom of HTML changes when code runs</li>
+      <li><strong><code>document.readyState</code></strong> → check the current loading phase</li>
+      <li><strong><code>querySelector</code> returning null</strong> → the symptom that timing is wrong</li>
+      <li><strong>MutationObserver</strong> → for reacting to DOM changes AFTER initial load</li>
+      <li><strong>Dynamic script loading</strong> → scripts added via JS run when they download, not on DOMContentLoaded</li>
+      <li><strong>Module scripts</strong> → <code>&lt;script type="module"&gt;</code> behave like deferred by default</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-11-16-3-3': `
+    <ul>
+      <li><code>DOMContentLoaded</code></li>
+      <li><code>load</code> event</li>
+      <li><code>defer</code> attribute</li>
+      <li><code>async</code> attribute</li>
+      <li><code>document.readyState</code></li>
+      <li>Script placement in HTML</li>
+      <li>Module scripts (<code>type="module"</code>)</li>
+      <li>Dynamic script insertion</li>
+      <li>MutationObserver</li>
+      <li>Initialization patterns</li>
+    </ul>
+  `,
   
 });
