@@ -997,9 +997,9 @@ const DEEP_TOPICS = {
       ], TOPIC_CARD_CHUNKS)
     },
 
-    // -------- 3.14 Forms --------
+    // -------- 3.15 Forms --------
     {
-      groupTitle: '3.14 Forms',
+      groupTitle: '3.15 Forms',
       groupPreview: 'Inputs, validation, submission.',
       items: withChunks([
         { title: 'what forms are',                            preview: 'How users send data.' },
@@ -1029,9 +1029,9 @@ const DEEP_TOPICS = {
       ], TOPIC_CARD_CHUNKS)
     },
 
-    // -------- 3.15 Browser Storage --------
+    // -------- 3.16 Browser Storage --------
     {
-      groupTitle: '3.15 Browser Storage',
+      groupTitle: '3.16 Browser Storage',
       groupPreview: 'localStorage and sessionStorage.',
       items: withChunks([
         { title: 'what browser storage is',                   preview: 'Saved data in the browser.' },
@@ -1055,9 +1055,9 @@ const DEEP_TOPICS = {
       ], TOPIC_CARD_CHUNKS)
     },
 
-    // -------- 3.16 JSON --------
+    // -------- 3.17 JSON --------
     {
-      groupTitle: '3.16 JSON',
+      groupTitle: '3.17 JSON',
       groupPreview: 'Data as text — APIs and storage.',
       items: withChunks([
         { title: 'what JSON is',                              preview: 'Data text format.' },
@@ -1077,9 +1077,9 @@ const DEEP_TOPICS = {
       ], TOPIC_CARD_CHUNKS)
     },
 
-    // -------- 3.17 Async --------
+    // -------- 3.18 Async --------
     {
-      groupTitle: '3.17 Async',
+      groupTitle: '3.18 Async',
       groupPreview: 'Code that takes time.',
       items: withChunks([
         { title: 'what async means',                          preview: "Code that doesn't finish instantly." },
@@ -1106,9 +1106,9 @@ const DEEP_TOPICS = {
       ], TOPIC_CARD_CHUNKS)
     },
 
-    // -------- 3.18 Errors --------
+    // -------- 3.19 Errors --------
     {
-      groupTitle: '3.18 Errors',
+      groupTitle: '3.19 Errors',
       groupPreview: 'Errors as clues.',
       items: withChunks([
         { title: 'what errors are',                           preview: 'Signals that something went wrong.' },

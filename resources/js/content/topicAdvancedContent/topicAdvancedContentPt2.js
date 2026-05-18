@@ -3,6 +3,7 @@ Object.assign(CONTENT, {
           /* ==========================================================
      SECTION 3: MAIN TOPIC GUIDES / LESSON CONTENT
      COVERS THE BASIC LESSONS 3.12 - 3.13
+     DOM & Events
      ========================================================== */
 
           /* ==========================================================
@@ -10003,6 +10004,2663 @@ ready(() =&gt; {
       <li>Dynamic script insertion</li>
       <li>MutationObserver</li>
       <li>Initialization patterns</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.12.18 DOM → null when element is not found
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-11-17-0-0': `
+    <p>When <code>querySelector</code> or <code>getElementById</code> doesn't find a matching element, the return value is <strong><code>null</code></strong> — not an empty string, not an empty object, not undefined. <code>null</code> is JavaScript's way of saying "nothing here."</p>
+    <p>The catch: <code>null</code> doesn't have any DOM methods or properties. The moment you try to use it like an element (<code>.textContent</code>, <code>.classList</code>, <code>.addEventListener</code>), JavaScript throws a <code>TypeError</code> and your script breaks. Handling this case correctly is one of the most important defensive habits in DOM code.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-11-17-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;p id="msg"&gt;Hello&lt;/p&gt;
+
+// Found — returns the element
+const msg = document.getElementById("msg");
+console.log(msg);   // &lt;p id="msg"&gt;Hello&lt;/p&gt;
+
+// Not found — returns null
+const missing = document.getElementById("nope");
+console.log(missing);   // null
+
+// Same with querySelector
+const found = document.querySelector(".msg");        // &lt;p&gt; or null
+const notFound = document.querySelector(".gone");    // null
+
+// the moment you try to USE the null:
+notFound.textContent = "hi";
+// TypeError: Cannot set property 'textContent' of null</code></pre>
+    <p>The error happens on the line that uses the null, not on the line that produced it. The fix is to check for the null <em>before</em> trying to use the result.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-11-17-0-2': `
+<pre class="language-javascript"><code class="language-javascript">
+document.getElementById(id)
+//   → element  (if found)
+//   → null     (if not found)
+//
+document.querySelector(selector)
+//   → element  (first match)
+//   → null     (no matches)
+//
+document.querySelectorAll(selector)
+//   → NodeList(N)  (if matches)
+//   → NodeList(0)  (no matches) — note: NOT null, an EMPTY NodeList
+//
+// the asymmetry matters:
+//   - querySelector  → null when missing → crashes if you assume an element
+//   - querySelectorAll → empty NodeList when missing → safe to .forEach (no iterations)
+//
+// patterns for handling null:
+//   1. if-check before using:
+//        const el = document.querySelector(".x");
+//        if (el) el.textContent = "hi";
+//
+//   2. optional chaining (modern):
+//        document.querySelector(".x")?.classList.add("active");
+//
+//   3. nullish coalescing for defaults:
+//        const text = document.querySelector(".x")?.textContent ?? "default";
+//
+//   4. early return in a function:
+//        function update() {
+//          const el = document.querySelector(".x");
+//          if (!el) return;
+//          el.textContent = "hi";
+//        }</code></pre>
+    <p>Whichever pattern you pick, the goal is the same: don't let your code try to use <code>null</code> as if it were an element.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-11-17-0-3': `
+    <p><strong><code>null</code> is the value, not the absence of a value.</strong> <code>typeof null</code> is "object," and <code>null</code> is falsy in conditions:</p>
+<pre class="language-javascript"><code class="language-javascript">const el = document.querySelector(".not-here");
+
+console.log(el);              // null
+console.log(typeof el);        // "object"  (historical quirk in JS)
+console.log(el === null);      // true
+console.log(el === undefined); // false — null and undefined are different
+console.log(Boolean(el));      // false — null is falsy
+
+// because null is falsy, simple boolean checks work:
+if (el) {
+  // runs only if el is truthy (i.e., a real element)
+}
+
+if (!el) {
+  // runs if el is null
+}</code></pre>
+
+    <p><strong>The most common pattern: <code>if</code>-check before use.</strong> Simple, reads clearly:</p>
+<pre class="language-javascript"><code class="language-javascript">const btn = document.querySelector(".save");
+if (btn) {
+  btn.addEventListener("click", save);
+  btn.textContent = "Save";
+}
+
+// or with early return in a function:
+function setupSaveButton() {
+  const btn = document.querySelector(".save");
+  if (!btn) return;
+  btn.addEventListener("click", save);
+}</code></pre>
+
+    <p><strong>Optional chaining (<code>?.</code>) is the modern shortcut.</strong> If the value before <code>?.</code> is null or undefined, the whole expression evaluates to undefined and skips the operation:</p>
+<pre class="language-javascript"><code class="language-javascript">// these are equivalent:
+
+// Verbose
+const el = document.querySelector(".tooltip");
+if (el) el.classList.add("hidden");
+
+// Modern
+document.querySelector(".tooltip")?.classList.add("hidden");
+
+// also works for property reads:
+const text = document.querySelector(".name")?.textContent;
+// text is the string if .name exists, undefined if not
+
+// and method calls:
+document.querySelector(".btn")?.click();
+// nothing happens if .btn doesn't exist; no error</code></pre>
+
+    <p><strong>Optional chaining works on chained property access.</strong> But you only need it where null is possible:</p>
+<pre class="language-javascript"><code class="language-javascript">// each ?. checks if the value before it is null/undefined
+document.querySelector(".card")?.querySelector(".title")?.textContent;
+// returns undefined if EITHER the card or the title is missing
+
+// you can mix: only use ?. where the value might be null
+document.querySelector(".card")?.classList.add("ready");
+//                              ^ might be null
+//                                          ^ classList is always there if the element exists,
+//                                            so no ?. needed</code></pre>
+
+    <p><strong>Optional chaining doesn't work for ASSIGNMENT.</strong> You can't do <code>el?.textContent = "..."</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">// Not allowed
+document.querySelector(".x")?.textContent = "hi";   // SyntaxError
+
+// fix: use an if-check, or save the reference
+const el = document.querySelector(".x");
+if (el) el.textContent = "hi";</code></pre>
+
+    <p><strong>Nullish coalescing (<code>??</code>) gives a default when the value is null or undefined.</strong> Combine with optional chaining for "read or default":</p>
+<pre class="language-javascript"><code class="language-javascript">const text = document.querySelector(".name")?.textContent ?? "Guest";
+// if .name exists, use its text
+// if .name is null, ?.textContent → undefined, then ?? → "Guest"
+
+// difference from || (logical OR):
+//   ??  → only triggers on null or undefined
+//   ||  → triggers on ANY falsy value (including "", 0, false)
+
+// for DOM text, ?? is usually safer:
+const num = document.querySelector(".count")?.textContent ?? "0";
+// uses "0" only if the element is missing
+// uses the actual textContent even if it's "" or "0"</code></pre>
+
+    <p><strong><code>querySelectorAll</code> never returns null.</strong> Empty matches give an empty NodeList, which is safe to iterate:</p>
+<pre class="language-javascript"><code class="language-javascript">const items = document.querySelectorAll(".item");
+console.log(items);          // NodeList(0) when nothing matches — NOT null
+console.log(items.length);    // 0
+items.forEach(el =&gt; { ... }); // safely runs zero times — no error
+
+// you don't need null checks for querySelectorAll. just iterate.
+// if you want to know whether ANY matched: items.length &gt; 0</code></pre>
+
+    <p><strong>Check before chaining DOM operations.</strong> If you're going to call multiple methods on the result, guard once:</p>
+<pre class="language-javascript"><code class="language-javascript">// Bad — repetitive optional chaining
+document.querySelector(".x")?.classList.add("active");
+document.querySelector(".x")?.textContent = "Loading...";   // doesn't work anyway (assignment)
+document.querySelector(".x")?.setAttribute("aria-busy", "true");
+
+// Good — single check, all operations after
+const el = document.querySelector(".x");
+if (el) {
+  el.classList.add("active");
+  el.textContent = "Loading...";
+  el.setAttribute("aria-busy", "true");
+}</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-11-17-1-0': `
+    <p>DOM queries are inherently uncertain — the element you're looking for might not exist, might not exist yet, or might have been removed by other code. Without a defensive habit, your script depends on optimistic assumptions: "the button is there, so I can just use it." When that assumption breaks, your code crashes.</p>
+    <p>Handling <code>null</code> correctly is the difference between fragile and robust DOM code. Defensive checks (<code>if (el)</code>, <code>el?.method()</code>) ensure your script keeps running even when something's missing, and let you write fallbacks for those cases.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-11-17-1-1': `
+    <p>Every <code>querySelector</code> call is a potential <code>null</code>. Treating it that way prevents bugs:</p>
+<pre class="language-javascript"><code class="language-javascript">// Without handling — fragile
+document.querySelector(".save").addEventListener("click", save);
+// crashes the entire script if .save doesn't exist (e.g., not on this page)
+
+// With handling — robust
+document.querySelector(".save")?.addEventListener("click", save);
+// if .save isn't there, nothing happens, script continues
+
+// or with a fallback:
+const btn = document.querySelector(".save");
+if (btn) {
+  btn.addEventListener("click", save);
+} else {
+  console.warn("Save button not found — feature disabled");
+}</code></pre>
+
+    <p>This is especially important in code that runs on multiple pages — what's a normal element on the dashboard might not exist on the profile page. Defensive checks let one script work everywhere.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-11-17-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Simple if-check
+const el = document.querySelector(".target");
+if (el) {
+  el.textContent = "Found!";
+}
+
+// Negated check (early return)
+function setupButton() {
+  const btn = document.querySelector(".btn");
+  if (!btn) return;
+  btn.addEventListener("click", handle);
+}
+
+// Optional chaining for single operations
+document.querySelector(".tooltip")?.classList.add("hidden");
+document.querySelector(".badge")?.remove();
+
+// Optional chaining for reads
+const title = document.querySelector("h1")?.textContent;
+// title is the string or undefined
+
+// With nullish coalescing for defaults
+const name = document.querySelector(".name")?.textContent ?? "Anonymous";
+
+// Multiple checks together
+const card = document.querySelector(".card");
+const title = card?.querySelector(".title");
+if (title) {
+  title.textContent = "Updated";
+}
+
+// Filter on existence
+const els = [".header", ".main", ".footer"]
+  .map(s =&gt; document.querySelector(s))
+  .filter(el =&gt; el !== null);
+
+// Use querySelectorAll when "missing" should mean "do nothing"
+document.querySelectorAll(".item").forEach(el =&gt; el.classList.add("ready"));
+// safe even if no .item exists — empty NodeList just iterates zero times
+
+// Strict comparison
+if (el === null) { ... }
+if (el !== null) { ... }
+
+// Boolean cast
+if (el) { ... }      // truthy check (works because null is falsy)
+if (!el) { ... }     // falsy check
+
+// Combined with optional chaining for chained ops
+document.querySelector(".card")?.querySelector(".action")?.click();</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-11-17-1-3': `
+    <p>When you ask the DOM for an element and it doesn't exist, JavaScript hands you <code>null</code> as the "no result" sentinel. The danger is that <code>null</code> isn't an element — it has no <code>textContent</code>, no <code>classList</code>, no <code>addEventListener</code>. If your next line of code tries to use it like an element, the whole thing crashes with "Cannot read property X of null."</p>
+    <p>The fix is to assume nothing. Always check whether the result is real before using it. Either with an <code>if</code> statement, or with optional chaining (<code>?.</code>), which is JavaScript's modern shortcut for "do this only if the thing before me isn't null."</p>
+    <p>This isn't paranoia — it's the standard pattern for any code that interacts with the DOM. Elements come and go: they might be on one page but not another, they might be added later, they might be removed by another script. Defensive checks make your code resilient to all of those cases without breaking.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-11-17-1-4': `
+    <p>Picture asking a librarian for a book. If the book exists, they hand it to you — you can read it, mark it up, do anything you'd normally do with a book. If the book doesn't exist, they hand you an empty hand. An empty hand isn't a book. Try to "read" the empty hand, and you'll get confused — there's nothing to read.</p>
+    <p><code>null</code> is the empty hand. JavaScript's job is to hand you something every time you ask, but "something" might be "nothing." Your job is to check: did I get a book, or did I get nothing? Only proceed with book operations if it's actually a book.</p>
+    <p>The two ways to check are: ask before you act ("is this a book?"), or have a robot that only does the operation if it gets a book and shrugs if it gets nothing (optional chaining, <code>?.</code>). Same outcome — your code doesn't crash when the result is <code>null</code>.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-11-17-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// THE BUG
+//
+// HTML: &lt;p id="msg"&gt;Hello&lt;/p&gt;
+// (no element with id "tip" exists)
+
+const tip = document.getElementById("tip");
+console.log(tip);   // null
+
+tip.textContent = "Hi";
+// TypeError: Cannot set properties of null (setting 'textContent')
+
+// step by step:
+//   1. getElementById("tip") searches the DOM
+//   2. no element matches → returns null
+//   3. tip is now null
+//   4. tip.textContent tries to access .textContent on null
+//   5. null has no .textContent property → TypeError
+//   6. the script crashes — any code after this line never runs
+
+// FIX 1: if-check
+const tip = document.getElementById("tip");
+if (tip) {
+  tip.textContent = "Hi";
+}
+// if tip is null, the if block is skipped, no error, script continues.
+
+// FIX 2: optional chaining (read only)
+document.getElementById("tip")?.click();
+// if it's null, nothing happens — no error.
+// note: ?. doesn't work for assignment (?.textContent = "Hi" is invalid).
+
+// FIX 3: nullish coalescing for defaults
+const text = document.getElementById("tip")?.textContent ?? "no tip";
+// text is the string if tip exists, "no tip" otherwise — never crashes.
+
+// the lesson:
+//   - every DOM query CAN return null
+//   - assume nothing; check or use ?.
+//   - your code stays running when elements are missing</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-11-17-2-0': `
+    <p>The classic symptom is the error message itself:</p>
+<pre class="language-javascript"><code class="language-javascript">// "TypeError: Cannot read properties of null (reading 'X')"
+// "TypeError: Cannot set properties of null (setting 'X')"
+// "TypeError: null has no properties"
+
+// these all mean: a querySelector or getElementById returned null,
+// and the very next line tried to access a property on it.</code></pre>
+
+    <p>To diagnose: log the result of the query first:</p>
+<pre class="language-javascript"><code class="language-javascript">const el = document.querySelector(".whatever");
+console.log("element:", el);
+// if you see "element: null" — the selector didn't match.
+// if you see the actual element, the bug is elsewhere.
+
+// common reasons for null:
+//   1. typo in the selector (".btn-save" vs ".save-btn")
+//   2. missing prefix (querySelector("save") instead of ".save")
+//   3. case mismatch (the class is "Save" but you queried ".save")
+//   4. script ran before the element existed (DOM loaded timing)
+//   5. element was removed by other code
+//   6. element is inside an iframe or shadow DOM (different document tree)</code></pre>
+
+    <p>Quick verification: paste the same selector into the DevTools console:</p>
+<pre class="language-javascript"><code class="language-javascript">// in the browser console:
+document.querySelector(".whatever")
+// if it returns null there too, your selector is wrong or the element really doesn't exist.
+// if it returns the element there, but null in your code, it's a timing issue.</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-11-17-2-1': `
+    <p>Every DOM query has two possible outcomes: an element or <code>null</code>. There's no third option. Once you accept that and check for both in your code, every "TypeError: Cannot read property X of null" disappears — because you're never trying to read X from null in the first place.</p>
+    <p>Optional chaining (<code>?.</code>) makes the defensive pattern almost invisible. Instead of wrapping every DOM operation in an if, you just add <code>?.</code> after the query. The code reads almost like you assumed the element exists — but it handles the null case gracefully.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-11-17-2-2': `
+    <p><strong>Confusion: thinking <code>querySelector</code> returns undefined when nothing matches</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// querySelector returns null, NOT undefined.
+const el = document.querySelector(".missing");
+console.log(el === null);        // true
+console.log(el === undefined);    // false
+
+// but optional chaining ?. handles BOTH null and undefined, so it works either way:
+document.querySelector(".missing")?.click();   // safe</code></pre>
+
+    <p><strong>Confusion: thinking <code>querySelectorAll</code> returns null</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const items = document.querySelectorAll(".missing");
+console.log(items === null);    // false — NEVER null
+console.log(items.length);       // 0 — empty NodeList instead
+
+// you don't need null checks for querySelectorAll. just iterate.</code></pre>
+
+    <p><strong>Confusion: <code>null</code> truthiness vs comparison</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// all three of these work for "is el null?":
+if (el === null) { ... }
+if (el == null) { ... }      // also catches undefined (loose equality)
+if (!el) { ... }              // catches null, undefined, 0, "", false, NaN
+
+// for DOM elements, all three are essentially equivalent — el is either an element (truthy)
+// or null (falsy). use whichever reads cleanest.</code></pre>
+
+    <p><strong>Confusion: trying to use optional chaining for assignment</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector(".x")?.textContent = "hi";
+// SyntaxError — you can't assign to an optional-chained property
+
+// fix: save the reference and check
+const el = document.querySelector(".x");
+if (el) el.textContent = "hi";</code></pre>
+
+    <p><strong>Confusion: <code>??</code> vs <code>||</code></strong></p>
+<pre class="language-javascript"><code class="language-javascript">// ?? — only falls back when the value is null or undefined
+const a = document.querySelector(".x")?.textContent ?? "default";
+// if .x exists and has textContent "" (empty), a === "" (NOT "default")
+
+// || — falls back on any falsy value
+const b = document.querySelector(".x")?.textContent || "default";
+// if .x exists but textContent is "" (empty), b === "default" (might surprise you)
+
+// rule: use ?? when "empty string" or "0" are valid values, not absences</code></pre>
+
+    <p><strong>Confusion: forgetting that <code>getElementById</code> can also return null</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// it's not just querySelector — getElementById has the same behavior
+document.getElementById("nope");   // null
+
+// all the same handling applies:
+document.getElementById("nope")?.classList.add("ready");
+const el = document.getElementById("maybe");
+if (el) el.textContent = "Found";</code></pre>
+
+    <p><strong>Confusion: thinking <code>null</code> errors come from the query line</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const el = document.querySelector(".x");   // returns null — no error
+el.textContent = "hi";                       // ERROR here — null has no textContent
+
+// the error message points to the second line, not the first.
+// to find the cause, look at what came RIGHT before — usually a missed null check.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-11-17-2-3': `
+<pre class="language-javascript"><code class="language-javascript">document.querySelector(".missing").textContent = "hi";
+// crashes — querySelector returned null
+// fix: check first
+const el = document.querySelector(".missing");
+if (el) el.textContent = "hi";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.getElementById("nope").addEventListener("click", handler);
+// crashes if no element has id="nope"
+// fix: check or use optional chaining
+document.getElementById("nope")?.addEventListener("click", handler);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.querySelector(".x")?.textContent = "hi";
+// SyntaxError — can't assign with optional chaining
+// fix: if-check
+const el = document.querySelector(".x");
+if (el) el.textContent = "hi";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (document.querySelectorAll(".item")) {
+  // always true — NodeList is always truthy, even when empty
+}
+// fix: check length
+if (document.querySelectorAll(".item").length &gt; 0) { ... }</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const text = document.querySelector(".name")?.textContent || "default";
+// if textContent is "" (empty), defaults to "default" — might be wrong
+// fix: use ?? for null/undefined only
+const text = document.querySelector(".name")?.textContent ?? "default";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const el = document.querySelector(".missing");
+el?.classList.add("a");
+el?.classList.add("b");
+el?.classList.add("c");
+// repetitive
+// fix: one check, then act
+const el = document.querySelector(".missing");
+if (el) {
+  el.classList.add("a", "b", "c");
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const a = document.querySelector(".x").textContent;
+// crashes if .x is null
+// fix: capture, check, then use
+const xEl = document.querySelector(".x");
+const a = xEl ? xEl.textContent : "";
+// or:
+const a = document.querySelector(".x")?.textContent ?? "";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// querying inside a possibly-missing parent
+const parent = document.querySelector(".card");
+const title = parent.querySelector(".title");
+// crashes if .card is null
+// fix: chain ?.
+const title = document.querySelector(".card")?.querySelector(".title");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (document.querySelector(".x") = null) { ... }
+// "=" is assignment, not comparison — this overwrites the call
+// fix: use === or just truthiness
+if (document.querySelector(".x") === null) { ... }
+if (!document.querySelector(".x")) { ... }</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-11-17-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// if-check before using
+const el = document.querySelector(".target");
+if (el) {
+  el.textContent = "Hi";
+}
+
+// negated check (early return)
+function setup() {
+  const el = document.querySelector(".target");
+  if (!el) return;
+  el.classList.add("ready");
+}
+
+// optional chaining for read
+const text = document.querySelector(".name")?.textContent;
+
+// optional chaining for method
+document.querySelector(".tooltip")?.classList.remove("visible");
+
+// optional chaining + nullish coalescing for default
+const name = document.querySelector(".name")?.textContent ?? "Anonymous";
+
+// chained optional access
+const title = document.querySelector(".card")?.querySelector(".title")?.textContent;
+
+// truthy check (most idiomatic)
+if (el) { ... }
+if (!el) { ... }
+
+// strict comparison
+if (el === null) { ... }
+if (el !== null) { ... }
+
+// querySelectorAll — never null, no check needed
+document.querySelectorAll(".item").forEach(el =&gt; el.classList.add("ready"));
+
+// querySelectorAll length check (existence)
+if (document.querySelectorAll(".error").length &gt; 0) { ... }
+
+// safely add an event listener
+document.querySelector(".save")?.addEventListener("click", save);
+
+// safe element removal
+document.querySelector(".banner")?.remove();
+
+// filter array for valid elements only
+const els = [".a", ".b", ".c"]
+  .map(s =&gt; document.querySelector(s))
+  .filter(el =&gt; el !== null);
+
+// check before chaining operations
+const card = document.querySelector(".card");
+if (card) {
+  card.classList.add("active");
+  card.querySelector(".title").textContent = "Updated";
+  // note: the inner querySelector might ALSO return null — keep checking
+}
+
+// the safest version of the above
+const card = document.querySelector(".card");
+const title = card?.querySelector(".title");
+if (title) title.textContent = "Updated";
+
+// in a function that should silently no-op when target is missing
+function highlight(selector) {
+  document.querySelector(selector)?.classList.add("highlight");
+}
+
+// using nullish coalescing assignment (newer)
+let user = document.querySelector(".name")?.textContent;
+user ??= "Guest";   // assign "Guest" only if user is null/undefined</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-11-17-3-1': `
+    <p><strong>Example: optional UI elements that might not be on every page</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function setupSearchBox() {
+  const search = document.querySelector("#site-search");
+  if (!search) return;   // not on this page — exit cleanly
+  search.addEventListener("input", handleSearch);
+}
+
+setupSearchBox();
+// works on pages with a search box, silently skips pages without one.</code></pre>
+
+    <p><strong>Example: dismissing a banner only if it's there</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector(".cookie-banner")?.remove();
+// one line, safe, no error if the banner isn't on the page.</code></pre>
+
+    <p><strong>Example: reading a value with a default</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getUsername() {
+  return document.querySelector(".user-name")?.textContent.trim() ?? "Guest";
+}
+
+const name = getUsername();
+console.log("welcome, " + name);
+// returns "Guest" if the name element doesn't exist, the actual name otherwise.</code></pre>
+
+    <p><strong>Example: clearing errors only on fields that have them</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function clearError(fieldName) {
+  const error = document.querySelector("[data-error='" + fieldName + "']");
+  if (error) {
+    error.textContent = "";
+    error.classList.remove("visible");
+  }
+}
+// if no error element exists for that field, the function exits cleanly.</code></pre>
+
+    <p><strong>Example: deep query with optional chaining</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function getCardAuthor(cardId) {
+  return document
+    .querySelector("#" + cardId)
+    ?.querySelector(".header")
+    ?.querySelector(".author")
+    ?.textContent
+    ?? "Unknown";
+}
+// the whole chain returns the author name, or "Unknown" if any link is missing.
+// no error even if the card doesn't exist on the page.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-11-17-3-2': `
+    <ul>
+      <li><strong><code>querySelector</code> returns null</strong> → the source of the problem</li>
+      <li><strong><code>getElementById</code> returns null</strong> → same behavior</li>
+      <li><strong><code>querySelectorAll</code></strong> → returns empty NodeList instead of null; no check needed</li>
+      <li><strong>Optional chaining (<code>?.</code>)</strong> → the modern shorthand for null-safe access</li>
+      <li><strong>Nullish coalescing (<code>??</code>)</strong> → fall back to a default when value is null or undefined</li>
+      <li><strong>Truthy/falsy values</strong> → null is falsy, so <code>if (el)</code> works as a check</li>
+      <li><strong>Early return pattern</strong> → exit a function cleanly when an element is missing</li>
+      <li><strong>DOM loaded timing</strong> → premature queries return null even when elements exist in HTML</li>
+      <li><strong>Defensive programming</strong> → assume nothing, check everything</li>
+      <li><strong><code>TypeError: Cannot read property X of null</code></strong> → the symptom of missed null handling</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-11-17-3-3': `
+    <ul>
+      <li><code>null</code> in JavaScript</li>
+      <li>Optional chaining (<code>?.</code>)</li>
+      <li>Nullish coalescing (<code>??</code>)</li>
+      <li>Truthy / falsy values</li>
+      <li>Early return pattern</li>
+      <li><code>querySelector</code> / <code>getElementById</code></li>
+      <li><code>querySelectorAll</code> (no null)</li>
+      <li>DOM loaded timing</li>
+      <li>Defensive programming</li>
+      <li>Error handling</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.12.19 DOM → common mistakes
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-11-18-0-0': `
+    <p>This lesson is a <strong>recap of the most common DOM bugs</strong> you'll hit while building real interfaces. Most of them aren't conceptually hard — they're just easy to miss because the symptoms (silent failures, null errors, things that "look fine" but don't work) don't always point to the cause.</p>
+    <p>Knowing the patterns ahead of time saves hours of debugging. Each mistake here has appeared in earlier lessons; this one collects them in one place so you can recognize the shape of each bug quickly.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-11-18-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// The six categories of common DOM mistakes:
+
+// 1. Wrong selector format
+document.querySelector("btn");            // looks for &lt;btn&gt; tag, not class
+document.getElementById("#title");         // includes # which becomes part of the id
+
+// 2. Using NodeList like one element
+document.querySelectorAll(".item").textContent = "hi";   // doesn't work
+document.querySelectorAll(".item").addEventListener("click", h);   // doesn't work
+
+// 3. Forgetting null checks
+document.querySelector(".missing").textContent = "hi";   // crashes on null
+
+// 4. Timing — running before DOM is ready
+// script in &lt;head&gt; queries body elements → null
+
+// 5. Overwriting structure with textContent/innerHTML
+container.textContent = "Hi";   // wipes any nested elements
+
+// 6. Confusing properties
+input.textContent = "Alex";   // doesn't update an input field — use .value</code></pre>
+    <p>Each category has a fix that's usually one line different from the broken version. The hard part isn't fixing — it's spotting which category your bug falls into.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-11-18-0-2': `
+<pre class="language-javascript"><code class="language-javascript">// Quick reference of the most common mistakes and their fixes:
+
+// SELECTOR FORMAT
+//   querySelector("btn")        → querySelector(".btn") or "#btn"
+//   getElementById("#title")    → getElementById("title")  (no #)
+//   classList.add(".active")    → classList.add("active")  (no .)
+//   case mismatch                → match exactly: "card" not "Card"
+
+// COLLECTION vs ELEMENT
+//   nodeList.textContent = "x"   → nodeList.forEach(el =&gt; el.textContent = "x")
+//   nodeList.classList.add("x")  → forEach + classList.add
+//   querySelector(...)[0]        → querySelector returns ONE; drop the [0]
+
+// NULL HANDLING
+//   el.textContent = "x"         → if (el) el.textContent = "x"
+//   el.method()                  → el?.method()   (optional chaining)
+//   el?.textContent = "x"        → not allowed; use if instead
+
+// TIMING
+//   script in &lt;head&gt; with DOM code  → use defer, end-of-body, or DOMContentLoaded
+
+// OVERWRITES
+//   parent.textContent = "x"     → targets the specific child instead
+//   parent.innerHTML = "x"       → consider textContent for plain text
+
+// PROPERTY CONFUSION
+//   input.textContent for value  → input.value
+//   div.value for text           → div.textContent
+//   el.style.background-color    → el.style.backgroundColor  (camelCase)
+//   el.style.width = 200          → el.style.width = "200px"  (need units)</code></pre>
+    <p>The table above is the quick lookup. The rest of this lesson digs into the most painful versions of each.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-11-18-0-3': `
+    <p><strong>Mistake 1: Wrong selector format.</strong> The single most common typo. Easy to spot once you know to look:</p>
+<pre class="language-javascript"><code class="language-javascript">// querySelector expects CSS selector syntax — needs the . or #
+document.querySelector("btn");          // looks for &lt;btn&gt; element (doesn't exist)
+document.querySelector(".btn");         // ✓ class "btn"
+document.querySelector("#btn");         // ✓ id "btn"
+
+// getElementById takes ONLY the id value — no #
+document.getElementById("#title");      // looks for id="#title"
+document.getElementById("title");       // ✓
+
+// classList methods take class names WITHOUT the dot
+el.classList.add(".active");            // adds literal ".active"
+el.classList.add("active");             // ✓
+
+// case sensitivity bites — JS is case-sensitive
+document.querySelector(".Card");        // misses class="card"
+document.querySelector(".card");        // ✓</code></pre>
+
+    <p><strong>Mistake 2: Treating NodeList like a single element.</strong> The plural/singular mix-up:</p>
+<pre class="language-javascript"><code class="language-javascript">// querySelector returns ONE element (or null)
+const btn = document.querySelector(".btn");
+btn.textContent = "Save";              // ✓ works
+btn.addEventListener("click", save);   // ✓ works
+
+// querySelectorAll returns a NodeList (a collection)
+const items = document.querySelectorAll(".item");
+items.textContent = "Hi";              // ✗ NodeList has no textContent
+items.addEventListener("click", h);    // ✗ NodeList has no addEventListener
+
+// fix: loop
+items.forEach(item =&gt; item.textContent = "Hi");
+items.forEach(item =&gt; item.addEventListener("click", h));
+
+// the reverse mistake:
+const btn = document.querySelector(".btn");
+btn.forEach(b =&gt; ...);                 // ✗ btn is one element, not a list
+// querySelectorAll instead if you need to loop:
+document.querySelectorAll(".btn").forEach(b =&gt; ...);</code></pre>
+
+    <p><strong>Mistake 3: Skipping null checks.</strong> The most common runtime crash:</p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector(".save").addEventListener("click", save);
+// TypeError if .save doesn't exist on this page
+
+// fix options:
+const btn = document.querySelector(".save");
+if (btn) btn.addEventListener("click", save);
+
+// or optional chaining
+document.querySelector(".save")?.addEventListener("click", save);
+
+// querySelectorAll is safe — empty NodeList, not null:
+document.querySelectorAll(".save").forEach(b =&gt; b.addEventListener("click", save));</code></pre>
+
+    <p><strong>Mistake 4: Script runs before the DOM is ready.</strong> The "null even though the element is in the HTML" bug:</p>
+<pre class="language-javascript"><code class="language-javascript">// &lt;head&gt;
+//   &lt;script&gt;
+//     document.getElementById("btn");   // null — body not parsed yet
+//   &lt;/script&gt;
+// &lt;/head&gt;
+
+// fixes:
+// 1. move script to end of body
+// 2. add defer attribute: &lt;script src="..." defer&gt;
+// 3. wait for DOMContentLoaded:
+document.addEventListener("DOMContentLoaded", () =&gt; {
+  document.getElementById("btn").addEventListener("click", h);
+});</code></pre>
+
+    <p><strong>Mistake 5: Overwriting nested elements with <code>textContent</code> or <code>innerHTML</code>.</strong> Targeting too broad:</p>
+<pre class="language-javascript"><code class="language-javascript">// HTML:
+// &lt;button&gt;
+//   &lt;span class="icon"&gt;★&lt;/span&gt;
+//   Save
+// &lt;/button&gt;
+
+document.querySelector("button").textContent = "Saved!";
+// the icon is GONE — replaced by plain text "Saved!"
+
+// fix: target the specific text holder
+// either restructure the HTML to give the text its own wrapper,
+// or use textContent on a more specific child.</code></pre>
+
+    <p><strong>Mistake 6: Wrong property for the element type.</strong> Form fields vs display elements:</p>
+<pre class="language-javascript"><code class="language-javascript">// Form inputs use .value
+input.textContent = "Alex";    // doesn't appear in the input
+input.value = "Alex";           // ✓
+
+// Display elements (p, span, div, h1) use .textContent
+div.value = "Hi";               // does nothing meaningful (no value property)
+div.textContent = "Hi";         // ✓
+
+// Style property uses camelCase, not hyphens
+el.style.background-color = "red";   // SyntaxError
+el.style.backgroundColor = "red";     // ✓
+
+// Style properties need units (mostly)
+el.style.width = 200;            // silently fails
+el.style.width = "200px";        // ✓</code></pre>
+
+    <p><strong>Mistake 7: Adding event listener inside a re-render.</strong> Every re-render adds another handler:</p>
+<pre class="language-javascript"><code class="language-javascript">function render() {
+  document.getElementById("btn").addEventListener("click", save);
+  // every call to render() adds ANOTHER click handler
+  // after 5 renders, one click triggers save 5 times
+}
+
+// fix: attach the listener ONCE, outside the render function:
+document.getElementById("btn").addEventListener("click", save);
+
+function render() {
+  // update the DOM, but don't re-attach the listener
+}</code></pre>
+
+    <p><strong>Mistake 8: Using <code>innerHTML</code> with user input.</strong> XSS risk:</p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector(".result").innerHTML = userInput;
+// if userInput is "&lt;script&gt;alert('XSS')&lt;/script&gt;", the script runs
+
+// fix: use textContent for untrusted content
+document.querySelector(".result").textContent = userInput;
+// any tags appear as literal text — no parsing, no execution.</code></pre>
+
+    <p><strong>Mistake 9: Forgetting that <code>appendChild</code> moves, doesn't copy.</strong> Re-using a reference accidentally:</p>
+<pre class="language-javascript"><code class="language-javascript">const li = document.querySelector("li");
+listA.appendChild(li);
+listB.appendChild(li);
+// li ends up only in listB — it was moved, not copied
+
+// to duplicate, clone first:
+listB.appendChild(li.cloneNode(true));</code></pre>
+
+    <p><strong>Mistake 10: Comparing classes with the wrong API.</strong> Strings vs lists:</p>
+<pre class="language-javascript"><code class="language-javascript">if (el.className === "active") { ... }
+// only true if the ENTIRE class attribute is exactly "active"
+// "active primary" would not match
+
+// fix: use classList.contains
+if (el.classList.contains("active")) { ... }
+// returns true if "active" is in the class list, regardless of other classes</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-11-18-1-0': `
+    <p>Most DOM bugs aren't deep logic errors — they're small slips: a missing dot, a missed null check, a script that ran too early. The errors they produce are usually unhelpful (<code>TypeError: Cannot read property X of null</code>) and don't point at the root cause.</p>
+    <p>Recognizing the patterns ahead of time speeds up debugging massively. Instead of staring at error messages, you can match the symptom to the category, then apply the standard fix.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-11-18-1-1': `
+    <p>Quick checklist when something doesn't work:</p>
+<pre class="language-javascript"><code class="language-javascript">// "Cannot read property X of null"
+//   → null check missing, OR script ran too early
+
+// "addEventListener is not a function"
+//   → using NodeList instead of element, or vice versa
+
+// "InvalidCharacterError"
+//   → passing multiple class names with spaces to classList.add
+
+// "SyntaxError: Unexpected token"
+//   → camelCase vs hyphens in style property names
+
+// element doesn't change visually
+//   → no matching CSS rule for the class you added
+//   → or you targeted the wrong element
+//   → or the style needs units
+
+// click handler fires multiple times
+//   → addEventListener inside a re-render function
+
+// querySelector returns null but element is in HTML
+//   → script ran before DOM was parsed → fix timing
+
+// page appears blank
+//   → innerHTML or textContent wiped a parent that contained important children</code></pre>
+
+    <p>Match the symptom to the cause, apply the fix, move on. Most of these become muscle memory after you've hit them a few times.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-11-18-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Always check for null before using a query result
+const el = document.querySelector(".x");
+if (el) el.classList.add("active");
+// or
+document.querySelector(".x")?.classList.add("active");
+
+// Always loop NodeLists, never call methods directly
+document.querySelectorAll(".item").forEach(el =&gt; el.classList.add("ready"));
+
+// Always include the . or # for class/id selectors
+document.querySelector(".btn");
+document.querySelector("#title");
+
+// Always omit the . or # for classList methods
+el.classList.add("btn");
+
+// Always use .value for form fields
+input.value = "Alex";
+
+// Always use textContent for display elements (not value)
+div.textContent = "Hello";
+
+// Always wait for DOM if script is in &lt;head&gt;
+document.addEventListener("DOMContentLoaded", initApp);
+
+// Always use camelCase for style properties
+el.style.backgroundColor = "red";
+
+// Always include units for size/position
+el.style.width = "200px";
+
+// Always attach event listeners ONCE, not inside re-renders
+document.querySelector("#btn").addEventListener("click", save);
+
+// Always escape or use textContent for untrusted input
+el.textContent = userInput;
+
+// Always cloneNode if you want a duplicate (not just to move)
+const copy = original.cloneNode(true);</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-11-18-1-3': `
+    <p>Almost every DOM bug fits into one of a handful of categories. A query returned <code>null</code> and you didn't check. A NodeList got treated like a single element. A script ran before the elements were on the page. A property name was misspelled. A textContent assignment wiped out child elements you needed.</p>
+    <p>The mistakes aren't inherently hard — they just sneak past beginners because the error messages are usually generic. Once you've seen each category once, the patterns become obvious. The next time a "Cannot read property X of null" comes up, you'll instinctively check whether the selector matched anything.</p>
+    <p>Build the habits early: always check for null, always loop NodeLists, always include selector prefixes, always wait for the DOM if your script might run early. Doing these by default means you almost never hit the bugs in the first place.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-11-18-1-4': `
+    <p>Picture a small set of trapdoors scattered across the DOM landscape. Each one is a common mistake — the null-not-checked door, the NodeList-mistaken-for-element door, the script-ran-too-early door. You don't avoid them by being smart; you avoid them by knowing exactly where they are and stepping around them by habit.</p>
+    <p>Most DOM bugs that frustrate beginners are someone stepping on one of these trapdoors for the first time. Once you've fallen in once, you remember where it is, and you don't fall in again. Reading through the mistakes here is like getting a map of where the trapdoors are before you start walking.</p>
+    <p>The fixes are the steady ground next to each trapdoor. <code>if (el)</code> is the floorboard around the null door. <code>forEach</code> is the path around the NodeList door. <code>defer</code> and <code>DOMContentLoaded</code> are the bridge over the timing door. Walk those paths until they're automatic, and the bugs disappear.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-11-18-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// A debugging walkthrough using the mistake categories.
+
+// Symptom: "my code doesn't work"
+// 1. Open DevTools console — is there an error message?
+//    - "Cannot read property X of null" → mistake category #3 (null) or #4 (timing)
+//    - "X is not a function" → mistake category #2 (NodeList vs element)
+//    - "InvalidCharacterError" → mistake category #1 (selector format)
+//    - SyntaxError → typo (camelCase, hyphens, etc.)
+
+// 2. No error, but nothing happens visually?
+//    - did the class actually get added? → check el.classList in console
+//    - does the CSS rule match? → DevTools Elements panel
+//    - is the element actually on the page? → document.body.contains(el)
+//    - did textContent/innerHTML wipe something? → check el.children before/after
+
+// 3. Event handler fires too many times?
+//    - check if addEventListener is in a re-render path
+//    - is the same handler being added multiple times?
+
+// 4. Form field doesn't update?
+//    - are you using .value instead of .textContent? (yes, .value for inputs)
+
+// 5. Element shows up but in the wrong place?
+//    - appendChild adds at the END
+//    - prepend at the start
+//    - before/after for specific positions
+
+// 6. Element from createElement isn't visible?
+//    - did you actually call appendChild after createElement?
+
+// each symptom matches a mistake category. each category has a known fix.
+// over time, this becomes second nature — you read the symptom, you know the fix.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-11-18-2-0': `
+    <p>The fastest debugging approach for DOM code: paste the same selector into the DevTools console:</p>
+<pre class="language-javascript"><code class="language-javascript">// in the browser console:
+document.querySelector(".whatever");
+// returns the element or null — tells you immediately if the selector works.
+
+// if it returns the element in the console but null in your script:
+//   → timing issue. your script runs before the element exists.
+//   → fix with defer, end-of-body, or DOMContentLoaded.
+
+// if it returns null in BOTH:
+//   → selector is wrong. typo, missing prefix, case mismatch, or element doesn't exist.
+
+// if it returns multiple elements but your code expects one:
+//   → narrow the selector, or use querySelectorAll properly.</code></pre>
+
+    <p>The DevTools Elements panel shows the live DOM — useful when "view source" doesn't match what's on the page (because JavaScript modified it). If a class is "missing" but you added it, check the Elements panel to confirm it's actually there.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-11-18-2-1': `
+    <p>Most DOM mistakes are mechanical — they have nothing to do with the logic of your code. A missing dot, a wrong property name, a forgotten null check. They feel mysterious because the error messages are vague, but the underlying issues are small and consistent.</p>
+    <p>Once you've seen each category once or twice, you'll start to recognize the symptoms before you even read the error message. "querySelector returns null on an element that's in the HTML?" → timing or selector typo. "addEventListener is not a function?" → you have a NodeList, not an element. The diagnosis becomes faster, and the bugs themselves become rarer as the defensive habits become automatic.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-11-18-2-2': `
+    <p><strong>Confusion: "I'm sure my selector is right but it returns null"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// almost always one of:
+// 1. Case sensitivity — class "Card" vs ".card"
+// 2. Missing the prefix — querySelector("btn") instead of ".btn"
+// 3. Whitespace inside the class name — class="big btn" vs querySelector(".big.btn")
+//    (note: ".big btn" with a space means ".btn INSIDE .big", different meaning)
+// 4. Script ran before the element was parsed (timing)
+// 5. Element is inside an iframe or Shadow DOM (different document tree)
+
+// debug: paste the selector into DevTools console.
+// if it returns null there too → selector wrong.
+// if it returns an element → your script's timing is off.</code></pre>
+
+    <p><strong>Confusion: "my class adds work, but no visual change"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// most likely:
+// 1. CSS rule doesn't exist for the class you added
+// 2. CSS rule exists but specificity is too low (another rule wins)
+// 3. CSS file isn't loaded
+// 4. Element is hidden by a parent (display: none on an ancestor)
+
+// debug: in DevTools Elements panel, click the element and check Styles tab.
+// it shows every rule that applies, including overrides.</code></pre>
+
+    <p><strong>Confusion: "I added an event listener but it fires multiple times"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// almost always: addEventListener is being called multiple times.
+// each call adds another handler.
+
+// common cause: addEventListener inside a function that runs more than once
+function render() {
+  document.getElementById("save").addEventListener("click", save);
+  // every call adds another handler
+}
+render();   // 1 handler
+render();   // 2 handlers
+render();   // 3 handlers
+// one click now triggers save 3 times
+
+// fix: attach the listener ONCE, outside the function
+document.getElementById("save").addEventListener("click", save);
+
+// or use event delegation on a stable parent that doesn't re-render</code></pre>
+
+    <p><strong>Confusion: "innerHTML replaced my structure"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// innerHTML completely REPLACES the element's contents — including any
+// children with event listeners attached.
+
+document.getElementById("list").innerHTML = "&lt;li&gt;new&lt;/li&gt;";
+// any existing &lt;li&gt; elements are gone
+// any addEventListener calls on those elements are dead
+
+// fix: use appendChild/append to add without wiping, or use event delegation</code></pre>
+
+    <p><strong>Confusion: "I set style.X but nothing happened"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// usually one of:
+// 1. wrong property name (hyphens instead of camelCase)
+//    el.style.background-color → SyntaxError
+//    el.style.backgroundColor → ✓
+//
+// 2. forgot the units
+//    el.style.width = 200       → silently fails
+//    el.style.width = "200px"   → ✓
+//
+// 3. CSS more specific than inline style — rare, but possible
+//    (look for !important in stylesheet)
+//
+// 4. element isn't display: block (transforms, widths often need block-like display)</code></pre>
+
+    <p><strong>Confusion: "I checked but it's still null somehow"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">
+// the variable might have been NULL at one point, but other code reassigned it.
+// or the element existed when you queried but was removed before you used the reference.
+
+// most common pattern that confuses people:
+const btn = document.querySelector(".btn");
+// ... later, after some event:
+btn.classList.add("active");   // crashes
+// because btn was null when querySelector ran (DOM not ready),
+// OR because the element was removed by other code.
+
+// always check at the moment of use, not just at the moment of query.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-11-18-2-3': `
+<pre class="language-javascript"><code class="language-javascript">document.querySelector("btn");
+// looks for &lt;btn&gt; tag
+// fix: add the prefix
+document.querySelector(".btn");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.querySelectorAll(".item").textContent = "Hi";
+// NodeList has no textContent
+// fix: loop
+document.querySelectorAll(".item").forEach(el =&gt; el.textContent = "Hi");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.querySelector(".missing").textContent = "Hi";
+// crashes when null
+// fix: check first
+const el = document.querySelector(".missing");
+if (el) el.textContent = "Hi";
+// or:
+document.querySelector(".missing")?.textContent = "Hi";   // SyntaxError on assignment
+// (use if-check for assignments)</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Script in &lt;head&gt; without defer
+// &lt;head&gt;&lt;script&gt;document.getElementById("btn").click()&lt;/script&gt;&lt;/head&gt;
+// crashes — DOM not parsed yet
+// fix: use defer or DOMContentLoaded</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.querySelector("button").textContent = "Saved!";
+// HTML had &lt;button&gt;&lt;span class="icon"&gt;★&lt;/span&gt;Save&lt;/button&gt;
+// the icon span is gone
+// fix: target the specific text holder, or rebuild structure</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">input.textContent = "Alex";
+// inputs use .value
+// fix:
+input.value = "Alex";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.style.background-color = "red";
+// SyntaxError — hyphens not valid in identifiers
+// fix:
+el.style.backgroundColor = "red";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.style.width = 200;
+// silently fails — needs units
+// fix:
+el.style.width = "200px";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function render() {
+  document.getElementById("btn").addEventListener("click", save);
+}
+// each render() adds ANOTHER handler
+// fix: attach once outside render</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.innerHTML = userInput;
+// XSS risk if userInput is from a user
+// fix: use textContent
+el.textContent = userInput;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">listA.appendChild(li);
+listB.appendChild(li);
+// li moves to listB; not in both
+// fix: clone if you want duplicates
+listB.appendChild(li.cloneNode(true));</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">if (el.className === "active") { ... }
+// only matches if class attribute is EXACTLY "active"
+// fix: use classList.contains
+if (el.classList.contains("active")) { ... }</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.classList.add(".active");
+// adds class ".active" (with dot), not "active"
+// fix: drop the dot
+el.classList.add("active");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">el.classList.add("btn primary");
+// throws InvalidCharacterError
+// fix: separate arguments
+el.classList.add("btn", "primary");</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.getElementById("#title");
+// "#" becomes part of the id being searched
+// fix:
+document.getElementById("title");</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-11-18-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// SAFE PATTERNS for everyday DOM code
+
+// Always check for null
+const el = document.querySelector(".x");
+if (el) el.textContent = "hi";
+
+// Or optional chaining for method calls
+document.querySelector(".x")?.classList.add("active");
+
+// Loop NodeLists, don't call methods directly
+document.querySelectorAll(".item").forEach(el =&gt; el.classList.add("ready"));
+
+// Use the right selector prefix
+document.querySelector(".btn");        // class
+document.querySelector("#title");       // id
+document.querySelector("button");       // tag
+
+// Use the right property type
+input.value = "Alex";                   // form field
+div.textContent = "Hello";              // display element
+
+// Camel case for style properties
+el.style.backgroundColor = "red";
+el.style.fontSize = "16px";
+
+// Include units
+el.style.width = "200px";
+el.style.left = mouseX + "px";
+
+// Always defer or wait for DOM
+document.addEventListener("DOMContentLoaded", () =&gt; {
+  // safe to query DOM here
+});
+
+// Attach event listeners ONCE
+document.getElementById("btn").addEventListener("click", save);
+
+// Use event delegation for dynamic content
+document.querySelector("ul").addEventListener("click", e =&gt; {
+  if (e.target.matches("li")) handleClick(e.target);
+});
+
+// Use textContent for untrusted input
+el.textContent = userInput;
+
+// Use innerHTML only for trusted, structured content
+el.innerHTML = "&lt;strong&gt;" + escapeHTML(name) + "&lt;/strong&gt;";
+
+// Clone before appending if you want duplicates
+listB.appendChild(li.cloneNode(true));
+
+// classList.contains for membership checks
+if (el.classList.contains("active")) { ... }
+
+// Use forEach (or for...of) on collections
+document.querySelectorAll(".x").forEach(el =&gt; el.classList.add("y"));
+
+// Target the deepest specific element when updating text
+document.querySelector(".btn .label").textContent = "Save";
+
+// Avoid wiping structure unintentionally
+const btn = document.querySelector(".btn");
+btn.querySelector(".label").textContent = "Save";   // ✓ targeted
+// NOT: btn.textContent = "Save"   // ✗ wipes children</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-11-18-3-1': `
+    <p><strong>Example: defensive query helpers</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// utility: query inside a parent, return null safely
+function $(selector, parent = document) {
+  return parent.querySelector(selector);
+}
+function $$(selector, parent = document) {
+  return parent.querySelectorAll(selector);
+}
+
+// usage with null-safe access
+const card = $(".card");
+const title = $(".title", card);
+if (title) title.textContent = "Updated";
+
+// $$ never returns null — safe to forEach directly
+$$(".item").forEach(el =&gt; el.classList.add("ready"));
+// covers most query patterns with built-in safety.</code></pre>
+
+    <p><strong>Example: setup wrapped in DOMContentLoaded</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function init() {
+  document.querySelector("#save")?.addEventListener("click", save);
+  document.querySelectorAll(".tab").forEach(t =&gt; {
+    t.addEventListener("click", () =&gt; selectTab(t));
+  });
+}
+
+if (document.readyState !== "loading") {
+  init();
+} else {
+  document.addEventListener("DOMContentLoaded", init);
+}
+// handles both "script loaded eagerly" and "DOM already ready" cases.</code></pre>
+
+    <p><strong>Example: safe text update inside a button</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function setButtonLabel(btn, text) {
+  if (!btn) return;
+  const label = btn.querySelector(".label");
+  if (label) {
+    label.textContent = text;
+  } else {
+    btn.textContent = text;   // fallback — overwrites everything
+  }
+}
+// targets the .label child first to preserve any icons or other elements.
+// only wipes the whole button as a last resort.</code></pre>
+
+    <p><strong>Example: event delegation for dynamic content</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector(".todo-list").addEventListener("click", e =&gt; {
+  if (e.target.matches(".delete-btn")) {
+    e.target.closest(".todo")?.remove();
+  }
+});
+// one listener on the parent handles clicks from any current or future child.
+// no need to attach listeners every time a new todo is added.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-11-18-3-2': `
+    <ul>
+      <li><strong>Selector format</strong> → covered in 3.12.5; the source of most "selector returns null" bugs</li>
+      <li><strong>NodeList vs Element</strong> → covered in 3.12.7 and 3.12.8</li>
+      <li><strong>Null handling</strong> → covered in 3.12.18; the universal defensive habit</li>
+      <li><strong>DOM loaded timing</strong> → covered in 3.12.17; the "script ran too early" category</li>
+      <li><strong>textContent vs innerHTML</strong> → covered in 3.12.9</li>
+      <li><strong>style vs classList</strong> → covered in 3.12.10</li>
+      <li><strong>Form inputs (.value)</strong> → distinct from textContent</li>
+      <li><strong>Event delegation</strong> → solves "listener fires multiple times after re-render"</li>
+      <li><strong>cloneNode</strong> → covered in 3.12.15; for duplicate-not-move</li>
+      <li><strong>DevTools</strong> → the diagnostic tool for almost every DOM bug</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-11-18-3-3': `
+    <ul>
+      <li>Selector format</li>
+      <li>NodeList vs Element</li>
+      <li>Null handling and optional chaining</li>
+      <li>DOM loaded timing</li>
+      <li>textContent vs innerHTML</li>
+      <li>style vs classList</li>
+      <li>Form inputs (.value)</li>
+      <li>Event delegation</li>
+      <li><code>cloneNode</code></li>
+      <li>DevTools Elements panel</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.12.20 DOM → debugging DOM
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-11-19-0-0': `
+    <p><strong>Debugging the DOM</strong> is the practice of figuring out why something on the page isn't behaving the way you expect — and using the tools the browser gives you to find out. There are four core moves: log values to the console, check for null, inspect the live HTML with DevTools, and verify your selectors actually match elements.</p>
+    <p>Most DOM bugs aren't deep; they're small mismatches between what your code assumes and what the page actually contains. Knowing how to <em>look</em> at what the page contains — instead of guessing — is what separates "I'll get this in 30 seconds" from "I've been stuck for an hour."</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-11-19-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// 1. console.log the result of any query — see what you actually got
+console.log(document.querySelector(".target"));
+// → an element, or null
+
+// 2. log the value of a property you're trying to use
+const el = document.querySelector(".target");
+console.log(el?.textContent, el?.className);
+
+// 3. log inside an event handler to confirm it fires
+btn.addEventListener("click", e =&gt; {
+  console.log("clicked", e.target);
+});
+
+// 4. paste the selector into DevTools to verify
+// (in the browser console:)
+document.querySelectorAll(".my-class")
+// shows what your selector matches, instantly.
+
+// 5. inspect the live DOM via the Elements panel
+// right-click the page → Inspect → Elements
+// shows what JavaScript can see RIGHT NOW (not the original HTML).</code></pre>
+    <p>The first place to look is almost always "what does the page actually contain?" — and the second is "what does my code think it contains?" Bugs hide in the gap between those two answers.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-11-19-0-2': `
+<pre class="language-javascript"><code class="language-javascript">// The DOM debugging toolkit:
+//
+// 1. console.log() — print the value of any variable or expression
+//    use it on query results, event targets, property values
+//
+// 2. console.dir() — print the OBJECT structure (good for elements)
+//    shows all properties, not just the HTML representation
+//
+// 3. console.table() — print arrays/NodeLists as tables
+//    useful for inspecting NodeList contents quickly
+//
+// 4. DevTools Elements panel — the live DOM
+//    right-click element → Inspect → shows the current state, not the source HTML
+//
+// 5. DevTools Console — paste any expression to run it on the page
+//    document.querySelectorAll(".x") tests selectors instantly
+//
+// 6. DevTools Sources panel — set breakpoints on lines of code
+//    pause execution, inspect variables, step through code
+//
+// 7. $ and $$ shortcuts in the console
+//    $(".x") is the same as document.querySelector(".x")
+//    $$(".x") is the same as document.querySelectorAll(".x")
+//
+// the four debugging questions:
+//   - did my selector match anything?
+//   - is the element actually on the page at this moment?
+//   - are the property names spelled correctly?
+//   - did my code run at the right time?</code></pre>
+    <p>You don't need all of these for every bug. Most are solved with <code>console.log</code> plus the Elements panel. The others are there when you need them.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-11-19-0-3': `
+    <p><strong><code>console.log</code> is the workhorse.</strong> Pass anything — variables, expressions, objects, elements. The console renders elements in a clickable, expandable form:</p>
+<pre class="language-javascript"><code class="language-javascript">const el = document.querySelector(".target");
+console.log(el);
+// → &lt;div class="target"&gt;...&lt;/div&gt;   (clickable in DevTools)
+
+// log multiple values with labels:
+console.log("element:", el, "text:", el?.textContent);
+
+// log objects:
+console.log({ el, text: el?.textContent, classes: el?.className });
+// the {} wrapper shows variable names next to their values — easier to scan.</code></pre>
+
+    <p><strong><code>console.dir</code> shows the element as an object, not as HTML.</strong> Useful for inspecting properties:</p>
+<pre class="language-javascript"><code class="language-javascript">const el = document.querySelector(".btn");
+
+console.log(el);
+// shows: &lt;button class="btn"&gt;Save&lt;/button&gt;  (HTML view)
+
+console.dir(el);
+// shows: { textContent: "Save", classList: DOMTokenList(1), id: "", ... }
+// object view — see every property the element has.</code></pre>
+
+    <p><strong><code>console.table</code> for arrays and NodeLists.</strong> Renders as a sortable table:</p>
+<pre class="language-javascript"><code class="language-javascript">const items = document.querySelectorAll(".item");
+
+// instead of:
+console.log(items);
+// you can do:
+console.table([...items].map(el =&gt; ({
+  text: el.textContent,
+  classes: el.className,
+  id: el.id,
+})));
+// shows a table with one row per item — fast scan, sortable columns.</code></pre>
+
+    <p><strong>The DevTools Elements panel shows the LIVE DOM, not the source HTML.</strong> Critical distinction:</p>
+<pre class="language-javascript"><code class="language-javascript">// "View Source" (Ctrl+U) → the HTML file as it came from the server
+//                          → does NOT reflect JavaScript changes
+
+// DevTools Elements panel → the live, current DOM
+//                          → reflects every JavaScript change in real time
+
+// when your JavaScript adds/removes/modifies elements, the Elements panel updates.
+// View Source stays the same — it's the snapshot from page load.
+
+// rule: to see what JavaScript can actually find, use the Elements panel.</code></pre>
+
+    <p><strong>The DevTools Console accepts any JavaScript — including DOM queries.</strong> The fastest way to verify a selector:</p>
+<pre class="language-javascript"><code class="language-javascript">// in the browser console (paste these in directly):
+document.querySelector(".my-button")
+// → returns the element, or null
+// → null means the selector didn't match
+
+document.querySelectorAll(".my-button")
+// → NodeList of all matches
+// → length 0 means no matches
+
+// shortcuts the browser provides (console-only — NOT in your scripts):
+$(".my-button")          // same as document.querySelector
+$$(".my-button")          // same as document.querySelectorAll
+$0                         // the last element you inspected in Elements panel</code></pre>
+
+    <p><strong>Breakpoints pause your code mid-execution.</strong> Set them in the Sources panel by clicking a line number:</p>
+<pre class="language-javascript"><code class="language-javascript">// in your code:
+function handleClick(e) {
+  const target = e.target;
+  // ← click on this line number in DevTools Sources panel to set a breakpoint
+  const value = target.textContent;
+  process(value);
+}
+
+// when the breakpoint hits:
+//   - execution pauses BEFORE the line runs
+//   - DevTools shows you the values of all local variables
+//   - you can step line-by-line with the controls (F10 = next, F11 = step into)
+//   - or resume normal execution (F8)
+
+// alternative: put debugger; in your code
+function handleClick(e) {
+  debugger;   // pauses here automatically when DevTools is open
+  // ...
+}</code></pre>
+
+    <p><strong><code>console.log</code> in event handlers tells you whether they fire and what their arguments are.</strong> The most common bug-finding move:</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", e =&gt; {
+  console.log("button clicked");
+  console.log("target:", e.target);
+  console.log("currentTarget:", e.currentTarget);
+});
+
+// if nothing logs when you click:
+//   - the listener never attached (timing? null element?)
+//   - or you're clicking a different element than you think
+
+// if "button clicked" logs but the next line doesn't:
+//   - the next line throws an error (check console for red text)</code></pre>
+
+    <p><strong>For repeated logs in loops, use labels.</strong> Otherwise the console fills up and you can't tell which iteration is which:</p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelectorAll(".item").forEach((el, i) =&gt; {
+  console.log("item", i, ":", el.textContent);
+});
+// each log identifies its iteration — much easier to scan than a wall of bare text.</code></pre>
+
+    <p><strong>Check <code>document.readyState</code> when timing might be the issue.</strong> Tells you the loading phase:</p>
+<pre class="language-javascript"><code class="language-javascript">console.log(document.readyState);
+//   "loading"     → still parsing the HTML; DOM not fully built
+//   "interactive" → DOM is built (DOMContentLoaded fired)
+//   "complete"    → everything loaded (images, CSS, etc.)
+
+// if your selector returns null AND readyState is "loading":
+//   → that's the bug. wait for DOMContentLoaded, or use defer.</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-11-19-1-0': `
+    <p>DOM bugs aren't usually mysterious — they're invisible. Your code looks right, your HTML looks right, but the page doesn't behave the way you expect. Without tools to look inside, you'd be guessing.</p>
+    <p>The browser's debugging tools make the invisible visible. The Elements panel shows the live DOM. The console runs any expression instantly. <code>console.log</code> shows the actual values your code is working with. Once you can see what's really happening, the bug usually becomes obvious within seconds.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-11-19-1-1': `
+    <p>For any DOM bug, a few quick checks usually find the cause:</p>
+<pre class="language-javascript"><code class="language-javascript">// Step 1: log the result of the query
+const el = document.querySelector(".target");
+console.log(el);
+//   → null? selector is wrong, or element not in DOM yet
+//   → element? selector works; problem is elsewhere
+
+// Step 2: log right before the failing operation
+console.log(el, el.textContent);
+el.textContent = "Hi";
+
+// Step 3: paste the selector into DevTools console
+//   document.querySelectorAll(".target")
+//   confirms what your code sees at THIS moment
+
+// Step 4: open Elements panel, find the element by hand
+//   - is it actually there?
+//   - does it have the class/id you expect?
+//   - is it inside an iframe or shadow DOM?
+
+// Step 5: check readyState if a timing issue is possible
+console.log(document.readyState);
+
+// in 9 out of 10 cases, one of those five reveals the problem.</code></pre>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-11-19-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Log a value
+console.log(el);
+
+// Log multiple values together
+console.log(el, el?.textContent, el?.className);
+
+// Log with labels via object shorthand
+console.log({ el, text: el?.textContent });
+
+// Log inside an event handler
+btn.addEventListener("click", e =&gt; {
+  console.log("clicked:", e.target);
+});
+
+// Log inside a loop with iteration index
+document.querySelectorAll(".item").forEach((el, i) =&gt; {
+  console.log("item", i, el.textContent);
+});
+
+// Use console.dir for object inspection
+console.dir(el);
+
+// Use console.table for arrays
+console.table([...items].map(el =&gt; ({ text: el.textContent })));
+
+// Pause execution
+debugger;   // breakpoint via code
+
+// Check loading state
+console.log(document.readyState);
+
+// Verify a selector in DevTools console
+// (paste in browser console)
+$(".my-class")
+$$(".my-class")
+
+// Inspect the last clicked element
+// (in DevTools Elements panel, right-click → "Store as global variable" → temp1)
+// then in console: console.log(temp1)
+
+// Check if an element is on the page
+console.log(document.body.contains(el));
+
+// Visually identify an element in the console
+el.style.outline = "2px solid red";   // temporary visual marker for debugging
+
+// Count event listeners on an element
+// (DevTools console only)
+getEventListeners($0);   // shows handlers registered on the last-inspected element</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-11-19-1-3': `
+    <p>Debugging the DOM is about looking at what's actually happening, not what you assume is happening. Your code has a mental model of the page; the page has its own reality. Bugs live in the gap between them.</p>
+    <p>The fastest tools are <code>console.log</code> (print any value to see it) and the DevTools Elements panel (see the live DOM as the browser sees it). With those two, you can answer almost every "why isn't this working" question: log the variable to confirm what your code thinks; inspect the element to confirm what's actually on the page; compare the two; the difference is the bug.</p>
+    <p>For trickier problems, breakpoints let you pause your code mid-execution and inspect every variable. <code>console.dir</code> shows an element as an object instead of HTML. <code>console.table</code> renders arrays clearly. Most days you'll only use <code>console.log</code> and the Elements panel; the rest are there when you need them.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-11-19-1-4': `
+    <p>Picture your code and the actual DOM as two notebooks. Your code says "the button has class 'save'" — that's in its notebook. The DOM says "I have a button with class 'save_btn'" — that's in its notebook. When you read your code, you trust your notebook. When the bug shows up, the truth is in the other notebook.</p>
+    <p>Debugging is opening both notebooks side by side and reading the same line aloud. <code>console.log</code> reads from your notebook ("here's what I'm working with"). The Elements panel reads from the DOM's notebook ("here's what's actually on the page"). When the two lines don't match, you've found the bug.</p>
+    <p>The skill isn't memorizing tools — it's developing the instinct to <em>look</em> instead of guess. Every "why isn't this working?" is really "show me what's happening." Log the variable. Open the Elements panel. Paste the selector into the console. The bug usually surfaces within 30 seconds once you start looking.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-11-19-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// THE BUG: clicking the save button does nothing.
+
+// the code:
+document.querySelector(".save-button").addEventListener("click", () =&gt; {
+  console.log("saving...");
+  saveData();
+});
+
+// step by step debugging:
+
+// 1. open the browser console — is there an error message?
+//    if yes: read it. usually points to the line. fix and try again.
+//    if no: keep going.
+
+// 2. is the listener even attached? log inside the handler:
+document.querySelector(".save-button").addEventListener("click", () =&gt; {
+  console.log("CLICKED — listener fired");
+  saveData();
+});
+// click the button:
+//    - "CLICKED" logs? → listener is attached, problem is in saveData
+//    - nothing logs? → listener isn't attached
+
+// 3. if nothing logs, check the selector:
+console.log(document.querySelector(".save-button"));
+// null? → wrong selector or timing issue
+
+// 4. paste the selector into DevTools console:
+document.querySelector(".save-button")
+// also null? → selector is wrong. inspect the button in Elements panel to see its real class.
+// returns the element? → script ran before the button existed. fix with DOMContentLoaded or defer.
+
+// 5. if selector returns an element here but null in your code:
+//    open the script. is it in &lt;head&gt; without defer?
+//    add defer or wrap in DOMContentLoaded.
+
+// step by step, each check rules out a possible cause:
+//   - selector wrong?
+//   - element not yet on page?
+//   - listener attached but handler errors?
+//   - handler runs but saveData fails?
+// within a few minutes, the actual cause is identified.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-11-19-2-0': `
+    <p>The single most useful debugging move: <strong>log the result of every <code>querySelector</code> before you use it.</strong> One line tells you whether the bug is in the query or somewhere downstream:</p>
+<pre class="language-javascript"><code class="language-javascript">const el = document.querySelector(".save");
+console.log("query result:", el);
+// null      → bug is in the query (or timing)
+// element   → bug is somewhere AFTER this line
+
+// then comment out the log when you're done.</code></pre>
+
+    <p>The second most useful move: <strong>paste the same selector into the DevTools console.</strong> If it returns an element there but null in your code, the issue is timing — your script ran before the element existed.</p>
+
+    <p>The third: <strong>open the Elements panel and inspect the element your code is targeting.</strong> Does it really have the class you think it does? Is it really inside the parent you assumed? Live inspection beats guessing every time.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-11-19-2-1': `
+    <p>Debugging isn't a mysterious skill — it's a habit of looking at what's actually happening instead of trusting your assumptions. The browser gives you direct access to every piece of state on the page; you just have to use it. <code>console.log</code> shows your variables. The Elements panel shows the live DOM. The console runs arbitrary JS instantly. Three tools, and they cover almost every DOM bug you'll ever hit.</p>
+    <p>Over time, the order of operations becomes automatic. Log the query result. Check for null. Paste the selector into the console. Inspect the element. The first one that surprises you is your bug. Five minutes from "something's wrong" to "found it" — once the habits are wired in.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-11-19-2-2': `
+    <p><strong>Confusion: "View Source" vs Elements panel</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// View Source (Ctrl+U) → the ORIGINAL HTML file from the server
+//                       → JavaScript modifications are NOT reflected
+
+// DevTools → Elements → the LIVE DOM
+//                       → updates in real time as JS modifies the page
+
+// if your JS added a class, you'll see it in Elements but NOT in View Source.
+// always use Elements for debugging dynamic UI.</code></pre>
+
+    <p><strong>Confusion: console.log shows the wrong value</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// for OBJECTS (including DOM elements), the console can be "lazy" —
+// it shows the current state when you EXPAND the entry, not when it was logged.
+
+let el = document.querySelector(".x");
+console.log(el);
+el.classList.add("highlight");
+// open the logged entry later → it shows "highlight" class even though
+// it didn't have it when console.log ran
+
+// fix for "frozen" snapshots: log primitives or stringify
+console.log(el.className);   // string — captured at log time
+console.log(JSON.stringify({ classes: el.className }));</code></pre>
+
+    <p><strong>Confusion: "my breakpoint doesn't pause"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// possible reasons:
+// 1. DevTools wasn't open when the script ran
+// 2. the breakpoint is on a line that doesn't actually execute
+// 3. the file was cached — try a hard reload (Cmd+Shift+R / Ctrl+Shift+R)
+// 4. the code is in an iframe with different origin — limited debugging
+
+// alternative: use the debugger; statement
+function suspect() {
+  debugger;   // pauses here whenever DevTools is open
+  // ...
+}</code></pre>
+
+    <p><strong>Confusion: thinking a console error means your code crashed</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// some errors do crash the script (TypeError, ReferenceError).
+// others are non-fatal warnings (CORS issues, deprecated APIs, etc.)
+
+// when you see red in the console:
+//   - read the message
+//   - click the file:line link to jump to the source
+//   - check if it's actually relevant to your bug or just unrelated noise</code></pre>
+
+    <p><strong>Confusion: "no error, but it's still broken"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// not all bugs throw errors. silent bugs:
+//   - the wrong text is showing (no error, just wrong content)
+//   - a class was added but no CSS matches it
+//   - an event listener was attached but to the wrong element
+//   - innerHTML wiped a child element you didn't realize was there
+
+// fix: console.log + Elements panel inspection. silent bugs become visible
+// once you compare what your code did vs what's on the page.</code></pre>
+
+    <p><strong>Confusion: "the console shows my changes, but the page doesn't"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// possible reasons:
+// 1. you ran the code in the console but it didn't actually attach to the page
+//    (e.g., variable in console doesn't reference an on-page element)
+// 2. CSS is hiding it (display: none, opacity: 0, off-screen)
+// 3. an ancestor is hidden, so the element you modified is hidden by inheritance
+
+// fix: use getComputedStyle to see the rendered values
+console.log(getComputedStyle(el).display, getComputedStyle(el).color);</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-11-19-2-3': `
+<pre class="language-javascript"><code class="language-javascript">// Skipping logs entirely and guessing
+el.textContent = newValue;
+// crashes — el was null
+// fix: log first
+const el = document.querySelector(".x");
+console.log(el);
+if (el) el.textContent = newValue;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Logging too late (after the operation that fails)
+el.textContent = "Hi";   // crashes here
+console.log(el);          // never runs
+// fix: log BEFORE the suspect line
+console.log(el);
+el.textContent = "Hi";</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Trusting "View Source" for current DOM state
+// it shows the original HTML, not your JS changes
+// fix: use Elements panel for live DOM</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Looking only at the console, not the Elements panel
+// console.log might say everything's fine, but the page itself reveals styling/structure bugs
+// fix: inspect the element visually in the Elements panel</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Forgetting to remove debug code
+console.log("here", el);
+console.log("here too");
+debugger;
+// fix: remove or comment out debug logs before deploying
+// many editors have a shortcut for "delete all console.log calls"</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Using alert() to debug
+alert(el.textContent);
+// blocks the UI, hard to read multi-line, no inspection
+// fix: use console.log — non-blocking, expandable, copy/pasteable</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Logging objects by reference, expecting a snapshot
+const data = { count: 1 };
+console.log(data);
+data.count = 99;
+// expanding the log later shows count: 99 (not 1!)
+// fix: capture a snapshot
+console.log(JSON.stringify(data));
+// or:
+console.log({ ...data });   // shallow copy</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Setting breakpoints inside loops that fire 1000 times
+// you'll be pausing forever
+// fix: use conditional breakpoints (right-click breakpoint → Edit breakpoint)
+// add a condition like: i === 5
+// only pauses on the 5th iteration</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Searching the console wall for the relevant log
+console.log(el);
+// dozens of similar logs from other code
+// fix: label your logs
+console.log("[saveButton]", el);
+// then filter the console by your label</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Forgetting DevTools has its own JavaScript environment
+// the console can run any code, including queries
+// $('.x'), $$('.x'), $0 (last inspected element) — built in
+// not available in your scripts, only in the console</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-11-19-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Quick log
+console.log(el);
+
+// Log with label
+console.log("[setupForm]", el);
+
+// Multiple values
+console.log(el, el?.textContent, el?.className);
+
+// Log object shorthand (variable name as label)
+console.log({ el, text: el?.textContent });
+
+// Log inside a loop
+document.querySelectorAll(".item").forEach((el, i) =&gt; {
+  console.log("item", i, el);
+});
+
+// Log inside an event handler
+btn.addEventListener("click", e =&gt; {
+  console.log("click target:", e.target);
+});
+
+// console.dir for object inspection
+console.dir(el);
+
+// console.table for arrays/lists
+console.table([...items].map(el =&gt; ({ text: el.textContent, classes: el.className })));
+
+// Conditional log
+if (!el) console.warn("Element not found");
+
+// debugger statement
+function suspect() {
+  debugger;   // pauses if DevTools is open
+}
+
+// Check if an element exists on the page
+console.log(document.body.contains(el));
+console.log(el.isConnected);
+
+// Check the loading state
+console.log(document.readyState);
+
+// Visually highlight an element for debugging
+el.style.outline = "2px solid red";
+
+// Get computed styles
+console.log(getComputedStyle(el).color);
+console.log(getComputedStyle(el).display);
+
+// Find listeners on an element (DevTools console only)
+// getEventListeners($0);
+
+// Snapshot an object for later
+console.log(JSON.stringify(data));
+
+// Stack trace
+console.trace("got here");
+
+// Time a block of code
+console.time("loop");
+for (let i = 0; i &lt; 1000; i++) { ... }
+console.timeEnd("loop");
+
+// Group related logs
+console.group("setup");
+console.log("step 1");
+console.log("step 2");
+console.groupEnd();</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-11-19-3-1': `
+    <p><strong>Example: debugging "my button click doesn't do anything"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// 1. Add a log inside the handler
+document.querySelector(".save").addEventListener("click", () =&gt; {
+  console.log("clicked");
+  doSave();
+});
+
+// 2. Click. Does "clicked" appear?
+//    - YES → listener is attached. bug is in doSave. log inside that next.
+//    - NO  → listener isn't firing. check the selector and timing.
+
+// 3. If no log, check the selector
+console.log(document.querySelector(".save"));
+//   - null → selector wrong, or DOM not ready
+//   - element → listener attached but click doesn't reach it (maybe overlay covering it?)
+
+// 4. In the console, force a click programmatically to test
+document.querySelector(".save")?.click();
+//   - if "clicked" logs → real click is being blocked (overlay, pointer-events: none)
+//   - if nothing → handler isn't attached at all</code></pre>
+
+    <p><strong>Example: debugging "my text update doesn't appear"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function updateStatus(text) {
+  console.log("updating status to:", text);
+  const el = document.querySelector(".status");
+  console.log("element:", el);
+  if (!el) {
+    console.warn("status element not found");
+    return;
+  }
+  el.textContent = text;
+  console.log("after update, textContent is:", el.textContent);
+}
+// each step is logged. you can see exactly where the flow stops.</code></pre>
+
+    <p><strong>Example: debugging "the wrong element is being updated"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// the title isn't updating, but no errors
+function setTitle(text) {
+  const title = document.querySelector(".title");
+  console.log("setting title on:", title);
+  title.style.outline = "2px solid red";   // visually mark it
+  title.textContent = text;
+}
+
+// when you call setTitle, the page now shows the targeted element with a red outline.
+// → if the red outline is on the WRONG element, your selector matches something unexpected.
+// → fix: narrow the selector (".header .title" instead of ".title")</code></pre>
+
+    <p><strong>Example: setting a conditional breakpoint inside a loop</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// you're looping 100 items and item 47 has a bug
+document.querySelectorAll(".item").forEach((el, i) =&gt; {
+  processItem(el);   // sometimes throws
+});
+
+// in DevTools Sources:
+//   - click the line number for the processItem call
+//   - right-click the breakpoint → "Edit breakpoint"
+//   - condition: i === 47
+//   - now the breakpoint only pauses when i is 47</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-11-19-3-2': `
+    <ul>
+      <li><strong><code>console.log</code></strong> → the most-used DOM debugging tool</li>
+      <li><strong><code>console.dir</code></strong> → see elements as objects (full property list)</li>
+      <li><strong><code>console.table</code></strong> → render arrays and lists as tables</li>
+      <li><strong><code>console.warn</code> / <code>console.error</code></strong> → highlight messages by severity</li>
+      <li><strong>DevTools Elements panel</strong> → the live DOM, real source of truth</li>
+      <li><strong>DevTools Console</strong> → paste expressions to run on the page</li>
+      <li><strong>DevTools Sources panel</strong> → set breakpoints, step through code</li>
+      <li><strong><code>debugger;</code> statement</strong> → trigger a pause from code</li>
+      <li><strong>document.readyState</strong> → check if the DOM is fully parsed</li>
+      <li><strong><code>$</code> and <code>$$</code> console shortcuts</strong> → fast queries in DevTools</li>
+      <li><strong><code>getEventListeners()</code></strong> → DevTools-only function to inspect handlers</li>
+      <li><strong>Null checks and optional chaining</strong> → guard against the most common DOM bug</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-11-19-3-3': `
+    <ul>
+      <li><code>console.log</code></li>
+      <li><code>console.dir</code> / <code>console.table</code> / <code>console.group</code></li>
+      <li>DevTools Elements panel</li>
+      <li>DevTools Console</li>
+      <li>DevTools Sources panel / breakpoints</li>
+      <li><code>debugger;</code> statement</li>
+      <li><code>getComputedStyle</code></li>
+      <li><code>document.readyState</code></li>
+      <li><code>$</code> / <code>$$</code> / <code>$0</code> console shortcuts</li>
+      <li>Null handling and optional chaining</li>
+    </ul>
+  `,
+
+            /* ==========================================================
+     TOPIC 3.13: EVENTS
+     ========================================================== */
+
+     /* ========================================================= 
+   Sub-lesson: 3.13.1 Events → what events are
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-12-0-0-0': `
+    <p>An <strong>event</strong> is something that happens on the page that JavaScript can react to. A user clicks a button, types in a field, scrolls the page, resizes the window, moves the mouse — each of these is an event. The browser detects it; your code decides what to do about it.</p>
+    <p>Events are what make a page feel alive. Without them, JavaScript could only run code at load time and nothing else. With them, you can respond to anything the user does — opening menus, validating forms, animating elements, fetching data, saving progress — all triggered by the actions the user takes.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-12-0-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;button id="save"&gt;Save&lt;/button&gt;
+
+const btn = document.getElementById("save");
+
+// register a function to run when the button is clicked
+btn.addEventListener("click", () =&gt; {
+  console.log("the user clicked the button");
+});
+
+// "click" is the event name.
+// the arrow function is the handler — code to run when the event happens.
+// addEventListener wires them together.
+
+// other common events:
+btn.addEventListener("mouseenter", () =&gt; console.log("hovering"));
+input.addEventListener("input", () =&gt; console.log("typed"));
+window.addEventListener("scroll", () =&gt; console.log("scrolled"));</code></pre>
+    <p>Every interactive feature follows this pattern: pick an element, name the event, give it a function to run. The browser handles the "watch and wait" part; your code only runs when the event happens.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-12-0-0-2': `
+<pre class="language-javascript"><code class="language-javascript">// the three pieces of every event setup:
+//
+//   element . addEventListener ( eventName , handler )
+//      ↓             ↓               ↓           ↓
+//   the target    the verb       the kind    the function
+//                                 of event    to run
+
+// the event "fires" when the action happens. the handler runs in response.
+//
+// example timeline for a click event:
+//   1. page loads
+//   2. addEventListener registers your handler — nothing runs yet
+//   3. user clicks the button
+//   4. browser detects the click → fires a "click" event
+//   5. your handler runs
+//   6. wait for next click
+//
+// common event types:
+//   click          → mouse click (or tap on touchscreen)
+//   input          → text typed into a field
+//   change         → form field value changed (after blur, for some types)
+//   submit         → form submission
+//   focus / blur   → field gained / lost focus
+//   mouseenter     → cursor entered element
+//   mouseleave     → cursor left element
+//   keydown        → key pressed
+//   scroll         → page or element scrolled
+//   load           → page (or image, etc.) finished loading
+//   DOMContentLoaded → DOM finished parsing</code></pre>
+    <p>You don't have to memorize every event name. The common ones — click, input, submit, keydown — cover 95% of real apps. The rest are there when you need them.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-12-0-0-3': `
+    <p><strong>Events fire on specific elements.</strong> A click on a button fires a "click" event on that button. A click on something else fires a "click" event on that something else. You attach a handler to the element you care about:</p>
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;button id="save"&gt;Save&lt;/button&gt; &lt;button id="cancel"&gt;Cancel&lt;/button&gt;
+
+document.getElementById("save").addEventListener("click", () =&gt; {
+  console.log("save clicked");
+});
+
+document.getElementById("cancel").addEventListener("click", () =&gt; {
+  console.log("cancel clicked");
+});
+
+// clicking Save logs "save clicked".
+// clicking Cancel logs "cancel clicked".
+// each handler only runs for clicks on ITS element.</code></pre>
+
+    <p><strong>Events also fire on <code>document</code> and <code>window</code> for page-level actions.</strong> Some events (load, scroll, keypress anywhere) belong to the page, not any one element:</p>
+<pre class="language-javascript"><code class="language-javascript">// page-level events
+window.addEventListener("load", () =&gt; console.log("page loaded"));
+window.addEventListener("scroll", () =&gt; console.log("page scrolled"));
+window.addEventListener("resize", () =&gt; console.log("window resized"));
+
+document.addEventListener("DOMContentLoaded", () =&gt; console.log("DOM ready"));
+document.addEventListener("keydown", e =&gt; console.log("key:", e.key));
+
+// these don't belong to any one element — they're about the whole page.</code></pre>
+
+    <p><strong>The handler receives an event object as its first argument.</strong> It contains details about what happened:</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", (event) =&gt; {
+  console.log(event.type);         // "click"
+  console.log(event.target);        // the element that was clicked
+  console.log(event.timeStamp);     // when the event fired
+  console.log(event.clientX);       // mouse X position
+  console.log(event.clientY);       // mouse Y position
+});
+
+// the convention is to name the parameter "e" or "event".
+input.addEventListener("input", e =&gt; {
+  console.log(e.target.value);   // current value of the input
+});</code></pre>
+
+    <p><strong>You can listen to the same event on many elements.</strong> Or different events on the same element:</p>
+<pre class="language-javascript"><code class="language-javascript">// same event, multiple elements
+document.querySelectorAll(".btn").forEach(btn =&gt; {
+  btn.addEventListener("click", () =&gt; {
+    btn.classList.add("clicked");
+  });
+});
+
+// different events, one element
+const input = document.querySelector("input");
+input.addEventListener("focus", () =&gt; console.log("focused"));
+input.addEventListener("input", () =&gt; console.log("typing"));
+input.addEventListener("blur", () =&gt; console.log("left field"));
+
+// same event, multiple handlers on the same element
+btn.addEventListener("click", handlerA);
+btn.addEventListener("click", handlerB);
+// both run when the button is clicked, in the order they were added.</code></pre>
+
+    <p><strong>Events run asynchronously — your code doesn't "wait" for them.</strong> Code after <code>addEventListener</code> runs immediately; the handler runs later, when (and if) the event happens:</p>
+<pre class="language-javascript"><code class="language-javascript">console.log("before");
+
+btn.addEventListener("click", () =&gt; {
+  console.log("clicked");
+});
+
+console.log("after");
+
+// log order at page load:
+//   "before"
+//   "after"
+//   (waiting...)
+//
+// when the user clicks:
+//   "clicked"
+//
+// the handler doesn't block. registering it is instant.</code></pre>
+
+    <p><strong>Events can be "fired" without user action — programmatically.</strong> Useful for testing and some special cases:</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", () =&gt; console.log("clicked"));
+
+// trigger the click from code:
+btn.click();
+// logs "clicked" — same as if the user clicked
+
+// for events without a built-in shortcut, use dispatchEvent:
+const event = new Event("custom-event");
+btn.dispatchEvent(event);</code></pre>
+
+    <p><strong>Some events bubble up; others don't.</strong> Most events (click, input) travel from the target up through ancestors. Some (focus, blur, load) don't. This becomes important later for event delegation:</p>
+<pre class="language-javascript"><code class="language-javascript">// click bubbles — clicking a button also fires click on its parent, grandparent, etc.
+// HTML: &lt;div id="outer"&gt;&lt;button id="inner"&gt;Click&lt;/button&gt;&lt;/div&gt;
+
+document.getElementById("outer").addEventListener("click", () =&gt; {
+  console.log("outer was clicked");
+});
+
+document.getElementById("inner").addEventListener("click", () =&gt; {
+  console.log("inner was clicked");
+});
+
+// when the button is clicked:
+// → "inner was clicked"  (the actual target)
+// → "outer was clicked"  (the bubble — covered in later lessons)</code></pre>
+
+    <p><strong>Events can be removed with <code>removeEventListener</code>.</strong> But you need a reference to the same function:</p>
+<pre class="language-javascript"><code class="language-javascript">function handle() { ... }
+
+btn.addEventListener("click", handle);
+
+// later, to stop listening:
+btn.removeEventListener("click", handle);
+
+// the function reference must match. you can't remove an anonymous handler.
+btn.addEventListener("click", () =&gt; { ... });   // can't remove this — no reference saved</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-12-0-1-0': `
+    <p>Without events, JavaScript can only run code at the moment the page loads. Everything that depends on what the user does — clicking, typing, scrolling, hovering — would be impossible. Pages would be static documents with code, but no interactivity.</p>
+    <p>Events bridge that gap. They turn user actions into triggers your code can listen for. Click handlers make buttons work. Input handlers validate forms in real time. Scroll handlers reveal content as the user reads. Every dynamic feature you've seen on the web is built on events.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-12-0-1-1': `
+    <p>Almost every interactive feature is built with events:</p>
+<pre class="language-javascript"><code class="language-javascript">// button clicks
+saveBtn.addEventListener("click", saveData);
+
+// form submission
+form.addEventListener("submit", handleSubmit);
+
+// live input validation
+emailInput.addEventListener("input", validateEmail);
+
+// keyboard shortcuts
+document.addEventListener("keydown", e =&gt; {
+  if (e.ctrlKey &amp;&amp; e.key === "s") saveDocument();
+});
+
+// scroll-triggered effects
+window.addEventListener("scroll", revealLazyImages);
+
+// hover effects
+card.addEventListener("mouseenter", () =&gt; card.classList.add("hover"));
+card.addEventListener("mouseleave", () =&gt; card.classList.remove("hover"));
+
+// every line above is "wait for this to happen, then react."</code></pre>
+
+    <p>Events are also how JavaScript reacts to non-user activity: pages finishing loading, network requests completing, timers expiring. Almost everything that "happens" in a browser produces an event your code can hook into.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-12-0-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Button clicks
+btn.addEventListener("click", handle);
+
+// Form events
+form.addEventListener("submit", e =&gt; {
+  e.preventDefault();   // prevent page reload
+  saveForm();
+});
+
+input.addEventListener("input", () =&gt; {
+  console.log("user typed:", input.value);
+});
+
+input.addEventListener("change", validate);
+input.addEventListener("focus", showHint);
+input.addEventListener("blur", hideHint);
+
+// Keyboard
+document.addEventListener("keydown", e =&gt; {
+  if (e.key === "Escape") closeModal();
+});
+
+// Mouse
+el.addEventListener("mouseenter", showTooltip);
+el.addEventListener("mouseleave", hideTooltip);
+
+// Window events
+window.addEventListener("resize", relayout);
+window.addEventListener("scroll", checkVisibility);
+window.addEventListener("load", initApp);
+
+// Custom events for app-level signals
+document.dispatchEvent(new Event("user-logged-in"));
+
+// Remove event handlers when no longer needed
+btn.removeEventListener("click", handler);
+
+// Listen once and auto-remove
+btn.addEventListener("click", oneTimeHandler, { once: true });
+
+// Access event details
+btn.addEventListener("click", e =&gt; {
+  console.log("clicked at", e.clientX, e.clientY);
+  console.log("target:", e.target);
+});</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-12-0-1-3': `
+    <p>An event is something the browser notices and tells JavaScript about. The user clicks a button, the browser thinks "that was a click on button X" and fires a "click" event. If your code registered a handler for clicks on that button, the handler runs. If not, nothing happens.</p>
+    <p>The pattern for every event is the same: pick the element, name the event, write the function. <code>addEventListener</code> wires them together. You don't actively "wait" — your code returns to normal life, and the handler only runs when (and if) the event happens.</p>
+    <p>Events make the browser feel responsive. Without them, your script would run once at load and never again. With them, your script becomes a set of "ready to react" handlers — sitting quietly, waking up when the user does something.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-12-0-1-4': `
+    <p>Picture a building full of doorbells. Each doorbell (an element) can have any number of bells (event listeners) wired to ring under different conditions — a click, a hover, a key press. Until someone presses a doorbell, nothing happens. When the press happens, every bell wired to that condition rings (the handlers run).</p>
+    <p>The wiring is done with <code>addEventListener</code>. You walk up to a doorbell, pick a condition ("ring this bell when someone clicks"), and attach the bell (your function). After that, you can leave — the bell waits, watching for the condition. When it triggers, the function runs.</p>
+    <p>Multiple bells can be wired to the same doorbell, and one bell can listen on multiple doorbells. The browser handles the noticing; you decide what should happen. Events are the language for "something happened, do this."</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-12-0-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;button id="greet"&gt;Say hi&lt;/button&gt;
+//        &lt;p id="greeting"&gt;&lt;/p&gt;
+
+const btn = document.getElementById("greet");
+const greeting = document.getElementById("greeting");
+
+btn.addEventListener("click", () =&gt; {
+  greeting.textContent = "Hello!";
+});
+
+// step by step at page load:
+// 1. document.getElementById finds the button → btn is the &lt;button&gt; element
+// 2. addEventListener registers the arrow function for "click" events on btn
+// 3. registration finishes — no code is running yet
+// 4. the script ends; the page is interactive but idle
+
+// step by step when the user clicks the button:
+// 1. user clicks
+// 2. browser detects: "click on button#greet"
+// 3. browser fires a "click" event on the button
+// 4. the browser finds the handler we registered
+// 5. the handler runs:
+//      greeting.textContent = "Hello!";
+// 6. the &lt;p&gt; on the page now shows "Hello!"
+// 7. user sees "Hello!" appear instantly
+// 8. waiting for the next click
+
+// notice:
+//   - the handler ran ONLY in response to the click
+//   - the script that registered it had already finished
+//   - the browser kept the handler ready until the event happened</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-12-0-2-0': `
+    <p>If a handler isn't firing, log inside it:</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", () =&gt; {
+  console.log("clicked!");   // ← if this doesn't appear, the handler isn't running
+  saveData();
+});
+
+// nothing logs?
+//   - is the element you targeted actually the one being clicked?
+//   - is the handler attached? (was the script ran too early?)
+//   - did another script remove the handler?
+//   - is something covering the element (CSS pointer-events: none)?
+
+// log inside, then test by clicking. log silence is your signal.</code></pre>
+
+    <p>Another common diagnostic: log the element you attached the handler to:</p>
+<pre class="language-javascript"><code class="language-javascript">const btn = document.querySelector(".save");
+console.log("attaching to:", btn);
+btn?.addEventListener("click", handle);
+
+// if "attaching to: null" → selector wrong or script ran too early
+// if "attaching to: &lt;button ...&gt;" → handler should fire when clicked</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-12-0-2-1': `
+    <p>An event isn't a function call you make — it's a function call you <em>set up</em> to happen later. Your script doesn't "wait" for the click; it registers a handler and moves on. The browser does the watching. When the event happens, the browser calls your function for you.</p>
+    <p>This separation between "register" and "react" is the foundation of how interactive UI works. Your code lives in two halves: the setup half (running at load, attaching handlers), and the response half (handlers triggered by user actions later). Once you internalize this rhythm, almost every interactive pattern becomes "what event do I listen for, and what should happen when it fires?"</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-12-0-2-2': `
+    <p><strong>Confusion: thinking <code>addEventListener</code> runs the handler immediately</strong></p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", () =&gt; console.log("hi"));
+// "hi" does NOT log right now.
+// it logs only when the user CLICKS the button.
+
+// addEventListener REGISTERS the handler for future events.
+// the handler is dormant until the event happens.</code></pre>
+
+    <p><strong>Confusion: passing function CALL instead of function REFERENCE</strong></p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", handleClick());
+// the ( ) calls handleClick RIGHT NOW, and passes its RETURN VALUE to addEventListener
+// usually that return value is undefined → no handler attached
+
+// fix: pass the function itself, no parentheses
+btn.addEventListener("click", handleClick);</code></pre>
+
+    <p><strong>Confusion: handler not firing because of timing</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// &lt;head&gt;
+//   &lt;script&gt;
+//     document.getElementById("btn").addEventListener("click", handle);
+//     // crashes — #btn doesn't exist yet
+//   &lt;/script&gt;
+// &lt;/head&gt;
+// &lt;body&gt;&lt;button id="btn"&gt;Click&lt;/button&gt;&lt;/body&gt;
+
+// fix: defer the script, place at end of body, or wait for DOMContentLoaded</code></pre>
+
+    <p><strong>Confusion: handler runs for the wrong element</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.addEventListener("click", () =&gt; console.log("clicked"));
+// fires when ANY click happens on the page, not just on a specific element.
+
+// fix: attach to the specific element you care about
+document.querySelector(".save").addEventListener("click", () =&gt; { ... });</code></pre>
+
+    <p><strong>Confusion: multiple handlers stacking up</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function render() {
+  document.getElementById("btn").addEventListener("click", save);
+}
+
+render();
+render();
+render();
+// now there are THREE click handlers — one click triggers save 3 times
+
+// fix: attach handlers ONCE, outside of any re-render function</code></pre>
+
+    <p><strong>Confusion: event vs handler vs listener — different names for the same idea</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// "event"      → the thing that happened (a click, a keypress)
+// "handler"    → the function that runs in response
+// "listener"   → another word for handler (especially with addEventListener)
+// "callback"   → general term for a function passed to be called later
+
+// in practice these are used interchangeably:
+//   "the click handler"
+//   "the click listener"
+//   "the click callback"
+// all mean: the function you registered to run when click fires.</code></pre>
+
+    <p><strong>Confusion: thinking events "remember" past clicks</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// addEventListener doesn't have a backlog. it only catches events that fire
+// AFTER it was registered.
+
+// if a click happens before your handler is attached, the handler doesn't catch it.
+// (this is why script timing matters — register handlers before the user can interact.)</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-12-0-2-3': `
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", handle());
+// the () invokes handle immediately, passes the return value to addEventListener
+// fix: drop the parentheses — pass the function reference
+btn.addEventListener("click", handle);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("Click", handle);
+// event names are case-sensitive and lowercase: "click", not "Click"
+// fix:
+btn.addEventListener("click", handle);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("onclick", handle);
+// "onclick" is the HTML attribute name; the event name is "click"
+// fix:
+btn.addEventListener("click", handle);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.querySelector(".btn").addEventListener("click", h);
+// crashes if .btn doesn't exist
+// fix:
+document.querySelector(".btn")?.addEventListener("click", h);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Script in &lt;head&gt; without defer
+document.getElementById("btn").addEventListener("click", h);
+// crashes — btn doesn't exist yet
+// fix: defer, end-of-body, or DOMContentLoaded</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Re-attaching the same handler many times
+function render() {
+  btn.addEventListener("click", save);
+}
+render();
+render();
+// 2 listeners, one click triggers save twice
+// fix: attach ONCE, not inside re-renders</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", () =&gt; { ... });
+// later:
+btn.removeEventListener("click", () =&gt; { ... });
+// doesn't remove — different function reference
+// fix: save the function, pass the SAME reference to remove
+const handle = () =&gt; { ... };
+btn.addEventListener("click", handle);
+btn.removeEventListener("click", handle);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", e =&gt; {
+  console.log(e.value);   // undefined — events don't have .value
+});
+// fix: read from e.target (the element clicked)
+btn.addEventListener("click", e =&gt; {
+  console.log(e.target.value);
+});</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Submitting a form and getting a page reload
+form.addEventListener("submit", saveData);
+// browser navigates after the handler — saveData runs but you lose state
+// fix: prevent the default behavior
+form.addEventListener("submit", e =&gt; {
+  e.preventDefault();
+  saveData();
+});</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-12-0-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Click
+btn.addEventListener("click", () =&gt; console.log("clicked"));
+
+// Click with event object
+btn.addEventListener("click", e =&gt; console.log(e.target));
+
+// Input
+input.addEventListener("input", () =&gt; console.log(input.value));
+
+// Change
+select.addEventListener("change", e =&gt; console.log(e.target.value));
+
+// Submit (with prevention)
+form.addEventListener("submit", e =&gt; {
+  e.preventDefault();
+  saveForm();
+});
+
+// Focus / blur
+input.addEventListener("focus", showHint);
+input.addEventListener("blur", hideHint);
+
+// Hover
+card.addEventListener("mouseenter", () =&gt; card.classList.add("hover"));
+card.addEventListener("mouseleave", () =&gt; card.classList.remove("hover"));
+
+// Keyboard
+document.addEventListener("keydown", e =&gt; {
+  if (e.key === "Escape") closeModal();
+});
+
+// Scroll
+window.addEventListener("scroll", () =&gt; console.log(window.scrollY));
+
+// Resize
+window.addEventListener("resize", () =&gt; console.log(window.innerWidth));
+
+// Page lifecycle
+window.addEventListener("load", initApp);
+document.addEventListener("DOMContentLoaded", setup);
+
+// Listener that only runs once
+btn.addEventListener("click", oneTimeHandler, { once: true });
+
+// Trigger event programmatically
+btn.click();
+
+// Multiple handlers on the same event
+btn.addEventListener("click", h1);
+btn.addEventListener("click", h2);
+
+// Multiple events, same handler
+const log = e =&gt; console.log(e.type);
+input.addEventListener("focus", log);
+input.addEventListener("blur", log);
+
+// Many elements, same handler
+document.querySelectorAll(".tab").forEach(tab =&gt; {
+  tab.addEventListener("click", () =&gt; selectTab(tab));
+});
+
+// Stop listening
+btn.removeEventListener("click", h);   // h must be the same reference
+
+// Detect actual event source vs container
+parent.addEventListener("click", e =&gt; {
+  if (e.target.matches(".item")) handleItem(e.target);
+});</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-12-0-3-1': `
+    <p><strong>Example: save button</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector("#save").addEventListener("click", async () =&gt; {
+  const data = getFormData();
+  await fetch("/api/save", { method: "POST", body: JSON.stringify(data) });
+  showToast("Saved!");
+});
+// click triggers a save. one event, one action.</code></pre>
+
+    <p><strong>Example: live character counter</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const textarea = document.querySelector("textarea");
+const counter = document.querySelector(".char-count");
+
+textarea.addEventListener("input", () =&gt; {
+  counter.textContent = textarea.value.length + " / 500";
+});
+// every keystroke fires "input" — the counter updates in real time.</code></pre>
+
+    <p><strong>Example: keyboard shortcuts</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.addEventListener("keydown", e =&gt; {
+  if (e.ctrlKey &amp;&amp; e.key === "s") {
+    e.preventDefault();
+    saveDocument();
+  }
+  if (e.key === "Escape") closeModal();
+  if (e.key === "/") focusSearch();
+});
+// listening on document means the shortcut works no matter what's focused.</code></pre>
+
+    <p><strong>Example: form submission with validation</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector("form").addEventListener("submit", e =&gt; {
+  e.preventDefault();   // stop the browser's default form submission
+
+  const email = e.target.email.value.trim();
+  if (!email) {
+    showError("Email is required");
+    return;
+  }
+
+  submitForm(email);
+});
+// "submit" fires when the form is submitted (Enter key or submit button).
+// preventDefault stops the page from reloading.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-12-0-3-2': `
+    <ul>
+      <li><strong><code>addEventListener</code></strong> → the method that wires elements to handlers</li>
+      <li><strong>Event handlers</strong> → the functions that run in response</li>
+      <li><strong>Event object</strong> → the argument passed to handlers, containing details about the event</li>
+      <li><strong>Event types</strong> → click, input, submit, keydown, etc.</li>
+      <li><strong>Event bubbling</strong> → events travel up through ancestor elements</li>
+      <li><strong><code>preventDefault</code></strong> → stop the browser's default behavior (e.g., form submission)</li>
+      <li><strong><code>removeEventListener</code></strong> → detach a handler when no longer needed</li>
+      <li><strong>Event delegation</strong> → attach one handler to a parent for many children</li>
+      <li><strong>Custom events</strong> → defining your own event types for app-level signals</li>
+      <li><strong>Asynchronous nature</strong> → handlers run when events fire, not immediately</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-12-0-3-3': `
+    <ul>
+      <li><code>addEventListener</code></li>
+      <li>Event object (<code>e</code>)</li>
+      <li>Event types (click, input, submit, etc.)</li>
+      <li>Event bubbling</li>
+      <li><code>preventDefault</code></li>
+      <li><code>removeEventListener</code></li>
+      <li>Event delegation</li>
+      <li>Custom events</li>
+      <li>Asynchronous JavaScript</li>
+      <li>DOMContentLoaded / load event</li>
     </ul>
   `,
   
