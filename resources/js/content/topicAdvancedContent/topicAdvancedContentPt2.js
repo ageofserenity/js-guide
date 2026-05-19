@@ -13340,5 +13340,3107 @@ window.addEventListener("beforeunload", e =&gt; {
       <li>Touch events (mobile)</li>
     </ul>
   `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.13.3 Events → addEventListener()
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-12-2-0-0': `
+    <p><code>addEventListener()</code> is the method that <strong>registers a function to run when an event happens on an element</strong>. It's the universal way to wire JavaScript code into user actions and browser events.</p>
+    <p>The pattern is always the same: pick an element, pick an event name, pass a function. From that point on, the browser watches for the event and runs your function every time it fires. Your script can move on to other things — the listener stays attached, ready to react.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-12-2-0-1': `
+<pre class="language-javascript"><code class="language-javascript">
+element.addEventListener(eventName, handler)
+
+const btn = document.querySelector("button");
+
+// minimal example
+btn.addEventListener("click", () =&gt; {
+  console.log("clicked");
+});
+
+// with a named function
+function handleClick() {
+  console.log("clicked");
+}
+btn.addEventListener("click", handleClick);
+
+// with the event object
+btn.addEventListener("click", (event) =&gt; {
+  console.log("clicked at:", event.clientX, event.clientY);
+});
+
+// the three pieces:
+//   1. the element (what you're listening on)
+//   2. the event name (a string like "click", "input", "submit")
+//   3. the handler function (what to run when it fires)</code></pre>
+    <p>Same three pieces every time. Once you have the pattern memorized, you can listen to anything.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-12-2-0-2': `
+<pre class="language-javascript"><code class="language-javascript">
+element.addEventListener(eventName, handler, options?)
+//
+//   eventName: a string identifying the event type
+//              "click", "input", "submit", "keydown", "mouseenter", ...
+//              case-sensitive, always lowercase
+//
+//   handler:   a function reference (not a function call!)
+//              receives one argument: the event object
+//              return value is ignored
+//
+//   options:   optional object with extra settings
+//              { once: true }     → run only once, then auto-remove
+//              { capture: true }  → catch event during capture phase (rare)
+//              { passive: true }  → promise not to call preventDefault (perf)
+//
+// what happens when you call addEventListener:
+//   1. the browser remembers your handler is interested in this event on this element
+//   2. when the event fires, the browser calls your handler with the event object
+//   3. multiple handlers can be registered for the same event — all run, in order
+//   4. the handler stays attached until you removeEventListener (or the element is destroyed)</code></pre>
+    <p>You don't have to use the options argument until you need it. Most code only uses element + event name + handler.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-12-2-0-3': `
+    <p><strong>Pass a function REFERENCE, not a function CALL.</strong> The most common mistake:</p>
+<pre class="language-javascript"><code class="language-javascript">function handle() { console.log("clicked"); }
+
+// Right — pass the function itself
+btn.addEventListener("click", handle);
+// handle is a reference; the browser calls it later when the click happens.
+
+// Wrong — calls handle immediately, passes its return value
+btn.addEventListener("click", handle());
+// handle() runs RIGHT NOW (logs "clicked" once)
+// addEventListener receives undefined (handle's return value)
+// no handler is attached
+// nothing happens when the user clicks
+
+// only use parentheses if the function returns ANOTHER function (rare):
+function makeHandler() {
+  return function(event) { console.log("clicked"); };
+}
+btn.addEventListener("click", makeHandler());   // ✓ uses the returned function</code></pre>
+
+    <p><strong>Event names are case-sensitive strings.</strong> Always lowercase, no "on" prefix:</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", handle);        // ✓
+btn.addEventListener("Click", handle);        // ✗ wrong case
+btn.addEventListener("onclick", handle);      // ✗ "on" prefix is for HTML attributes
+btn.addEventListener("CLICK", handle);        // ✗ wrong case
+
+// the event name and the HTML attribute name are DIFFERENT:
+//   HTML:  &lt;button onclick="..."&gt;          (the attribute)
+//   JS:    btn.addEventListener("click", ...) (event name — no "on")</code></pre>
+
+    <p><strong>The handler receives an event object as its first argument.</strong> Conventionally named <code>e</code> or <code>event</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", (e) =&gt; {
+  console.log(e.type);          // "click"
+  console.log(e.target);        // the element that was clicked
+  console.log(e.currentTarget); // the element the listener is attached to (usually same)
+  console.log(e.clientX, e.clientY);   // mouse position
+});
+
+// you don't have to use the event object — drop it if you don't need it:
+btn.addEventListener("click", () =&gt; {
+  console.log("clicked");
+});</code></pre>
+
+    <p><strong>Multiple handlers on the same event are allowed.</strong> They all run when the event fires, in the order they were added:</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", () =&gt; console.log("first"));
+btn.addEventListener("click", () =&gt; console.log("second"));
+btn.addEventListener("click", () =&gt; console.log("third"));
+
+// one click logs: "first", then "second", then "third"
+// none of them block the others.
+// each handler runs to completion before the next starts.</code></pre>
+
+    <p><strong>The same exact function can only be attached once to the same event.</strong> Calling <code>addEventListener</code> with the same function twice is a no-op the second time:</p>
+<pre class="language-javascript"><code class="language-javascript">function handle() { console.log("hi"); }
+
+btn.addEventListener("click", handle);
+btn.addEventListener("click", handle);   // ignored — same function already attached
+
+// clicking logs "hi" only ONCE.
+
+// BUT — anonymous functions are different objects every time:
+btn.addEventListener("click", () =&gt; console.log("hi"));
+btn.addEventListener("click", () =&gt; console.log("hi"));
+// these are two DIFFERENT function references, both get attached.
+// clicking logs "hi" twice.</code></pre>
+
+    <p><strong><code>{ once: true }</code> auto-removes the handler after the first fire.</strong> Useful for "first-time" handlers:</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", () =&gt; {
+  console.log("first click");
+}, { once: true });
+
+// first click: handler runs, logs "first click"
+// after that: handler is automatically removed
+// subsequent clicks: nothing happens
+
+// useful for confirmations, "show this once" interactions, etc.</code></pre>
+
+    <p><strong>The handler runs in the context of the element by default.</strong> Inside, <code>this</code> refers to the element — unless you used an arrow function:</p>
+<pre class="language-javascript"><code class="language-javascript">// with a regular function — this = the element
+btn.addEventListener("click", function() {
+  console.log(this);   // the button
+  this.classList.add("clicked");   // works
+});
+
+// with an arrow function — this = whatever surrounds the arrow function
+btn.addEventListener("click", () =&gt; {
+  console.log(this);   // usually "window" or undefined, NOT the button
+});
+
+// modern code mostly uses arrow functions and accesses the element via e.target
+// or via a closure variable (the btn variable from outer scope).</code></pre>
+
+    <p><strong>Handlers can be removed with <code>removeEventListener</code>, but only if you have the same function reference.</strong> Anonymous handlers are stuck on:</p>
+<pre class="language-javascript"><code class="language-javascript">// you can remove if you have a reference
+const handle = () =&gt; console.log("hi");
+btn.addEventListener("click", handle);
+btn.removeEventListener("click", handle);   // ✓ removed
+
+// you can't remove anonymous handlers
+btn.addEventListener("click", () =&gt; console.log("hi"));
+btn.removeEventListener("click", () =&gt; console.log("hi"));   // different function — not removed
+
+// the function reference must MATCH exactly.
+// for one-time listeners, use { once: true } instead.</code></pre>
+
+    <p><strong><code>addEventListener</code> works on almost every DOM object that emits events.</strong> Elements, <code>document</code>, <code>window</code>, even other browser APIs:</p>
+<pre class="language-javascript"><code class="language-javascript">// HTML elements
+btn.addEventListener("click", handle);
+
+// the document
+document.addEventListener("DOMContentLoaded", handle);
+
+// the window (browser tab)
+window.addEventListener("resize", handle);
+
+// images (for load/error)
+img.addEventListener("load", handle);
+img.addEventListener("error", handle);
+
+// XMLHttpRequest (older API)
+xhr.addEventListener("load", handle);
+
+// any object that emits events accepts addEventListener.</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-12-2-1-0': `
+    <p>Without <code>addEventListener</code>, there'd be no clean way to react to anything that happens on the page. The browser would have no idea your code wanted to know about clicks, key presses, or page loads. You'd be stuck with the old <code>element.onclick = function() {...}</code> syntax — which works but only allows one handler per event, and gets messy fast.</p>
+    <p><code>addEventListener</code> is the modern, flexible alternative. Multiple handlers per event, fine-grained control with options (<code>once</code>, <code>capture</code>, <code>passive</code>), and clean separation between adding and removing. It's the standard way to wire interactivity into a page.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-12-2-1-1': `
+    <p>It's the foundation of every interactive feature:</p>
+<pre class="language-javascript"><code class="language-javascript">// Button click
+btn.addEventListener("click", save);
+
+// Form submission
+form.addEventListener("submit", e =&gt; {
+  e.preventDefault();
+  submit();
+});
+
+// Input validation
+input.addEventListener("input", validate);
+
+// Keyboard shortcuts
+document.addEventListener("keydown", handleShortcut);
+
+// Page lifecycle
+document.addEventListener("DOMContentLoaded", initApp);
+window.addEventListener("load", lazyLoadImages);
+
+// Window state
+window.addEventListener("resize", reflow);
+window.addEventListener("scroll", checkVisibility);
+
+// every line above is a different feature, all using the same pattern.</code></pre>
+
+    <p>Once you've written your first <code>addEventListener</code>, you've used the API. Every other event pattern is just a variation: different event name, different handler, different element.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-12-2-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Basic — anonymous handler
+btn.addEventListener("click", () =&gt; {
+  console.log("clicked");
+});
+
+// With a named function
+function handleClick(e) { ... }
+btn.addEventListener("click", handleClick);
+
+// With the event object
+btn.addEventListener("click", e =&gt; {
+  console.log(e.target);
+});
+
+// One-shot listener
+btn.addEventListener("click", showOnce, { once: true });
+
+// Multiple handlers for the same event
+btn.addEventListener("click", logClick);
+btn.addEventListener("click", trackAnalytics);
+
+// Same handler on many elements
+document.querySelectorAll(".tab").forEach(tab =&gt; {
+  tab.addEventListener("click", selectTab);
+});
+
+// Different events on the same element
+input.addEventListener("focus", showHint);
+input.addEventListener("blur", hideHint);
+input.addEventListener("input", validate);
+
+// Window-level events
+window.addEventListener("resize", handle);
+window.addEventListener("scroll", handle);
+
+// Document-level events
+document.addEventListener("keydown", handleShortcut);
+document.addEventListener("DOMContentLoaded", init);
+
+// Removing later
+function handle() { ... }
+btn.addEventListener("click", handle);
+btn.removeEventListener("click", handle);
+
+// Pattern: add on demand, remove when done
+function startDrag(e) {
+  document.addEventListener("mousemove", drag);
+  document.addEventListener("mouseup", stopDrag, { once: true });
+}
+function stopDrag() {
+  document.removeEventListener("mousemove", drag);
+}</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-12-2-1-3': `
+    <p><code>addEventListener</code> is "tell me when this happens." You point at an element, name the event you care about, and hand over a function. The browser keeps that function on file, and runs it every time the event happens on that element. You don't have to keep checking — you just wait for the call.</p>
+    <p>The three pieces are always the same: the thing you're watching, the kind of thing you're watching for, and what to do when it happens. Once you've written one <code>addEventListener</code>, you've effectively learned all of them — the rest is just plugging in different event names and different handlers.</p>
+    <p>Multiple handlers can listen for the same event on the same element, and they all run in the order they were added. Listeners can be removed when you no longer need them, though that requires keeping a reference to the original function. Most of the time, you attach handlers once and forget about them — the browser does the rest.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-12-2-1-4': `
+    <p>Think of <code>addEventListener</code> like signing a contract with the browser. You tell the browser: "Whenever this specific thing happens on this specific element, call this function." The browser writes it down and then watches. Forever, or until you cancel the contract with <code>removeEventListener</code>.</p>
+    <p>The contract isn't active code — it's a promise. Your script can finish and exit. The page can sit idle. Whenever the event happens, the browser pulls out the contract and runs your function. This is why event-driven code looks so empty at load time — most of it is contracts, not running logic.</p>
+    <p>Multiple contracts can exist for the same event. When the event fires, the browser runs through all of them in order. Each one is independent — they don't know about each other, they don't share state unless you make them. Each is its own little "wake up and react" routine.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-12-2-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;button id="counter"&gt;Click me&lt;/button&gt;
+//        &lt;span id="count"&gt;0&lt;/span&gt;
+
+const btn = document.getElementById("counter");
+const counter = document.getElementById("count");
+
+let count = 0;
+
+btn.addEventListener("click", () =&gt; {
+  count++;
+  counter.textContent = count;
+});
+
+// step by step at page load:
+// 1. document.getElementById finds &lt;button id="counter"&gt; → btn is that button
+// 2. document.getElementById finds &lt;span id="count"&gt; → counter is that span
+// 3. count is initialized to 0
+// 4. addEventListener registers the arrow function for "click" events on btn
+// 5. registration is complete. nothing else runs. the script is done.
+
+// step by step on first click:
+// 1. user clicks the button
+// 2. browser fires "click" event on btn
+// 3. browser finds our registered handler
+// 4. the handler runs:
+//      count++ → count becomes 1
+//      counter.textContent = count → the span shows "1"
+// 5. user sees the number on the page change to "1"
+
+// second click: count becomes 2, span shows "2"
+// third click: count becomes 3, span shows "3"
+
+// notice:
+//   - the addEventListener call ran ONCE, at setup
+//   - the handler runs EVERY time the user clicks
+//   - the count variable is preserved between clicks (closure)
+//   - no polling, no checking — the browser calls us when something happens</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-12-2-2-0': `
+    <p>If a handler isn't firing, work through these checks in order:</p>
+<pre class="language-javascript"><code class="language-javascript">// 1. Did addEventListener actually run?
+const btn = document.querySelector(".save");
+console.log("attaching to:", btn);
+btn?.addEventListener("click", () =&gt; console.log("clicked"));
+// if "attaching to: null" → element doesn't exist or selector is wrong
+// if "attaching to: &lt;button&gt;" → registration worked; check the next thing
+
+// 2. Did the event actually fire?
+btn.addEventListener("click", () =&gt; console.log("CLICK FIRED"));
+// click the button. if "CLICK FIRED" doesn't appear:
+//   - is something covering the button? (CSS pointer-events, overlay)
+//   - is the button disabled?
+//   - is your click hitting a child element first that stops propagation?
+
+// 3. Did you pass the function correctly?
+btn.addEventListener("click", handle());
+// the () means you CALLED handle and passed its return value
+// fix: drop the parentheses
+btn.addEventListener("click", handle);
+
+// 4. Did the script run before the element existed?
+// → see 3.12.17 DOM loaded timing</code></pre>
+
+    <p>If the handler fires too many times (one click triggers multiple log messages), you've probably registered it more than once. Look for <code>addEventListener</code> inside a function that runs multiple times, like a render function:</p>
+<pre class="language-javascript"><code class="language-javascript">function render() {
+  btn.addEventListener("click", handle);   // adds another handler EACH call
+}
+render();
+render();
+render();
+// now there are 3 handlers — one click triggers handle three times
+
+// fix: register the listener ONCE, outside of any function that re-runs.</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-12-2-2-1': `
+    <p><code>addEventListener</code> is just a registration step — it doesn't run anything itself. You're handing the browser a function and saying "call this later, when X happens." The actual execution is deferred until the event fires, possibly never.</p>
+    <p>This separation between "set up" and "run later" is the foundation of event-driven code. Your script's job at load time is mostly registration: attach handlers to elements, then exit. The page sits dormant. When the user does something, the corresponding handler springs to life, runs, and goes back to sleep. The browser handles the timing; your code just defines the responses.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-12-2-2-2': `
+    <p><strong>Confusion: calling the function instead of passing it</strong></p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", handle());
+// handle() runs NOW, passes its return value (probably undefined)
+// no handler is attached
+// fix:
+btn.addEventListener("click", handle);</code></pre>
+
+    <p><strong>Confusion: using "onclick" instead of "click"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("onclick", handle);   // event name is "click", not "onclick"
+
+// fix:
+btn.addEventListener("click", handle);
+
+// "onclick" is the HTML attribute name (and the property name btn.onclick)
+// the EVENT name is just "click"</code></pre>
+
+    <p><strong>Confusion: trying to remove an anonymous handler</strong></p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", () =&gt; console.log("hi"));
+btn.removeEventListener("click", () =&gt; console.log("hi"));
+// the second function is a DIFFERENT object, even though it looks identical
+// nothing gets removed
+
+// fix: save the reference
+const handle = () =&gt; console.log("hi");
+btn.addEventListener("click", handle);
+btn.removeEventListener("click", handle);</code></pre>
+
+    <p><strong>Confusion: <code>this</code> inside arrow vs regular function</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// regular function: this = the element
+btn.addEventListener("click", function() {
+  console.log(this);   // the button
+});
+
+// arrow function: this = whatever surrounds the arrow (usually window/undefined)
+btn.addEventListener("click", () =&gt; {
+  console.log(this);   // NOT the button
+});
+
+// modern code uses arrows and accesses the element via e.target or a closure variable.</code></pre>
+
+    <p><strong>Confusion: thinking <code>addEventListener</code> returns something useful</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const result = btn.addEventListener("click", handle);
+console.log(result);   // undefined
+
+// addEventListener returns nothing.
+// to remove the listener later, you need the original FUNCTION reference, not a return value.</code></pre>
+
+    <p><strong>Confusion: passing arguments to the handler</strong></p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", handle("save"));
+// () invokes handle immediately, passes its return value as the handler
+// fix: wrap in another function
+btn.addEventListener("click", () =&gt; handle("save"));
+// now an arrow function is the handler, and IT calls handle("save") on click.</code></pre>
+
+    <p><strong>Confusion: duplicate handler attempts</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function handle() { ... }
+
+btn.addEventListener("click", handle);
+btn.addEventListener("click", handle);
+// second call is a NO-OP — the same function can't be attached twice for the same event
+// only ONE handle will fire on click
+
+// but with anonymous functions:
+btn.addEventListener("click", () =&gt; { ... });
+btn.addEventListener("click", () =&gt; { ... });
+// these are DIFFERENT functions — BOTH attach.
+// the click fires TWO handlers.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-12-2-2-3': `
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", handle());
+// calls handle now, attaches its return value (usually nothing)
+// fix: pass the reference
+btn.addEventListener("click", handle);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("onclick", handle);
+// wrong event name — "onclick" is the attribute/property, the event is "click"
+// fix:
+btn.addEventListener("click", handle);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("Click", handle);
+// case-sensitive — must be lowercase
+// fix:
+btn.addEventListener("click", handle);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.querySelector(".btn").addEventListener("click", h);
+// crashes if .btn doesn't exist
+// fix: optional chaining
+document.querySelector(".btn")?.addEventListener("click", h);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", () =&gt; { ... });
+btn.removeEventListener("click", () =&gt; { ... });
+// different function objects — not actually removing the first one
+// fix: save the function reference
+const handle = () =&gt; { ... };
+btn.addEventListener("click", handle);
+btn.removeEventListener("click", handle);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function render() {
+  btn.addEventListener("click", handle);
+}
+render(); render(); render();
+// 3 handlers attached, click triggers 3 calls
+// fix: attach ONCE, outside of any re-run path</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", e =&gt; {
+  console.log(e.value);
+});
+// events don't have .value
+// fix: read from e.target
+btn.addEventListener("click", e =&gt; {
+  console.log(e.target.value);
+});</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", function() {
+  arrow.classList.add(this.id);
+  // intent: use the button's id
+});
+btn.addEventListener("click", () =&gt; {
+  arrow.classList.add(this.id);
+  // this is NOT the button — arrow functions don't bind this
+});
+// fix: use e.currentTarget or a closure
+btn.addEventListener("click", e =&gt; {
+  arrow.classList.add(e.currentTarget.id);
+});</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Script in &lt;head&gt; without defer
+btn.addEventListener("click", h);
+// crashes — btn is null because the body hasn't been parsed yet
+// fix: defer, end-of-body, or DOMContentLoaded</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-12-2-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Most basic
+btn.addEventListener("click", () =&gt; console.log("clicked"));
+
+// With event object
+btn.addEventListener("click", e =&gt; console.log(e.target));
+
+// Named function
+function handle() { ... }
+btn.addEventListener("click", handle);
+
+// One-time listener
+btn.addEventListener("click", handle, { once: true });
+
+// Multiple events on one element
+input.addEventListener("focus", handle);
+input.addEventListener("blur", handle);
+input.addEventListener("input", handle);
+
+// Multiple handlers for one event
+btn.addEventListener("click", h1);
+btn.addEventListener("click", h2);
+
+// On many elements
+document.querySelectorAll(".tab").forEach(t =&gt; {
+  t.addEventListener("click", selectTab);
+});
+
+// Page-level events
+window.addEventListener("resize", relayout);
+document.addEventListener("DOMContentLoaded", setup);
+
+// Removing
+btn.removeEventListener("click", handle);
+
+// Add and remove with options
+const listenerOpts = { once: true };
+btn.addEventListener("click", h, listenerOpts);
+
+// Pattern: setup-then-cleanup
+function startDrag() {
+  document.addEventListener("mousemove", drag);
+  document.addEventListener("mouseup", stopDrag, { once: true });
+}
+function stopDrag() {
+  document.removeEventListener("mousemove", drag);
+}
+
+// Safe with null check
+document.querySelector(".btn")?.addEventListener("click", h);
+
+// Wrapping to pass arguments
+btn.addEventListener("click", () =&gt; handle("save"));
+
+// Inline arrow with multi-line body
+btn.addEventListener("click", e =&gt; {
+  console.log("clicked");
+  e.target.classList.add("clicked");
+});
+
+// Use the event object's details
+btn.addEventListener("click", e =&gt; {
+  console.log(e.clientX, e.clientY, e.target, e.timeStamp);
+});
+
+// Run handler immediately and on event
+function update() { ... }
+update();
+window.addEventListener("resize", update);</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-12-2-3-1': `
+    <p><strong>Example: save button with debugging-friendly setup</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const saveBtn = document.querySelector("#save");
+if (!saveBtn) {
+  console.warn("Save button not found");
+} else {
+  saveBtn.addEventListener("click", async () =&gt; {
+    saveBtn.disabled = true;
+    await saveData();
+    saveBtn.disabled = false;
+  });
+}
+// defensive check first, then the listener.
+// inside, disable the button to prevent double-clicks.</code></pre>
+
+    <p><strong>Example: tabs with shared handler</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function selectTab(e) {
+  document.querySelectorAll(".tab").forEach(t =&gt; t.classList.remove("active"));
+  e.currentTarget.classList.add("active");
+}
+
+document.querySelectorAll(".tab").forEach(tab =&gt; {
+  tab.addEventListener("click", selectTab);
+});
+// one named function, attached to many elements.
+// e.currentTarget tells us which tab was clicked.</code></pre>
+
+    <p><strong>Example: confirmation that only fires once</strong></p>
+<pre class="language-javascript"><code class="language-javascript">document.querySelector("#confirm").addEventListener("click", () =&gt; {
+  console.log("confirmed");
+  showSuccess();
+}, { once: true });
+// after the first click, the listener auto-removes.
+// extra clicks have no effect — useful for one-time dialogs.</code></pre>
+
+    <p><strong>Example: drag-and-drop with paired add/remove</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function startDrag(e) {
+  document.addEventListener("mousemove", drag);
+  document.addEventListener("mouseup", stopDrag, { once: true });
+}
+
+function drag(e) {
+  element.style.left = e.clientX + "px";
+}
+
+function stopDrag() {
+  document.removeEventListener("mousemove", drag);
+}
+
+element.addEventListener("mousedown", startDrag);
+// mousedown starts listening for movement and release.
+// mouseup auto-removes itself and triggers cleanup of mousemove.
+// classic add/remove pattern for time-limited listeners.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-12-2-3-2': `
+    <ul>
+      <li><strong>Events</strong> → the things addEventListener is registering handlers for</li>
+      <li><strong>Event object (<code>e</code>)</strong> → the argument passed to your handler</li>
+      <li><strong>Event types</strong> → click, input, submit, keydown, etc.</li>
+      <li><strong><code>removeEventListener</code></strong> → the counterpart for detaching handlers</li>
+      <li><strong>Function references</strong> → why <code>handle</code> works and <code>handle()</code> doesn't</li>
+      <li><strong>Options object</strong> → <code>{ once, capture, passive, signal }</code></li>
+      <li><strong>Arrow vs regular functions</strong> → affects <code>this</code> inside the handler</li>
+      <li><strong>Anonymous vs named handlers</strong> → only named ones can be removed</li>
+      <li><strong>Event delegation</strong> → one listener on a parent for many children</li>
+      <li><strong>DOM loaded timing</strong> → handlers must be attached after the element exists</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-12-2-3-3': `
+    <ul>
+      <li><code>removeEventListener</code></li>
+      <li>Event object (<code>e</code>)</li>
+      <li>Function reference vs function call</li>
+      <li>Event names (click, input, submit, etc.)</li>
+      <li>Options: <code>once</code>, <code>capture</code>, <code>passive</code></li>
+      <li>Arrow functions and <code>this</code></li>
+      <li>Event delegation</li>
+      <li>DOMContentLoaded</li>
+      <li>Anonymous functions</li>
+      <li>Element vs window vs document events</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.13.4 Events → event type as string
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-12-3-0-0': `
+    <p>The first argument to <code>addEventListener</code> is a <strong>string</strong> — the name of the event you want to listen for. <code>"click"</code>, <code>"input"</code>, <code>"submit"</code>, <code>"keydown"</code>. Plain text in quotes. It's how you tell the browser "I'm specifically interested in <em>this</em> event."</p>
+    <p>Strings are flexible — you can store them in variables, build them from data, or reuse them as constants. But they're also unforgiving: a typo means the listener never fires, and the browser won't warn you. Knowing the exact spelling matters.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-12-3-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// just a string — that's it
+btn.addEventListener("click", handle);
+input.addEventListener("input", handle);
+form.addEventListener("submit", handle);
+window.addEventListener("resize", handle);
+document.addEventListener("keydown", handle);
+
+// the string can come from anywhere:
+const eventName = "click";
+btn.addEventListener(eventName, handle);
+
+const events = ["focus", "blur"];
+events.forEach(name =&gt; input.addEventListener(name, handle));
+
+// the string IS the contract — it has to match a real event name exactly.</code></pre>
+    <p>The string is just a label the browser uses to look up the right kind of event. It's the same string the browser uses internally when it fires the event.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-12-3-0-2': `
+<pre class="language-javascript"><code class="language-javascript">// rules for the event type string:
+//
+//   1. it's a regular JavaScript string — single or double quotes both work
+//   2. it's case-sensitive — "click" and "Click" are different
+//   3. always lowercase by convention
+//   4. NO "on" prefix — use "click", NOT "onclick"
+//   5. spaces and special characters are not used in standard event names
+//   6. you can store it in a variable, build it dynamically, pass it around
+//
+// the same string is on the event object itself:
+btn.addEventListener("click", e =&gt; {
+  console.log(e.type);   // "click" — matches the string you passed in
+});
+// e.type is useful when one handler responds to multiple event types,
+// and you want to know which one fired.
+//
+// common categories of event type strings:
+//   "click", "dblclick"
+//   "mousedown", "mouseup", "mousemove", "mouseenter", "mouseleave"
+//   "keydown", "keyup"
+//   "input", "change", "submit"
+//   "focus", "blur"
+//   "load", "DOMContentLoaded", "beforeunload"
+//   "resize", "scroll"
+//
+// also: custom events are strings YOU invent — covered later.</code></pre>
+    <p>The browser doesn't have a list of "valid" event names that it enforces. You can listen for anything. If you make up a name nothing ever fires, your handler just sits there forever.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-12-3-0-3': `
+    <p><strong>Quotes are required — it's a string.</strong> Forgetting them turns it into a variable name JavaScript tries to look up:</p>
+<pre class="language-javascript"><code class="language-javascript">// Right
+btn.addEventListener("click", handle);
+
+// Wrong
+btn.addEventListener(click, handle);
+// "click" without quotes → JavaScript thinks "click" is a variable
+// ReferenceError: click is not defined
+
+// single quotes also work:
+btn.addEventListener('click', handle);
+
+// you can also build the string dynamically:
+const action = "click";
+btn.addEventListener(action, handle);
+// the variable holds "click", so it's the same as passing "click" directly</code></pre>
+
+    <p><strong>Case matters.</strong> Standard event names are all lowercase:</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", handle);    // ✓
+btn.addEventListener("Click", handle);    // ✗ wrong case — never fires
+btn.addEventListener("CLICK", handle);    // ✗ same
+
+// one notable exception: "DOMContentLoaded" — note the mixed case here.
+document.addEventListener("DOMContentLoaded", init);   // ✓
+document.addEventListener("domcontentloaded", init);   // ✗ doesn't work
+
+// in practice, only DOMContentLoaded is mixed-case. everything else is lowercase.</code></pre>
+
+    <p><strong>No "on" prefix.</strong> The HTML attribute is <code>onclick</code>; the event name is just <code>click</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">// HTML attribute syntax: &lt;button onclick="..."&gt;
+// JS property syntax: btn.onclick = handler;
+//
+// addEventListener uses the EVENT NAME, without "on":
+
+btn.addEventListener("click", handle);     // ✓
+btn.addEventListener("onclick", handle);   // ✗ silently never fires
+
+// rule: drop the "on" when using addEventListener.</code></pre>
+
+    <p><strong>You can store event names in variables.</strong> Useful when one set of code handles multiple event types:</p>
+<pre class="language-javascript"><code class="language-javascript">const events = ["focus", "blur", "input", "change"];
+
+events.forEach(name =&gt; {
+  input.addEventListener(name, e =&gt; {
+    console.log(e.type, ":", input.value);
+  });
+});
+
+// inside the handler, e.type is the string of the event that fired:
+//   user focuses → "focus : current value"
+//   user types  → "input : new value"
+//   user blurs  → "blur : final value"</code></pre>
+
+    <p><strong>The event object has a <code>type</code> property matching the string you passed.</strong> Useful when one handler responds to multiple events:</p>
+<pre class="language-javascript"><code class="language-javascript">function logEvent(e) {
+  console.log("event type:", e.type);
+}
+
+btn.addEventListener("click", logEvent);
+btn.addEventListener("mouseenter", logEvent);
+btn.addEventListener("mouseleave", logEvent);
+
+// inside logEvent:
+//   - on click → e.type === "click"
+//   - on hover in → e.type === "mouseenter"
+//   - on hover out → e.type === "mouseleave"
+//
+// you can branch on e.type for shared logic with type-specific reactions:
+function handle(e) {
+  if (e.type === "click") doClick();
+  else if (e.type === "mouseenter") doHover();
+}</code></pre>
+
+    <p><strong>Custom event names are just strings you make up.</strong> Use them with <code>new Event(name)</code> and <code>dispatchEvent</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">// listen for a custom event
+document.addEventListener("user-logged-in", () =&gt; {
+  console.log("user is logged in");
+});
+
+// fire it from anywhere
+document.dispatchEvent(new Event("user-logged-in"));
+
+// the name is yours — no rules except "no whitespace, no special characters."
+// convention: lowercase, hyphens for word separators ("user-logged-in").</code></pre>
+
+    <p><strong>Typos in event names fail silently.</strong> The browser doesn't tell you "no such event":</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("clikc", handle);   // typo
+// no error, no warning
+// the listener is "registered" for an event called "clikc"
+// no event with that name ever fires, so handle never runs
+
+// debugging: log inside the handler to confirm it's even getting called.
+btn.addEventListener("clikc", e =&gt; console.log("fired"));
+// click the button — does "fired" appear? if not, check the event name.</code></pre>
+
+    <p><strong>Some events fire on specific element types only.</strong> The name might be valid but the element won't emit it:</p>
+<pre class="language-javascript"><code class="language-javascript">// "submit" only fires on &lt;form&gt; elements
+button.addEventListener("submit", handle);   // never fires — buttons don't submit
+form.addEventListener("submit", handle);     // ✓
+
+// "input" mostly fires on &lt;input&gt;, &lt;textarea&gt;, &lt;select&gt;, contenteditable elements
+div.addEventListener("input", handle);       // never fires on a plain div
+
+// rule: check what events a specific element type can emit (MDN docs are the reference).</code></pre>
+
+    <p><strong>Event names don't need quotes when read FROM the event object.</strong> <code>e.type</code> is a property access, not a string literal:</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", e =&gt; {
+  console.log(e.type);          // "click"  — already a string from the event
+  console.log("click");          // "click"  — string literal
+  console.log(e.type === "click");   // true — comparing the property to a literal
+});</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-12-3-1-0': `
+    <p>The event name is how you tell the browser <em>which</em> event you care about. A button can fire many events — click, mouseenter, mousedown, contextmenu, focus, blur. Without a way to say "I only want clicks," your handler would be called for every kind of event, and you'd have to filter manually.</p>
+    <p>Using a string for the name makes the API simple and flexible. You can hard-code it, store it in a variable, loop over an array of names, or even invent your own custom names. The browser doesn't care where the string came from — as long as it matches an event that fires, your handler runs.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-12-3-1-1': `
+    <p>The right event name targets the right user action:</p>
+<pre class="language-javascript"><code class="language-javascript">// "click" — mouse click or tap
+btn.addEventListener("click", save);
+
+// "input" — every keystroke that changes the value
+input.addEventListener("input", validate);
+
+// "change" — value committed (after blur, or option selection)
+select.addEventListener("change", updateView);
+
+// "submit" — form submitted
+form.addEventListener("submit", handleSubmit);
+
+// "keydown" — any key pressed
+document.addEventListener("keydown", shortcut);
+
+// "load" — page fully loaded (with images)
+window.addEventListener("load", startApp);
+
+// each event name represents a different moment in time.
+// choosing the right one is half the work.</code></pre>
+
+    <p>Storing event names in variables also lets you write code that's flexible — handling multiple event types with the same logic, or letting different parts of your app decide what to listen for:</p>
+<pre class="language-javascript"><code class="language-javascript">function logAll(el, events) {
+  events.forEach(name =&gt; {
+    el.addEventListener(name, e =&gt; console.log(name, e));
+  });
+}
+
+logAll(input, ["focus", "blur", "input", "change"]);</code></pre>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-12-3-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Direct literals — most common
+btn.addEventListener("click", handle);
+input.addEventListener("input", handle);
+form.addEventListener("submit", handle);
+
+// Variables — when the name comes from data
+const eventName = "click";
+btn.addEventListener(eventName, handle);
+
+// Arrays — multiple events with the same handler
+["focus", "blur"].forEach(name =&gt; {
+  input.addEventListener(name, handle);
+});
+
+// Pass a variable instead of a literal
+const action = "click";
+btn.addEventListener(action, handle);   // same as passing "click"
+
+// e.type — read the fired event's name
+btn.addEventListener("click", e =&gt; {
+  console.log(e.type);   // "click"
+});
+
+// Branching on e.type
+function handle(e) {
+  if (e.type === "click") doClick();
+  if (e.type === "mouseenter") showHover();
+  if (e.type === "mouseleave") hideHover();
+}
+
+// Custom event names
+document.addEventListener("user-loaded", initUI);
+document.dispatchEvent(new Event("user-loaded"));
+
+// As constants (cleaner code in larger files)
+const EVENTS = {
+  CLICK: "click",
+  SUBMIT: "submit",
+  CHANGE: "change",
+};
+btn.addEventListener(EVENTS.CLICK, handle);
+
+// Inside a wrapper function
+function on(el, name, fn) {
+  el.addEventListener(name, fn);
+}
+on(btn, "click", handle);</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-12-3-1-3': `
+    <p>The event type is a string label that names the kind of event you want to react to. <code>"click"</code> means clicks. <code>"input"</code> means typing. <code>"submit"</code> means a form being submitted. Each event has its own name, and the browser uses that name to figure out which handlers to run when it fires.</p>
+    <p>Because it's just a string, you can do anything you'd do with a string — store it, pass it, build it from data. That's how you write code that listens for many events at once, or events whose names are determined at runtime.</p>
+    <p>The trade-off: strings give no compile-time safety. Typos fail silently. The browser doesn't say "no event called clikc exists" — it just never fires your handler. Match the name exactly, and double-check spelling when something isn't working.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-12-3-1-4': `
+    <p>Think of event names as channels on a radio. The browser broadcasts events on many channels simultaneously: the click channel, the input channel, the keydown channel. When you call <code>addEventListener</code>, you're tuning a receiver (your function) to a specific channel.</p>
+    <p>The string you pass is the channel number. Tune to <code>"click"</code> and you hear clicks. Tune to <code>"input"</code> and you hear typing. Tune to <code>"flickity-flick"</code> and you hear nothing — there's no broadcast on that channel.</p>
+    <p>You can tune the same receiver to multiple channels (one handler, several event types), or tune multiple receivers to the same channel (several handlers, one event type). The channel name is what wires it all together.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-12-3-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// Goal: log every input-related event type as it happens, with one handler.
+
+const input = document.querySelector("input");
+
+const eventNames = ["focus", "input", "change", "blur"];
+
+function log(e) {
+  console.log("event:", e.type, "value:", input.value);
+}
+
+eventNames.forEach(name =&gt; {
+  input.addEventListener(name, log);
+});
+
+// step by step at page load:
+// 1. eventNames is ["focus", "input", "change", "blur"]
+// 2. forEach loops over those four strings
+// 3. for each name, addEventListener is called with that string
+//    - "focus" listener attached
+//    - "input" listener attached
+//    - "change" listener attached
+//    - "blur" listener attached
+// 4. four separate listeners are now registered, all pointing to the same log function
+
+// step by step when the user uses the input:
+// 1. user clicks the input → fires "focus"
+//    → log runs, e.type is "focus", logs "event: focus value: "
+// 2. user types "a" → fires "input"
+//    → log runs, e.type is "input", logs "event: input value: a"
+// 3. user types "b" → fires "input"
+//    → log runs, e.type is "input", logs "event: input value: ab"
+// 4. user clicks elsewhere → fires "blur"
+//    → log runs, e.type is "blur", logs "event: blur value: ab"
+// 5. (if value changed and user blurred → fires "change" right after blur)
+
+// one handler, four event types, distinguished inside by e.type.
+// the event name string is what wires each fire to the handler.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-12-3-2-0': `
+    <p>If your handler isn't firing and the element clearly exists, the most likely cause is a typo or wrong-case event name. The browser fails silently:</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("clikc", handle);   // typo
+// no error, no warning
+// click the button → nothing happens
+
+// fix: log inside to confirm
+btn.addEventListener("clikc", () =&gt; console.log("fired"));
+// if "fired" doesn't appear → event name is wrong or doesn't fire on this element
+
+// check the spelling against MDN docs or a reliable reference.</code></pre>
+
+    <p>For events that don't fire on a particular element type, the same silent failure happens:</p>
+<pre class="language-javascript"><code class="language-javascript">div.addEventListener("submit", handle);
+// divs don't emit "submit" — only forms do
+// no error, handler never runs
+
+// fix: attach to the right kind of element
+form.addEventListener("submit", handle);</code></pre>
+
+    <p>Useful trick — listen to a wide set at once to see what actually fires:</p>
+<pre class="language-javascript"><code class="language-javascript">["click", "mousedown", "mouseup", "mouseenter", "mouseleave", "focus", "blur"]
+  .forEach(name =&gt; {
+    el.addEventListener(name, e =&gt; console.log(e.type));
+  });
+
+// click the element. logs everything that fires.
+// helps you find the right event name when you're not sure which one to use.</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-12-3-2-1': `
+    <p>The event type is just text — a label the browser uses to route events to handlers. Strings are unglamorous, but their flexibility is what makes the event system simple to use. You don't need a special syntax for each event; you just spell its name correctly. Once you know the spelling, listening is one line of code.</p>
+    <p>Because it's a string, you can store it, pass it around, or build it from variables. You can write a generic function that takes an event name and an element and wires them together. The event name being a "first-class" piece of data is what makes the event system composable.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-12-3-2-2': `
+    <p><strong>Confusion: forgetting the quotes</strong></p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener(click, handle);
+// ReferenceError: click is not defined
+// fix: quote the string
+btn.addEventListener("click", handle);</code></pre>
+
+    <p><strong>Confusion: including "on" prefix</strong></p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("onclick", handle);
+// "onclick" is the HTML attribute name and the property name
+// the EVENT name (used by addEventListener) is just "click" — no "on"
+// fix:
+btn.addEventListener("click", handle);</code></pre>
+
+    <p><strong>Confusion: wrong case</strong></p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("Click", handle);   // never fires
+btn.addEventListener("CLICK", handle);    // never fires
+// most event names are lowercase
+// fix:
+btn.addEventListener("click", handle);
+
+// the one common exception: "DOMContentLoaded" is mixed-case
+document.addEventListener("DOMContentLoaded", init);</code></pre>
+
+    <p><strong>Confusion: thinking the browser will warn about unknown names</strong></p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("klick", handle);
+// no warning, no error — addEventListener accepts ANY string
+// the browser just never fires an event with that name on a normal button
+// fix: check spelling carefully; log inside to debug</code></pre>
+
+    <p><strong>Confusion: using DOM property name instead of event name</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// the property: btn.onclick
+// the event:    "click"
+
+btn.addEventListener("onclick", handle);   // never fires
+btn.addEventListener("click", handle);      // ✓
+
+// other examples:
+// property → event
+// onclick → click
+// onsubmit → submit
+// onload → load
+// the rule: drop the "on" prefix for addEventListener.</code></pre>
+
+    <p><strong>Confusion: thinking the event name has to be predefined</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// addEventListener accepts ANY string
+document.addEventListener("my-custom-event", handle);
+// no built-in event with this name exists, but the listener works fine
+// if you dispatch an event with that name, the handler runs:
+document.dispatchEvent(new Event("my-custom-event"));
+// → handler fires
+
+// you can invent your own event names for app-level signals.</code></pre>
+
+    <p><strong>Confusion: passing a variable that holds the wrong value</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const eventName = "Click";
+btn.addEventListener(eventName, handle);
+// the variable is fine syntactically, but its value has wrong case
+// the listener never fires — no event called "Click" ever happens
+// fix: check the variable's value, not just the syntax
+const eventName = "click";
+btn.addEventListener(eventName, handle);</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-12-3-2-3': `
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener(click, handle);
+// ReferenceError — click is not a defined variable
+// fix: quote the string
+btn.addEventListener("click", handle);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("onclick", handle);
+// wrong — event name is "click", not "onclick"
+// fix:
+btn.addEventListener("click", handle);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("Click", handle);
+// wrong case
+// fix: lowercase
+btn.addEventListener("click", handle);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("clikc", handle);
+// typo — no event fires, no error
+// fix: check spelling
+btn.addEventListener("click", handle);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">div.addEventListener("submit", handle);
+// submit only fires on &lt;form&gt; elements
+// fix: attach to a form
+form.addEventListener("submit", handle);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">document.addEventListener("domcontentloaded", init);
+// wrong case — should be "DOMContentLoaded"
+// fix: this one is mixed-case
+document.addEventListener("DOMContentLoaded", init);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click submit", handle);
+// can't pass multiple event names in one string
+// fix: separate calls, or loop
+["click", "submit"].forEach(name =&gt; btn.addEventListener(name, handle));</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", e =&gt; {
+  if (e.type = "click") doThing();
+});
+// "=" is assignment, not comparison
+// fix: use ===
+if (e.type === "click") doThing();</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">const eventName = "Click";
+btn.addEventListener(eventName, handle);
+// the variable holds the wrong-case value — still doesn't fire
+// fix: store the correct value
+const eventName = "click";</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-12-3-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Standard event names — literal strings
+btn.addEventListener("click", h);
+btn.addEventListener("dblclick", h);
+btn.addEventListener("mouseenter", h);
+btn.addEventListener("mouseleave", h);
+btn.addEventListener("mousedown", h);
+btn.addEventListener("mouseup", h);
+btn.addEventListener("contextmenu", h);
+
+input.addEventListener("input", h);
+input.addEventListener("change", h);
+input.addEventListener("focus", h);
+input.addEventListener("blur", h);
+
+form.addEventListener("submit", h);
+form.addEventListener("reset", h);
+
+document.addEventListener("keydown", h);
+document.addEventListener("keyup", h);
+document.addEventListener("DOMContentLoaded", h);   // note: mixed case
+
+window.addEventListener("load", h);
+window.addEventListener("resize", h);
+window.addEventListener("scroll", h);
+window.addEventListener("beforeunload", h);
+
+img.addEventListener("load", h);
+img.addEventListener("error", h);
+
+// Variables
+const evt = "click";
+btn.addEventListener(evt, h);
+
+// Arrays
+["focus", "blur"].forEach(n =&gt; input.addEventListener(n, h));
+
+// Constants
+const EVENTS = { CLICK: "click", SUBMIT: "submit" };
+btn.addEventListener(EVENTS.CLICK, h);
+
+// Variable holding the event name
+const action = "click";
+btn.addEventListener(action, h);
+
+// Read from event object
+btn.addEventListener("click", e =&gt; console.log(e.type));   // "click"
+
+// Branch on type
+function shared(e) {
+  if (e.type === "click") doClick();
+  if (e.type === "submit") doSubmit();
+}
+
+// Custom events
+document.addEventListener("user-loaded", h);
+document.dispatchEvent(new Event("user-loaded"));
+
+// Wrapper function
+function on(el, name, fn) {
+  el.addEventListener(name, fn);
+}
+on(btn, "click", h);
+
+// One handler, many events
+const log = e =&gt; console.log(e.type);
+["mousedown", "mouseup", "click"].forEach(name =&gt; btn.addEventListener(name, log));</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-12-3-3-1': `
+    <p><strong>Example: branching on event type</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function handlePointer(e) {
+  if (e.type === "mouseenter") card.classList.add("hover");
+  else if (e.type === "mouseleave") card.classList.remove("hover");
+}
+
+card.addEventListener("mouseenter", handlePointer);
+card.addEventListener("mouseleave", handlePointer);
+// one function handles both events. e.type tells it which one fired.</code></pre>
+
+    <p><strong>Example: shared validation across multiple input events</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function validate(e) {
+  const input = e.target;
+  if (input.value.trim() === "") {
+    input.classList.add("error");
+  } else {
+    input.classList.remove("error");
+  }
+}
+
+["input", "blur", "change"].forEach(name =&gt; {
+  document.querySelectorAll("input").forEach(input =&gt; {
+    input.addEventListener(name, validate);
+  });
+});
+// fires validation on every input, blur, AND change event.
+// covers typing, leaving the field, and value commits all with one handler.</code></pre>
+
+    <p><strong>Example: app-level events with custom names</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// listen for an app-defined "logged in" signal
+document.addEventListener("user-logged-in", e =&gt; {
+  showWelcomeMessage(e.detail.userName);
+});
+
+// later, after login succeeds, fire the event
+function onLogin(user) {
+  document.dispatchEvent(new CustomEvent("user-logged-in", {
+    detail: { userName: user.name },
+  }));
+}
+// the string "user-logged-in" is one you invented.
+// any part of your app can listen for it, decoupled from where it fires.</code></pre>
+
+    <p><strong>Example: debugging "which event fires?"</strong></p>
+<pre class="language-javascript"><code class="language-javascript">["focus", "blur", "input", "change", "keydown", "keyup"].forEach(name =&gt; {
+  input.addEventListener(name, e =&gt; console.log(e.type, "value:", input.value));
+});
+// while developing, attach a logger for every event type you might care about.
+// see in the console which ones fire and in what order. remove when done.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-12-3-3-2': `
+    <ul>
+      <li><strong>Strings</strong> → event types are just regular strings</li>
+      <li><strong>Quotes</strong> → required around the event name (single, double, or backticks)</li>
+      <li><strong>Case sensitivity</strong> → most names are lowercase; <code>DOMContentLoaded</code> is the exception</li>
+      <li><strong>Event object's <code>.type</code></strong> → matches the string you passed</li>
+      <li><strong>Custom events</strong> → string names you invent for app-level signals</li>
+      <li><strong><code>dispatchEvent</code> / <code>new Event</code></strong> → programmatically firing events by name</li>
+      <li><strong>Event name vs property name</strong> → "click" vs "onclick"</li>
+      <li><strong>Template literals</strong> → for dynamic event names</li>
+      <li><strong>Branching on <code>e.type</code></strong> → one handler for multiple event types</li>
+      <li><strong>Looping over event names</strong> → attaching one handler to several events</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-12-3-3-3': `
+    <ul>
+      <li>String basics</li>
+      <li><code>addEventListener</code></li>
+      <li>Event object (<code>e.type</code>)</li>
+      <li>Custom events (<code>new Event</code>, <code>CustomEvent</code>)</li>
+      <li><code>dispatchEvent</code></li>
+      <li>Event name vs HTML attribute (<code>onclick</code> etc.)</li>
+      <li>DOMContentLoaded</li>
+      <li>Template literals</li>
+      <li>Constants and enums</li>
+      <li>Multiple events with one handler</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.13.5 Events → callback function
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-12-4-0-0': `
+    <p>A <strong>callback</strong> is a function you pass to another function so it can be called later. In <code>addEventListener</code>, the second argument is the callback — the function the browser will <em>call back</em> when the event fires. You don't run it; you hand it over.</p>
+    <p>This pattern of "give a function to be called later" appears everywhere in JavaScript — events, timers (<code>setTimeout</code>), array methods (<code>forEach</code>, <code>map</code>), fetching data. Event handlers are just the most visible example. Once you understand callbacks as "deferred function calls," every event-driven feature makes sense.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-12-4-0-1': `
+<pre class="language-javascript"><code class="language-javascript">
+// the callback can be defined inline:
+btn.addEventListener("click", () =&gt; {
+  console.log("clicked");
+});
+
+// or as a named function passed by reference:
+function handleClick() {
+  console.log("clicked");
+}
+btn.addEventListener("click", handleClick);
+
+// in both cases, the function isn't running yet.
+// the browser stores it and calls it later, when the event fires.
+
+// other examples of the same pattern:
+setTimeout(() =&gt; console.log("1 second later"), 1000);
+items.forEach(item =&gt; console.log(item));
+fetch("/data").then(response =&gt; console.log(response));
+
+// every one of these passes a function (a callback) to another function.</code></pre>
+    <p>The callback is "code you hand over." You define what should happen; the receiving function decides when to run it. For events, "when" is "when the user does the thing."</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-12-4-0-2': `
+<pre class="language-javascript"><code class="language-javascript">// the lifecycle of a callback:
+//
+//   1. you DEFINE a function
+//        function handle(e) { ... }
+//
+//   2. you PASS it to another function (without calling it)
+//        btn.addEventListener("click", handle);
+//                                       ^^^^^^^
+//                                       no parentheses — passing, not calling
+//
+//   3. the receiving function STORES the reference
+//        the browser keeps "handle" in its event listener list
+//
+//   4. later, when the event fires, the receiver CALLS the callback
+//        the browser calls handle(eventObject)
+//        the callback runs, with whatever arguments the receiver provides
+//
+//   5. the callback returns (or doesn't); the receiver moves on
+//
+// key terms:
+//   - "callback"   → the function you hand over
+//   - "caller"     → the function (or system) that calls the callback later
+//   - "fire" / "invoke" → when the caller actually runs the callback
+//
+// in event-land:
+//   - your event handler is the callback
+//   - the browser is the caller
+//   - the event firing is what triggers the call</code></pre>
+    <p>You write the function. The browser (or another function) calls it. That's the whole pattern.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-12-4-0-3': `
+    <p><strong>The callback is just a regular function — there's nothing special about its definition.</strong> Any function works:</p>
+<pre class="language-javascript"><code class="language-javascript">// arrow function inline
+btn.addEventListener("click", () =&gt; console.log("hi"));
+
+// arrow function in a variable
+const handler = () =&gt; console.log("hi");
+btn.addEventListener("click", handler);
+
+// classic function expression
+btn.addEventListener("click", function() {
+  console.log("hi");
+});
+
+// declared function
+function handler() { console.log("hi"); }
+btn.addEventListener("click", handler);
+
+// method from an object
+const app = { handle() { console.log("hi"); } };
+btn.addEventListener("click", app.handle);
+
+// all of these are equivalent in behavior — different syntax, same idea.</code></pre>
+
+    <p><strong>The callback receives arguments from the caller, not from you.</strong> For events, the browser passes the event object as the first argument:</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", e =&gt; {
+  // the browser called this function and passed the event object as e
+  console.log(e.type);     // "click"
+  console.log(e.target);   // the element clicked
+});
+
+// you don't decide what arguments come in. the caller (browser) decides.
+// for click events, that's the event object.
+// for setTimeout, no arguments are passed.
+// for array.forEach, three: (item, index, array).
+
+// you can ignore arguments you don't need:
+btn.addEventListener("click", () =&gt; console.log("hi"));   // ignores the event object</code></pre>
+
+    <p><strong>The callback can return a value, but most of the time the caller ignores it.</strong> Event handlers' return values are mostly meaningless:</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", () =&gt; {
+  return "important";   // browser doesn't care — return value ignored
+});
+
+// EXCEPTION: returning false (or calling preventDefault) cancels some default behaviors
+form.addEventListener("submit", e =&gt; {
+  e.preventDefault();   // modern way to cancel a form submit
+});
+
+// but in general: don't rely on event handler return values for anything.</code></pre>
+
+    <p><strong>Callbacks can be reused across multiple subscribers.</strong> One function, many calls:</p>
+<pre class="language-javascript"><code class="language-javascript">function logClick(e) {
+  console.log("clicked:", e.target);
+}
+
+document.querySelectorAll(".btn").forEach(btn =&gt; {
+  btn.addEventListener("click", logClick);
+});
+
+// the SAME function (logClick) is registered as a callback on every .btn.
+// each click on any of them calls logClick with that button's event object.</code></pre>
+
+    <p><strong>Inline vs named: same idea, different trade-offs.</strong> Inline arrow functions are convenient but can't be removed:</p>
+<pre class="language-javascript"><code class="language-javascript">// Inline — convenient for one-off handlers
+btn.addEventListener("click", () =&gt; console.log("clicked"));
+// can't be removed later — you have no reference to the function.
+
+// Named — slightly more code, much easier to manage
+function handle() { console.log("clicked"); }
+btn.addEventListener("click", handle);
+btn.removeEventListener("click", handle);   // works because we have the reference</code></pre>
+
+    <p><strong>Callbacks can close over variables from the surrounding scope.</strong> This is what makes them powerful — they "remember" their environment:</p>
+<pre class="language-javascript"><code class="language-javascript">function setupCounter() {
+  let count = 0;
+  const btn = document.querySelector("#counter");
+
+  btn.addEventListener("click", () =&gt; {
+    count++;
+    console.log("count is now:", count);
+  });
+}
+
+setupCounter();
+// every click increments count and logs it.
+// count is created INSIDE setupCounter, but the callback can still access it.
+// this is a "closure" — covered more thoroughly in another section.</code></pre>
+
+    <p><strong>You can't "wait" for a callback inline.</strong> Code after <code>addEventListener</code> runs immediately, not when the event fires:</p>
+<pre class="language-javascript"><code class="language-javascript">console.log("before");
+btn.addEventListener("click", () =&gt; console.log("clicked"));
+console.log("after");
+
+// at page load, the console shows:
+//   "before"
+//   "after"
+//
+// later, when the user clicks:
+//   "clicked"
+
+// the script doesn't pause at addEventListener. it registers and moves on.</code></pre>
+
+    <p><strong>Callbacks are called asynchronously.</strong> They run from the event loop, not as a direct line of your script:</p>
+<pre class="language-javascript"><code class="language-javascript">// even if the event fires "immediately" (like firing a custom event),
+// the callback usually runs after the current code finishes:
+
+btn.addEventListener("click", () =&gt; console.log("callback"));
+btn.click();   // programmatically fire the click
+console.log("after");
+
+// log order depends on event timing, but usually:
+//   "callback"
+//   "after"
+// or
+//   "after"
+//   "callback"
+//
+// don't depend on the timing for normal use — just know callbacks
+// don't block your main code.</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-12-4-1-0': `
+    <p>Most code runs top to bottom and finishes. But for an interactive page, lots of code shouldn't run "now" — it should run "when the user does something" or "when this request finishes." Callbacks are how you express that. You hand a function to someone (the browser, a timer, a fetch) and say "call this when you're ready."</p>
+    <p>Without callbacks, the only way to wait for something would be to constantly check ("is the click here yet?"). With callbacks, the system handles the waiting and notifies you. Your code stays clean, runs once at setup, and reacts to things as they happen.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-12-4-1-1': `
+    <p>Callbacks appear in nearly every async or event-driven feature:</p>
+<pre class="language-javascript"><code class="language-javascript">// Events
+btn.addEventListener("click", () =&gt; { ... });
+
+// Timers
+setTimeout(() =&gt; { ... }, 1000);
+setInterval(() =&gt; { ... }, 1000);
+
+// Array iteration
+items.forEach(item =&gt; { ... });
+items.map(item =&gt; ...);
+items.filter(item =&gt; ...);
+
+// Promises (network requests, async)
+fetch("/api").then(response =&gt; { ... });
+
+// once you recognize callbacks, you see them everywhere.
+// they're the universal "do this later" pattern.</code></pre>
+
+    <p>For events specifically, callbacks let you write the response code once and let the browser run it however many times the user triggers the event. One handler, many invocations, no extra setup per call.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-12-4-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// As an inline arrow function
+btn.addEventListener("click", () =&gt; console.log("clicked"));
+
+// As a named function
+function handle() { console.log("clicked"); }
+btn.addEventListener("click", handle);
+
+// Reused across many elements
+function logClick(e) { console.log(e.target); }
+document.querySelectorAll(".btn").forEach(btn =&gt; {
+  btn.addEventListener("click", logClick);
+});
+
+// Capturing variables from outer scope (closure)
+let count = 0;
+btn.addEventListener("click", () =&gt; {
+  count++;
+  console.log("count:", count);
+});
+
+// Passing arguments by wrapping
+btn.addEventListener("click", () =&gt; save("draft"));
+
+// Async callback
+btn.addEventListener("click", async () =&gt; {
+  const data = await fetch("/api").then(r =&gt; r.json());
+  render(data);
+});
+
+// In setTimeout
+setTimeout(() =&gt; console.log("after 1s"), 1000);
+
+// In array methods
+const doubled = numbers.map(n =&gt; n * 2);
+const evens = numbers.filter(n =&gt; n % 2 === 0);
+
+// In Promise chains
+fetch("/api")
+  .then(r =&gt; r.json())
+  .then(data =&gt; render(data))
+  .catch(err =&gt; console.error(err));
+
+// As an object method passed as a callback
+const app = {
+  handle(e) { console.log("clicked"); },
+};
+btn.addEventListener("click", app.handle);</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-12-4-1-3': `
+    <p>A callback is a function you hand to something else, with the understanding that the something else will call it later. You're not running the function yourself — you're saying "here's what to do; call this when you're ready."</p>
+    <p>For events, "ready" means "the event fires." The browser keeps your function on file. When the user clicks, the browser pulls out your function and runs it, passing along an event object with details. Your function does its thing and returns. The browser doesn't care what it did or what it returned — its job was just to call you.</p>
+    <p>This "hand over a function" idea is everywhere in JavaScript. Timers (<code>setTimeout</code>), array iteration (<code>forEach</code>), network requests (<code>fetch</code>) — all use callbacks. The common thread is "this won't happen now; here's what to do when it does."</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-12-4-1-4': `
+    <p>Imagine giving a phone number to a service desk. You're saying "don't call me right now — I'm busy — but call this number when my package arrives." You hand over the number, walk away, and live your life. Later, the desk calls you, and you handle the package.</p>
+    <p>A callback is exactly that phone number, but for code. You write the function that should run when the event happens, hand it over to <code>addEventListener</code>, and walk away. The browser holds onto it. When the event fires, the browser "calls" your function — that's literally where the name comes from. It calls you back.</p>
+    <p>The callback doesn't know it's a callback. It's just a regular function. What makes it a callback is the role it plays: stored by someone else, invoked later. The same function could be a callback, or you could call it yourself directly — same function, different role.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-12-4-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// HTML: &lt;button id="say-hi"&gt;Say Hi&lt;/button&gt;
+
+function sayHi(event) {
+  console.log("Hi! Event was:", event.type);
+}
+
+const btn = document.getElementById("say-hi");
+btn.addEventListener("click", sayHi);
+
+// step by step at page load:
+// 1. sayHi is defined as a function. it doesn't run yet.
+// 2. btn refers to the button element.
+// 3. btn.addEventListener("click", sayHi) is called.
+//    - "click" is the event name (a string)
+//    - sayHi is the callback (a function reference, NOT a call)
+// 4. the browser stores: "when a click happens on this button, call sayHi"
+// 5. the script ends. nothing else runs.
+
+// step by step on first click:
+// 1. user clicks the button.
+// 2. the browser detects: "click on the button with the registered handler"
+// 3. the browser invokes our callback:
+//    sayHi(eventObject)   // browser passes the event object as the argument
+// 4. inside sayHi:
+//    event.type is "click"
+//    "Hi! Event was: click" is logged
+// 5. sayHi returns. browser does nothing with the return value.
+// 6. browser waits for the next event.
+
+// notice:
+//   - YOU defined sayHi
+//   - THE BROWSER called sayHi
+//   - the connection between you and the browser is addEventListener
+//   - sayHi was "passed" (no parens), then "called" later (by the browser)
+//
+// that's the entire callback pattern.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-12-4-2-0': `
+    <p>If a callback "doesn't run," the most common cause is that you accidentally called it instead of passing it:</p>
+<pre class="language-javascript"><code class="language-javascript">function handle() { console.log("hi"); }
+
+// passes the function (correct)
+btn.addEventListener("click", handle);
+
+// CALLS the function NOW, passes the return value (usually undefined)
+btn.addEventListener("click", handle());
+// "hi" logs ONCE, immediately, at registration
+// after that, the click does nothing — no callback is attached
+
+// check: does your console show output at page load (when you didn't want it)?
+// → you're calling instead of passing</code></pre>
+
+    <p>If the callback fires but the wrong values appear, log inside to see what arguments came in:</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", e =&gt; {
+  console.log("event:", e);
+  console.log("target:", e.target);
+  console.log("type:", e.type);
+});
+
+// click the button. all three log. compare what you expected to what you got.
+// if e is undefined → you didn't define the parameter
+// if e.target is wrong → the click happened on something inside your target</code></pre>
+
+    <p>If you're trying to remove a callback but it's not removing, you probably passed an anonymous function — you need the same reference both times:</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", () =&gt; { ... });
+btn.removeEventListener("click", () =&gt; { ... });
+// two DIFFERENT function objects — nothing removed
+
+// fix: store a reference
+const handle = () =&gt; { ... };
+btn.addEventListener("click", handle);
+btn.removeEventListener("click", handle);   // ✓</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-12-4-2-1': `
+    <p>A callback isn't a different kind of function — it's a regular function being used in a particular way. The "callback" label describes the role, not the definition. You can write a function with no intention of it being a callback, then pass it to <code>addEventListener</code>, and now it's a callback. Tomorrow you might use the same function directly. Same function, different uses.</p>
+    <p>The key shift is realizing that <code>addEventListener("click", handle)</code> doesn't "run handle" — it "hands handle over for later use." That distinction is the whole point of callbacks. You're not invoking the function; you're providing it for someone else to invoke. Once that clicks, every event handler, timer, and async operation reads more clearly.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-12-4-2-2': `
+    <p><strong>Confusion: calling instead of passing</strong></p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", handle());
+// the () runs handle NOW. its return value is the "callback" — usually undefined.
+// no real callback attached.
+
+// fix: drop the parentheses
+btn.addEventListener("click", handle);</code></pre>
+
+    <p><strong>Confusion: thinking the callback runs immediately</strong></p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", () =&gt; console.log("hi"));
+// "hi" does NOT log right now.
+// it logs only when the user clicks.
+
+// addEventListener registers the callback for future use.
+// the callback runs later, in response to the event.</code></pre>
+
+    <p><strong>Confusion: trying to pass arguments to the callback</strong></p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", save("draft"));
+// save("draft") runs NOW, returns whatever save returns.
+// you've attached the return value, not save.
+
+// fix: wrap in an arrow function
+btn.addEventListener("click", () =&gt; save("draft"));
+// now an arrow function is the callback; IT calls save("draft") when clicked.</code></pre>
+
+    <p><strong>Confusion: thinking the callback gets the arguments YOU define</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function handle(name) {
+  console.log("hello", name);
+}
+btn.addEventListener("click", handle);
+
+// click: logs "hello [object PointerEvent]"
+// the browser passes the EVENT OBJECT as the first argument, not "name"
+// fix: write the callback to expect the event object
+function handle(e) {
+  console.log("clicked:", e.target);
+}</code></pre>
+
+    <p><strong>Confusion: thinking <code>return false</code> stops events</strong></p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", e =&gt; {
+  return false;   // modern addEventListener ignores this
+});
+
+// returning false used to work with the old "onclick" attribute style,
+// but not with addEventListener.
+
+// fix: use preventDefault and/or stopPropagation
+btn.addEventListener("click", e =&gt; {
+  e.preventDefault();      // cancel default browser behavior
+  e.stopPropagation();     // stop bubbling to parents
+});</code></pre>
+
+    <p><strong>Confusion: thinking callbacks are special syntax</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// the word "callback" describes the role, not a syntax.
+// any function used as the second argument to addEventListener is a "callback."
+// the same function could be called directly elsewhere — that doesn't make it a callback.
+
+function greet() { console.log("hi"); }
+
+greet();                                  // direct call — not a callback
+btn.addEventListener("click", greet);     // callback (greet plays the callback role)
+setTimeout(greet, 1000);                  // also a callback</code></pre>
+
+    <p><strong>Confusion: callback "this" issues with arrow vs regular functions</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// regular function — this = the element when used as event handler
+btn.addEventListener("click", function() {
+  console.log(this);   // the button
+});
+
+// arrow function — this = surrounding scope (usually window/undefined)
+btn.addEventListener("click", () =&gt; {
+  console.log(this);   // NOT the button
+});
+
+// modern style: use arrow functions and read the element from e.target instead.</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-12-4-2-3': `
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", handle());
+// runs handle now, attaches its return value
+// fix: pass the reference
+btn.addEventListener("click", handle);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", save("draft"));
+// runs save("draft") now
+// fix: wrap to delay the call
+btn.addEventListener("click", () =&gt; save("draft"));</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">function handle(name) { ... }
+btn.addEventListener("click", handle);
+// browser passes the EVENT OBJECT as the first arg, not "name"
+// fix: define the callback to take the event
+function handle(e) { ... }</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", e =&gt; { return false; });
+// return false doesn't stop the event in addEventListener
+// fix: use preventDefault
+btn.addEventListener("click", e =&gt; { e.preventDefault(); });</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", () =&gt; console.log("hi"));
+btn.removeEventListener("click", () =&gt; console.log("hi"));
+// different functions — nothing removed
+// fix: keep a reference
+const handle = () =&gt; console.log("hi");
+btn.addEventListener("click", handle);
+btn.removeEventListener("click", handle);</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", () =&gt; {
+  console.log(this);   // not the button
+});
+// arrow functions don't bind their own this
+// fix: use a regular function, or read from e.currentTarget
+btn.addEventListener("click", function() {
+  console.log(this);   // the button
+});
+// or:
+btn.addEventListener("click", e =&gt; {
+  console.log(e.currentTarget);   // the button
+});</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// expecting the callback to block following code
+btn.addEventListener("click", () =&gt; { await save(); });
+nextStep();
+// nextStep runs immediately — the callback hasn't even fired yet
+// fix: move dependent code INTO the callback
+btn.addEventListener("click", async () =&gt; {
+  await save();
+  nextStep();
+});</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// trying to access variables that don't exist where the callback runs
+function setup() {
+  let local = "hello";
+  btn.addEventListener("click", () =&gt; console.log(local));   // ✓ closure captures it
+}
+
+// vs.
+btn.addEventListener("click", () =&gt; console.log(local));   // ReferenceError if local isn't defined here</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// not awaiting an async callback
+const handle = async () =&gt; { await save(); };
+btn.addEventListener("click", handle);
+// addEventListener doesn't await the callback's promise
+// errors thrown inside async callbacks become unhandled rejections
+// fix: handle errors inside the callback
+const handle = async () =&gt; {
+  try { await save(); } catch (e) { console.error(e); }
+};</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-12-4-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Inline arrow
+btn.addEventListener("click", () =&gt; console.log("clicked"));
+
+// Inline with event
+btn.addEventListener("click", e =&gt; console.log(e.target));
+
+// Multiline inline
+btn.addEventListener("click", e =&gt; {
+  console.log("clicked");
+  e.target.classList.add("clicked");
+});
+
+// Named function
+function handle(e) { console.log(e.target); }
+btn.addEventListener("click", handle);
+
+// Reused on many elements
+document.querySelectorAll(".btn").forEach(btn =&gt; {
+  btn.addEventListener("click", handle);
+});
+
+// Wrapping to pass arguments
+btn.addEventListener("click", () =&gt; save("draft"));
+btn.addEventListener("click", () =&gt; doThing(1, 2, 3));
+
+// Async callback
+btn.addEventListener("click", async () =&gt; {
+  const data = await fetch("/api").then(r =&gt; r.json());
+  render(data);
+});
+
+// Closure — capturing outer variables
+let count = 0;
+btn.addEventListener("click", () =&gt; {
+  count++;
+  console.log(count);
+});
+
+// Removing — requires reference
+const handler = () =&gt; console.log("once");
+btn.addEventListener("click", handler);
+btn.removeEventListener("click", handler);
+
+// Pattern: setup function builds and attaches the callback
+function setupCounter(el) {
+  let n = 0;
+  el.addEventListener("click", () =&gt; {
+    n++;
+    el.textContent = n;
+  });
+}
+setupCounter(document.querySelector("#counter"));
+
+// Callback ignoring its argument
+btn.addEventListener("click", () =&gt; console.log("clicked"));
+
+// Callback using full event object
+btn.addEventListener("click", (event) =&gt; {
+  console.log(event.clientX, event.clientY, event.target);
+});
+
+// Other callback contexts (not just events)
+setTimeout(() =&gt; console.log("later"), 1000);
+[1, 2, 3].forEach(n =&gt; console.log(n));
+fetch("/data").then(r =&gt; r.json()).then(data =&gt; console.log(data));</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-12-4-3-1': `
+    <p><strong>Example: save button with reusable callback</strong></p>
+<pre class="language-javascript"><code class="language-javascript">async function handleSave(e) {
+  const btn = e.currentTarget;
+  btn.disabled = true;
+  await saveData();
+  btn.disabled = false;
+  showToast("Saved!");
+}
+
+document.querySelectorAll(".save-btn").forEach(btn =&gt; {
+  btn.addEventListener("click", handleSave);
+});
+// one named callback, reused across every save button.
+// e.currentTarget gives us the specific button that was clicked.</code></pre>
+
+    <p><strong>Example: counter using closure</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function makeCounter(el, displayEl) {
+  let count = 0;
+  el.addEventListener("click", () =&gt; {
+    count++;
+    displayEl.textContent = count;
+  });
+}
+
+makeCounter(document.querySelector("#btn1"), document.querySelector("#display1"));
+makeCounter(document.querySelector("#btn2"), document.querySelector("#display2"));
+// each call creates its own count variable, captured by the callback.
+// the two buttons have INDEPENDENT counters.</code></pre>
+
+    <p><strong>Example: passing arguments through a wrapper</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function deleteItem(id) {
+  fetch("/api/items/" + id, { method: "DELETE" });
+}
+
+document.querySelectorAll(".delete-btn").forEach(btn =&gt; {
+  const id = btn.dataset.id;
+  btn.addEventListener("click", () =&gt; deleteItem(id));
+});
+// the arrow function is the callback.
+// when called, it invokes deleteItem with the captured id.</code></pre>
+
+    <p><strong>Example: async callback with error handling</strong></p>
+<pre class="language-javascript"><code class="language-javascript">async function handleSubmit(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector("button[type=submit]");
+  btn.disabled = true;
+  try {
+    await submitForm();
+    showSuccess();
+  } catch (err) {
+    showError(err.message);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+document.querySelector("form").addEventListener("submit", handleSubmit);
+// async callback. try/catch inside because addEventListener doesn't await it.
+// disabling and re-enabling the submit button gives the user feedback.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-12-4-3-2': `
+    <ul>
+      <li><strong>Functions</strong> → callbacks are just functions used in a specific role</li>
+      <li><strong>Function references</strong> → passing without parentheses</li>
+      <li><strong><code>addEventListener</code></strong> → the most common callback consumer</li>
+      <li><strong>Event object</strong> → the argument passed to event callbacks</li>
+      <li><strong>Arrow functions</strong> → the most common inline callback style</li>
+      <li><strong>Closure</strong> → callbacks remember variables from outer scope</li>
+      <li><strong><code>this</code> binding</strong> → arrow functions behave differently from regular functions</li>
+      <li><strong>Async callbacks</strong> → for fetch, await, promise chains</li>
+      <li><strong>Higher-order functions</strong> → array methods (<code>forEach</code>, <code>map</code>) take callbacks too</li>
+      <li><strong><code>setTimeout</code>, <code>setInterval</code></strong> → callbacks for timing</li>
+      <li><strong>Promise <code>.then()</code></strong> → callbacks for async results</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-12-4-3-3': `
+    <ul>
+      <li>Functions</li>
+      <li>Function reference vs function call</li>
+      <li>Arrow functions</li>
+      <li>Anonymous functions</li>
+      <li>Closure</li>
+      <li><code>this</code> binding</li>
+      <li>Async / await</li>
+      <li>Promises and <code>.then()</code></li>
+      <li><code>setTimeout</code>, <code>setInterval</code></li>
+      <li>Array methods (forEach, map, filter)</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.13.6 Events → function reference vs function call
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-12-5-0-0': `
+    <p>A <strong>function reference</strong> is the function itself — the actual function value, named but not yet run. A <strong>function call</strong> is what happens when you add <code>()</code> after it: the function executes and produces a result.</p>
+    <p>The two look almost identical in code — just two parentheses apart — but they're fundamentally different things. A reference is a noun (the function); a call is a verb (running it). When you pass a function to <code>addEventListener</code>, you want to hand over the function itself so it can be run later, when the event happens. If you accidentally call it, you hand over whatever the function <em>returned</em> instead — usually <code>undefined</code> — and the listener has nothing to actually run.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-12-5-0-1': `
+<pre class="language-javascript"><code class="language-javascript">function handleClick() {
+  console.log("clicked!");
+}
+
+// Function REFERENCE — no parentheses
+handleClick;        // the function itself, as a value
+
+// Function CALL — with parentheses
+handleClick();      // runs the function, returns its result
+
+// In addEventListener:
+btn.addEventListener("click", handleClick);    // ✓ reference — runs on click
+btn.addEventListener("click", handleClick());  // ✗ call — runs NOW, result is passed in</code></pre>
+    <p>The difference is just two characters. The behavior is completely different.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-12-5-0-2': `
+<pre class="language-javascript"><code class="language-javascript">function greet() {
+  console.log("hi");
+  return "done";
+}
+
+// Reference:
+greet
+// │
+// └── the function itself. a value. not executed.
+//     typeof greet === "function"
+//     can be stored, passed around, called later.
+
+// Call:
+greet()
+// │   │
+// │   └── parentheses → "run it now"
+// └── the function being invoked
+//     the function executes ("hi" gets logged)
+//     the call EVALUATES to whatever greet returns ("done")
+//     greet() is no longer the function — it's the string "done".</code></pre>
+
+<p>Think of it as the difference between handing someone a recipe (reference) and handing them the finished meal (call). The recipe can be used over and over. The meal is the one-time result of using it once.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-12-5-0-3': `
+    <p><strong>The parentheses are the trigger.</strong> Adding <code>()</code> after a function name is what runs it. Without them, the function name is just a value pointing at the function:</p>
+<pre class="language-javascript"><code class="language-javascript">function sayHi() {
+  console.log("hi");
+}
+
+sayHi;     // nothing happens. this is just an expression evaluating to the function.
+sayHi();   // "hi" is logged. the call ran the function.</code></pre>
+
+    <p><strong>A function call evaluates to the return value, not the function.</strong> Once you call a function, the expression <code>fn()</code> becomes whatever the function returned:</p>
+<pre class="language-javascript"><code class="language-javascript">function getMessage() {
+  return "hello";
+}
+
+const a = getMessage;     // a is the function. typeof a === "function"
+const b = getMessage();   // b is "hello". typeof b === "string"
+
+// when you write fn(), JS runs fn first, then replaces fn() with whatever it returned.
+// the function itself is gone from that spot. only the return value remains.</code></pre>
+
+    <p><strong>If a function returns nothing, calling it gives you <code>undefined</code>.</strong> This is what makes the <code>addEventListener</code> mistake so common — the wrong code runs, but doesn't crash:</p>
+<pre class="language-javascript"><code class="language-javascript">function handleClick() {
+  console.log("clicked!");
+  // no return statement → returns undefined
+}
+
+btn.addEventListener("click", handleClick());
+// step 1: handleClick() runs IMMEDIATELY (logs "clicked!" once, right now)
+// step 2: handleClick() evaluates to undefined
+// step 3: addEventListener receives undefined as its callback
+// step 4: the listener is essentially attached to nothing
+// result: clicking the button does nothing. "clicked!" was logged once at setup, never again.</code></pre>
+
+    <p><strong>Arrow functions follow the same rule.</strong> The name (or the arrow function itself) is the reference; adding <code>()</code> calls it:</p>
+<pre class="language-javascript"><code class="language-javascript">const handleClick = () =&gt; console.log("clicked!");
+
+handleClick;     // the function. reference.
+handleClick();   // runs it. call.
+
+btn.addEventListener("click", handleClick);    // ✓
+btn.addEventListener("click", handleClick());  // ✗</code></pre>
+
+    <p><strong>Inline arrow functions are themselves references.</strong> When you write an arrow function directly inside <code>addEventListener</code>, the whole arrow expression IS the function reference being passed — no name needed:</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", () =&gt; console.log("clicked!"));
+//                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+//                              this whole thing is the function reference.
+//                              no () after it → it's not being called.
+
+btn.addEventListener("click", (() =&gt; console.log("clicked!"))());
+//                                                              ^^
+//                              now THIS is being called. don't do this.</code></pre>
+
+    <p><strong>The function name without parentheses can be stored, passed, and called later.</strong> That's the whole point of treating functions as values:</p>
+<pre class="language-javascript"><code class="language-javascript">function handleClick() {
+  console.log("clicked!");
+}
+
+// store the reference in another variable
+const handler = handleClick;
+handler();   // "clicked!" — same function, different name
+
+// pass the reference to a function
+function attachLater(fn) {
+  setTimeout(fn, 1000);   // fn is the reference; setTimeout calls it after 1 second
+}
+attachLater(handleClick);
+
+// none of this is possible if you put () after the function name.
+// () turns it from a value-you-can-pass-around into a result-that-was-already-computed.</code></pre>
+
+    <p><strong>Method calls work the same way.</strong> <code>obj.method</code> is the reference; <code>obj.method()</code> is the call:</p>
+<pre class="language-javascript"><code class="language-javascript">const obj = {
+  greet() {
+    console.log("hi");
+  }
+};
+
+obj.greet;     // the method as a reference
+obj.greet();   // calls it — logs "hi"
+
+// the same passing rules apply:
+btn.addEventListener("click", obj.greet);    // ✓ reference
+btn.addEventListener("click", obj.greet());  // ✗ called immediately, undefined passed</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-12-5-1-0': `
+    <p>JavaScript needs a way to say "here's some code — run it later, when something happens." Events, timers, async work, array methods like <code>forEach</code>, promises with <code>.then()</code> — all of them ask you to hand over a function so they can run it at the right moment. That only works if functions can exist as values, separate from being called.</p>
+    <p>The reference-vs-call distinction is the language's way of making that possible. The function exists as a value (the reference); the act of running it is a separate step (the call). Without that split, you couldn't pass code around to be executed later — you'd only be able to pass results of code that already ran.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-12-5-1-1': `
+    <p>Anywhere you hand a function to something that will run it later, you pass the reference:</p>
+<pre class="language-javascript"><code class="language-javascript">// Event listener — run when the user clicks
+btn.addEventListener("click", handleClick);
+
+// setTimeout — run after a delay
+setTimeout(handleClick, 1000);
+
+// setInterval — run repeatedly
+setInterval(updateClock, 1000);
+
+// Array methods — run for each item
+[1, 2, 3].forEach(handleItem);
+[1, 2, 3].map(double);
+
+// Promises — run when async work finishes
+fetch("/data").then(handleResponse);
+
+// in every case: the function gets handed over, the OTHER code decides when to call it.</code></pre>
+
+    <p>Anywhere you want to run the function yourself, right now, you use the call:</p>
+<pre class="language-javascript"><code class="language-javascript">// Running it yourself
+handleClick();
+
+// Using its return value
+const total = calculateTotal();
+
+// Calling it conditionally
+if (isValid()) {
+  submitForm();
+}
+
+// these are not "later." they happen the moment the line is reached.</code></pre>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-12-5-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// addEventListener — the most common spot
+btn.addEventListener("click", handleClick);
+form.addEventListener("submit", handleSubmit);
+input.addEventListener("input", handleInput);
+
+// removeEventListener — must pass the SAME reference
+btn.removeEventListener("click", handleClick);
+
+// Timing functions
+setTimeout(showMessage, 2000);
+setInterval(tick, 1000);
+
+// Array methods
+items.forEach(render);
+nums.map(double);
+nums.filter(isEven);
+nums.reduce(sum, 0);
+
+// Promise chains
+fetch(url).then(parseResponse).catch(showError);
+
+// Custom code that takes a callback
+function runLater(fn) {
+  setTimeout(fn, 1000);
+}
+runLater(handleClick);
+
+// Storing a function in a variable, object, or array
+const handler = handleClick;
+const handlers = { click: handleClick, hover: handleHover };
+const fns = [handleClick, handleSubmit];
+
+// every example above uses the function name WITHOUT parentheses.
+// parentheses would call it immediately and pass the result instead.</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-12-5-1-3': `
+    <p>Think of a function as a recipe written down on a card. The card itself is the function — a set of instructions waiting to be followed. The <em>reference</em> is the card. The <em>call</em> is the moment someone actually cooks the recipe.</p>
+    <p>When you give the card to someone — a chef, a friend, a recipe app — you're giving them the reference. They decide when to use it (later, never, or many times). When you cook the recipe yourself, that's the call: you follow the steps, food comes out the other side.</p>
+    <p>In code: <code>handleClick</code> is handing over the card. <code>handleClick()</code> is cooking the recipe right now and only handing over the finished meal.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-12-5-1-4': `
+    <p>Imagine a button at a coffee shop that says "press for service." The button is wired to a bell. Pressing the button rings the bell — that's the action.</p>
+    <p>When you set up the bell, you wire the button to the bell itself (the reference). You don't ring the bell once and then connect the silence-after-the-ring to the button — that's what calling does. It rings the bell once at setup time, and then there's nothing left for the button to trigger.</p>
+    <p><code>addEventListener("click", handleClick)</code> = wire the button to the bell. <code>addEventListener("click", handleClick())</code> = ring the bell once now, then wire the button to the silence afterward. The first works. The second is silent forever.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-12-5-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// CORRECT — passing the reference
+function handleClick() {
+  console.log("clicked!");
+}
+
+btn.addEventListener("click", handleClick);
+
+// step by step:
+// 1. handleClick is declared. it's now a function value in memory.
+// 2. addEventListener is called with two arguments:
+//    - "click" (the event type string)
+//    - handleClick (the function itself, NOT called)
+// 3. the browser stores handleClick internally, paired with the button and "click."
+// 4. nothing happens visually yet. the listener is just registered.
+// 5. user clicks the button.
+// 6. the browser sees the click, looks up the stored function, and calls it now.
+// 7. "clicked!" is logged.
+// 8. user clicks again → browser calls handleClick again → "clicked!" logged again.
+// the function stays attached for as many clicks as the user makes.
+
+// WRONG — calling immediately, passing the result
+btn.addEventListener("click", handleClick());
+
+// step by step:
+// 1. handleClick is declared.
+// 2. JS evaluates the arguments to addEventListener BEFORE calling it.
+// 3. handleClick() runs RIGHT NOW. "clicked!" is logged once, at setup time.
+// 4. handleClick() evaluates to undefined (no return statement).
+// 5. addEventListener is now effectively called as: addEventListener("click", undefined).
+// 6. the listener registration silently fails — undefined isn't a function.
+// 7. user clicks the button. nothing happens.
+// 8. user clicks again. still nothing.
+// the function ran once at setup and is never called again.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-12-5-2-0': `
+    <p>If clicking your button does nothing, but you see the listener's output appear once when the page loads — you called the function instead of passing the reference. The setup-time log is the smoking gun.</p>
+    <p>Another clue: if the console shows a one-time error or output the moment the script runs, and nothing happens on actual clicks afterward, look at the <code>addEventListener</code> line. The <code>()</code> after the function name is almost certainly there and shouldn't be.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-12-5-2-1': `
+    <p>The aha is realizing that <code>fn</code> and <code>fn()</code> are not "two ways of writing the same thing." They evaluate to completely different values:</p>
+<pre class="language-javascript"><code class="language-javascript">function getMessage() {
+  return "hello";
+}
+
+console.log(getMessage);     // [Function: getMessage]   ← the function itself
+console.log(getMessage());   // "hello"                   ← the string it returned
+
+// these are two different VALUES.
+// one is a function (callable, passable).
+// the other is whatever the function returned (just a string here).</code></pre>
+    <p>Once that lands, the rule for callbacks becomes obvious: anything that's going to call the function for you at the right time needs the function itself — the reference — not the value the function would have returned.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-12-5-2-2': `
+    <p><strong>"But I want to call the function!"</strong> Yes — but <em>you</em> don't call it. <code>addEventListener</code> does. You hand over the function; the browser calls it when the click happens. If you call it, the browser has nothing left to call.</p>
+<pre class="language-javascript"><code class="language-javascript">// "I want handleClick to be called when the button is clicked!"
+// correct:
+btn.addEventListener("click", handleClick);
+// you're saying: "browser, here's the function. you call it later, on click."
+
+// not:
+btn.addEventListener("click", handleClick());
+// this says: "browser, I'll call it right now. here's the result. you handle... that."</code></pre>
+
+    <p><strong>"My function needs an argument — how do I pass one if I can't use <code>()</code>?"</strong> Wrap it in an arrow function. The arrow is the reference; inside the arrow, you can call your function with whatever arguments you want:</p>
+<pre class="language-javascript"><code class="language-javascript">function deleteItem(id) {
+  fetch("/api/items/" + id, { method: "DELETE" });
+}
+
+// WRONG — calls deleteItem immediately
+btn.addEventListener("click", deleteItem(42));
+
+// RIGHT — passes a reference to a function that calls deleteItem(42) when clicked
+btn.addEventListener("click", () =&gt; deleteItem(42));</code></pre>
+
+    <p><strong>"Doesn't <code>addEventListener</code> need to know which function?"</strong> It does — that's exactly what the reference gives it. The reference IS the answer to "which function?" It's the function as a value, identifying itself.</p>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-12-5-2-3': `
+<pre class="language-javascript"><code class="language-javascript">// Mistake 1: calling immediately
+btn.addEventListener("click", handleClick());
+// runs handleClick once at setup, passes undefined as the listener.
+// fix: drop the ()
+btn.addEventListener("click", handleClick);
+
+// Mistake 2: trying to pass arguments by calling
+btn.addEventListener("click", deleteItem(42));
+// runs deleteItem(42) once at setup. fetch fires before any click.
+// fix: wrap in an arrow function
+btn.addEventListener("click", () =&gt; deleteItem(42));
+
+// Mistake 3: removeEventListener with a fresh function
+btn.removeEventListener("click", () =&gt; console.log("hi"));
+// this arrow is a NEW function, not the one originally attached.
+// fix: keep a reference to the original
+const handler = () =&gt; console.log("hi");
+btn.addEventListener("click", handler);
+btn.removeEventListener("click", handler);
+
+// Mistake 4: confusing "calling" with "passing a callable"
+setTimeout(showAlert(), 1000);
+// showAlert runs immediately. setTimeout receives undefined. nothing waits 1 second.
+// fix:
+setTimeout(showAlert, 1000);
+
+// Mistake 5: forEach getting the result of a function instead of the function
+items.forEach(render());
+// render runs once before forEach starts. forEach gets undefined and crashes.
+// fix:
+items.forEach(render);</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-12-5-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Reference vs call — simplest comparison
+function sayHi() { console.log("hi"); }
+
+sayHi;     // the function (nothing logged)
+sayHi();   // "hi" logged
+
+// Reference passed to addEventListener
+btn.addEventListener("click", sayHi);
+
+// Reference stored in a variable
+const greet = sayHi;
+greet();   // "hi"
+
+// Reference passed to setTimeout
+setTimeout(sayHi, 1000);
+
+// Reference inside an array
+const handlers = [sayHi, sayHi, sayHi];
+handlers.forEach(fn =&gt; fn());   // "hi" "hi" "hi"
+
+// Reference vs call — the wrong way for callbacks
+btn.addEventListener("click", sayHi());     // ✗ runs once now
+setTimeout(sayHi(), 1000);                  // ✗ runs once now
+items.forEach(render());                    // ✗ runs once now
+
+// Arrow as a reference
+btn.addEventListener("click", () =&gt; sayHi());
+
+// Method reference
+const obj = { greet() { console.log("hi"); } };
+btn.addEventListener("click", obj.greet);   // reference to the method
+
+// Wrapping a call to pass arguments
+function deleteItem(id) { console.log("deleting", id); }
+btn.addEventListener("click", () =&gt; deleteItem(42));
+
+// Same function, two different uses
+function format(n) { return "$" + n.toFixed(2); }
+const a = format;        // reference
+const b = format(9.99);  // call → "$9.99"</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-12-5-3-1': `
+    <p><strong>Example: attaching a named handler to many buttons</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function handleDelete(e) {
+  const id = e.currentTarget.dataset.id;
+  fetch("/api/items/" + id, { method: "DELETE" });
+}
+
+document.querySelectorAll(".delete-btn").forEach(btn =&gt; {
+  btn.addEventListener("click", handleDelete);
+});
+// handleDelete is passed by reference to every button.
+// each click runs the same function, reading the right id from the clicked button.</code></pre>
+
+    <p><strong>Example: removing a listener after first use</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function handleFirstClick() {
+  console.log("first click only");
+  btn.removeEventListener("click", handleFirstClick);
+}
+
+btn.addEventListener("click", handleFirstClick);
+// the named reference lets us both attach and detach the same function.
+// after the first click, the listener removes itself.</code></pre>
+
+    <p><strong>Example: passing arguments via a wrapper</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function showToast(message) {
+  const toast = document.createElement("div");
+  toast.textContent = message;
+  document.body.appendChild(toast);
+}
+
+saveBtn.addEventListener("click", () =&gt; showToast("Saved!"));
+cancelBtn.addEventListener("click", () =&gt; showToast("Cancelled"));
+// the arrow function is the reference passed to addEventListener.
+// when called, it invokes showToast with the right message for each button.</code></pre>
+
+    <p><strong>Example: reusing a handler across timers and clicks</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function refreshData() {
+  fetch("/api/data").then(r =&gt; r.json()).then(render);
+}
+
+// run once when the user clicks refresh
+refreshBtn.addEventListener("click", refreshData);
+
+// also run every 30 seconds automatically
+setInterval(refreshData, 30000);
+
+// also run when the page first loads
+refreshData();
+
+// same function reference used in three different places.
+// the third line is the only one that's actually CALLING it — the rest pass it as a value.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-12-5-3-2': `
+    <ul>
+      <li><strong>Functions</strong> → the underlying concept of functions as values</li>
+      <li><strong>Callback function</strong> → a function passed by reference to be called later</li>
+      <li><strong><code>addEventListener</code></strong> → the most common place this distinction matters</li>
+      <li><strong><code>removeEventListener</code></strong> → requires the exact same reference used to attach</li>
+      <li><strong>Arrow functions</strong> → often used as inline references, especially when arguments are needed</li>
+      <li><strong><code>setTimeout</code>, <code>setInterval</code></strong> → also take function references</li>
+      <li><strong>Array methods</strong> → <code>forEach</code>, <code>map</code>, <code>filter</code>, <code>reduce</code> all take references</li>
+      <li><strong>Promise <code>.then()</code></strong> → takes a reference to run when the promise resolves</li>
+      <li><strong>Return values</strong> → calling a function gives you the return value, not the function</li>
+      <li><strong>Higher-order functions</strong> → functions that take or return other functions</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-12-5-3-3': `
+    <ul>
+      <li>Functions</li>
+      <li>Callback function</li>
+      <li><code>addEventListener</code></li>
+      <li><code>removeEventListener</code></li>
+      <li>Arrow functions</li>
+      <li>Anonymous functions</li>
+      <li>Return values</li>
+      <li>Higher-order functions</li>
+      <li><code>setTimeout</code>, <code>setInterval</code></li>
+      <li>Array methods (<code>forEach</code>, <code>map</code>, <code>filter</code>)</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.13.9 Events → click events
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-12-8-0-0': `
+    <p>A <strong>click event</strong> is what the browser fires when the user presses and releases a mouse button (or taps with a finger) on an element. It's the single most common event on the web — every button, every link, every interactive control on a page is built around it. When you set up a click listener, you're telling the browser: "when this element gets clicked, run my code."</p>
+    <p>The event type string is <code>"click"</code>. The element can be anything — a <code>&lt;button&gt;</code>, a <code>&lt;div&gt;</code>, an image, a link, even the page background. The browser fires the click event the same way regardless, and your callback runs.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-12-8-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// Given this HTML:
+// &lt;button id="save"&gt;Save&lt;/button&gt;
+
+const btn = document.getElementById("save");
+
+btn.addEventListener("click", () =&gt; {
+  console.log("button was clicked!");
+});
+
+// every time the user clicks the button:
+//   → the browser fires a "click" event on it
+//   → the listener's callback runs
+//   → "button was clicked!" appears in the console</code></pre>
+    <p>The structure is always the same: select the element, call <code>addEventListener</code> with <code>"click"</code> and a callback. The callback runs each time the user clicks.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-12-8-0-2': `
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", handleClick);
+// │   │                │        │
+// │   │                │        └── the callback — the function to run on click
+// │   │                └── the event type — must be the string "click"
+// │   └── the method that registers the listener
+// └── the element being listened to
+
+// when the user clicks btn:
+//   1. browser detects the click (mousedown + mouseup on the same element)
+//   2. browser creates a click event object
+//   3. browser looks up all "click" listeners attached to btn
+//   4. browser calls each callback, passing the event object as the argument
+
+function handleClick(event) {
+  // event is the click event object — has details about the click
+  // event.target is the element that was clicked
+  // event.clientX, event.clientY are mouse coordinates
+}</code></pre>
+
+<p>The event object passed into your callback carries everything the browser knows about the click: which element, where the mouse was, which mouse button was used, whether modifier keys were held, and more.</p>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-12-8-0-3': `
+    <p><strong>The event type string is <code>"click"</code> — lowercase, exact spelling, in quotes.</strong> Misspelling it doesn't throw an error; it silently registers a listener for an event type that will never fire:</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", handleClick);    // ✓ fires on click
+btn.addEventListener("Click", handleClick);    // ✗ wrong case — never fires
+btn.addEventListener("clicked", handleClick);  // ✗ not a real event type — never fires
+btn.addEventListener(click, handleClick);      // ✗ no quotes → ReferenceError (or wrong var)
+
+// no error message, just a button that doesn't do anything.
+// always lowercase, always in quotes.</code></pre>
+
+    <p><strong>A click is mousedown + mouseup on the same element.</strong> The browser only fires <code>"click"</code> after both happen on the same target. If the user presses down on the button, drags off, and releases somewhere else, no click event fires:</p>
+<pre class="language-javascript"><code class="language-javascript">// the sequence the browser sees:
+//   mousedown   → user pressed the mouse button down on the element
+//   mouseup     → user released the mouse button on the same element
+//   click       → fires AFTER mouseup, only if both happened on this element
+
+// if the user presses down, drags away, then releases — no click fires.
+// this is intentional: it lets users "cancel" a click by dragging away before release.</code></pre>
+
+    <p><strong>Click events fire on almost any element, not just buttons.</strong> Any element can have a click listener. Buttons and links are common, but divs, images, list items — anything visible — can be clicked:</p>
+<pre class="language-javascript"><code class="language-javascript">// All of these work:
+document.querySelector("button").addEventListener("click", handleClick);
+document.querySelector("a").addEventListener("click", handleClick);
+document.querySelector("img").addEventListener("click", handleClick);
+document.querySelector(".card").addEventListener("click", handleClick);
+document.querySelector("li").addEventListener("click", handleClick);
+document.body.addEventListener("click", handleClick);
+document.addEventListener("click", handleClick);   // anywhere on the page
+
+// for accessibility, prefer real buttons/links over divs when the element is interactive.
+// keyboard users and screen readers expect button and a elements to be interactive;
+// a div with a click listener won't be reachable by Tab and won't announce as a button.</code></pre>
+
+    <p><strong>Each click fires a fresh event, with a fresh event object.</strong> The callback runs once per click. The event object passed in is unique to that click — properties like coordinates are specific to where this particular click happened:</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", (event) =&gt; {
+  console.log(event.clientX, event.clientY);
+});
+
+// click 1: logs the coordinates of click 1
+// click 2: logs the coordinates of click 2
+// click 3: logs the coordinates of click 3
+// the event object is NEW each time. it's not the same object reused.</code></pre>
+
+    <p><strong>Click events on links and form submit buttons trigger default browser behavior.</strong> Clicking a link navigates the page; clicking a submit button submits the form. If you want to handle the click yourself without the browser also doing its default thing, you call <code>preventDefault()</code> on the event:</p>
+<pre class="language-javascript"><code class="language-javascript">// without preventDefault — the browser also follows the link
+link.addEventListener("click", (event) =&gt; {
+  console.log("link clicked!");
+  // page navigates away. listener still ran, but the page is leaving.
+});
+
+// with preventDefault — the listener runs, browser default is canceled
+link.addEventListener("click", (event) =&gt; {
+  event.preventDefault();
+  console.log("link clicked!");
+  // page stays. you can decide what to do instead.
+});</code></pre>
+
+    <p><strong>Right-clicks don't fire <code>"click"</code> — they fire <code>"contextmenu"</code>.</strong> The <code>"click"</code> event is for left-clicks (and taps on touch devices). Middle-clicks fire <code>"auxclick"</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">// left-click only:
+btn.addEventListener("click", handleClick);
+
+// right-click (also opens the context menu unless you preventDefault):
+btn.addEventListener("contextmenu", (e) =&gt; {
+  e.preventDefault();
+  console.log("right-clicked!");
+});
+
+// middle-click and any non-primary button:
+btn.addEventListener("auxclick", handleAuxClick);</code></pre>
+
+    <p><strong>Click events work on touch devices too — taps fire <code>"click"</code>.</strong> You don't need a separate listener for mobile. The browser turns a tap into a click event on the tapped element automatically:</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", handleClick);
+
+// fires on:
+//   - left mouse click (desktop)
+//   - tap (mobile/tablet)
+//   - Enter or Space when the button is focused (keyboard, for buttons/links)
+// one listener covers all three input methods.</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-12-8-1-0': `
+    <p>Almost everything interactive on a webpage starts with "the user clicked something." Without click events, the page would be static — JavaScript could run on load, but nothing the user did would matter. Click events bridge the gap between the user's intent ("I want to save this," "I want to open this menu") and your code's response.</p>
+    <p>They also unify input methods. The browser translates mouse clicks, taps on touchscreens, and keyboard activation of buttons all into the same <code>"click"</code> event. You write one listener and it works across desktop, mobile, and keyboard users without any special handling.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-12-8-1-1': `
+    <p>Click events are everywhere because almost every interaction on the web is a click:</p>
+<pre class="language-javascript"><code class="language-javascript">// Submit a form
+submitBtn.addEventListener("click", handleSubmit);
+
+// Toggle a menu open/closed
+menuBtn.addEventListener("click", toggleMenu);
+
+// Add an item to a cart
+addToCartBtn.addEventListener("click", addToCart);
+
+// Delete a row from a list
+deleteBtn.addEventListener("click", deleteRow);
+
+// Open a modal
+openModalBtn.addEventListener("click", showModal);
+
+// Close a modal
+closeBtn.addEventListener("click", hideModal);
+
+// Navigate to another tab/section
+tabBtn.addEventListener("click", switchTab);
+
+// "Show more" / pagination
+loadMoreBtn.addEventListener("click", loadMore);
+
+// Like, favorite, bookmark
+heartBtn.addEventListener("click", toggleFavorite);
+
+// Copy to clipboard
+copyBtn.addEventListener("click", copyText);
+
+// every one of these is a click event handler.</code></pre>
+
+    <p>If a feature on a website starts with the user pressing something, the implementation almost certainly involves a click listener. Once you can listen for clicks and respond to them, you can build virtually any interactive UI.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-12-8-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// On buttons
+button.addEventListener("click", handleClick);
+
+// On links (often with preventDefault for custom navigation)
+link.addEventListener("click", (e) =&gt; {
+  e.preventDefault();
+  navigateTo(link.href);
+});
+
+// On cards / list items / custom UI
+card.addEventListener("click", openDetails);
+
+// On many buttons at once
+document.querySelectorAll(".btn").forEach(btn =&gt; {
+  btn.addEventListener("click", handleBtnClick);
+});
+
+// On the document for "click anywhere" behavior
+document.addEventListener("click", closeDropdown);
+
+// Using event delegation — one listener on a parent for many children
+list.addEventListener("click", (e) =&gt; {
+  if (e.target.matches(".delete-btn")) {
+    deleteItem(e.target.dataset.id);
+  }
+});
+
+// On dynamically created elements (attach AFTER creating)
+const newBtn = document.createElement("button");
+newBtn.textContent = "Click me";
+newBtn.addEventListener("click", handleClick);
+document.body.appendChild(newBtn);
+
+// Reading the event object for click position
+btn.addEventListener("click", (event) =&gt; {
+  console.log("clicked at", event.clientX, event.clientY);
+});
+
+// Reading which element was clicked (especially for delegation)
+parent.addEventListener("click", (event) =&gt; {
+  console.log("clicked element:", event.target);
+});</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-12-8-1-3': `
+    <p>A click event is the browser noticing the user pressed something and telling your code about it. The user does the physical action — pressing a mouse button, tapping the screen, hitting Enter on a focused button — and the browser turns that physical action into a small message: "hey, this element was clicked."</p>
+    <p>Your job is to leave a note on the element ahead of time saying "if you get clicked, run this function." That note is the listener. From then on, every time the user clicks that element, your function runs. The browser handles all the timing and detection automatically — you just say what to do when it happens.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-12-8-1-4': `
+    <p>Think of a doorbell. The bell is the element (the button), the wire is the listener, and the chime inside the house is your callback function. You install the wire once. After that, every time someone presses the bell, the chime sounds. You don't have to be standing there waiting — the wire handles the connection automatically, every time, forever (until you remove it).</p>
+    <p>The browser is the wire. <code>addEventListener("click", chime)</code> is installing the wire between the doorbell and the chime. From that moment, every click on that element fires the chime — your callback — without you needing to do anything else.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-12-8-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// Goal: when the user clicks the "like" button, change the heart from outline to filled.
+
+const likeBtn = document.querySelector(".like-btn");
+
+likeBtn.addEventListener("click", () =&gt; {
+  likeBtn.classList.toggle("liked");
+});
+
+// step by step, at page load time:
+// 1. document.querySelector(".like-btn")
+//    → finds the first element with class "like-btn"
+//    → returns that element, stored in likeBtn
+// 2. likeBtn.addEventListener("click", callback)
+//    → registers the callback as a click listener on likeBtn
+//    → the browser now knows: "if this element is clicked, call this function"
+// 3. nothing else runs yet. setup is done.
+
+// at click time (some moment later, when the user clicks):
+// 4. user clicks the like button
+// 5. browser detects mousedown + mouseup on the same element
+// 6. browser creates a click event object
+// 7. browser sees there's a "click" listener attached
+// 8. browser calls the callback
+// 9. inside the callback: likeBtn.classList.toggle("liked") runs
+//    → if the "liked" class is present, it's removed
+//    → if it's not present, it's added
+// 10. the heart visually updates because CSS targets the "liked" class
+
+// the user clicks again:
+// 11. browser fires another click event
+// 12. callback runs again
+// 13. classList.toggle flips the state back
+// 14. the heart returns to outlined
+
+// the listener stays attached. every click toggles. forever, until removed.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-12-8-2-0': `
+    <p>If clicking does nothing, log inside the callback first: <code>console.log("clicked")</code>. Three possibilities tell you what's wrong:</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", () =&gt; {
+  console.log("clicked");
+  // ... rest of handler
+});
+
+// nothing logged on click → the listener never fires.
+//   - element wasn't found (btn is null — check for an error above)
+//   - "click" is misspelled in the addEventListener call
+//   - the wrong element was selected — clicks are hitting a different element
+//   - addEventListener was called with () after the function — listener never registered
+
+// "clicked" logs once when the page loads, never on actual clicks → 
+//   - you wrote addEventListener("click", handler()) instead of handler
+//   - the () called the function immediately, registered undefined as the listener
+
+// "clicked" logs but the rest of the handler doesn't work → 
+//   - the listener IS working. the bug is inside the callback. log more inside.</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-12-8-2-1': `
+    <p>The aha is realizing that the listener is a persistent wire, not a one-time check. You don't have to "ask" the browser whether the button was clicked — once the listener is attached, the browser delivers every future click to your function, automatically, on its own, forever.</p>
+<pre class="language-javascript"><code class="language-javascript">btn.addEventListener("click", handleClick);
+
+// this line runs ONCE. it does NOT loop. it does NOT keep checking.
+// it just registers a connection.
+// from that moment on, every click on btn calls handleClick.
+// the browser handles the timing. you write the response.</code></pre>
+    <p>Once that clicks, the rest of event handling makes sense: input events, submit events, keydown events — they all work the same way. Attach a listener once; the browser delivers the events forever.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-12-8-2-2': `
+    <p><strong>"Do I have to remove the listener after the click?"</strong> No. The listener stays attached and fires on every future click. If you want a one-time handler, remove it inside the callback yourself — but the default behavior is "fires every time."</p>
+
+    <p><strong>"Why is my callback running once on page load and never on click?"</strong> Because you wrote <code>addEventListener("click", handler())</code> instead of <code>addEventListener("click", handler)</code>. The <code>()</code> calls the function immediately at setup, then registers its return value (usually <code>undefined</code>) as the listener. The function never runs again.</p>
+<pre class="language-javascript"><code class="language-javascript">// wrong:
+btn.addEventListener("click", handleClick());   // runs once at setup, never on click
+
+// right:
+btn.addEventListener("click", handleClick);     // runs on every click</code></pre>
+
+    <p><strong>"Can I attach a click listener to a div?"</strong> Yes, technically. But divs aren't keyboard-accessible, so users tabbing through the page can't reach them. If something is interactive, prefer a real <code>&lt;button&gt;</code> — it gets click events from mouse, touch, AND keyboard for free.</p>
+
+    <p><strong>"My link is navigating away — how do I stop it?"</strong> Call <code>event.preventDefault()</code> inside the callback. The click event still fires; the default browser behavior (navigation) is canceled:</p>
+<pre class="language-javascript"><code class="language-javascript">link.addEventListener("click", (event) =&gt; {
+  event.preventDefault();
+  // your code runs, page does not navigate
+});</code></pre>
+
+    <p><strong>"Does the click event include where the user clicked?"</strong> Yes — <code>event.clientX</code> and <code>event.clientY</code> give the mouse position relative to the viewport. <code>event.target</code> gives the actual element that was clicked.</p>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-12-8-2-3': `
+<pre class="language-javascript"><code class="language-javascript">// Mistake 1: calling the function instead of passing it
+btn.addEventListener("click", handleClick());
+// runs handleClick once at setup, registers undefined as the listener.
+// fix:
+btn.addEventListener("click", handleClick);
+
+// Mistake 2: misspelling the event type
+btn.addEventListener("clik", handleClick);
+btn.addEventListener("Click", handleClick);
+btn.addEventListener("on-click", handleClick);
+// no error. the listener registers for an event that will never fire.
+// fix: it's "click", all lowercase, in quotes.
+
+// Mistake 3: attaching the listener before the element exists
+btn.addEventListener("click", handleClick);
+// if btn is null (element wasn't on the page yet when this ran),
+// you get: Cannot read properties of null (reading 'addEventListener')
+// fix: run scripts after the DOM is ready, or use defer on the script tag
+
+// Mistake 4: forgetting preventDefault on links/submit buttons
+link.addEventListener("click", () =&gt; {
+  showModal();
+  // page also navigates because preventDefault wasn't called
+});
+// fix:
+link.addEventListener("click", (e) =&gt; {
+  e.preventDefault();
+  showModal();
+});
+
+// Mistake 5: attaching click listeners inside a loop and confusing the variables
+const buttons = document.querySelectorAll(".btn");
+for (var i = 0; i &lt; buttons.length; i++) {
+  buttons[i].addEventListener("click", () =&gt; {
+    console.log(i);   // logs the FINAL value of i for every button
+  });
+}
+// fix: use let in the loop, OR use forEach
+buttons.forEach((btn, i) =&gt; {
+  btn.addEventListener("click", () =&gt; console.log(i));
+});
+
+// Mistake 6: attaching a click listener to a non-existent element
+const btn = document.querySelector("#save-btn");
+btn.addEventListener("click", handleClick);
+// if #save-btn doesn't exist, btn is null → TypeError on addEventListener.
+// fix: check first, or fix the selector
+if (btn) btn.addEventListener("click", handleClick);
+
+// Mistake 7: assuming the event object is the element
+btn.addEventListener("click", (event) =&gt; {
+  event.textContent = "clicked!";   // event is NOT the element
+});
+// fix: use event.target or event.currentTarget, or use the outer btn variable
+btn.addEventListener("click", (event) =&gt; {
+  event.currentTarget.textContent = "clicked!";
+});</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-12-8-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Basic click listener
+btn.addEventListener("click", () =&gt; console.log("clicked"));
+
+// Named callback
+function handleClick() { console.log("clicked"); }
+btn.addEventListener("click", handleClick);
+
+// Accessing the event object
+btn.addEventListener("click", (event) =&gt; {
+  console.log(event.target);      // the element that was clicked
+  console.log(event.clientX);     // mouse X position
+  console.log(event.clientY);     // mouse Y position
+});
+
+// Toggling a class
+btn.addEventListener("click", () =&gt; {
+  btn.classList.toggle("active");
+});
+
+// Updating text on click
+btn.addEventListener("click", () =&gt; {
+  btn.textContent = "Clicked!";
+});
+
+// Counting clicks
+let count = 0;
+btn.addEventListener("click", () =&gt; {
+  count++;
+  display.textContent = count;
+});
+
+// Listening to many buttons at once
+document.querySelectorAll(".btn").forEach(btn =&gt; {
+  btn.addEventListener("click", () =&gt; console.log(btn.textContent));
+});
+
+// preventDefault on a link
+link.addEventListener("click", (e) =&gt; {
+  e.preventDefault();
+  console.log("link clicked but didn't navigate");
+});
+
+// One-time listener (removes itself after firing)
+function handleFirstClick() {
+  console.log("first click only");
+  btn.removeEventListener("click", handleFirstClick);
+}
+btn.addEventListener("click", handleFirstClick);
+
+// Click anywhere on the document
+document.addEventListener("click", (e) =&gt; {
+  console.log("clicked somewhere:", e.target);
+});
+
+// Click on a dynamically created element
+const newBtn = document.createElement("button");
+newBtn.textContent = "I'm new";
+newBtn.addEventListener("click", () =&gt; console.log("new button clicked"));
+document.body.appendChild(newBtn);
+
+// Click with modifier keys
+btn.addEventListener("click", (e) =&gt; {
+  if (e.shiftKey) console.log("shift+click");
+  if (e.ctrlKey || e.metaKey) console.log("ctrl/cmd+click");
+});</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-12-8-3-1': `
+    <p><strong>Example: toggle a mobile menu open/closed</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const menuBtn = document.querySelector(".menu-toggle");
+const menu = document.querySelector(".nav-menu");
+
+menuBtn.addEventListener("click", () =&gt; {
+  menu.classList.toggle("is-open");
+  menuBtn.setAttribute(
+    "aria-expanded",
+    menu.classList.contains("is-open") ? "true" : "false"
+  );
+});
+// every click flips the menu's open state.
+// aria-expanded keeps screen readers in sync.</code></pre>
+
+    <p><strong>Example: delete a row from a list using event delegation</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const list = document.querySelector(".todo-list");
+
+list.addEventListener("click", (event) =&gt; {
+  if (event.target.classList.contains("delete-btn")) {
+    const row = event.target.closest("li");
+    row.remove();
+  }
+});
+// one click listener on the list handles deletes for every row,
+// including rows that don't exist yet when this code runs.
+// event.target is the actual clicked element (the button inside the li).</code></pre>
+
+    <p><strong>Example: "copy to clipboard" button with visual feedback</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const copyBtn = document.querySelector(".copy-btn");
+const codeBlock = document.querySelector(".code");
+
+copyBtn.addEventListener("click", async () =&gt; {
+  await navigator.clipboard.writeText(codeBlock.textContent);
+  copyBtn.textContent = "Copied!";
+  setTimeout(() =&gt; {
+    copyBtn.textContent = "Copy";
+  }, 2000);
+});
+// click writes the text to the clipboard, swaps the button label,
+// and resets it after 2 seconds.</code></pre>
+
+    <p><strong>Example: close a dropdown when clicking outside it</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const dropdown = document.querySelector(".dropdown");
+const trigger = document.querySelector(".dropdown-trigger");
+
+trigger.addEventListener("click", (e) =&gt; {
+  e.stopPropagation();
+  dropdown.classList.toggle("is-open");
+});
+
+document.addEventListener("click", (e) =&gt; {
+  if (!dropdown.contains(e.target)) {
+    dropdown.classList.remove("is-open");
+  }
+});
+// clicking the trigger toggles the dropdown.
+// clicking ANYWHERE else closes it.
+// stopPropagation on the trigger prevents the document listener from
+// immediately closing what we just opened.</code></pre>
+
+    <p><strong>Example: counter app — increment, decrement, reset</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let count = 0;
+const display = document.querySelector(".count-display");
+const incBtn = document.querySelector(".increment");
+const decBtn = document.querySelector(".decrement");
+const resetBtn = document.querySelector(".reset");
+
+function render() {
+  display.textContent = count;
+}
+
+incBtn.addEventListener("click", () =&gt; { count++; render(); });
+decBtn.addEventListener("click", () =&gt; { count--; render(); });
+resetBtn.addEventListener("click", () =&gt; { count = 0; render(); });
+
+render();
+// three buttons, three click listeners, one shared state variable.
+// each click updates count and re-renders the display.</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-12-8-3-2': `
+    <ul>
+      <li><strong><code>addEventListener</code></strong> → the method that registers click listeners</li>
+      <li><strong>Callback function</strong> → the function that runs on each click</li>
+      <li><strong>Function reference vs function call</strong> → pass the function, don't call it</li>
+      <li><strong>Event object</strong> → the argument passed to the callback with click details</li>
+      <li><strong><code>event.target</code></strong> → the element that was actually clicked</li>
+      <li><strong><code>event.currentTarget</code></strong> → the element the listener is attached to</li>
+      <li><strong><code>preventDefault()</code></strong> → cancels default browser behavior on links and submits</li>
+      <li><strong><code>stopPropagation()</code></strong> → stops the event from bubbling to parent elements</li>
+      <li><strong>Event delegation</strong> → one listener on a parent for many child clicks</li>
+      <li><strong><code>classList.toggle</code></strong> → the most common pairing for click-based UI changes</li>
+      <li><strong>DOM selection</strong> → must select the element before attaching the listener</li>
+      <li><strong>Other events</strong> → <code>input</code>, <code>submit</code>, <code>keydown</code> work the same way</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-12-8-3-3': `
+    <ul>
+      <li><code>addEventListener</code></li>
+      <li>Event object</li>
+      <li><code>event.target</code></li>
+      <li><code>event.currentTarget</code></li>
+      <li><code>preventDefault()</code></li>
+      <li><code>stopPropagation()</code></li>
+      <li>Event delegation</li>
+      <li>Submit events</li>
+      <li>Input events</li>
+      <li>Keydown / keyup events</li>
+      <li><code>removeEventListener</code></li>
+      <li><code>classList.toggle</code></li>
+    </ul>
+  `,
   
 });
