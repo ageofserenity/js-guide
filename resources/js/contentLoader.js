@@ -45,6 +45,18 @@ const groups = {
   "resources/js/content/": [
     "combosPt1.js",
   ],
+  
+
+                      /* ==========================================================
+     SECTION 7: DEBUG/ERRORS
+     ========================================================== */
+ 
+  "resources/js/content/debugContent/": [
+    "debugContentPt1.js",
+    "debugContentPt2.js",
+    "debugContentPt3.js",
+    "debugContentPt4.js",
+  ],
 };
 
 Object.entries(groups).forEach(([folder, files]) => {

@@ -222,27 +222,9 @@ function withPattern(lessons, websitePattern) {
     preview: lesson.preview,
     items:   websitePattern.map(piece => ({ ...piece }))
   }));
-}
+};
 
 
-// Section 7 — Debugging / Error Card Structure (prompt line ~2233)
-// 13 pieces per debug topic. Each lesson opens to reveal these.
-
-const DEBUG_CARD = [
-  { title: 'Error name / debug topic',  preview: 'The label for this entry.' },
-  { title: 'What it means',             preview: 'Plain-English meaning.' },
-  { title: 'Syntax or broken code shape', preview: 'What the bad version looks like.' },
-  { title: 'Syntax Details That Matter', preview: 'Punctuation, spacing, casing JS actually cares about.' },
-  { title: 'Anatomy / Breakdown',       preview: 'Each piece labeled and explained.' },
-  { title: 'Why it usually happens',    preview: 'The common cause.' },
-  { title: 'Plain English explanation', preview: 'In everyday words.' },
-  { title: 'Broken code example',       preview: 'Tiny example that triggers the issue.' },
-  { title: 'Fixed code example',        preview: 'Same example, corrected.' },
-  { title: 'How to debug it',           preview: 'Step-by-step approach.' },
-  { title: 'What to check first',       preview: 'The first thing to look at.' },
-  { title: 'Related topics',            preview: 'Other lessons this connects to.' },
-  { title: 'See also',                  preview: 'Related lessons and references.' }
-];
 
 /**
  * Helper: wrap an array of lesson titles with the debug card pieces.
@@ -2404,7 +2386,7 @@ methods: [
         { title: 'isolate one piece at a time',preview: 'Narrow down the suspect code.' },
         { title: 'test small pieces',          preview: 'Verify in chunks.' },
         { title: 'read the error slowly',      preview: 'Slow down to see the clue.' }
-      ], DEBUG_CARD)
+      ], TOPIC_CARD_CHUNKS)
     },
 
     // -------- 7.2 Types of Problems --------
@@ -2421,7 +2403,7 @@ methods: [
         { title: 'scope errors',          preview: "Variable not visible where it's used." },
         { title: 'async/timing errors',   preview: 'Used data before it loaded.' },
         { title: 'data shape errors',     preview: 'Object/array structure not what you expected.' }
-      ], DEBUG_CARD)
+      ], TOPIC_CARD_CHUNKS)
     },
 
     // -------- 7.3 How to Read Error Messages --------
@@ -2437,7 +2419,7 @@ methods: [
         { title: 'stack trace',           preview: 'The chain of calls that led here.' },
         { title: 'clickable links in console', preview: 'Jump to the source line.' },
         { title: 'first error vs later errors', preview: 'The first one usually matters most.' }
-      ], DEBUG_CARD)
+      ], TOPIC_CARD_CHUNKS)
     },
 
     // -------- 7.4 Common JS Errors --------
@@ -2455,7 +2437,7 @@ methods: [
         { title: 'Cannot access before initialization',  preview: 'Used a let/const before it was declared.' },
         { title: 'NaN issues',                           preview: 'Math went wrong somewhere.' },
         { title: 'JSON parse error',                     preview: 'Invalid JSON string passed to JSON.parse().' }
-      ], DEBUG_CARD)
+      ], TOPIC_CARD_CHUNKS)
     },
 
     // -------- 7.5 Console Tools --------
@@ -2472,7 +2454,7 @@ methods: [
         { title: 'Array.isArray()',                     preview: 'Confirm a value is an array.' },
         { title: 'debugger',                            preview: 'Pause execution at this line.' },
         { title: 'checking values before broken line',  preview: 'Log just before the failure.' }
-      ], DEBUG_CARD)
+      ], TOPIC_CARD_CHUNKS)
     },
 
     // -------- 7.6 Debugging Variables --------
@@ -2488,7 +2470,7 @@ methods: [
         { title: 'check reassignment',        preview: 'Did something else change it later?' },
         { title: 'check const reassignment',  preview: 'Trying to reassign a const throws.' },
         { title: 'check undefined',           preview: 'Was it declared but never assigned?' }
-      ], DEBUG_CARD)
+      ], TOPIC_CARD_CHUNKS)
     },
 
     // -------- 7.7 Debugging Functions --------
@@ -2504,7 +2486,7 @@ methods: [
         { title: 'console.log vs return',          preview: 'Logging is not returning.' },
         { title: 'scope problems',                 preview: 'Closures, outer vs inner variables.' },
         { title: 'callback problems',              preview: 'Function reference vs function call.' }
-      ], DEBUG_CARD)
+      ], TOPIC_CARD_CHUNKS)
     },
 
     // -------- 7.8 Debugging Arrays --------
@@ -2520,7 +2502,7 @@ methods: [
         { title: 'item vs index confusion',      preview: 'array[i] is the item, i is the index.' },
         { title: 'mutation vs new array',        preview: 'push mutates, map returns new.' },
         { title: 'map/filter return value',      preview: 'They return arrays, not undefined.' }
-      ], DEBUG_CARD)
+      ], TOPIC_CARD_CHUNKS)
     },
 
     // -------- 7.9 Debugging Objects --------
@@ -2536,7 +2518,7 @@ methods: [
         { title: 'API data shape',             preview: 'Is the response what you expected?' },
         { title: 'console.log object',         preview: 'Expand it in DevTools.' },
         { title: 'console.table arrays of objects', preview: 'See data in a table view.' }
-      ], DEBUG_CARD)
+      ], TOPIC_CARD_CHUNKS)
     },
 
     // -------- 7.10 Debugging null / undefined --------
@@ -2553,7 +2535,7 @@ methods: [
         { title: 'trying to use null/undefined causes errors', preview: 'Cannot read properties of...' },
         { title: 'optional chaining, beginner-friendly mention', preview: 'a?.b safely returns undefined.' },
         { title: 'if checks before using',                preview: 'if (x) before using x.' }
-      ], DEBUG_CARD)
+      ], TOPIC_CARD_CHUNKS)
     },
 
     // -------- 7.11 Debugging DOM --------
@@ -2569,7 +2551,7 @@ methods: [
         { title: 'NodeList issues',            preview: 'Treating a list like one element.' },
         { title: 'textContent/classList on null', preview: 'Element wasn\'t found.' },
         { title: 'inspect HTML',               preview: 'Use DevTools Elements tab.' }
-      ], DEBUG_CARD)
+      ], TOPIC_CARD_CHUNKS)
     },
 
     // -------- 7.12 Debugging Events --------
@@ -2585,7 +2567,7 @@ methods: [
         { title: 'event object exists?',           preview: 'Is the (e) parameter populated?' },
         { title: 'preventDefault needed?',         preview: 'Form submits, links navigate.' },
         { title: 'console.log inside listener',    preview: 'Confirm it actually runs.' }
-      ], DEBUG_CARD)
+      ], TOPIC_CARD_CHUNKS)
     },
 
     // -------- 7.13 Debugging Forms --------
@@ -2602,7 +2584,7 @@ methods: [
         { title: 'input number as string',        preview: 'Input values are strings.' },
         { title: 'selected wrong input',          preview: 'Selector matched another field.' },
         { title: 'validation branch not running', preview: 'if/else logic order wrong.' }
-      ], DEBUG_CARD)
+      ], TOPIC_CARD_CHUNKS)
     },
 
     // -------- 7.14 Debugging Async --------
@@ -2618,7 +2600,7 @@ methods: [
         { title: 'using data before loaded', preview: 'Used variable before await finished.' },
         { title: 'network tab',            preview: 'See the actual request/response.' },
         { title: 'loading/error UI states', preview: 'Show user something while waiting.' }
-      ], DEBUG_CARD)
+      ], TOPIC_CARD_CHUNKS)
     },
 
     // -------- 7.15 Debugging Template Literals / ${} --------
@@ -2632,7 +2614,7 @@ methods: [
         { title: 'missing closing }',                       preview: 'Syntax error.' },
         { title: 'mixing concatenation and template literals', preview: 'Confusing two styles.' },
         { title: 'literal ${name} showing on page',         preview: 'Backticks were missing.' }
-      ], DEBUG_CARD)
+      ], TOPIC_CARD_CHUNKS)
     },
 
     // -------- 7.16 Debugging Checklist --------
@@ -2651,7 +2633,7 @@ methods: [
         { title: 'check return value',     preview: 'Did the function return what you expected?' },
         { title: 'simplify the code',      preview: 'Strip it down to the smallest broken case.' },
         { title: 'test one piece at a time', preview: 'Verify chunks before combining.' }
-      ], DEBUG_CARD)
+      ], TOPIC_CARD_CHUNKS)
     }
   ]
 };
