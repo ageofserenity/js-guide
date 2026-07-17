@@ -2485,4 +2485,571 @@ console.dir(res);
       <li>Fetch Response object</li>
     </ul>
   `,
+
+  /* ========================================================= 
+   Sub-lesson: 7.5.6 Console Tools → typeof
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'debug-4-5-0-0': `
+    <p><strong>typeof</strong> is a built-in JavaScript operator that returns a string describing the type of any value. Not a function, not a method — an operator, like <code>+</code> or <code>!</code>. Put it in front of any value and it evaluates to one of a small fixed set of strings: <code>"string"</code>, <code>"number"</code>, <code>"boolean"</code>, <code>"undefined"</code>, <code>"object"</code>, <code>"function"</code>, <code>"symbol"</code>, or <code>"bigint"</code>.</p>
+    <p>For debugging, it's the fastest way to answer "what kind of thing is this?" A value that looks like a number in the console might actually be the string <code>"5"</code>. A variable you thought was an object might be <code>null</code>. <code>typeof</code> cuts through the display ambiguity and tells you what JavaScript actually sees.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'debug-4-5-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// Basic form — put typeof before any value
+typeof 42;              // "number"
+typeof "hello";         // "string"
+typeof true;            // "boolean"
+typeof undefined;       // "undefined"
+typeof null;            // "object"   ← historical quirk (see below)
+typeof {};              // "object"
+typeof [];              // "object"   ← arrays are objects
+typeof function() {};   // "function"
+typeof Symbol();        // "symbol"
+typeof 10n;             // "bigint"
+
+// Common debugging use — log the type alongside the value
+console.log("x:", x, "type:", typeof x);
+
+// Common check — is this a certain type?
+if (typeof value === "string") { /* ... */ }
+if (typeof callback === "function") callback();
+if (typeof user === "undefined") return;
+
+// Parentheses are optional but often used for clarity
+typeof x;
+typeof(x);   // same thing</code></pre>
+
+    <p>Shape: <code>typeof</code> followed by any value or expression. Always evaluates to one of the 8 type strings.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'debug-4-5-0-2': `
+<pre class="language-javascript"><code class="language-javascript">typeof value
+// │      │
+// │      └── the value or expression being inspected
+// └── the operator — always lowercase, no parentheses required
+
+// under the hood:
+// 1. JS evaluates the expression to the right of typeof.
+// 2. it looks at the resulting value's internal type tag.
+// 3. it returns a string describing that type.
+
+// the 8 possible return values:
+// ┌──────────────┬─────────────────────────────────────────────┐
+// │ return value │ what it means                               │
+// ├──────────────┼─────────────────────────────────────────────┤
+// │ "string"     │ a string primitive                          │
+// │ "number"     │ a number (int, float, NaN, Infinity)        │
+// │ "boolean"    │ true or false                               │
+// │ "undefined"  │ undefined, or an undeclared variable        │
+// │ "object"     │ any object, array, or null                  │
+// │ "function"   │ any function (including arrow, async, etc.) │
+// │ "symbol"     │ a Symbol primitive                          │
+// │ "bigint"     │ a BigInt primitive                          │
+// └──────────────┴─────────────────────────────────────────────┘
+
+// two things stand out:
+// - null returns "object" (a bug baked into the language since 1995 — kept for compatibility)
+// - arrays return "object" (use Array.isArray() to distinguish arrays specifically)</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'debug-4-5-0-3': `
+    <p><strong><code>typeof null</code> is <code>"object"</code>.</strong> This is a famous quirk. In the earliest days of JavaScript, <code>null</code> was represented internally with a type tag of 0, which happened to match the tag for objects. It was fixed briefly and then reverted for backward compatibility. Result: <code>typeof null === "object"</code>, even though <code>null</code> is not really an object. If you're checking for null, use <code>=== null</code> directly, not <code>typeof</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">typeof null === "object";    // true — this is the quirk
+value === null;              // the right way to check for null</code></pre>
+
+    <p><strong>Arrays return <code>"object"</code>.</strong> Arrays are objects under the hood, so <code>typeof</code> can't tell them apart from other objects. To specifically check for arrays, use <code>Array.isArray()</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">typeof [];                   // "object"
+typeof {};                   // "object"
+// both return "object" — typeof can't distinguish arrays from plain objects.
+
+Array.isArray([]);           // true
+Array.isArray({});           // false
+// Array.isArray CAN distinguish them.</code></pre>
+
+    <p><strong><code>NaN</code> returns <code>"number"</code>.</strong> <code>NaN</code> ("Not a Number") is, ironically, still a number type. This means <code>typeof NaN === "number"</code>, which can be misleading. To check for <code>NaN</code>, use <code>Number.isNaN()</code>:</p>
+<pre class="language-javascript"><code class="language-javascript">typeof NaN;                  // "number" — yes, really
+Number.isNaN(NaN);           // true — the proper NaN check</code></pre>
+
+    <p><strong><code>typeof</code> on an undeclared variable does NOT throw.</strong> This is unusual — normally, referencing an undeclared variable throws <code>ReferenceError</code>. <code>typeof</code> is a special case that returns <code>"undefined"</code> without crashing:</p>
+<pre class="language-javascript"><code class="language-javascript">console.log(undefinedVar);           // ReferenceError
+console.log(typeof undefinedVar);    // "undefined" — no error
+
+// this is a common trick to safely check "is this variable defined at all?"
+if (typeof MY_FEATURE_FLAG !== "undefined") {
+  // safe to use MY_FEATURE_FLAG
+}</code></pre>
+
+    <p><strong>All function types return <code>"function"</code>.</strong> Regular functions, arrow functions, async functions, generator functions — all return <code>"function"</code>. This is convenient because it means one check catches "is this callable?":</p>
+<pre class="language-javascript"><code class="language-javascript">typeof function() {};            // "function"
+typeof (() =&gt; {});               // "function"
+typeof async function() {};      // "function"
+typeof function*() {};           // "function"
+typeof class Foo {};             // "function" — classes are technically functions</code></pre>
+
+    <p><strong>Parentheses are optional.</strong> <code>typeof</code> is an operator, so it doesn't need parentheses around its operand. But you can use them for grouping when the expression is complex:</p>
+<pre class="language-javascript"><code class="language-javascript">typeof x;                    // ✓ common
+typeof(x);                   // ✓ also fine
+typeof x + " tail";          // "&lt;typestring&gt; tail" — evaluated left to right, then concatenated
+typeof (x + " tail");        // "string" — the whole expression is inspected</code></pre>
+
+    <p><strong>Case matters.</strong> Always lowercase <code>typeof</code>. <code>Typeof</code> or <code>TYPEOF</code> are treated as regular identifiers (variable names), which will throw <code>ReferenceError</code> if undeclared:</p>
+<pre class="language-javascript"><code class="language-javascript">typeof x;    // ✓
+Typeof x;    // ✗ SyntaxError or ReferenceError depending on parser</code></pre>
+
+    <p><strong>The result is always a string.</strong> Whatever you compare it against must also be a string, quoted:</p>
+<pre class="language-javascript"><code class="language-javascript">if (typeof x === "string") { }        // ✓
+if (typeof x === string)   { }        // ✗ ReferenceError: string is not defined
+if (typeof x == "String")  { }        // ✗ case matters — never matches</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'debug-4-5-1-0': `
+    <p>When code is behaving strangely, the fastest path to the bug is often "what type is this variable really?" A comparison that should be true is false. A math operation returns <code>NaN</code>. A function call fails with "x is not a function." Every one of these bugs has the same root cause: a value has a different type than you thought. You wrote code assuming a number, but you got a string. You wrote code expecting an object, but you got <code>null</code>. Staring at the value in the console isn't always enough — <code>"5"</code> and <code>5</code> look identical when printed.</p>
+    <p><code>typeof</code> solves that. It cuts through the visual similarity and tells you exactly what JavaScript sees. Once you know a value's real type, the fix is usually obvious: convert the string to a number, check for null before accessing properties, verify the callback was actually passed. <code>typeof</code> is how you find the "type mismatch" family of bugs in seconds instead of minutes.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'debug-4-5-1-1': `
+    <p>Because type mismatches are one of the most common bug sources in JavaScript. The language is loosely typed — variables can hold anything, and operations that mix types often "succeed" in surprising ways. <code>"5" + 1</code> is <code>"51"</code>, not <code>6</code>. <code>null.name</code> throws. <code>undefined === false</code> is <code>false</code>. Every one of these behaviors becomes clear the moment you know what type each value actually is.</p>
+    <p>Beyond debugging, <code>typeof</code> is also how you write defensively. A function that might receive a callback needs to check <code>typeof cb === "function"</code> before calling. Code that reads config values needs to check <code>typeof val === "undefined"</code> to apply defaults safely. These small checks prevent whole categories of runtime errors.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'debug-4-5-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Logging alongside a value to see its type
+console.log("x:", x, "type:", typeof x);
+
+// Checking type before an operation that requires it
+if (typeof value === "string") {
+  return value.trim();
+}
+
+// Confirming a callback is actually a function
+function runIfCallable(cb) {
+  if (typeof cb === "function") cb();
+}
+
+// Guarding against undefined variables (no ReferenceError)
+if (typeof window !== "undefined") {
+  // safe to use window (also works in Node where window doesn't exist)
+}
+
+// Detecting whether a feature flag is set
+if (typeof FEATURE_ENABLED !== "undefined") {
+  useFeature();
+}
+
+// Debugging why a comparison isn't working
+console.log(x === y, typeof x, typeof y);
+
+// Debugging why an if branch isn't taken
+if (x) {
+  console.log("truthy path", typeof x, x);
+} else {
+  console.log("falsy path", typeof x, x);
+}
+
+// Runtime type validation at function boundaries
+function setPrice(price) {
+  if (typeof price !== "number") {
+    throw new TypeError("price must be a number, got " + typeof price);
+  }
+  // ...
+}
+
+// Working with mixed-type data (like values from user input or JSON)
+values.forEach(v =&gt; {
+  console.log(v, "→", typeof v);
+});
+
+// Deciding how to handle a polymorphic argument
+function handle(input) {
+  if (typeof input === "string") return handleString(input);
+  if (typeof input === "number") return handleNumber(input);
+  if (typeof input === "object" &amp;&amp; input !== null) return handleObject(input);
+  throw new Error("unsupported input type: " + typeof input);
+}
+
+// Checking types in a data-transform pipeline
+console.table(items.map(i =&gt; ({
+  name: i.name,
+  priceType: typeof i.price,
+  price: i.price,
+})));
+
+// Distinguishing "empty" from "missing"
+if (typeof user.name === "undefined") {
+  // name is missing
+} else if (user.name === "") {
+  // name is empty string
+}</code></pre>
+
+    <p>General rule: whenever a value isn't behaving like you expected, log its <code>typeof</code> as your first move. Whenever you're writing code that assumes a specific type, guard the assumption with a <code>typeof</code> check.</p>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'debug-4-5-1-3': `
+    <p>Think of every variable in JavaScript as a labeled box. The label tells you what kind of thing is inside — a number, a piece of text, a list, a function, and so on. Most of the time you don't need to look at the label because the box's contents are obvious. But when something's wrong and the code isn't behaving right, the label is the first thing you check.</p>
+    <p><code>typeof</code> is peeling back the wrapper and reading the label. You point it at a variable and it tells you the type. That one word is often enough to spot the bug — "oh, that's supposed to be a number but the label says string, that's why my math is broken." No detective work, no guessing.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'debug-4-5-1-4': `
+    <p>Imagine every value in your code is a container in a shipping warehouse. From a distance, they all look similar — boxes, crates, envelopes. Zoom in and each one has a small tag: FOOD, ELECTRONICS, DOCUMENTS, FRAGILE. The tag doesn't tell you what's inside, but it tells you what <em>kind</em> of thing is inside — and that's usually what you need to know when handling it.</p>
+    <p><code>typeof</code> is you walking up to a container and reading its tag. Whenever a package isn't behaving the way you expected — heavier than it should be, ringing when it shouldn't, showing up at the wrong destination — the tag is the first clue. Almost every "package behaved wrong" mystery in the warehouse turns out to be "someone put the wrong contents in the wrong tag." <code>typeof</code> is how you catch it.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'debug-4-5-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// Scenario: a form saves numbers as strings, and totals come out wrong.
+
+const inputA = document.querySelector("#price-a");
+const inputB = document.querySelector("#price-b");
+
+console.log("A value:", inputA.value, "typeof:", typeof inputA.value);
+console.log("B value:", inputB.value, "typeof:", typeof inputB.value);
+
+const total = inputA.value + inputB.value;
+console.log("total:", total, "typeof:", typeof total);
+
+// what happens when this code runs (say inputs contain "10" and "5"):
+// 1. inputA.value is read from the DOM.
+//    - DOM input .value is ALWAYS a string, even for numeric-looking content.
+//    - value stored: "10" (a string).
+// 2. first console.log fires:
+//    - "A value: 10 typeof: string"
+//    - the string "10" looks like a number in the console!
+// 3. inputB.value read the same way. value: "5" (string).
+// 4. second log: "B value: 5 typeof: string"
+// 5. inputA.value + inputB.value evaluates:
+//    - + on two strings concatenates them.
+//    - "10" + "5" = "105", not 15.
+// 6. third log: "total: 105 typeof: string"
+// 7. the total is displayed as $105 — the bug.
+//
+// without typeof, "10" and 10 look identical in the console.
+// WITH typeof, the mismatch is instantly obvious.
+// the fix: coerce with Number(), parseFloat(), or unary +
+const total = Number(inputA.value) + Number(inputB.value);
+console.log("total:", total, "typeof:", typeof total);
+// "total: 15 typeof: number" — correct now.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'debug-4-5-2-0': `
+    <p>When something isn't matching, isn't calling, isn't calculating, log the <code>typeof</code> of both sides:</p>
+<pre class="language-javascript"><code class="language-javascript">// "why is x === y false when they look the same?"
+console.log("x:", x, typeof x);
+console.log("y:", y, typeof y);
+// if the types differ, that's the bug.
+
+// "why is my sum coming out weird?"
+console.log("a:", a, typeof a);
+console.log("b:", b, typeof b);
+// one of them is probably a string. + on strings concatenates.
+
+// "why is 'x is not a function' being thrown?"
+console.log(typeof x);
+// if it says "undefined" or "object", x isn't callable.
+
+// "why does this look like an object but throw when I access properties?"
+console.log(typeof x, x);
+// if typeof is "object" but the value is null, that's the bug (null is "object" per the quirk).
+
+// "why does JSON.parse blow up?"
+console.log(typeof jsonString);
+// if it's not "string", JSON.parse throws a cryptic error.</code></pre>
+    <p>Almost every "unexpected value" bug can be diagnosed with two <code>typeof</code> logs. That's the debugging clue: when in doubt, log the type alongside the value.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'debug-4-5-2-1': `
+    <p>The aha is realizing that JavaScript's loose typing is why so many bugs are silent. In a strictly-typed language, passing a string where a number is expected throws immediately — you find the bug the moment it happens. In JavaScript, the wrong type just <em>works</em> in surprising ways: strings concatenate with <code>+</code>, objects convert to <code>"[object Object]"</code>, <code>undefined</code> quietly becomes <code>NaN</code> in math. Nothing crashes; the output is just wrong:</p>
+<pre class="language-javascript"><code class="language-javascript">"5" + 1;               // "51", not 6 — string concatenation wins
+undefined + 1;         // NaN — no error, just wrong
+null.name;             // TypeError — the ONE case it does crash
+[] + [];               // "" — arrays coerce to empty strings
+{ } + { };             // "[object Object][object Object]" or NaN, depending on context</code></pre>
+    <p>Once that clicks, <code>typeof</code> becomes the natural response to any "why is this wrong" moment. You stop assuming and start checking. The check takes 2 seconds and eliminates entire categories of mystery bugs.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'debug-4-5-2-2': `
+    <p><strong>"Why does <code>typeof null</code> return <code>"object"</code>?"</strong> It's a bug in JavaScript's original implementation from 1995 that was never fixed for backward compatibility. Millions of lines of code implicitly rely on it, so it stays. Use <code>=== null</code> to check for null specifically.</p>
+
+    <p><strong>"Why does <code>typeof []</code> return <code>"object"</code>?"</strong> Because arrays ARE objects in JavaScript — a special kind, but objects. <code>typeof</code> only distinguishes the top-level type, not subtypes. Use <code>Array.isArray()</code> when you specifically need "is this an array?"</p>
+
+    <p><strong>"Why does <code>typeof NaN</code> return <code>"number"</code>?"</strong> Because <code>NaN</code> is technically a numeric value — a special one that means "invalid number result." The type is still <code>"number"</code>; you just have to check for NaN specifically with <code>Number.isNaN()</code>.</p>
+
+    <p><strong>"typeof and instanceof — what's the difference?"</strong> <code>typeof</code> works on primitives and returns a fixed string. <code>instanceof</code> works on objects and checks whether they were made from a specific constructor. Different tools for different questions:</p>
+<pre class="language-javascript"><code class="language-javascript">typeof "hi";               // "string"
+typeof new String("hi");   // "object" — String OBJECT, not primitive
+
+new Date() instanceof Date;    // true
+typeof new Date();             // "object" — doesn't tell you it's a Date</code></pre>
+
+    <p><strong>"Is <code>typeof</code> a function?"</strong> No — it's an operator. That's why <code>typeof x</code> works without parentheses. You can add them for clarity (<code>typeof(x)</code>), but they're grouping the operand, not a function call.</p>
+
+    <p><strong>"Why doesn't <code>typeof undeclaredVar</code> throw a ReferenceError?"</strong> It's a special safety allowance in the language spec. Normally, reading an undeclared variable throws — but <code>typeof</code> is designed for exactly the "is this defined?" check, so it's exempt. That's why <code>typeof MY_FLAG !== "undefined"</code> is a safe existence check.</p>
+
+    <p><strong>"Should I use <code>typeof x === "undefined"</code> or <code>x === undefined</code>?"</strong> Prefer <code>x === undefined</code> in modern code — it's clearer. Use <code>typeof</code> only when <code>x</code> might not be declared at all (like feature-flag or environment-detection code).</p>
+  `,
+
+  /* 2.3 Common mistakes */
+  'debug-4-5-2-3': `
+<pre class="language-javascript"><code class="language-javascript">// Mistake 1: comparing typeof result to the wrong string
+if (typeof x === "String") { }    // ✗ never matches — case matters
+if (typeof x === "string") { }    // ✓
+
+// Mistake 2: not quoting the type string
+if (typeof x === string) { }      // ✗ ReferenceError: string is not defined
+if (typeof x === "string") { }    // ✓
+
+// Mistake 3: using typeof to detect null
+if (typeof value === "object") {
+  // value could be null here — typeof null is "object"
+  value.name;                     // ✗ TypeError: Cannot read properties of null
+}
+// fix: check for null explicitly first
+if (value !== null &amp;&amp; typeof value === "object") {
+  value.name;                     // ✓
+}
+
+// Mistake 4: using typeof to detect arrays
+if (typeof x === "object") {
+  x.forEach(fn);                  // ✗ crashes if x is a plain object, not an array
+}
+// fix: Array.isArray
+if (Array.isArray(x)) {
+  x.forEach(fn);
+}
+
+// Mistake 5: using typeof to detect NaN
+if (typeof x === "number" &amp;&amp; isNaN(x)) { }   // works but weird
+// fix: use Number.isNaN directly
+if (Number.isNaN(x)) { }
+
+// Mistake 6: expecting typeof to distinguish int vs float
+typeof 42;                        // "number"
+typeof 42.5;                      // "number"
+// they're the same type. use Number.isInteger() if you need to distinguish.
+
+// Mistake 7: forgetting that typeof always returns a string
+const t = typeof value;
+if (t === undefined) { }          // ✗ t is the STRING "undefined", not the value undefined
+if (t === "undefined") { }        // ✓
+
+// Mistake 8: putting typeof inside an operator chain wrong
+if (typeof x + y === "number") { }
+// evaluates as (typeof x) + y first — the string "&lt;type&gt;undefined" or "&lt;type&gt;5"
+// then compares that mess to "number" — always false.
+// fix: parenthesize
+if (typeof (x + y) === "number") { }
+
+// Mistake 9: expecting typeof to catch classes
+class Foo {}
+typeof new Foo();                 // "object" — no info about which class
+typeof Foo;                       // "function" — because classes are functions
+// fix: use instanceof for class checks
+new Foo() instanceof Foo;         // true
+
+// Mistake 10: assuming typeof will save you from every type bug
+function double(n) {
+  if (typeof n !== "number") return;   // guards against non-numbers
+  return n * 2;
+}
+double(NaN);                      // returns NaN — typeof was "number" but NaN is bad
+// fix: also check for NaN
+function double(n) {
+  if (typeof n !== "number" || Number.isNaN(n)) return;
+  return n * 2;
+}</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'debug-4-5-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Primitives
+typeof "hello";          // "string"
+typeof 42;               // "number"
+typeof true;             // "boolean"
+typeof undefined;        // "undefined"
+typeof null;             // "object"  ← quirk
+typeof Symbol();         // "symbol"
+typeof 10n;              // "bigint"
+
+// Reference types
+typeof {};               // "object"
+typeof [];               // "object"
+typeof function() {};    // "function"
+typeof (() =&gt; {});       // "function"
+typeof class Foo {};     // "function"
+
+// Special numeric values
+typeof NaN;              // "number"
+typeof Infinity;         // "number"
+
+// The undeclared safety
+typeof undeclaredThing;  // "undefined" — no ReferenceError
+
+// Logging alongside the value
+console.log("x:", x, "type:", typeof x);
+
+// Common type guards
+if (typeof cb === "function") cb();
+if (typeof s === "string") s.trim();
+if (typeof n === "number") n.toFixed(2);
+if (typeof obj === "object" &amp;&amp; obj !== null) obj.name;
+
+// Detecting whether an environment variable exists
+if (typeof window !== "undefined") { /* browser code */ }
+if (typeof process !== "undefined") { /* Node code */ }
+
+// Debugging a comparison
+console.log(a === b, typeof a, typeof b);
+
+// Debugging math weirdness
+console.log("result:", x + y, "types:", typeof x, typeof y);
+
+// Runtime type check at a function boundary
+function greet(name) {
+  if (typeof name !== "string") throw new TypeError("name must be a string");
+  return "Hello, " + name;
+}
+
+// Auditing an array of mixed values
+values.forEach(v =&gt; console.log(v, "→", typeof v));
+
+// Table view of types
+console.table(items.map(i =&gt; ({ name: i.name, priceType: typeof i.price })));</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'debug-4-5-3-1': `
+    <p><strong>Example: finding the "string-that-looks-like-a-number" bug</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// user complaint: "the total is being concatenated instead of summed"
+const priceA = document.querySelector("#a").value;
+const priceB = document.querySelector("#b").value;
+console.log("A:", priceA, typeof priceA);   // A: 10 string
+console.log("B:", priceB, typeof priceB);   // B: 5 string
+console.log("A + B:", priceA + priceB);     // "105" — concatenation, not sum
+
+// typeof revealed the strings. fix: coerce.
+const total = Number(priceA) + Number(priceB);
+console.log("total:", total, typeof total); // total: 15 number</code></pre>
+
+    <p><strong>Example: guarding a callback that might not exist</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function fetchData(url, onSuccess, onError) {
+  fetch(url)
+    .then(res =&gt; res.json())
+    .then(data =&gt; {
+      if (typeof onSuccess === "function") onSuccess(data);
+    })
+    .catch(err =&gt; {
+      if (typeof onError === "function") onError(err);
+    });
+}
+// caller can omit either callback safely.
+// without the typeof check, calling undefined() throws "onSuccess is not a function".</code></pre>
+
+    <p><strong>Example: environment detection for cross-platform code</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// Same code needs to run in the browser AND in Node.js during SSR.
+
+function getGlobalObject() {
+  if (typeof globalThis !== "undefined") return globalThis;
+  if (typeof window !== "undefined") return window;
+  if (typeof global !== "undefined") return global;
+  throw new Error("no global object found");
+}
+// typeof safely checks each candidate without crashing on the ones that don't exist.
+// direct reference (window.X) would throw ReferenceError in Node.</code></pre>
+
+    <p><strong>Example: debugging why an equality check keeps failing</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const stored = localStorage.getItem("count");   // always a string, or null
+const current = 5;
+
+if (stored === current) { /* never true */ }
+
+console.log(stored, typeof stored);     // "5" string
+console.log(current, typeof current);   // 5 number
+// typeof made the mismatch obvious.
+
+// fix: coerce
+if (Number(stored) === current) { /* correct */ }</code></pre>
+
+    <p><strong>Example: validating an API response's shape</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function normalizeUser(raw) {
+  if (typeof raw !== "object" || raw === null) {
+    console.error("normalizeUser: expected object, got", typeof raw, raw);
+    return null;
+  }
+  return {
+    id:    typeof raw.id === "number" ? raw.id : Number(raw.id),
+    name:  typeof raw.name === "string" ? raw.name : String(raw.name || ""),
+    admin: typeof raw.admin === "boolean" ? raw.admin : Boolean(raw.admin),
+  };
+}
+// each field is coerced only if it doesn't match the expected type.
+// prevents subtle bugs from data that's mostly-but-not-quite the right shape.</code></pre>
+
+    <p><strong>Example: an auditing table of a data structure</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// You want to see all the types in an object at a glance
+console.table(
+  Object.entries(user).map(([key, val]) =&gt; ({
+    key,
+    value: val,
+    type: typeof val,
+    isArray: Array.isArray(val),
+    isNull: val === null,
+  }))
+);
+// gives you a grid showing every field, its value, and its true type.
+// perfect for figuring out "which field is the wrong type?"</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'debug-4-5-3-2': `
+    <ul>
+      <li><strong><code>Array.isArray()</code></strong> → distinguishes arrays from other objects (typeof can't)</li>
+      <li><strong><code>Number.isNaN()</code></strong> → detects the NaN value specifically (typeof NaN is "number")</li>
+      <li><strong><code>Number.isInteger()</code></strong> → distinguishes int from float (typeof can't)</li>
+      <li><strong><code>instanceof</code></strong> → checks class/constructor for objects (typeof only returns "object")</li>
+      <li><strong><code>=== null</code></strong> → the right way to check for null (typeof null is "object")</li>
+      <li><strong><code>console.log()</code></strong> → typeof is almost always logged alongside a value</li>
+      <li><strong><code>console.table()</code></strong> → useful for auditing types across many rows</li>
+      <li><strong>Type coercion</strong> → understanding types is the first step to understanding coercion</li>
+      <li><strong><code>===</code> vs <code>==</code></strong> → strict equality checks type too; typeof helps explain results</li>
+      <li><strong>Truthy/falsy</strong> → different types have different truthiness rules</li>
+      <li><strong>Debugging variables</strong> → typeof is the primary tool for variable-type bugs</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'debug-4-5-3-3': `
+    <ul>
+      <li><code>Array.isArray()</code></li>
+      <li><code>Number.isNaN()</code></li>
+      <li><code>Number.isInteger()</code></li>
+      <li><code>instanceof</code></li>
+      <li><code>=== null</code></li>
+      <li><code>console.log()</code></li>
+      <li><code>console.table()</code></li>
+      <li>Type coercion</li>
+      <li>Strict vs loose equality</li>
+      <li>Debugging variables</li>
+      <li>Debugging null / undefined</li>
+    </ul>
+  `,
 });
