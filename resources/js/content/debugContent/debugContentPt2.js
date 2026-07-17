@@ -1999,4 +1999,490 @@ console.table(timings);
       <li>Debugging data pipelines</li>
     </ul>
   `,
+
+  /* ========================================================= 
+   Sub-lesson: 7.5.5 Console Tools → console.dir()
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'debug-4-4-0-0': `
+    <p><strong>console.dir()</strong> prints an interactive, deeply-expandable object tree to DevTools. It's the tool for looking at an object's actual JavaScript structure — every property, every method, every nested value — instead of the "friendly" preview that <code>console.log</code> gives you. The name is short for "directory," as in "show me the directory listing of this object."</p>
+    <p>It matters most for DOM elements. Where <code>console.log(myDiv)</code> prints the element's HTML markup (which looks like the page you can already see), <code>console.dir(myDiv)</code> prints the element as a JavaScript object — every property, every event handler, every computed style — so you can see what your code can actually access on it.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'debug-4-4-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// Basic form — inspect any object
+console.dir(user);
+
+// The killer use case: inspect a DOM element as a JS object
+const btn = document.querySelector("button");
+console.dir(btn);
+
+// Optional second argument: control depth and other display options
+console.dir(obj, { depth: 3, colors: true });    // more common in Node than browsers
+
+// Contrast with console.log
+console.log(btn);   // shows &lt;button&gt;Click&lt;/button&gt; — HTML preview
+console.dir(btn);   // shows { accessKey, ariaLabel, className, ...50+ props }</code></pre>
+
+    <p>Shape: <code>console.dir(</code> any value <code>)</code>. Almost always used for exploration — "what properties does this thing actually have?" — rather than for casual value inspection.</p>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'debug-4-4-0-2': `
+<pre class="language-javascript"><code class="language-javascript">console.dir(myElement);
+// │       │   │
+// │       │   └── argument — the object or DOM element to inspect
+// │       └── the method name — dir, lowercase
+// └── the console object — same one console.log uses
+
+// under the hood, what DevTools does differently vs console.log:
+// 1. console.log(domElement) → renders the ELEMENT view (its HTML markup)
+// 2. console.dir(domElement) → renders the OBJECT view (its JS properties)
+// 
+// for plain objects, they're nearly identical (both show a tree).
+// for DOM elements, they're completely different views of the same thing.
+
+// example output for console.dir(button):
+// button.my-btn
+// ├── accessKey: ""
+// ├── ariaLabel: null
+// ├── attributes: NamedNodeMap
+// ├── autofocus: false
+// ├── className: "my-btn primary"
+// ├── click: ƒ click()
+// ├── clientHeight: 32
+// ├── ... (dozens more)
+// └── __proto__: HTMLButtonElement
+//     ├── ... (all inherited methods and properties)
+
+// vs console.log(button):
+// &lt;button class="my-btn primary"&gt;Save&lt;/button&gt;
+// (just the HTML preview — no property tree)</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'debug-4-4-0-3': `
+    <p><strong>For plain JS objects, <code>console.dir</code> and <code>console.log</code> look nearly identical.</strong> Both show an expandable tree. The difference emerges with DOM elements:</p>
+<pre class="language-javascript"><code class="language-javascript">const user = { name: "Alice", age: 30 };
+console.log(user);   // { name: "Alice", age: 30 }
+console.dir(user);   // { name: "Alice", age: 30 }
+// visually the same for plain objects.
+
+const btn = document.querySelector("button");
+console.log(btn);   // &lt;button&gt;Save&lt;/button&gt;         ← HTML preview
+console.dir(btn);   // HTMLButtonElement { ... }      ← JS object tree
+// dramatically different for DOM elements.</code></pre>
+
+    <p><strong>The output expands as a tree with property values and types.</strong> Everything on the object — including inherited members via <code>__proto__</code> — is browsable:</p>
+<pre class="language-javascript"><code class="language-javascript">console.dir(document.body);
+// clicking the tree lets you drill into:
+// - direct properties (id, className, children, innerHTML, ...)
+// - accessors (offsetWidth, scrollTop, ...)
+// - methods (appendChild, addEventListener, ...)
+// - the prototype chain (HTMLBodyElement → HTMLElement → Element → Node → EventTarget)</code></pre>
+
+    <p><strong>The second-argument options object is browser-inconsistent.</strong> Node.js supports options like <code>{ depth: 2, colors: true, showHidden: false }</code>. Browsers largely ignore this argument. Don't rely on it in browser code:</p>
+<pre class="language-javascript"><code class="language-javascript">// works in Node:
+console.dir(obj, { depth: 5, colors: true });
+
+// in the browser, the options are typically ignored.
+// stick to the one-argument form:
+console.dir(obj);</code></pre>
+
+    <p><strong>Case matters.</strong> It's <code>console.dir</code>, lowercase. <code>console.Dir</code> or <code>console.DIR</code> throws:</p>
+<pre class="language-javascript"><code class="language-javascript">console.dir(obj);   // ✓
+console.Dir(obj);   // ✗ TypeError: console.Dir is not a function</code></pre>
+
+    <p><strong>The output is a live, interactive view — not a snapshot.</strong> Same object-by-reference gotcha as <code>console.log</code>: when you expand a <code>console.dir</code> entry, DevTools reads the object's current state, not its state at the time of the call:</p>
+<pre class="language-javascript"><code class="language-javascript">const state = { count: 0 };
+console.dir(state);
+state.count = 99;
+// expanding the logged tree may show count: 99, not count: 0.
+// to freeze, spread or stringify first:
+console.dir({ ...state });
+console.log(JSON.stringify(state));</code></pre>
+
+    <p><strong>Node vs browser display differences.</strong> In browsers, <code>console.dir</code> gives you an interactive tree in DevTools. In Node.js, it prints to stdout as formatted text, respecting <code>util.inspect</code> options. Same tool name, subtly different output medium.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'debug-4-4-1-0': `
+    <p>When you log a DOM element with <code>console.log</code>, DevTools shows the element the same way it would in the Elements panel — as HTML markup. That's useful if you want to see how the tag looks, but useless if you want to know what JavaScript properties are available on it. "What events does this element have?" "What's its computed <code>tabIndex</code>?" "Does it have a <code>dataset</code> value I forgot about?" — you can't answer those from an HTML preview.</p>
+    <p><code>console.dir</code> solves that. It shows you the element the way JavaScript sees it: a big object with all its properties, methods, and inheritance chain. When you're debugging DOM code and need to know what's actually available to work with, <code>console.dir</code> gives you the truth. It also matters for other host objects (like <code>window</code>, <code>document</code>, <code>Response</code>) that <code>console.log</code> prettifies away.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'debug-4-4-1-1': `
+    <p>Because the HTML preview lies about what your JavaScript can touch. An <code>&lt;input&gt;</code> element in HTML has attributes like <code>type</code>, <code>value</code>, <code>placeholder</code>. But the actual DOM element in JS has all of those <em>plus</em> <code>validity</code>, <code>form</code>, <code>selectionStart</code>, <code>selectionEnd</code>, <code>files</code> (for file inputs), <code>indeterminate</code> (for checkboxes), and dozens more. Reading the HTML tells you nothing about those. <code>console.dir</code> shows you every one, in a browsable tree.</p>
+    <p>It's also invaluable when you're exploring an unfamiliar API. Fetch returns a <code>Response</code> object; <code>console.log(response)</code> shows a compact summary; <code>console.dir(response)</code> shows you every property and method available — so you can figure out how to use it without hunting through documentation.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'debug-4-4-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Inspecting a DOM element as a JS object
+const btn = document.querySelector("button");
+console.dir(btn);
+
+// Inspecting an input to see what state it's tracking
+console.dir(document.querySelector("input[type=file]"));
+// reveals: files, validity, form, defaultValue, selectionStart, ...
+
+// Exploring what a fetch Response can do
+const res = await fetch("/api/data");
+console.dir(res);   // headers, status, ok, redirected, type, body, ...
+
+// Inspecting the global window object
+console.dir(window);   // every browser API in one browsable tree
+
+// Inspecting document.body's real structure
+console.dir(document.body);
+
+// Inspecting an event object in detail
+btn.addEventListener("click", (e) =&gt; console.dir(e));
+// vs console.log(e) which shows a minimal preview
+
+// Inspecting a NodeList that console.log makes opaque
+console.dir(document.querySelectorAll(".item"));
+
+// Inspecting a class instance's prototype chain
+class Widget { /* ... */ }
+const w = new Widget();
+console.dir(w);   // includes __proto__ with all methods
+
+// Comparing computed values inside a running event handler
+input.addEventListener("input", (e) =&gt; {
+  console.dir(e.target);   // full input state: value, validity, selection...
+});
+
+// Exploring a library object to see what's available
+import { db } from "some-library";
+console.dir(db);</code></pre>
+
+    <p>The general pattern: when you'd normally reach for <code>console.log</code> but want the object <em>itself</em>, not a friendly summary, use <code>console.dir</code>.</p>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'debug-4-4-1-3': `
+    <p>Imagine every DOM element is like an appliance — a blender, say. When you log it with <code>console.log</code>, it's like DevTools shows you a photo of the blender sitting on a counter. You can see it, but you can't see what buttons it has, what settings it exposes, what the motor's rated for. <code>console.dir</code> is like DevTools handing you the owner's manual — every button, every setting, every internal component listed and explorable.</p>
+    <p>For a plain JS object, both views basically show the same thing (a plain object is mostly just its listed properties). But for anything richer — a DOM element, a browser API, a class instance — the manual view (<code>dir</code>) tells you far more than the photo view (<code>log</code>).</p>
+  `,
+
+  /* 1.4 Mental model */
+  'debug-4-4-1-4': `
+    <p>Think of every object in JavaScript as having two sides: the presentation face and the machinery inside. <code>console.log</code> shows you the presentation face — how the object wants to be summarized, how DevTools thinks you'd like to see it at a glance. <code>console.dir</code> shows you the machinery — every property, method, inherited feature, and internal slot the object actually carries.</p>
+    <p>For simple plain objects, the presentation face IS the machinery — there's nothing hidden. For complex host objects (DOM, browser APIs), the presentation face hides most of the machinery to save space. <code>console.dir</code> flips that hood open. When you need to know what's actually there, <code>dir</code> is the wrench that pops the panel.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'debug-4-4-1-5': `
+<pre class="language-javascript"><code class="language-javascript">const input = document.querySelector("input[type=email]");
+console.dir(input);
+
+// what happens when this line runs:
+// 1. document.querySelector finds the first email input on the page.
+// 2. that DOM element (an HTMLInputElement) is stored in "input."
+// 3. JS reaches the console.dir line.
+// 4. it evaluates the argument: the input element.
+// 5. JS calls console.dir with that element.
+// 6. DevTools receives the element and inspects its full property list:
+//    - own properties on the element itself
+//    - inherited properties from HTMLInputElement.prototype
+//    - inherited properties from HTMLElement.prototype
+//    - inherited properties from Element.prototype
+//    - inherited properties from Node.prototype
+//    - inherited properties from EventTarget.prototype
+// 7. DevTools renders a tree in the console:
+//    input#email.form-field
+//    ├── accept: ""
+//    ├── align: ""
+//    ├── autocomplete: "email"
+//    ├── autofocus: false
+//    ├── checked: false
+//    ├── defaultValue: ""
+//    ├── files: null
+//    ├── form: HTMLFormElement
+//    ├── formAction: "https://..."
+//    ├── labels: NodeList(1)
+//    ├── name: "email"
+//    ├── placeholder: "you@example.com"
+//    ├── selectionEnd: 0
+//    ├── selectionStart: 0
+//    ├── type: "email"
+//    ├── validationMessage: "Please fill in this field."
+//    ├── validity: ValidityState
+//    ├── value: ""
+//    ├── ... (50+ more properties)
+//    └── __proto__: HTMLInputElement
+// 8. every entry is clickable to expand nested objects.
+// 9. code execution continues to the next line.
+
+// same input passed to console.log would just show:
+// &lt;input type="email" name="email" class="form-field"&gt;
+// which tells you almost nothing about what you can access from JS.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'debug-4-4-2-0': `
+    <p>If you're not sure whether a property exists on an object, <code>console.dir</code> answers instantly:</p>
+<pre class="language-javascript"><code class="language-javascript">// "does this input have a .files property?"
+const input = document.querySelector("input");
+console.dir(input);
+// scan the tree — if "files" is listed, yes; if not, no.
+
+// "what methods can I call on a fetch Response?"
+const res = await fetch("/api/data");
+console.dir(res);
+// scroll to __proto__ — every method (json, text, blob, clone, arrayBuffer) is there.
+
+// "why does my e.target look different from what I expected?"
+btn.addEventListener("click", (e) =&gt; console.dir(e.target));
+// see the exact element and every property it actually has.
+
+// "what's on this class instance?"
+console.dir(new SomeClass());
+// direct properties + prototype methods, all visible.</code></pre>
+    <p>If <code>console.dir</code> and <code>console.log</code> look identical for what you're logging, it's a plain object — either view is fine. The difference only matters for DOM elements and host objects.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'debug-4-4-2-1': `
+    <p>The aha: <code>console.log</code> and <code>console.dir</code> aren't different tools that do different things — they're the same tool that asks DevTools for different <em>views</em>. Same input, two ways of rendering. For plain objects, DevTools has only one useful view, so the two commands overlap. For DOM elements, DevTools has a special "friendly HTML preview" view (log) and a "raw JS object tree" view (dir):</p>
+<pre class="language-javascript"><code class="language-javascript">// same element, two different views:
+console.log(el);   // "how the HTML looks"     — for reading structure
+console.dir(el);   // "what the JS object is"  — for exploring the API
+
+// choosing which is choosing what you're asking DevTools to show.
+// there's no data difference. only rendering.</code></pre>
+    <p>Once that clicks, using them together is a natural rhythm: <code>console.log</code> when you want the HTML preview, <code>console.dir</code> when you want the property list. Both, one after the other, when you want both perspectives.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'debug-4-4-2-2': `
+    <p><strong>"console.log and console.dir look the same for my object — did I do something wrong?"</strong> No — you're just logging a plain JS object, which both methods render identically. The difference only becomes visible for DOM elements and browser host objects. If you want to see the split, try <code>console.log(document.body)</code> then <code>console.dir(document.body)</code>.</p>
+
+    <p><strong>"Why does the tree include __proto__?"</strong> Because that's how JavaScript objects work. Every object has a prototype chain — methods inherited from parent classes. <code>console.dir</code> shows the whole chain so you can see every method and property you can access, not just the ones defined directly on the instance. Click <code>__proto__</code> to expand the parent's methods.</p>
+
+    <p><strong>"The tree is huge. How do I find what I want?"</strong> Use DevTools' search: with the console focused, Ctrl/Cmd+F opens a search box. Type the property name and it jumps to it. For deeply nested exploration, click carefully — one branch at a time — instead of expanding everything.</p>
+
+    <p><strong>"Can I use console.dir in production code?"</strong> Same rules as any console call: remove or gate before shipping. Because <code>console.dir</code> produces a large object tree, calling it in a loop can noticeably slow down DevTools.</p>
+
+    <p><strong>"Why does console.dir show old values sometimes?"</strong> Same object-by-reference issue as <code>console.log</code>. The tree is expanded lazily when you click it, so it reads whatever the current state of the object is — not the state at the moment of the call. If you need a snapshot, spread or stringify first.</p>
+
+    <p><strong>"Why does Node's console.dir look different from the browser's?"</strong> Because Node prints to stdout as text, while the browser renders an interactive tree in DevTools. Same idea, different output medium. Node also supports options like <code>{ depth: 3 }</code> that browsers largely ignore.</p>
+  `,
+
+  /* 2.3 Common mistakes */
+  'debug-4-4-2-3': `
+<pre class="language-javascript"><code class="language-javascript">// Mistake 1: using dir for plain object logs
+console.dir({ name: "Alice", age: 30 });
+// works, but the same as console.log for plain objects. no benefit.
+// fix: reserve dir for DOM elements and host objects where it actually differs.
+console.log({ name: "Alice", age: 30 });
+
+// Mistake 2: relying on the second argument in browsers
+console.dir(obj, { depth: 5, colors: true });
+// browsers ignore this. only Node respects those options.
+// fix: don't pass options in browser code.
+console.dir(obj);
+
+// Mistake 3: using dir when you actually want the HTML preview
+console.dir(document.body);   // shows a giant JS object tree
+// if you wanted to see the HTML structure of body:
+console.log(document.body);
+
+// Mistake 4: expecting a frozen snapshot
+const state = { count: 0 };
+console.dir(state);
+state.count = 99;
+// expanding the tree may show count: 99, not 0
+// fix: snapshot first
+console.dir({ ...state });
+
+// Mistake 5: dir'ing enormous objects like window
+console.dir(window);   // window has thousands of properties
+// works, but the tree is huge and DevTools may lag
+// fix: narrow down to what you actually care about
+console.dir(window.location);
+
+// Mistake 6: using dir on a NodeList and expecting a tabular view
+const items = document.querySelectorAll("li");
+console.dir(items);   // shows a NodeList object tree, not a friendly list
+// fix: for scanning multiple elements, table works better
+console.table([...items].map(el =&gt; ({
+  tag: el.tagName,
+  text: el.textContent.slice(0, 30),
+})));
+
+// Mistake 7: forgetting parentheses
+console.dir document.body;   // ✗ SyntaxError
+console.dir(document.body);  // ✓
+
+// Mistake 8: mixing up dir and dirxml
+console.dirxml(document.body);   // deprecated in most browsers, avoid
+console.dir(document.body);      // use this instead</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'debug-4-4-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Any DOM element
+console.dir(document.querySelector("button"));
+
+// The whole body
+console.dir(document.body);
+
+// An input element to see every state property
+console.dir(document.querySelector("input"));
+
+// A form to see all fields via .elements
+console.dir(document.querySelector("form"));
+
+// Explore the window object
+console.dir(window);
+
+// Explore document
+console.dir(document);
+
+// Explore the location object
+console.dir(window.location);
+
+// Explore a fetch Response
+const res = await fetch("/api/data");
+console.dir(res);
+
+// Explore an event object
+btn.addEventListener("click", (e) =&gt; console.dir(e));
+
+// Compare log vs dir
+console.log(document.body);   // HTML preview
+console.dir(document.body);   // JS object tree
+
+// A class instance
+class Widget {
+  constructor(name) { this.name = name; }
+  render() {}
+}
+console.dir(new Widget("test"));
+
+// A NodeList
+console.dir(document.querySelectorAll("a"));
+
+// A style declaration
+console.dir(getComputedStyle(document.body));
+
+// A Range object
+const range = document.createRange();
+console.dir(range);</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'debug-4-4-3-1': `
+    <p><strong>Example: figuring out why an input isn't validating</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const email = document.querySelector("input[type=email]");
+console.dir(email);
+// scan the tree for the validity object:
+// validity:
+//   valid: false
+//   valueMissing: true          ← the field is required and empty
+//   typeMismatch: false
+//   patternMismatch: false
+//   badInput: false
+//   customError: false
+// tells you exactly which validation constraint is failing.
+// no more staring at "why isn't submit working" — the reason is in the tree.</code></pre>
+
+    <p><strong>Example: exploring a browser API you've never used</strong></p>
+<pre class="language-javascript"><code class="language-javascript">// You want to work with the clipboard but forget what's available
+console.dir(navigator.clipboard);
+// tree reveals:
+//   read: ƒ read()
+//   readText: ƒ readText()
+//   write: ƒ write()
+//   writeText: ƒ writeText()
+// there — you can see exactly which methods exist without hunting through docs.</code></pre>
+
+    <p><strong>Example: comparing what a variable holds vs. what its HTML looks like</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const target = event.target;
+
+console.log("HTML view:");
+console.log(target);            // &lt;button class="btn"&gt;Save&lt;/button&gt;
+
+console.log("JS object view:");
+console.dir(target);            // full property tree — className, dataset, disabled, form, ...
+
+// two views of the exact same reference, side by side.
+// helpful for confirming "yes, this is the button I think it is,
+// AND its .disabled property is currently true — that's why nothing happens."</code></pre>
+
+    <p><strong>Example: understanding a fetch response before you consume it</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const res = await fetch("/api/data");
+console.dir(res);
+// reveals every property and method:
+//   ok: true
+//   status: 200
+//   headers: Headers
+//   redirected: false
+//   type: "basic"
+//   url: "https://..."
+//   __proto__:
+//     json: ƒ json()
+//     text: ƒ text()
+//     blob: ƒ blob()
+//     formData: ƒ formData()
+//     arrayBuffer: ƒ arrayBuffer()
+//     clone: ƒ clone()
+// now you know: "if I need the raw text instead of JSON, res.text() is my method."</code></pre>
+
+    <p><strong>Example: debugging an event object mid-handler</strong></p>
+<pre class="language-javascript"><code class="language-javascript">form.addEventListener("submit", (e) =&gt; {
+  console.dir(e);
+  // gives you every property of the SubmitEvent:
+  //   submitter: HTMLButtonElement    ← which button caused the submit
+  //   target: HTMLFormElement
+  //   defaultPrevented: false
+  //   isTrusted: true
+  //   ... and every inherited method.
+  // useful when you're not sure what data the event carries.
+});</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'debug-4-4-3-2': `
+    <ul>
+      <li><strong><code>console.log()</code></strong> → the friendly preview; use dir when you want the raw object structure</li>
+      <li><strong><code>console.table()</code></strong> → grid view for arrays of similar objects; different visualization</li>
+      <li><strong>DOM elements</strong> → the primary use case for <code>console.dir</code></li>
+      <li><strong>Prototype chain</strong> → <code>__proto__</code> in the tree shows inherited methods</li>
+      <li><strong>DevTools Console</strong> → where the interactive tree appears</li>
+      <li><strong><code>Object.keys()</code>, <code>Object.getOwnPropertyNames()</code></strong> → programmatic alternatives when you want to list keys in code</li>
+      <li><strong><code>for...in</code></strong> → iterates enumerable properties, similar to what dir surfaces</li>
+      <li><strong>Browser APIs</strong> — <code>fetch</code>, <code>navigator</code>, <code>document</code>, <code>location</code> — all worth exploring with dir</li>
+      <li><strong>Debugging DOM</strong> → dir is the fastest way to see DOM element state</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'debug-4-4-3-3': `
+    <ul>
+      <li><code>console.log()</code></li>
+      <li><code>console.table()</code></li>
+      <li><code>Object.keys()</code></li>
+      <li><code>Object.getOwnPropertyNames()</code></li>
+      <li><code>Object.getPrototypeOf()</code></li>
+      <li>Prototype chain</li>
+      <li>DOM elements as JS objects</li>
+      <li>Debugging DOM</li>
+      <li>Debugging events</li>
+      <li>Fetch Response object</li>
+    </ul>
+  `,
 });
