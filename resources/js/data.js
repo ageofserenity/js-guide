@@ -2418,7 +2418,8 @@ methods: [
         { title: 'column number',         preview: 'Position within the line.' },
         { title: 'stack trace',           preview: 'The chain of calls that led here.' },
         { title: 'clickable links in console', preview: 'Jump to the source line.' },
-        { title: 'first error vs later errors', preview: 'The first one usually matters most.' }
+        { title: 'first error vs later errors', preview: 'The first one usually matters most.' },
+        { title: 'symptom vs cause',           preview: "Error line isn't always the bug's location." }
       ], TOPIC_CARD_CHUNKS)
     },
 
