@@ -152,20 +152,45 @@ function withCombo(lessons, comboGuide) {
 
 
 
-const METHOD_SNIPPET_REFERENCE = [
-  { title: 'What it does',                               preview: 'The rundown.' },
-  { title: 'Syntax',                                     preview: 'The actual form of syntax.' },
-  { title: 'Syntax / Parameter Details That Matter',     preview: 'The detail that make it work.' },
-  { title: 'Anatomy / Breakdown',                        preview: 'Digestive breakdown.' },
-  { title: 'What problem it solves',                     preview: 'Why its important.' },
-  { title: 'Why use it',                                 preview: 'The real reason.' },
-  { title: 'Where you use it',                           preview: 'Relative too.' },
-  { title: 'Tiny example',                               preview: 'Showcase.' },
-  { title: 'Real website use',                           preview: 'Real application.' },
-  { title: 'The part that makes it click',               preview: 'Aha moment.' },
-  { title: 'Debugging clue',                             preview: 'The Hint.' },
-  { title: 'Common mistakes',                            preview: 'Real problems.' },
-  { title: 'See also',                                   preview: 'References.' },
+const METHOD_CARD_CHUNKS = [
+  {
+    title:   'What & How',
+    preview: 'The mechanical "what does it look like".',
+    items: [
+      { title: 'What it does',                       preview: 'The rundown.' },
+      { title: 'Syntax',                             preview: 'The actual form of syntax.' },
+      { title: 'Anatomy / Breakdown',                preview: 'Digestive breakdown.' },
+      { title: 'Syntax / Parameter Details That Matter', preview: 'The details that make it work.' }
+    ]
+  },
+  {
+    title:   'Why & When',
+    preview: 'The "why does this exist" understanding.',
+    items: [
+      { title: 'Plain English explanation',          preview: 'Everyday-language framing.' },
+      { title: 'What problem it solves',             preview: "Why it's important." },
+      { title: 'Why use it',                         preview: 'The real reason.' },
+      { title: 'Where you use it',                   preview: 'When and where it fits.' }
+    ]
+  },
+  {
+    title:   'The Click',
+    preview: 'The "aha + watch out" pieces.',
+    items: [
+      { title: 'The part that makes it click',       preview: 'Aha moment.' },
+      { title: 'Debugging clue',                     preview: 'The hint.' },
+      { title: 'Common mistakes',                    preview: 'Real problems.' }
+    ]
+  },
+  {
+    title:   'In Practice',
+    preview: 'The "now use it" pieces.',
+    items: [
+      { title: 'Tiny example',                       preview: 'Small commented snippet.' },
+      { title: 'Real website use',                   preview: 'How it shows up in real apps.' },
+      { title: 'See also',                           preview: 'References.' }
+    ]
+  }
 ];
 
 /**
@@ -173,14 +198,14 @@ const METHOD_SNIPPET_REFERENCE = [
  * Each lesson gets its own copy of the card structure as Level 3.
  */
 
-function method(title, preview, concepts) {
+function method(title, preview) {
   return {
     title,
     preview,
-    items: concepts.map(([conceptTitle, conceptPreview]) => ({
-      title: conceptTitle,
-      preview: conceptPreview,
-      items: METHOD_SNIPPET_REFERENCE.map(piece => ({ ...piece }))
+    items: TOPIC_CARD_CHUNKS.map(chunk => ({
+      title:   chunk.title,
+      preview: chunk.preview,
+      items:   chunk.items.map(piece => ({ ...piece }))
     }))
   };
 }
@@ -1369,845 +1394,326 @@ const DEEP_TOPICS = {
 
  // -------- 5.1 DOM Methods --------
 
-methods: [     
-  group('5.1 DOM Methods', 'Methods used to select, create, add, remove, and update DOM elements.', [
-    method('getElementById()', 'Selects one element by its id.', [
-      ['id selection', 'Selects an element using its id name.'],
-      ['no # needed', 'Use "app", not "#app".'],
-      ['returns one element or null', 'Returns the found element, or null if no match exists.'],
-    ]),
-
-    method('querySelector()', 'Selects the first element that matches a CSS selector.', [
-      ['CSS selector string', 'Uses CSS selector syntax inside quotes.'],
-      ['.class, #id, tag', 'Can select by class, id, or tag.'],
-      ['returns first match or null', 'Returns only the first match, or null if none exists.'],
-    ]),
-
-    method('querySelectorAll()', 'Selects all elements that match a CSS selector.', [
-      ['returns NodeList', 'Returns a NodeList instead of one element.'],
-      ['multiple elements', 'Used when more than one element can match.'],
-      ['forEach on NodeList', 'NodeLists can usually be looped with forEach().'],
-    ]),
-
-    method('createElement()', 'Creates a new HTML element in JavaScript memory.', [
-      ['creates new element in memory', 'The element exists in JavaScript first.'],
-      ['does not display until appended', 'The element must be added to the DOM before it appears on the page.'],
-    ]),
-
-    method('appendChild()', 'Adds a child node to a parent element.', [
-      ['adds child element', 'Places one node inside another node.'],
-      ['moves existing node if reused', 'If the node already exists, appendChild() moves it instead of copying it.'],
-    ]),
-
-    method('append()', 'Adds nodes or strings to a parent element.', [
-      ['can append nodes', 'Can add actual DOM nodes.'],
-      ['can append strings', 'Can also add text strings directly.'],
-    ]),
-
-    method('remove()', 'Removes an element from the DOM.', [
-      ['removes element from DOM', 'Deletes the selected element from the page structure.'],
-    ]),
-
-    method('cloneNode()', 'Copies a DOM node.', [
-      ['shallow clone', 'Copies only the element itself.'],
-      ['deep clone', 'Copies the element and its children when true is passed.'],
-    ]),
-
-    method('setAttribute()', 'Adds or updates an attribute on an element.', [
-      ['add/update attribute', 'Creates an attribute if missing or changes it if it already exists.'],
-    ]),
-
-    method('getAttribute()', 'Reads an attribute value from an element.', [
-      ['read attribute', 'Gets the current value of an attribute.'],
-    ]),
-
-    method('removeAttribute()', 'Removes an attribute from an element.', [
-      ['remove attribute', 'Deletes the attribute from the element.'],
-    ]),
-
+methods: [
+  group('5.1 DOM Methods', 'Methods used to select, create, traverse, add, remove, and update DOM elements.', [
+    method('querySelector()',       'Selects the first element that matches a CSS selector.'),
+    method('querySelectorAll()',    'Selects all elements that match a CSS selector.'),
+    method('getElementById()',      'Selects one element by its id.'),
+    method('createElement()',       'Creates a new HTML element in JavaScript memory.'),
+    method('createTextNode()',      'Creates a text node that can be inserted into the DOM.'),
+    method('append()',              'Adds nodes or strings as the last children of an element.'),
+    method('appendChild()',         'Adds a child node to a parent element (older, one node only).'),
+    method('prepend()',             'Adds nodes or strings as the first children of an element.'),
+    method('insertBefore()',        'Inserts a node before a specified reference node.'),
+    method('remove()',              'Removes the element from the DOM tree.'),
+    method('cloneNode()',           'Makes a copy of a node, shallow or deep.'),
+    method('contains()',            'Checks if a node is a descendant of another node.'),
+    method('closest()',             'Finds the nearest ancestor matching a selector.'),
+    method('matches()',             'Checks if an element matches a CSS selector.'),
+    method('setAttribute()',        'Sets or replaces an attribute on an element.'),
+    method('getAttribute()',        'Reads an attribute value from an element.'),
+    method('removeAttribute()',     'Removes an attribute from an element.'),
+    method('hasAttribute()',        'Checks whether an element has a given attribute.'),
   ]),
-  
-  
+
+
   // -------- 5.2 DOM Properties --------
 
-
-  group('5.2 DOM Properties', 'Properties used to read or change DOM content, styles, classes, and values.', [
-    method('textContent', 'Reads or changes safe text content.', [
-      ['safe text changes', 'Changes text without parsing it as HTML.'],
-      ['does not parse HTML', 'HTML-like text is treated as plain text.'],
-    ]),
-
-    method('innerHTML', 'Reads or writes HTML inside an element.', [
-      ['inserts HTML', 'Can add real HTML markup into an element.'],
-      ['security warning', 'Can be unsafe if used with user input.'],
-    ]),
-
-    method('style', 'Changes inline CSS styles from JavaScript.', [
-      ['inline style changes', 'Adds styles directly on the element.'],
-      ['CSS property camelCase', 'CSS properties like background-color become backgroundColor in JS.'],
-    ]),
-
-    method('className', 'Reads or replaces the full class string.', [
-      ['replaces full class string', 'Setting className overwrites all existing classes.'],
-    ]),
-
-    method('classList', 'Adds, removes, toggles, and checks classes.', [
-      ['add()', 'Adds a class.'],
-      ['remove()', 'Removes a class.'],
-      ['toggle()', 'Turns a class on/off.'],
-      ['contains()', 'Checks if a class exists.'],
-    ]),
-
-    method('value', 'Reads or changes the value of a form input.', [
-      ['form input value', 'Gets what the user typed or selected.'],
-      ['usually string', 'Input values usually come in as strings, even when they look like numbers.'],
-    ]),
-
+  group('5.2 DOM Properties', 'Properties for reading and writing text, HTML, styles, and state on elements.', [
+    method('textContent',           "Reads or writes an element's text content, safely."),
+    method('innerText',             'Reads or writes visible text — respects styling and hidden elements.'),
+    method('innerHTML',             "Reads or writes an element's HTML content (parses HTML)."),
+    method('value',                 'Reads or writes the current value of an input, textarea, or select.'),
+    method('classList',             'A live token list for adding, removing, and toggling classes.'),
+    method('className',             'Reads or writes the full class string on an element.'),
+    method('style',                 'Reads or writes inline CSS on an element.'),
+    method('dataset',               'Reads and writes data-* attributes as an object.'),
+    method('hidden',                'Boolean property that shows or hides an element.'),
+    method('disabled',               'Boolean property for form controls to disable input.'),
+    method('checked',               'Boolean property for checkboxes and radio buttons.'),
   ]),
 
 
   // -------- 5.3 Event Methods / Properties --------
 
-
-  group('5.3 Event Methods / Properties', 'Methods and properties used to listen for and control events.', [
-    method('addEventListener()', 'Runs a function when an event happens.', [
-      ['event type string', 'The event name is written as a string like "click" or "submit".'],
-      ['callback', 'The function that runs when the event happens.'],
-      ['function reference vs call', 'Pass the function name, not the result of calling it.'],
-      ['event object', 'The browser can pass event details into the callback.'],
-    ]),
-
-    method('preventDefault()', 'Stops default browser behavior.', [
-      ['stops default browser behavior', 'Prevents actions like form reloads or link navigation.'],
-      ['forms/page refresh', 'Commonly used to stop forms from refreshing the page.'],
-    ]),
-
-    method('event.target', 'The element that triggered the event.', [
-      ['element that triggered event', 'Points to the actual element the user interacted with.'],
-    ]),
-
-    method('event.currentTarget', 'The element the listener is attached to.', [
-      ['listener element', 'Points to the element that owns the event listener.'],
-    ]),
-
-  ]),
-    
-
-// -------- 5.4 Console --------
-
-
-  group('5.4 Console', 'Console tools used to inspect values and debug JavaScript.', [
-    method('console.log()', 'Prints values to the console.', [
-      ['inspect values', 'Shows what a value is at a specific moment.'],
-    ]),
-
-    method('console.warn()', 'Prints a warning message.', [
-      ['warning messages', 'Shows a warning without stopping the program.'],
-    ]),
-
-    method('console.error()', 'Prints an error-style message.', [
-      ['error messages', 'Shows a red error-style message in the console.'],
-    ]),
-
-    method('console.table()', 'Displays arrays/objects as a table.', [
-      ['view arrays/objects as table', 'Makes structured data easier to scan.'],
-    ]),
-
-    method('console.dir()', 'Inspects object or DOM structure.', [
-      ['inspect object/DOM structure', 'Shows expandable object or DOM details.'],
-    ]),
-
-    method('typeof', 'Checks the type of a value.', [
-      ['check type', 'Returns a string like "string", "number", or "boolean".'],
-    ]),
-
-    method('debugger', 'Pauses JavaScript execution in DevTools.', [
-      ['pause execution', 'Stops code at that line when DevTools is open.'],
-    ]),
-
-  ]),
-
-  
-  // -------- 5.5 Window / Browser --------
-
-
-  group('5.5 Window / Browser', 'Browser/window tools and timing functions.', [
-    method('window.innerWidth', 'Gets the viewport width.', [
-      ['browser width', 'Returns the visible browser window width.'],
-    ]),
-
-    method('window.innerHeight', 'Gets the viewport height.', [
-      ['browser height', 'Returns the visible browser window height.'],
-    ]),
-
-    method('window.location.href', 'Reads or changes the current page URL.', [
-      ['current URL', 'Can read the current page address.'],
-      ['redirect page', 'Can send the browser to a different URL.'],
-    ]),
-
-    method('alert()', 'Shows a browser alert box.', [
-      ['message popup', 'Displays a simple message to the user.'],
-    ]),
-
-    method('confirm()', 'Shows an OK/Cancel dialog.', [
-      ['yes/no browser dialog', 'Asks the user to confirm something.'],
-      ['returns boolean', 'Returns true for OK and false for Cancel.'],
-    ]),
-
-    method('prompt()', 'Asks the user for text input.', [
-      ['browser text input', 'Shows a simple input dialog.'],
-      ['returns string or null', 'Returns typed text, or null if canceled.'],
-    ]),
-
-    method('setTimeout()', 'Runs code once after a delay.', [
-      ['delayed code', 'Waits a set amount of time before running.'],
-      ['runs once', 'Only runs one time unless called again.'],
-    ]),
-
-    method('setInterval()', 'Runs code repeatedly after a delay.', [
-      ['repeating code', 'Runs again and again at an interval.'],
-      ['must be cleared', 'Usually paired with clearInterval().'],
-    ]),
-
-    method('clearTimeout()', 'Cancels a timeout before it runs.', [
-      ['cancel delayed code', 'Stops a setTimeout if it has not run yet.'],
-    ]),
-
-    method('clearInterval()', 'Stops a repeating interval.', [
-      ['stop repeated code', 'Cancels a setInterval loop.'],
-    ]),
-
+  group('5.3 Event Methods / Properties', 'Methods and properties used to attach, describe, and control events.', [
+    method('addEventListener()',    'Attaches an event handler to an element.'),
+    method('removeEventListener()', 'Detaches an event handler previously attached.'),
+    method('event.target',          'The element that originally fired the event.'),
+    method('event.currentTarget',   'The element the listener is attached to.'),
+    method('event.type',            'The name of the event that was fired.'),
+    method('event.key',             'The key pressed on keyboard events.'),
+    method('event.preventDefault()',"Stops the browser's default action for the event."),
+    method('event.stopPropagation()','Stops the event from bubbling further up the tree.'),
+    method('dispatchEvent()',       'Fires a custom or synthetic event on an element.'),
+    method('new CustomEvent()',     'Creates a custom event object that can carry a payload.'),
   ]),
 
 
-  // -------- 5.6 Storage --------
+  // -------- 5.4 Window / Browser --------
 
-
-  group('5.6 Storage', 'Browser storage methods for saving and reading data.', [
-    method('localStorage.setItem()', 'Saves a value in localStorage.', [
-      ['save key/value pair', 'Stores data using a key name and string value.'],
-      ['persists after reload', 'Data stays after the page refreshes.'],
-    ]),
-
-    method('localStorage.getItem()', 'Reads a value from localStorage.', [
-      ['read by key', 'Gets the value stored under a key.'],
-      ['returns string or null', 'Returns a string, or null if the key does not exist.'],
-    ]),
-
-    method('localStorage.removeItem()', 'Removes one item from localStorage.', [
-      ['remove by key', 'Deletes a single stored value.'],
-    ]),
-
-    method('localStorage.clear()', 'Clears all localStorage data for the site.', [
-      ['clear all storage', 'Deletes every localStorage key for this origin.'],
-    ]),
-
-    method('sessionStorage.setItem()', 'Saves a value for the current browser tab session.', [
-      ['session-only save', 'Stores data until the tab/session ends.'],
-    ]),
-
-    method('sessionStorage.getItem()', 'Reads a value from sessionStorage.', [
-      ['read session data', 'Gets a session value by key.'],
-    ]),
-
+  group('5.4 Window / Browser', 'Browser-provided properties and methods for URL, size, scroll, timing, and dialogs.', [
+    method('window.location.href',      'The full URL of the current page.'),
+    method('window.location.pathname',  'The path portion of the current URL.'),
+    method('window.location.search',    'The query string of the current URL.'),
+    method('window.location.hash',      'The anchor portion of the current URL.'),
+    method('window.location.reload()',  'Reloads the current page.'),
+    method('window.innerWidth',         'The viewport width in pixels.'),
+    method('window.innerHeight',        'The viewport height in pixels.'),
+    method('window.scrollTo()',         'Scrolls the window to a given position.'),
+    method('window.scrollY',            'The current vertical scroll position.'),
+    method('setTimeout()',              'Runs a function once after a delay.'),
+    method('clearTimeout()',            'Cancels a scheduled setTimeout.'),
+    method('setInterval()',             'Runs a function repeatedly at a given interval.'),
+    method('clearInterval()',           'Cancels a running setInterval.'),
+    method('requestAnimationFrame()',   'Schedules a callback for the next animation frame.'),
+    method('alert()',                   'Shows a blocking dialog with a message.'),
+    method('confirm()',                 'Shows a blocking OK/Cancel dialog.'),
+    method('prompt()',                  'Shows a blocking dialog that asks for input.'),
   ]),
 
 
-  // -------- 5.7 Array Methods --------
+  // -------- 5.5 Storage --------
 
-
-  group('5.7 Array Methods', 'Methods used to add, remove, search, loop, transform, and sort arrays.', [
-    method('push()', 'Adds item(s) to the end of an array.', [
-      ['adds to end', 'Places new items after the last item.'],
-      ['mutates original array', 'Changes the original array.'],
-      ['returns new length', 'Returns a number, not the array.'],
-    ]),
-
-    method('pop()', 'Removes the last item from an array.', [
-      ['removes from end', 'Takes off the last item.'],
-      ['returns removed item', 'Gives back the item that was removed.'],
-    ]),
-
-    method('shift()', 'Removes the first item from an array.', [
-      ['removes from start', 'Takes off the first item.'],
-      ['returns removed item', 'Gives back the removed first item.'],
-    ]),
-
-    method('unshift()', 'Adds item(s) to the start of an array.', [
-      ['adds to start', 'Places new items before the first item.'],
-      ['returns new length', 'Returns the updated array length.'],
-    ]),
-
-    method('slice()', 'Copies part of an array.', [
-      ['copies a portion', 'Returns selected items from the array.'],
-      ['does not mutate original', 'Leaves the original array unchanged.'],
-    ]),
-
-    method('splice()', 'Adds/removes items at a specific index.', [
-      ['changes array at index', 'Can remove or insert items in the middle.'],
-      ['mutates original array', 'Changes the original array.'],
-    ]),
-
-    method('map()', 'Creates a new array by transforming every item.', [
-      ['transforms every item', 'Runs a callback for each item.'],
-      ['returns new array', 'Does not change the original array.'],
-    ]),
-
-    method('filter()', 'Creates a new array with only matching items.', [
-      ['keeps matching items', 'Callback returns true to keep an item.'],
-      ['returns new array', 'Original array stays unchanged.'],
-    ]),
-
-    method('reduce()', 'Combines array items into one final value.', [
-      ['accumulator', 'Carries the running result.'],
-      ['returns one value', 'Often used for totals or summaries.'],
-    ]),
-
-    method('forEach()', 'Runs a function once for each array item.', [
-      ['loops array items', 'Runs callback for every item.'],
-      ['does not return new array', 'Used for side effects like rendering/logging.'],
-    ]),
-
-    method('includes()', 'Checks whether an array contains a value.', [
-      ['checks for value', 'Returns true if the value exists.'],
-      ['returns boolean', 'Gives true or false.'],
-    ]),
-
-    method('indexOf()', 'Finds the index of a value in an array.', [
-      ['returns index', 'Returns the position of the first match.'],
-      ['returns -1 if missing', '-1 means the value was not found.'],
-    ]),
-
-    method('find()', 'Returns the first item that matches a condition.', [
-      ['first matching item', 'Stops at the first true callback result.'],
-      ['returns item or undefined', 'Gives the item, or undefined if none match.'],
-    ]),
-
-    method('findIndex()', 'Returns the index of the first matching item.', [
-      ['first matching index', 'Finds the position of the first match.'],
-      ['returns -1 if missing', '-1 means no item matched.'],
-    ]),
-
-    method('sort()', 'Sorts array items.', [
-      ['sorts in place', 'Mutates the original array.'],
-      ['compare function', 'Needed for reliable number/object sorting.'],
-    ]),
-
-    method('reverse()', 'Reverses the order of array items.', [
-      ['reverses in place', 'Mutates the original array.'],
-      ['last becomes first', 'Changes item order from end-to-start.'],
-    ]),
-
-  ]),
-  
-  
-  // -------- 5.8 String Methods / Properties / Syntax Tools --------
-
-
-  group('5.8 String Methods / Properties / Syntax Tools', 'Tools for reading, checking, changing, and building strings.', [
-    method('length', 'Gets the number of characters in a string.', [
-      ['character count', 'Counts characters in the string.'],
-      ['property not method', 'Use .length, not .length().'],
-    ]),
-
-    method('charAt()', 'Gets the character at a specific index.', [
-      ['index-based character', 'Reads one character at a position.'],
-      ['index starts at 0', 'The first character is index 0.'],
-    ]),
-
-    method('includes()', 'Checks whether a string contains text.', [
-      ['search text', 'Checks if one string appears inside another.'],
-      ['case sensitive', 'Uppercase/lowercase matters.'],
-    ]),
-
-    method('indexOf()', 'Finds the index of text inside a string.', [
-      ['returns index', 'Returns where the match starts.'],
-      ['returns -1 if missing', '-1 means not found.'],
-    ]),
-
-    method('slice()', 'Copies part of a string.', [
-      ['extract substring', 'Returns part of the string.'],
-      ['does not change original', 'Strings are not mutated.'],
-    ]),
-
-    method('substring()', 'Returns part of a string between indexes.', [
-      ['extract substring', 'Gets characters between two indexes.'],
-    ]),
-
-    method('toLowerCase()', 'Converts string to lowercase.', [
-      ['lowercase version', 'Returns a lowercase string.'],
-      ['useful for comparisons', 'Helps make search/checks case-insensitive.'],
-    ]),
-
-    method('toUpperCase()', 'Converts string to uppercase.', [
-      ['uppercase version', 'Returns an uppercase string.'],
-    ]),
-
-    method('trim()', 'Removes whitespace from both ends of a string.', [
-      ['remove edge spaces', 'Removes spaces before/after text.'],
-      ['form validation helper', 'Useful before checking empty input.'],
-    ]),
-
-    method('replace()', 'Replaces matching text.', [
-      ['replace first match', 'By default replaces the first match.'],
-      ['can use RegExp', 'Can replace patterns with regular expressions.'],
-    ]),
-
-    method('split()', 'Splits a string into an array.', [
-      ['string to array', 'Breaks text into pieces.'],
-      ['separator matters', 'The separator decides where to split.'],
-    ]),
-
-    method('startsWith()', 'Checks whether a string starts with specific text.', [
-      ['checks beginning', 'Returns true if string starts with given text.'],
-    ]),
-
-    method('endsWith()', 'Checks whether a string ends with specific text.', [
-      ['checks ending', 'Returns true if string ends with given text.'],
-    ]),
-
-    method('repeat()', 'Repeats a string a number of times.', [
-      ['repeat text', 'Creates a new string by repeating the original.'],
-    ]),
-
-    method('template literals', 'Strings written with backticks.', [
-      ['backticks', 'Use ` instead of quotes.'],
-      ['supports interpolation', 'Can insert values with ${}.'],
-      ['supports multiline strings', 'Can span multiple lines.'],
-    ]),
-
-    method('${} interpolation', 'Inserts values inside template literals.', [
-      ['only works in backticks', 'Does not work inside single/double quotes.'],
-      ['dynamic strings', 'Useful for messages, HTML strings, and UI text.'],
-    ]),
-
-  ]),
-
-  
-  // -------- 5.9 Object Methods --------
-   
-  
-  group('5.9 Object Methods', 'Methods for reading, copying, freezing, and checking objects.', [
-    method('Object.keys()', 'Returns an array of object keys.', [
-      ['keys as array', 'Gets property names.'],
-    ]),
-
-    method('Object.values()', 'Returns an array of object values.', [
-      ['values as array', 'Gets property values.'],
-    ]),
-
-    method('Object.entries()', 'Returns an array of key/value pairs.', [
-      ['entries as pairs', 'Returns arrays like [key, value].'],
-    ]),
-
-    method('Object.assign()', 'Copies properties from one object into another.', [
-      ['copy properties', 'Copies enumerable properties.'],
-      ['mutates target object', 'The first object receives the copied properties.'],
-    ]),
-
-    method('Object.freeze()', 'Prevents changes to an object.', [
-      ['freeze object', 'Prevents adding, removing, or changing properties.'],
-      ['shallow freeze', 'Nested objects can still change unless also frozen.'],
-    ]),
-
-    method('Object.seal()', 'Prevents adding/removing properties but allows changes.', [
-      ['seal object shape', 'Keeps existing properties but prevents new/deleted ones.'],
-    ]),
-
-    method('Object.is()', 'Compares whether two values are the same value.', [
-      ['same-value comparison', 'Similar to strict equality with special edge cases.'],
-    ]),
-
+  group('5.5 Storage', 'Persistent and session-only storage APIs built into the browser.', [
+    method('localStorage.setItem()',    'Saves a string value under a key.'),
+    method('localStorage.getItem()',    'Reads a stored value by key.'),
+    method('localStorage.removeItem()', 'Removes a stored value by key.'),
+    method('localStorage.clear()',      'Clears all stored values for the origin.'),
+    method('sessionStorage.setItem()',  'Saves a value that lasts only for the session.'),
+    method('sessionStorage.getItem()',  'Reads a session-stored value by key.'),
   ]),
 
 
-  // -------- 5.10 Number / Math --------
+  // -------- 5.6 Array Methods --------
 
-
-  group('5.10 Number / Math', 'Number conversion, formatting, checking, and Math tools.', [
-    method('Number.parseInt()', 'Parses an integer from a string.', [
-      ['string to whole number', 'Converts leading numeric text into an integer.'],
-    ]),
-
-    method('Number.parseFloat()', 'Parses a decimal number from a string.', [
-      ['string to decimal number', 'Converts numeric text into a floating-point number.'],
-    ]),
-
-    method('toFixed()', 'Formats a number with fixed decimal places.', [
-      ['decimal formatting', 'Controls how many decimals show.'],
-      ['returns string', 'Important: output is a string, not a number.'],
-    ]),
-
-    method('toString()', 'Converts a value to a string.', [
-      ['number to string', 'Turns a number into text.'],
-    ]),
-
-    method('Number.isInteger()', 'Checks whether a value is an integer.', [
-      ['whole number check', 'Returns true for whole numbers.'],
-    ]),
-
-    method('Number.isNaN()', 'Checks whether a value is NaN.', [
-      ['NaN check', 'Checks for the special Not-a-Number value.'],
-    ]),
-
-    method('Number.isFinite()', 'Checks whether a value is a finite number.', [
-      ['finite number check', 'Returns false for Infinity, -Infinity, and NaN.'],
-    ]),
-
-    method('Math.round()', 'Rounds to the nearest integer.', [
-      ['nearest whole number', 'Rounds up or down based on decimal value.'],
-    ]),
-
-    method('Math.ceil()', 'Rounds up to the next integer.', [
-      ['round up', 'Always rounds toward the next higher integer.'],
-    ]),
-
-    method('Math.floor()', 'Rounds down to the previous integer.', [
-      ['round down', 'Always rounds toward the lower integer.'],
-    ]),
-
-    method('Math.max()', 'Returns the largest number.', [
-      ['largest value', 'Finds the highest number from arguments.'],
-    ]),
-
-    method('Math.min()', 'Returns the smallest number.', [
-      ['smallest value', 'Finds the lowest number from arguments.'],
-    ]),
-
-    method('Math.random()', 'Returns a random decimal from 0 up to 1.', [
-      ['random decimal', 'Returns a number >= 0 and < 1.'],
-      ['combine with Math.floor', 'Used to make random indexes or whole numbers.'],
-    ]),
-
-    method('Math.sqrt()', 'Returns the square root of a number.', [
-      ['square root', 'Finds what number times itself equals the input.'],
-    ]),
-
-    method('Math.pow()', 'Raises a number to a power.', [
-      ['exponent math', 'Calculates base to exponent.'],
-      ['similar to **', 'Math.pow(2, 3) is similar to 2 ** 3.'],
-    ]),
-
+  group('5.6 Array Methods', 'Methods to add, remove, search, transform, and iterate arrays.', [
+    method('push()',                'Adds one or more items to the end of an array.'),
+    method('pop()',                 'Removes and returns the last item of an array.'),
+    method('unshift()',             'Adds one or more items to the start of an array.'),
+    method('shift()',               'Removes and returns the first item of an array.'),
+    method('splice()',              'Removes, replaces, or inserts items at any position.'),
+    method('slice()',               'Returns a shallow copy of a portion of an array.'),
+    method('concat()',              'Merges arrays or values into a new array.'),
+    method('flat()',                'Flattens nested arrays by a given depth.'),
+    method('flatMap()',             'Maps values and flattens the result by one level.'),
+    method('includes()',            'Checks if the array contains a value.'),
+    method('indexOf()',             'Finds the first index of a value, or -1.'),
+    method('lastIndexOf()',         'Finds the last index of a value, or -1.'),
+    method('find()',                'Returns the first matching element, or undefined.'),
+    method('findIndex()',           'Returns the first matching index, or -1.'),
+    method('findLast()',            'Returns the last matching element, or undefined.'),
+    method('findLastIndex()',       'Returns the last matching index, or -1.'),
+    method('forEach()',             'Runs a function for each item, no return value.'),
+    method('map()',                 'Creates a new array with the results of a function.'),
+    method('filter()',              'Creates a new array of items that pass a test.'),
+    method('reduce()',              'Reduces an array to a single value.'),
+    method('some()',                'True if any item passes a test.'),
+    method('every()',               'True if every item passes a test.'),
+    method('sort()',                'Sorts the array in place with an optional comparator.'),
+    method('reverse()',             'Reverses the array in place.'),
+    method('at()',                  'Reads an element by index, supports negative values.'),
+    method('Array.from()',          'Creates a new array from an iterable or array-like.'),
+    method('Array.isArray()',       'Returns true if a value is an array.'),
   ]),
 
 
-  // -------- 5.11 Date --------
+  // -------- 5.7 String Methods / Properties / Syntax Tools --------
 
-
-  group('5.11 Date', 'Date objects and date/time reading/formatting methods.', [
-    method('new Date()', 'Creates a Date object.', [
-      ['current date/time', 'Without arguments, creates now.'],
-    ]),
-
-    method('getFullYear()', 'Gets the four-digit year.', [
-      ['year value', 'Returns values like 2026.'],
-    ]),
-
-    method('getMonth()', 'Gets the month index.', [
-      ['month index', 'Returns 0 for January and 11 for December.'],
-      ['common confusion', 'Month is zero-based.'],
-    ]),
-
-    method('getDate()', 'Gets the day of the month.', [
-      ['day of month', 'Returns 1 through 31.'],
-      ['not day of week', 'Different from getDay().'],
-    ]),
-
-    method('getDay()', 'Gets the day of the week index.', [
-      ['weekday index', 'Returns 0 for Sunday through 6 for Saturday.'],
-    ]),
-
-    method('getHours()', 'Gets the hour.', [
-      ['hour value', 'Returns 0 through 23.'],
-    ]),
-
-    method('getMinutes()', 'Gets the minutes.', [
-      ['minute value', 'Returns 0 through 59.'],
-    ]),
-
-    method('getSeconds()', 'Gets the seconds.', [
-      ['second value', 'Returns 0 through 59.'],
-    ]),
-
-    method('toISOString()', 'Formats a date as an ISO string.', [
-      ['standard date string', 'Creates a format like 2026-04-29T...Z.'],
-      ['UTC output', 'Uses UTC time, not local time.'],
-    ]),
-
-    method('toLocaleDateString()', 'Formats date for the user locale.', [
-      ['localized date', 'Formats date based on locale/settings.'],
-    ]),
-
-    method('toLocaleTimeString()', 'Formats time for the user locale.', [
-      ['localized time', 'Formats time based on locale/settings.'],
-    ]),
-
+  group('5.7 String Methods / Properties / Syntax Tools', 'Ways to inspect, transform, search, and format strings.', [
+    method('length',                'The number of characters in a string.'),
+    method('charAt()',              'Returns the character at a given index.'),
+    method('at()',                  'Returns the character at an index, supports negatives.'),
+    method('charCodeAt()',          'Returns the UTF-16 code unit at an index.'),
+    method('slice()',               'Returns a substring between two indices.'),
+    method('substring()',           'Returns a substring between two indices (no negatives).'),
+    method('toLowerCase()',         'Returns the string in lowercase.'),
+    method('toUpperCase()',         'Returns the string in uppercase.'),
+    method('trim()',                'Removes whitespace from both ends of a string.'),
+    method('trimStart()',           'Removes whitespace from the start of a string.'),
+    method('trimEnd()',             'Removes whitespace from the end of a string.'),
+    method('includes()',            'Checks if a string contains a substring.'),
+    method('indexOf()',             'Finds the first index of a substring, or -1.'),
+    method('lastIndexOf()',         'Finds the last index of a substring, or -1.'),
+    method('startsWith()',          'True if the string begins with a substring.'),
+    method('endsWith()',            'True if the string ends with a substring.'),
+    method('replace()',             'Replaces the first match with a new value.'),
+    method('replaceAll()',          'Replaces all matches with a new value.'),
+    method('split()',               'Splits a string into an array by a separator.'),
+    method('repeat()',              'Repeats the string a given number of times.'),
+    method('padStart()',            'Pads the string from the start to a target length.'),
+    method('padEnd()',              'Pads the string from the end to a target length.'),
+    method('template literals',     'Backtick strings that allow multiline text and interpolation.'),
+    method('${} interpolation',      'Embeds expressions inside a template literal.'),
   ]),
 
 
-  // -------- 5.12 JSON --------
+  // -------- 5.8 Object Methods --------
 
-
-  group('5.12 JSON', 'Tools for converting between JavaScript values and JSON strings.', [
-    method('JSON.parse()', 'Converts JSON text into JavaScript data.', [
-      ['JSON string to JS value', 'Turns text into arrays/objects/values.'],
-      ['valid JSON syntax', 'Input must be valid JSON.'],
-      ['try/catch around parse', 'Invalid JSON can throw an error.'],
-    ]),
-
-    method('JSON.stringify()', 'Converts JavaScript data into JSON text.', [
-      ['JS value to JSON string', 'Turns arrays/objects into text.'],
-      ['needed for storage', 'localStorage can only store strings.'],
-    ]),
-
-  ]),
-
-  
-  // -------- 5.13 RegExp --------
-
-
-  group('5.13 RegExp', 'Regular expression tools for matching, searching, and replacing patterns.', [
-    method('test()', 'Checks whether a pattern matches a string.', [
-      ['returns boolean', 'Returns true or false.'],
-      ['pattern check', 'Useful for validation checks.'],
-    ]),
-
-    method('exec()', 'Runs a regex search and returns match details.', [
-      ['match details', 'Returns match information or null.'],
-    ]),
-
-    method('match()', 'Finds matches in a string.', [
-      ['string method', 'Called on a string with a regex.'],
-    ]),
-
-    method('replace()', 'Replaces matching text.', [
-      ['replace pattern', 'Can replace regex matches.'],
-    ]),
-
-    method('search()', 'Finds the index of a regex match.', [
-      ['match index', 'Returns where the match starts.'],
-    ]),
-
-    method('split()', 'Splits a string using a pattern.', [
-      ['split by pattern', 'Can split text using regex rules.'],
-    ]),
-
-    method('flags: i, g', 'Common regex flags.', [
-      ['i flag', 'Makes matching case-insensitive.'],
-      ['g flag', 'Finds all matches instead of only first match.'],
-    ]),
-
-    method('basic pattern explanation', 'Intro to regex pattern meaning.', [
-      ['pattern syntax', 'Regex patterns describe what text to match.'],
-    ]),
-
+  group('5.8 Object Methods', 'Methods for inspecting, copying, merging, and locking objects.', [
+    method('Object.keys()',         "Returns an array of an object's own keys."),
+    method('Object.values()',       "Returns an array of an object's own values."),
+    method('Object.entries()',      'Returns an array of [key, value] pairs.'),
+    method('Object.fromEntries()',  'Builds an object from an array of [key, value] pairs.'),
+    method('Object.assign()',       'Copies properties from source objects into a target.'),
+    method('structuredClone()',     'Deep-clones a value including nested objects and arrays.'),
+    method('Object.hasOwn()',       'Modern check for whether an object has its own property.'),
+    method('Object.freeze()',       'Makes an object immutable (shallow).'),
+    method('Object.isFrozen()',     'Returns true if an object is frozen.'),
+    method('Object.seal()',         'Prevents adding or removing properties.'),
+    method('Object.isSealed()',     'Returns true if an object is sealed.'),
+    method('Object.is()',           'Strict equality that treats NaN and -0 correctly.'),
+    method('spread {...obj}',       'Copies or merges object properties into a new object.'),
   ]),
 
 
-  // -------- 5.14 Promise / Async --------
+  // -------- 5.9 Number / Math --------
 
-
-  group('5.14 Promise / Async', 'Promise and async/await tools for code that takes time.', [
-    method('Promise', 'Represents a future value.', [
-      ['future value', 'A value that may arrive later.'],
-      ['pending/fulfilled/rejected', 'Promises move through states.'],
-    ]),
-
-    method('Promise.resolve()', 'Creates an already fulfilled promise.', [
-      ['fulfilled promise', 'Wraps a value in a resolved Promise.'],
-    ]),
-
-    method('Promise.reject()', 'Creates an already rejected promise.', [
-      ['rejected promise', 'Creates a promise that failed.'],
-    ]),
-
-    method('Promise.all()', 'Waits for all promises to finish successfully.', [
-      ['multiple promises', 'Runs several async operations together.'],
-      ['fails if one rejects', 'Rejects when any included promise rejects.'],
-    ]),
-
-    method('Promise.race()', 'Settles when the first promise settles.', [
-      ['first finished wins', 'Uses the first fulfilled or rejected promise.'],
-    ]),
-
-    method('then()', 'Runs after a promise fulfills.', [
-      ['success handler', 'Receives the resolved value.'],
-    ]),
-
-    method('catch()', 'Runs after a promise rejects.', [
-      ['error handler', 'Receives the error/rejection.'],
-    ]),
-
-    method('finally()', 'Runs after a promise settles either way.', [
-      ['always runs', 'Runs after fulfilled or rejected.'],
-      ['cleanup use', 'Useful for removing loading states.'],
-    ]),
-
-    method('async', 'Marks a function as asynchronous.', [
-      ['async function', 'Always returns a promise.'],
-      ['enables await', 'Lets you use await inside the function.'],
-    ]),
-
-    method('await', 'Waits for a promise inside an async function.', [
-      ['wait for result', 'Pauses until promise resolves/rejects.'],
-      ['only inside async', 'Must be used inside an async function or module context.'],
-    ]),
-
-    method('fetch()', 'Makes a network request.', [
-      ['API request', 'Requests data from a URL.'],
-      ['returns promise', 'You usually await the response.'],
-    ]),
-
-    method('response.json()', 'Reads response body as JSON.', [
-      ['parse response body', 'Turns response body into JS data.'],
-      ['must await', 'response.json() also returns a promise.'],
-    ]),
-
-    method('try/catch', 'Handles errors in async/await code.', [
-      ['catch async errors', 'Catches rejected promises when using await.'],
-    ]),
-
+  group('5.9 Number / Math', 'Number parsing, checks, formatting, and Math operations.', [
+    method('Number()',              'Converts a value to a number.'),
+    method('Number.parseInt()',     'Parses an integer from a string.'),
+    method('Number.parseFloat()',   'Parses a floating-point number from a string.'),
+    method('toFixed()',             'Formats a number to a fixed number of decimals.'),
+    method('toString()',            'Converts a number to a string.'),
+    method('toLocaleString()',      'Formats a number using locale rules.'),
+    method('Number.isInteger()',    'True if a value is an integer.'),
+    method('Number.isSafeInteger()','True if a value is a safe integer.'),
+    method('Number.isNaN()',        'True if a value is exactly NaN.'),
+    method('Number.isFinite()',     'True if a value is a finite number.'),
+    method('Math.round()',          'Rounds to the nearest integer.'),
+    method('Math.ceil()',           'Rounds up to the next integer.'),
+    method('Math.floor()',          'Rounds down to the previous integer.'),
+    method('Math.trunc()',          'Removes the decimal part of a number.'),
+    method('Math.sign()',           "Returns -1, 0, or 1 for a number's sign."),
+    method('Math.abs()',            'Returns the absolute value of a number.'),
+    method('Math.max()',            'Returns the largest of its arguments.'),
+    method('Math.min()',            'Returns the smallest of its arguments.'),
+    method('Math.random()',         'Returns a random number between 0 and 1.'),
+    method('Math.sqrt()',           'Returns the square root of a number.'),
+    method('Math.pow()',            'Returns a base raised to an exponent.'),
   ]),
 
 
-  // -------- 5.15 Set / Map --------
+  // -------- 5.10 Date --------
 
-
-  group('5.15 Set / Map', 'Set and Map collections for unique values and key/value data.', [
-    method('Set', 'A collection of unique values.', [
-      ['unique values', 'A Set keeps only one copy of each value.'],
-    ]),
-
-    method('Set.add()', 'Adds a value to a Set.', [
-      ['add unique value', 'Adds the value if it is not already present.'],
-    ]),
-
-    method('Set.has()', 'Checks whether a Set contains a value.', [
-      ['membership check', 'Returns true if the value exists.'],
-    ]),
-
-    method('Set.delete()', 'Removes a value from a Set.', [
-      ['delete value', 'Removes the value if present.'],
-    ]),
-
-    method('Set.clear()', 'Removes all values from a Set.', [
-      ['clear all values', 'Empties the entire Set.'],
-    ]),
-
-    method('Set.forEach()', 'Runs a function for each Set value.', [
-      ['loop set values', 'Runs callback once per value.'],
-    ]),
-
-    method('Map', 'A key/value collection.', [
-      ['key/value pairs', 'Stores values using keys.'],
-      ['keys can be many types', 'Unlike plain objects, keys do not have to be strings.'],
-    ]),
-
-    method('Map.set()', 'Adds or updates a key/value pair.', [
-      ['set key value', 'Creates or updates a value under a key.'],
-    ]),
-
-    method('Map.get()', 'Reads a value by key.', [
-      ['get by key', 'Returns the value for the key.'],
-      ['undefined if missing', 'Returns undefined when key is not found.'],
-    ]),
-
-    method('Map.has()', 'Checks whether a key exists.', [
-      ['key exists check', 'Returns true if the key exists.'],
-    ]),
-
-    method('Map.delete()', 'Removes a key/value pair.', [
-      ['delete by key', 'Removes one entry.'],
-    ]),
-
-    method('Map.clear()', 'Removes all entries from a Map.', [
-      ['clear all entries', 'Empties the whole Map.'],
-    ]),
-
-    method('Map.forEach()', 'Runs a function for each Map entry.', [
-      ['loop map entries', 'Runs callback for each value/key pair.'],
-    ]),
-
-    method('Map.keys()', 'Returns an iterator of Map keys.', [
-      ['key iterator', 'Lets you loop over keys.'],
-    ]),
-
-    method('Map.values()', 'Returns an iterator of Map values.', [
-      ['value iterator', 'Lets you loop over values.'],
-    ]),
-
-    method('Map.entries()', 'Returns an iterator of key/value pairs.', [
-      ['entry iterator', 'Loops over [key, value] pairs.'],
-    ]),
-
+  group('5.10 Date', 'Creating dates, reading parts, and formatting.', [
+    method('new Date()',            'Creates a Date object for the current or a given time.'),
+    method('Date.now()',            'Returns the current timestamp in milliseconds.'),
+    method('getFullYear()',         'Returns the 4-digit year.'),
+    method('getMonth()',            'Returns the month, zero-indexed.'),
+    method('getDate()',             'Returns the day of the month.'),
+    method('getDay()',              'Returns the day of the week, 0 for Sunday.'),
+    method('getHours()',            'Returns the hour, 0 to 23.'),
+    method('getMinutes()',          'Returns the minute, 0 to 59.'),
+    method('getSeconds()',          'Returns the second, 0 to 59.'),
+    method('getTime()',             'Returns the timestamp of a Date in milliseconds.'),
+    method('toISOString()',         'Returns the date as an ISO string.'),
+    method('toLocaleDateString()',  "Returns the date formatted for the user's locale."),
+    method('toLocaleTimeString()',  "Returns the time formatted for the user's locale."),
+    method('toLocaleString()',      "Returns date and time formatted for the user's locale."),
   ]),
 
-                        
 
-  // -------- 5.16 Special / Advanced --------
+  // -------- 5.11 JSON --------
+
+  group('5.11 JSON', 'Convert JavaScript values to and from JSON strings.', [
+    method('JSON.parse()',          'Parses a JSON string into a JavaScript value.'),
+    method('JSON.stringify()',      'Converts a JavaScript value to a JSON string.'),
+  ]),
 
 
-  group('5.16 Special / Advanced', 'Advanced and special JavaScript/browser tools to know exist.', [
-    method('Symbol', 'Creates a unique primitive value.', [
-      ['unique identifier', 'Each Symbol is unique.'],
-    ]),
+  // -------- 5.12 RegExp --------
 
-    method('Error', 'Base error object.', [
-      ['error object', 'Represents something that went wrong.'],
-    ]),
+  group('5.12 RegExp', 'Regular expressions for matching, searching, and replacing text patterns.', [
+    method('regex creation',        'Creating regexes with literals or new RegExp().'),
+    method('basic pattern explanation','A quick overview of common pattern parts.'),
+    method('flags: i, g, m, s',     'Common regex flags and what they change.'),
+    method('test()',                'True if the pattern matches anywhere in a string.'),
+    method('exec()',                'Returns match info or null.'),
+    method('match()',               'Returns matches from a string, or null.'),
+    method('matchAll()',            'Returns all matches with capture groups as an iterator.'),
+    method('replace()',             'Replaces the first match with new text.'),
+    method('replaceAll()',          'Replaces every match with new text.'),
+    method('search()',              'Returns the index of the first match, or -1.'),
+    method('split()',               'Splits a string using a regex.'),
+    method('capture groups',        'Extract parts of a match with () or (?<name>).'),
+  ]),
 
-    method('TypeError', 'Error for wrong value/type usage.', [
-      ['wrong type error', 'Happens when a value is used in an invalid way.'],
-    ]),
 
-    method('ReferenceError', 'Error for missing or inaccessible variables.', [
-      ['missing reference', 'Happens when something is not defined.'],
-    ]),
+  // -------- 5.13 Promise / Async --------
 
-    method('ArrayBuffer', 'Raw binary data buffer.', [
-      ['binary data', 'Stores raw bytes.'],
-    ]),
+  group('5.13 Promise / Async', 'Promises, async/await, and fetch for asynchronous code.', [
+    method('Promise',                   'A value that will resolve or reject later.'),
+    method('Promise.resolve()',         'Creates a resolved promise.'),
+    method('Promise.reject()',          'Creates a rejected promise.'),
+    method('then()',                    'Runs a callback when a promise resolves.'),
+    method('catch()',                   'Runs a callback when a promise rejects.'),
+    method('finally()',                 'Runs a callback whether it resolves or rejects.'),
+    method('Promise.all()',             'Waits for all promises; fails fast on rejection.'),
+    method('Promise.allSettled()',      'Waits for all promises and reports each result.'),
+    method('Promise.race()',            'Resolves or rejects with the first settled promise.'),
+    method('Promise.any()',             'Resolves with the first fulfilled promise.'),
+    method('async',                     'Marks a function as returning a promise.'),
+    method('await',                     'Pauses async code until a promise settles.'),
+    method('try/catch',                 'Catches errors from awaited code.'),
+    method('fetch()',                   'Sends an HTTP request and returns a promise.'),
+    method('response.ok',               'True if the response status is 200 to 299.'),
+    method('response.status',           'The HTTP status code of the response.'),
+    method('response.json()',           'Parses the response body as JSON.'),
+    method('response.text()',           'Reads the response body as text.'),
+    method('AbortController',           'Cancels fetch and other async operations.'),
+  ]),
 
-    method('Uint8Array', 'Typed array for 8-bit unsigned integers.', [
-      ['typed array', 'Works with binary byte values.'],
-    ]),
 
-    method('Float32Array', 'Typed array for 32-bit floating point numbers.', [
-      ['typed array', 'Stores 32-bit decimal-like numbers.'],
-    ]),
+  // -------- 5.14 Set / Map --------
 
-    method('Intl.NumberFormat()', 'Formats numbers for locales.', [
-      ['localized number formatting', 'Formats numbers based on language/region.'],
-    ]),
+  group('5.14 Set / Map', 'Collections for unique values and keyed pairs.', [
+    method('Set',                   'A collection of unique values.'),
+    method('Set.size',              'The number of items in a Set.'),
+    method('Set.add()',             'Adds a value to a Set.'),
+    method('Set.has()',             'True if the value is in the Set.'),
+    method('Set.delete()',          'Removes a value from a Set.'),
+    method('Set.clear()',           'Removes all values from a Set.'),
+    method('Set.forEach()',         "Iterates over a Set's values."),
+    method('Map',                   'A collection of keyed values.'),
+    method('Map.size',              'The number of entries in a Map.'),
+    method('Map.set()',             'Adds or updates a key/value pair.'),
+    method('Map.get()',             'Reads a value by key.'),
+    method('Map.has()',             'True if the key exists in the Map.'),
+    method('Map.delete()',          'Removes a key/value pair.'),
+    method('Map.clear()',           'Removes all entries from a Map.'),
+    method('Map.forEach()',         "Iterates over a Map's entries."),
+    method('Map.keys()',            'Returns an iterator of the keys.'),
+    method('Map.values()',          'Returns an iterator of the values.'),
+    method('Map.entries()',         'Returns an iterator of [key, value] pairs.'),
+  ]),
 
-    method('Intl.DateTimeFormat()', 'Formats dates/times for locales.', [
-      ['localized date formatting', 'Formats date/time based on language/region.'],
-    ]),
 
-    method('URL', 'Represents and works with URLs.', [
-      ['URL object', 'Parses and manages URL parts.'],
-    ]),
+  // -------- 5.15 Special / Advanced --------
 
-    method('URLSearchParams / searchParams', 'Reads and updates query parameters.', [
-      ['query string tools', 'Works with values after ? in a URL.'],
-    ]),
-
-    method('Canvas', 'HTML canvas drawing surface.', [
-      ['drawing area', 'Canvas lets JS draw pixels/shapes/images.'],
-    ]),
-
-    method('getContext("2d")', 'Gets the 2D drawing context from a canvas.', [
-      ['2D drawing API', 'Returns methods for drawing shapes, text, and images.'],
-    ]),
-
-    method('basic canvas drawing methods', 'Intro to common canvas drawing methods.', [
-      ['draw shapes', 'Methods like fillRect() draw rectangles.'],
-      ['draw paths/text/images', 'Canvas can draw more than basic shapes.'],
-    ]),
-
+  group('5.15 Special / Advanced', 'Error types, URLs, typed arrays, Intl formatting, and canvas.', [
+    method('Error',                 'The base class for JavaScript errors.'),
+    method('TypeError',             'Error type for operations on wrong types.'),
+    method('ReferenceError',        'Error type for missing variables and identifiers.'),
+    method('SyntaxError',           'Error type for parse-time syntax problems.'),
+    method('throw',                 'Raises an error from your own code.'),
+    method('Symbol',                'A unique primitive value used as identifiers.'),
+    method('URL',                   'A parsed URL object with useful properties.'),
+    method('URLSearchParams',       'Reads and writes query string parameters.'),
+    method('ArrayBuffer',           'A fixed-length buffer of raw bytes.'),
+    method('Uint8Array',            'A typed view of an ArrayBuffer as unsigned bytes.'),
+    method('Float32Array',          'A typed view of an ArrayBuffer as 32-bit floats.'),
+    method('Intl.NumberFormat()',   'Locale-aware number formatting.'),
+    method('Intl.DateTimeFormat()', 'Locale-aware date and time formatting.'),
+    method('Canvas element',        'The HTML element for 2D drawing.'),
+    method('getContext("2d")',      'Gets the 2D drawing context from a canvas.'),
+    method('basic canvas drawing methods','Intro to common canvas drawing methods.'),
   ]),
 
 ],
+
+
+ 
 
 
  // ---- Real Website Patterns (Section 6) ----

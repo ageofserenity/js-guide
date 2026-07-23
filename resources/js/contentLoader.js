@@ -47,6 +47,24 @@ const groups = {
   ],
   
 
+
+                      /* ==========================================================
+     SECTION 5: METHOD/SNIPPET REFERENCE
+     ========================================================== */
+ 
+  "resources/js/content/methodContent/": [
+    "methodContentPt1.js",
+    "methodContentPt2.js",
+    "methodContentPt3.js",
+    "methodContentPt4.js",
+    "methodContentPt5.js",
+    "methodContentPt6.js",
+    "methodContentPt7.js",
+  ],
+
+
+
+
                       /* ==========================================================
      SECTION 7: DEBUG/ERRORS
      ========================================================== */
