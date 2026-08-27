@@ -314,7 +314,7 @@ function buildDeepShell(node, dataPath, depth) {
   }
 
   return `
-    <div class="${classes}" data-accordion>
+        <div class="${classes}" data-accordion data-path="${dataPath}">
       <button
         class="accordion__trigger"
         aria-expanded="false"

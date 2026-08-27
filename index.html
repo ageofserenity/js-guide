@@ -193,6 +193,9 @@
           <nav class="section-nav" aria-label="Section navigation" data-section-nav></nav>
         </div>
       </section>
+
+
+
       <!-- ========== VIEW: BUILT-IN REFERENCE ========== -->
       <section class="view" id="view-builtinref" data-view="builtinref">
         <div class="view__inner">
@@ -202,6 +205,23 @@
             <h1 class="section-header__title">Built-in Reference</h1>
             <p class="section-header__intro">Every built-in name organized by category. Click a category to see the list.</p>
           </div>
+
+          <!-- Search bar (filters accordions below in real time) -->
+          <div class="builtinref-search">
+            <input
+              type="search"
+              class="builtinref-search__input"
+              data-builtinref-search
+              aria-label="Search built-in reference"
+              autocomplete="off"
+              spellcheck="false">
+            <button
+              type="button"
+              class="builtinref-search__clear"
+              data-builtinref-search-clear
+              aria-label="Clear search">×</button>
+          </div>
+
           <div class="accordion-group" data-accordion-group="builtinref"></div>
           <nav class="section-nav" aria-label="Section navigation" data-section-nav></nav>
         </div>
@@ -231,6 +251,7 @@
   <script src="resources/js/content/content.js"></script>
   <script src="resources/js/contentLoader.js"></script>
   <script src="resources/js/script.js"></script>
+  <script src="resources/js/builtinrefSearch.js"></script>
 
 </body>
 </html>

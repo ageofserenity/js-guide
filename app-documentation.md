@@ -25,6 +25,7 @@ Most lessons follow the same 18-piece structure. That predictability is a featur
 │       ├── data.js               # Structure: sections, groups, lessons, pieces (titles + previews only)
 │       ├── script.js             # Renderer: builds accordions lazily, view-switching
 │       ├── contentLoader.js      # Injects content files as <script> tags
+│       ├── builtinrefSearch.js   # Section 08 search: live filter + highlight
 │       └── content/
 │           ├── content.js        # Empty { CONTENT = {} } base object
 │           ├── beforeYouStartContent.js
@@ -55,7 +56,7 @@ Most lessons follow the same 18-piece structure. That predictability is a featur
 Defines all sections, groups, lessons, and pieces — but only titles and previews. No lesson bodies. Uses helper functions like `group()`, `method()`, `withCard()`, `withChunks()` to build consistent structures.
 
 ### Layer 2: Renderer (`script.js`)
-Builds accordions lazily on demand (only the piece the user opens is rendered). Handles view-switching between the dashboard and the 9 content sections. Looks up each piece's body from the `CONTENT` object using a dot-path key.
+Builds accordions lazily on demand (only the piece the user opens is rendered). Handles view-switching between the dashboard and the 9 content sections. Looks up each piece's body from the `CONTENT` object using a dot-path key. Emits `data-path="..."` on every deep-nested accordion so companion scripts (like `builtinrefSearch.js`) can find accordions by path.
 
 ### Layer 3: Content (`resources/js/content/`)
 The actual HTML strings for every piece. Each file does `Object.assign(CONTENT, { 'dotPath': `<p>...</p>`, ... })` to add its pieces to the global `CONTENT` object. Files are loaded via `contentLoader.js` as `<script>` tags.
@@ -271,6 +272,42 @@ Every identifier in a list is wrapped in `<code>` so it renders with the same st
 
 ---
 
+## Section 8 Search (`builtinrefSearch.js`)
+
+Section 8 has a live filter search bar so you can look up any built-in name fast while coding. It lives in its own file, entirely separate from `script.js`, and only touches the Section 8 view.
+
+**How it works**
+- On page load, builds a searchable index from `DEEP_TOPICS.builtinref` + `CONTENT['builtinref-*']` (114 entries). The index concatenates group title, group preview, item title, item preview, and the stripped-HTML text of the list content.
+- As you type (debounced 100ms), it filters:
+  - Non-matching **groups** get `.is-search-hidden` (CSS `display: none`).
+  - Non-matching **items** inside matching groups also get hidden.
+  - Matching **groups** auto-open (which lazy-renders their items into the DOM).
+  - Matching **items** auto-open and matched text inside the opened panel gets wrapped in `<mark class="search-hl">`.
+- Clearing the input (Escape key, `×` button, or manually) restores default state: everything visible, all accordions closed, all `<mark>` tags unwrapped.
+
+**Dependencies (globals it reads from `script.js` / `data.js`)**
+- `DEEP_TOPICS.builtinref` — the group/item structure
+- `CONTENT['builtinref-*']` — the list HTML
+- `toggleAccordion(trigger)` — reused so lazy-render still runs on programmatic opens
+
+**HTML hooks it looks for**
+| Attribute | Where |
+|---|---|
+| `[data-builtinref-search]` | the search `<input>` |
+| `[data-builtinref-search-clear]` | the `×` clear button |
+| `[data-accordion-group="builtinref"]` | the Section 8 accordion group container |
+| `[data-accordion][data-path="builtinref-X"]` | a group accordion |
+| `[data-accordion][data-path="builtinref-X-Y"]` | an item accordion |
+
+**`data-path` attribute** — `buildDeepShell` in `script.js` emits `data-path="${dataPath}"` on every accordion. That's what the search file uses to find accordions by path. Every deep-nested section gets this attribute — Section 8 just happens to be the one that uses it for search.
+
+**CSS hooks** (defined in `styles.css`)
+- `.builtinref-search`, `.builtinref-search__input`, `.builtinref-search__clear` — the widget itself
+- `.is-search-hidden` — filter-hide (uses `display: none !important`)
+- `mark.search-hl` — highlight styling for matched text
+
+---
+
 ## Content File Structure
 
 Each content file follows this pattern:
@@ -403,5 +440,6 @@ Prism then applies syntax highlighting from `prism-theme.css`.
 - Finish all Section 5 method lessons (228 to write).
 - Finish all Section 7 debug lessons (mostly done).
 - Populate Sections 4 (Topic Combos) and 6 (Website Patterns).
-- Section 8 Built-in Reference — structure and lists are in place; may be reordered or expanded later.
+- Section 8 Built-in Reference — structure, lists, and search bar are in place; may be reordered or expanded later.
+- Consider extending the same live-filter search pattern to Section 5 (methods) if it proves useful.
 - Polish styling, mobile behavior, dark mode consistency.
