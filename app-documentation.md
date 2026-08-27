@@ -8,7 +8,7 @@ An ADHD-friendly JavaScript learning single-page web app. Teaches JS from beginn
 
 Traditional JS documentation and courses hit ADHD learners with too much at once: dense pages, walls of code, no clear "next step." This app breaks every topic into small pieces (a few sentences or one code block per piece), organized so the learner can dip in, understand one thing, and move on.
 
-Every lesson follows the same 18-piece structure. That predictability is a feature — the learner always knows where to find "what problem it solves" or "common mistakes" for any topic, method, or debug tool.
+Most lessons follow the same 18-piece structure. That predictability is a feature — the learner always knows where to find "what problem it solves" or "common mistakes" for any topic, method, or debug tool. Section 08 (Built-in Reference) is the exception: it's a categorized name-list reference, not lessons.
 
 ---
 
@@ -16,7 +16,7 @@ Every lesson follows the same 18-piece structure. That predictability is a featu
 
 ```
 /
-├── index.html                    # App shell — 9 views (dashboard + 8 sections)
+├── index.html                    # App shell — 10 views (dashboard + 9 sections)
 ├── resources/
 │   ├── css/
 │   │   ├── styles.css            # Main stylesheet
@@ -42,7 +42,9 @@ Every lesson follows the same 18-piece structure. That predictability is a featu
 │           ├── methodContentPt6.js       # 5.10–5.13 (Date, JSON, RegExp, Promise/Async)
 │           ├── methodContentPt7.js       # 5.14–5.15 (Set/Map, Special/Advanced)
 │           ├── websitePatternContent.js
-│           └── debugContent.js
+│           ├── debugContent.js
+│           └── referenceContent/
+│               └── referenceContent.js   # Section 08 built-in name lists
 ```
 
 ---
@@ -53,7 +55,7 @@ Every lesson follows the same 18-piece structure. That predictability is a featu
 Defines all sections, groups, lessons, and pieces — but only titles and previews. No lesson bodies. Uses helper functions like `group()`, `method()`, `withCard()`, `withChunks()` to build consistent structures.
 
 ### Layer 2: Renderer (`script.js`)
-Builds accordions lazily on demand (only the piece the user opens is rendered). Handles view-switching between the dashboard and the 8 content sections. Looks up each piece's body from the `CONTENT` object using a dot-path key.
+Builds accordions lazily on demand (only the piece the user opens is rendered). Handles view-switching between the dashboard and the 9 content sections. Looks up each piece's body from the `CONTENT` object using a dot-path key.
 
 ### Layer 3: Content (`resources/js/content/`)
 The actual HTML strings for every piece. Each file does `Object.assign(CONTENT, { 'dotPath': `<p>...</p>`, ... })` to add its pieces to the global `CONTENT` object. Files are loaded via `contentLoader.js` as `<script>` tags.
@@ -72,8 +74,9 @@ The actual HTML strings for every piece. Each file does `Object.assign(CONTENT, 
 | 05 | Method / Snippet Reference | Built-in JS methods, properties, functions | `TOPIC_CARD_CHUNKS` (18 pieces) |
 | 06 | Real Website Patterns | Common patterns from real sites | `WEBSITE_PATTERN` |
 | 07 | Debugging / Error Guide | Debug tools + error types | `TOPIC_CARD_CHUNKS` (18 pieces) |
+| 08 | Built-in Reference | Every built-in name organized by category | Leaf list (no card structure) |
 
-Sections 3, 5, and 7 all share the same 18-piece structure. Sections 0–2, 4, and 6 have their own specialized structures.
+Sections 3, 5, and 7 all share the same 18-piece structure. Sections 0–2, 4, and 6 have their own specialized structures. Section 8 is a flat 2-level reference — group → leaf item, where each leaf is a single HTML list.
 
 ---
 
@@ -135,6 +138,11 @@ Each piece has a unique key that the renderer uses to look up its HTML.
 - 4-part path
 - Example: `debug-5-1-0-0` = 7.5 (Console Tools), console.log, chunk 0, piece 0
 
+### Section 8 (Built-in Reference)
+`builtinref-<groupIdx>-<itemIdx>`
+- 2-part path — no chunk/piece layer because items are leaves that render a single list
+- Example: `builtinref-0-0` = 8.1 (Language), item 0 (Keywords)
+
 ### Group Index Reference for Section 5
 | Group | Index |
 |---|---|
@@ -154,6 +162,35 @@ Each piece has a unique key that the renderer uses to look up its HTML.
 | 5.14 Set / Map | 13 |
 | 5.15 Special / Advanced | 14 |
 
+### Group Index Reference for Section 8
+| Group | Index | Items |
+|---|---:|---:|
+| 8.1 Language | 0 | 4 |
+| 8.2 Built-In JS Objects | 1 | 15 |
+| 8.3 Global JS Functions | 2 | 1 |
+| 8.4 Browser Global Objects | 3 | 1 |
+| 8.5 Global Browser Functions | 4 | 4 |
+| 8.6 DOM — Selecting / Traversing | 5 | 2 |
+| 8.7 DOM — Creating / Inserting / Removing | 6 | 3 |
+| 8.8 DOM — Reading / Writing Content | 7 | 4 |
+| 8.9 DOM — Size / Position / Scroll | 8 | 3 |
+| 8.10 DOM — Form / Input Properties | 9 | 2 |
+| 8.11 DOM — Element Actions | 10 | 1 |
+| 8.12 Events — Attaching | 11 | 1 |
+| 8.13 Event Names | 12 | 12 |
+| 8.14 Event Object Properties | 13 | 11 |
+| 8.15 Event Object Methods | 14 | 1 |
+| 8.16 Keyboard .key Values | 15 | 4 |
+| 8.17 HTML Tag Names | 16 | 8 |
+| 8.18 HTML Attributes | 17 | 6 |
+| 8.19 Input Types | 18 | 1 |
+| 8.20 CSS Style Properties | 19 | 9 |
+| 8.21 HTTP | 20 | 4 |
+| 8.22 Web APIs | 21 | 12 |
+| 8.23 HTML Entities | 22 | 5 |
+
+Total: **23 groups, 114 leaf items.**
+
 ### Chunk/Piece Index Reference
 Same for all `TOPIC_CARD_CHUNKS` sections (3, 5, 7):
 | Chunk | Pieces | Indices |
@@ -162,6 +199,8 @@ Same for all `TOPIC_CARD_CHUNKS` sections (3, 5, 7):
 | 1 Why & When | 6 | 1-0, 1-1, 1-2, 1-3, 1-4, 1-5 |
 | 2 The Click | 4 | 2-0, 2-1, 2-2, 2-3 |
 | 3 In Practice | 4 | 3-0, 3-1, 3-2, 3-3 |
+
+Section 8 has no chunk/piece indices — its leaf items map directly to a single HTML list.
 
 ---
 
@@ -191,6 +230,47 @@ Total pieces in Section 5: **228 × 18 = 4,104 pieces.**
 
 ---
 
+## Section 8 Structure (Built-in Reference)
+
+Section 8 does NOT use `TOPIC_CARD_CHUNKS`. It's a flat categorized reference with a 2-level tree: `group → item`.
+
+Each item is a LEAF — clicking it opens directly to one HTML list of built-in names (no card structure inside). This is on purpose: Section 8 is a lookup surface, not a lesson set. If you need to teach how a specific method works, that lives in Section 5.
+
+**Data shape in `data.js`** (inside `DEEP_TOPICS`):
+```javascript
+builtinref: [
+  {
+    groupTitle: '8.1 Language',
+    groupPreview: 'The core JavaScript syntax and value types.',
+    items: [
+      { title: 'Keywords',        preview: '...' },
+      { title: 'Operators',       preview: '...' },
+      { title: 'Primitive types', preview: '...' },
+      { title: 'Special values',  preview: '...' }
+    ]
+  },
+  // ... 22 more groups
+]
+```
+
+**Content shape in `referenceContent.js`:**
+```javascript
+'builtinref-0-0': `
+  <p>Reserved words the JavaScript language recognizes as syntax.</p>
+  <ul>
+    <li><code>const</code></li>
+    <li><code>let</code></li>
+    // ...
+  </ul>
+`,
+```
+
+Every identifier in a list is wrapped in `<code>` so it renders with the same styling used everywhere else in the app.
+
+**Renderer wiring** — Section 8's id (`builtinref`) is added to the `deepSections` array in `script.js` so it uses `renderDeepNestedAccordions`, same as Section 5. Because each item has no `.items[]` array, the renderer treats it as a leaf and calls `CONTENT[dataPath]` to get the list HTML.
+
+---
+
 ## Content File Structure
 
 Each content file follows this pattern:
@@ -209,6 +289,15 @@ Object.assign(CONTENT, {
   'methods-groupIdx-methodIdx-0-0': `<p>...</p>`,
   'methods-groupIdx-methodIdx-0-1': `<pre>...</pre>`,
   // ... etc for all 18 pieces
+});
+```
+
+`referenceContent.js` follows the same pattern but with simpler leaf keys:
+```javascript
+Object.assign(CONTENT, {
+  'builtinref-0-0': `<p>...</p><ul>...</ul>`,
+  'builtinref-0-1': `<p>...</p><ul>...</ul>`,
+  // ... one entry per leaf item
 });
 ```
 
@@ -294,6 +383,7 @@ Prism then applies syntax highlighting from `prism-theme.css`.
 3. **Wrong `dotPath` key** — no error, but the accordion opens to empty content. Double-check the group index, method index, chunk index, piece index.
 4. **Content file not loaded in `contentLoader.js`** — pieces don't render because `CONTENT` doesn't have them.
 5. **Empty `Object.assign(CONTENT, {})`** at the top of content files is required — it primes the `CONTENT` object.
+6. **Missing HTML entity semicolons** in group/item previews — `&ltinput&gt` won't render; must be `&lt;input&gt;`.
 
 ---
 
@@ -303,6 +393,7 @@ Prism then applies syntax highlighting from `prism-theme.css`.
 - **Nested collapse** — top-level chunks toggle open/closed; individual pieces inside also toggle independently.
 - **Progress tracking** — done state is stored per piece (localStorage), so progress persists across sessions.
 - **View switching** — only one view (dashboard or a section) is visible at a time.
+- **Deep sections list** — `script.js` has a `deepSections` array that names which section ids use the deep-nested renderer. Currently: `['mental', 'topics', 'combos', 'methods', 'patterns', 'debug', 'builtinref']`. Adding a new nested section means adding its id here.
 
 ---
 
@@ -312,4 +403,5 @@ Prism then applies syntax highlighting from `prism-theme.css`.
 - Finish all Section 5 method lessons (228 to write).
 - Finish all Section 7 debug lessons (mostly done).
 - Populate Sections 4 (Topic Combos) and 6 (Website Patterns).
+- Section 8 Built-in Reference — structure and lists are in place; may be reordered or expanded later.
 - Polish styling, mobile behavior, dark mode consistency.

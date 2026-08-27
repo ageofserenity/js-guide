@@ -2211,7 +2211,7 @@ methods: [
 
     // -------- 8.5 GLOBAL BROWSER FUNCTIONS --------
     {
-      groupTitle: '8.5 Global Broswer Functions',
+      groupTitle: '8.5 Global Browser Functions',
       groupPreview: 'Browser-provided functions called directly (no object).',
       items: [
         { title: 'Dialogs',            preview: 'alert, confirm, prompt.' },
@@ -2277,7 +2277,7 @@ methods: [
 
     // -------- 8.11 DOM — ELEMENT ACTIONS --------
     {
-      groupTitle: '8.11 DOM — Elements Actions',
+      groupTitle: '8.11 DOM — Element Actions',
       groupPreview: 'Methods that make an element do something.',
       items: [
         { title: 'Actions',            preview: 'focus, blur, click, submit, play, pause, showModal, animate, etc.' }
@@ -2386,7 +2386,7 @@ methods: [
     // -------- 8.19 INPUT TYPES --------
     {
       groupTitle: '8.19 Input Types',
-      groupPreview: 'Values for type="..." on &ltinput&gt elements.',
+      groupPreview: 'Values for type="..." on &lt;input&gt; elements.',
       items: [
         { title: 'All types',          preview: 'text, email, password, number, date, checkbox, radio, file, etc.' }
       ]
