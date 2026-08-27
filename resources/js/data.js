@@ -319,6 +319,12 @@ const SECTIONS = [
     number: '07',
     title: 'Debugging / Error Guide',
     desc: 'Understand, trace, and fix broken JavaScript.'
+  },
+  {
+    id: 'builtinref',
+    number: '08',
+    title: 'Built-in Reference',
+    desc: 'Every built-in name organized by category. Reference lists, not lessons.'
   }
 ];
 
@@ -2142,7 +2148,314 @@ methods: [
         { title: 'test one piece at a time', preview: 'Verify chunks before combining.' }
       ], TOPIC_CARD_CHUNKS)
     }
+  ],
+
+
+  // ---- Built-in Reference (Section 8) ----
+  // 2-level structure: group -> item. Each item is a leaf that shows
+  // a categorized list of built-in names.
+  builtinref: [
+
+    // -------- 8.1 LANGUAGE --------
+    {
+      groupTitle: '8.1 Language',
+      groupPreview: 'The core JavaScript syntax and value types.',
+      items: [
+        { title: 'Keywords',          preview: 'Reserved words: const, let, function, if, for, class, etc.' },
+        { title: 'Operators',         preview: 'Arithmetic, comparison, logical, assignment, spread, etc.' },
+        { title: 'Primitive types',   preview: 'number, string, boolean, null, undefined, symbol, bigint.' },
+        { title: 'Special values',    preview: 'true, false, null, undefined, NaN, Infinity, globalThis.' }
+      ]
+    },
+
+    // -------- 8.2 BUILT-IN JS OBJECTS --------
+    {
+      groupTitle: '8.2 Built-In JS Objects',
+      groupPreview: 'Objects the language provides — Math, String, Array, etc.',
+      items: [
+        { title: 'Math',               preview: 'Math.round, Math.random, Math.PI, and so on.' },
+        { title: 'Number',             preview: 'Number(), parseInt, isInteger, MAX_SAFE_INTEGER, etc.' },
+        { title: 'String',             preview: 'slice, split, replace, trim, template literals, etc.' },
+        { title: 'Array',              preview: 'push, map, filter, forEach, Array.from, etc.' },
+        { title: 'Object',             preview: 'keys, values, entries, assign, freeze, spread, etc.' },
+        { title: 'Date',               preview: 'new Date(), getFullYear, toISOString, Date.now, etc.' },
+        { title: 'JSON',               preview: 'JSON.parse, JSON.stringify.' },
+        { title: 'RegExp',             preview: 'Patterns, flags, test, exec, match, matchAll.' },
+        { title: 'Set / Map / WeakSet / WeakMap', preview: 'Collections: unique values and keyed pairs.' },
+        { title: 'Promise',            preview: 'Promise, then, catch, finally, Promise.all, allSettled.' },
+        { title: 'Error types',        preview: 'Error, TypeError, ReferenceError, SyntaxError, etc.' },
+        { title: 'Symbol',             preview: 'Symbol(), Symbol.iterator, well-known symbols.' },
+        { title: 'BigInt',             preview: 'BigInt(), 123n literal syntax.' },
+        { title: 'Typed Arrays',       preview: 'ArrayBuffer, Uint8Array, Float32Array, DataView, etc.' },
+        { title: 'Intl',               preview: 'Locale-aware formatting: NumberFormat, DateTimeFormat, etc.' }
+      ]
+    },
+
+    // -------- 8.3 GLOBAL JS FUNCTIONS --------
+    {
+      groupTitle: '8.3 Global JS Functions',
+      groupPreview: 'Standalone JS functions with no object in front.',
+      items: [
+        { title: 'Global functions',   preview: 'parseInt, parseFloat, isNaN, isFinite, structuredClone, etc.' }
+      ]
+    },
+
+    // -------- 8.4 BROWSER GLOBAL OBJECTS --------
+    {
+      groupTitle: '8.4 Browser Global Objects',
+      groupPreview: 'Objects the browser provides — not part of JavaScript itself.',
+      items: [
+        { title: 'Global objects',     preview: 'window, document, navigator, location, history, screen, etc.' }
+      ]
+    },
+
+    // -------- 8.5 GLOBAL BROWSER FUNCTIONS --------
+    {
+      groupTitle: '8.5 Global Broswer Functions',
+      groupPreview: 'Browser-provided functions called directly (no object).',
+      items: [
+        { title: 'Dialogs',            preview: 'alert, confirm, prompt.' },
+        { title: 'Timing',             preview: 'setTimeout, setInterval, requestAnimationFrame, etc.' },
+        { title: 'Network',            preview: 'fetch.' },
+        { title: 'Encoding',           preview: 'atob, btoa.' }
+      ]
+    },
+
+    // -------- 8.6 DOM — SELECTING / TRAVERSING --------
+    {
+      groupTitle: '8.6 DOM — Selecting / Traversing',
+      groupPreview: 'Finding elements and moving between them.',
+      items: [
+        { title: 'Selection methods',  preview: 'querySelector, querySelectorAll, getElementById, etc.' },
+        { title: 'Traversal',          preview: 'closest, matches, contains, parentElement, children, siblings.' }
+      ]
+    },
+
+    // -------- 8.7 DOM — CREATING / INSERTING / REMOVING --------
+    {
+      groupTitle: '8.7 DOM — Creating / Inserting / Removing',
+      groupPreview: 'Making new elements and putting them into the page.',
+      items: [
+        { title: 'Creating',           preview: 'createElement, createTextNode, createDocumentFragment, cloneNode.' },
+        { title: 'Inserting',          preview: 'append, appendChild, prepend, before, after, insertBefore, etc.' },
+        { title: 'Removing',           preview: 'remove, removeChild.' }
+      ]
+    },
+
+    // -------- 8.8 DOM — READING / WRITING CONTENT --------
+    {
+      groupTitle: '8.8 DOM — Reading / Writing Content',
+      groupPreview: 'Text, HTML, attributes, classes, styles, and data-*.',
+      items: [
+        { title: 'Text / HTML',        preview: 'textContent, innerText, innerHTML, outerHTML.' },
+        { title: 'Attributes',         preview: 'setAttribute, getAttribute, hasAttribute, removeAttribute, etc.' },
+        { title: 'Classes',            preview: 'className, classList.add/remove/toggle/contains.' },
+        { title: 'Style / dataset',    preview: 'element.style.* (camelCased CSS), element.dataset.*.' }
+      ]
+    },
+
+    // -------- 8.9 DOM — SIZE / POSITION / SCROLL --------
+    {
+      groupTitle: '8.9 DOM — Size / Position / Scroll',
+      groupPreview: 'Where elements are and how big they are.',
+      items: [
+        { title: 'Size',               preview: 'offsetWidth, clientHeight, scrollWidth, getBoundingClientRect.' },
+        { title: 'Position',           preview: 'offsetTop, offsetLeft, offsetParent, clientTop, clientLeft.' },
+        { title: 'Scroll',             preview: 'scrollTop, scrollTo, scrollIntoView, window.scrollY, innerWidth.' }
+      ]
+    },
+
+    // -------- 8.10 DOM — FORM / INPUT PROPERTIES --------
+    {
+      groupTitle: '8.10 DOM — Form / Input Properties',
+      groupPreview: 'Reading and writing form field values and state.',
+      items: [
+        { title: 'Values',             preview: 'value, defaultValue, files, selectedIndex, selectedOptions.' },
+        { title: 'State',              preview: 'checked, disabled, readOnly, required, hidden, validity, etc.' }
+      ]
+    },
+
+    // -------- 8.11 DOM — ELEMENT ACTIONS --------
+    {
+      groupTitle: '8.11 DOM — Elements Actions',
+      groupPreview: 'Methods that make an element do something.',
+      items: [
+        { title: 'Actions',            preview: 'focus, blur, click, submit, play, pause, showModal, animate, etc.' }
+      ]
+    },
+
+    // -------- 8.12 EVENTS — ATTACHING --------
+    {
+      groupTitle: '8.12 Events — Attaching',
+      groupPreview: 'How to listen for and fire events.',
+      items: [
+        { title: 'Attaching',          preview: 'addEventListener, removeEventListener, dispatchEvent, CustomEvent.' }
+      ]
+    },
+
+    // -------- 8.13 EVENT NAMES --------
+    {
+      groupTitle: '8.13 Event Names',
+      groupPreview: 'The event-name strings you pass to addEventListener.',
+      items: [
+        { title: 'Mouse events',       preview: '"click", "dblclick", "mousedown", "mouseover", "wheel", etc.' },
+        { title: 'Keyboard events',    preview: '"keydown", "keyup", "keypress".' },
+        { title: 'Form events',        preview: '"submit", "change", "input", "focus", "blur", "invalid", etc.' },
+        { title: 'Touch events',       preview: '"touchstart", "touchend", "touchmove", "touchcancel".' },
+        { title: 'Pointer events',     preview: '"pointerdown", "pointermove", "pointerup", "pointercancel", etc.' },
+        { title: 'Window / document / page', preview: '"load", "DOMContentLoaded", "resize", "scroll", "unload", etc.' },
+        { title: 'Media events',       preview: '"play", "pause", "ended", "timeupdate", "loadedmetadata", etc.' },
+        { title: 'Drag & drop events', preview: '"dragstart", "drag", "dragover", "drop", "dragend", etc.' },
+        { title: 'Clipboard events',   preview: '"copy", "cut", "paste".' },
+        { title: 'Animation / transition events', preview: '"animationstart", "animationend", "transitionend", etc.' },
+        { title: 'Network events',     preview: '"online", "offline".' },
+        { title: 'Storage event',      preview: '"storage" — fires in OTHER tabs when localStorage changes.' }
+      ]
+    },
+
+    // -------- 8.14 EVENT OBJECT PROPERTIES --------
+    {
+      groupTitle: '8.14 Event Object Properties',
+      groupPreview: 'Properties on the "event" argument in your handlers.',
+      items: [
+        { title: 'Common',             preview: 'target, currentTarget, type, timeStamp, isTrusted, bubbles, etc.' },
+        { title: 'Mouse-specific',     preview: 'clientX, clientY, pageX, pageY, screenX, offsetX, movementX, button.' },
+        { title: 'Keyboard-specific',  preview: 'key, code, keyCode (deprecated), repeat, location.' },
+        { title: 'Modifier keys',      preview: 'altKey, ctrlKey, shiftKey, metaKey (on mouse/keyboard/pointer).' },
+        { title: 'Touch-specific',     preview: 'touches, targetTouches, changedTouches.' },
+        { title: 'Pointer-specific',   preview: 'pointerId, pointerType, pressure, tiltX, tiltY, isPrimary, etc.' },
+        { title: 'Wheel-specific',     preview: 'deltaX, deltaY, deltaZ, deltaMode.' },
+        { title: 'Drag-specific',      preview: 'dataTransfer.' },
+        { title: 'Clipboard-specific', preview: 'clipboardData.' },
+        { title: 'Input-specific',     preview: 'data, inputType, isComposing.' },
+        { title: 'Animation / transition', preview: 'animationName, propertyName, elapsedTime, pseudoElement.' }
+      ]
+    },
+
+    // -------- 8.15 EVENT OBJECT METHODS --------
+    {
+      groupTitle: '8.15 Event Object Methods',
+      groupPreview: 'Methods you call on the event object.',
+      items: [
+        { title: 'Methods',            preview: 'preventDefault, stopPropagation, stopImmediatePropagation, composedPath.' }
+      ]
+    },
+
+    // -------- 8.16 KEYBOARD .key VALUES --------
+    {
+      groupTitle: '8.16 Keyboard .key Values',
+      groupPreview: 'The string values event.key takes.',
+      items: [
+        { title: 'Special keys',       preview: '"Enter", "Escape", "Tab", "Backspace", "Shift", "Control", etc.' },
+        { title: 'Arrow keys',         preview: '"ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight".' },
+        { title: 'Function keys',      preview: '"F1" through "F12".' },
+        { title: 'Regular characters', preview: 'Letters a-z (case-sensitive), digits 0-9, punctuation.' }
+      ]
+    },
+
+    // -------- 8.17 HTML TAG NAMES --------
+    {
+      groupTitle: '8.17 HTML Tag Names',
+      groupPreview: 'HTML element names used with createElement or in markup.',
+      items: [
+        { title: 'Structure',          preview: 'html, head, body, header, footer, nav, main, section, article, div, span.' },
+        { title: 'Text',               preview: 'h1-h6, p, a, strong, em, code, pre, blockquote, br, hr, small, etc.' },
+        { title: 'Lists',              preview: 'ul, ol, li, dl, dt, dd.' },
+        { title: 'Media',              preview: 'img, picture, video, audio, iframe, canvas, svg, figure.' },
+        { title: 'Forms',              preview: 'form, input, textarea, select, option, button, label, fieldset.' },
+        { title: 'Tables',             preview: 'table, thead, tbody, tfoot, tr, th, td, caption, colgroup, col.' },
+        { title: 'Interactive',        preview: 'dialog, details, summary, menu, template, slot.' },
+        { title: 'Head tags',          preview: 'title, meta, link, style, script, noscript, base.' }
+      ]
+    },
+
+    // -------- 8.18 HTML ATTRIBUTES --------
+    {
+      groupTitle: '8.18 HTML Attributes',
+      groupPreview: 'Attribute names used on HTML elements.',
+      items: [
+        { title: 'Global attributes',  preview: 'id, class, style, title, hidden, lang, tabindex, data-*, aria-*.' },
+        { title: 'Link / media',       preview: 'href, src, alt, srcset, target, rel, download, crossorigin, etc.' },
+        { title: 'Form attributes',    preview: 'type, name, value, placeholder, required, disabled, readonly, etc.' },
+        { title: 'Media attributes',   preview: 'controls, autoplay, loop, muted, preload, poster, playsinline.' },
+        { title: 'Table attributes',   preview: 'colspan, rowspan, scope, headers.' },
+        { title: 'iframe attributes',  preview: 'sandbox, allow, allowfullscreen, loading, referrerpolicy, srcdoc.' }
+      ]
+    },
+
+    // -------- 8.19 INPUT TYPES --------
+    {
+      groupTitle: '8.19 Input Types',
+      groupPreview: 'Values for type="..." on &ltinput&gt elements.',
+      items: [
+        { title: 'All types',          preview: 'text, email, password, number, date, checkbox, radio, file, etc.' }
+      ]
+    },
+
+    // -------- 8.20 CSS STYLE PROPERTIES --------
+    {
+      groupTitle: '8.20 CSS Style Properties',
+      groupPreview: 'CSS properties as used in JS (camelCased on element.style).',
+      items: [
+        { title: 'Color',              preview: 'color, backgroundColor, borderColor, caretColor, accentColor.' },
+        { title: 'Layout / box',       preview: 'display, boxSizing, width, height, margin, padding, border.' },
+        { title: 'Positioning',        preview: 'position, top, right, bottom, left, zIndex, inset.' },
+        { title: 'Flexbox',            preview: 'flex, flexDirection, justifyContent, alignItems, gap, order.' },
+        { title: 'Grid',               preview: 'grid, gridTemplateColumns, gridTemplateRows, gridColumn, gridRow.' },
+        { title: 'Typography',         preview: 'fontSize, fontFamily, fontWeight, lineHeight, textAlign, etc.' },
+        { title: 'Effects',            preview: 'opacity, transform, transition, animation, filter, boxShadow.' },
+        { title: 'Overflow / visibility', preview: 'overflow, visibility, cursor, pointerEvents, userSelect, resize.' },
+        { title: 'Background',         preview: 'background, backgroundImage, backgroundSize, backgroundPosition.' }
+      ]
+    },
+
+    // -------- 8.21 HTTP --------
+    {
+      groupTitle: '8.21 HTTP',
+      groupPreview: 'HTTP methods, status codes, headers, and MIME types for fetch.',
+      items: [
+        { title: 'Methods',            preview: 'GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS.' },
+        { title: 'Status codes',       preview: '200, 201, 204, 301, 302, 400, 401, 403, 404, 429, 500, 503, etc.' },
+        { title: 'Common headers',     preview: 'Content-Type, Accept, Authorization, Cache-Control, Cookie, etc.' },
+        { title: 'MIME types',         preview: 'application/json, text/html, image/png, video/mp4, etc.' }
+      ]
+    },
+
+    // -------- 8.22 WEB APIs --------
+    {
+      groupTitle: '8.22 WEB APIs',
+      groupPreview: 'Advanced browser-provided classes and modules.',
+      items: [
+        { title: 'Observers',          preview: 'IntersectionObserver, MutationObserver, ResizeObserver, PerformanceObserver.' },
+        { title: 'Networking',         preview: 'fetch, Request, Response, Headers, WebSocket, AbortController, etc.' },
+        { title: 'Storage',            preview: 'localStorage, sessionStorage, indexedDB, caches, document.cookie.' },
+        { title: 'Files',              preview: 'File, FileList, FileReader, Blob, FormData, URL, URLSearchParams.' },
+        { title: 'Workers',            preview: 'Worker, SharedWorker, ServiceWorker, BroadcastChannel, MessageChannel.' },
+        { title: 'Media',              preview: 'MediaStream, MediaRecorder, AudioContext, getUserMedia, etc.' },
+        { title: 'Device / permissions', preview: 'navigator.geolocation, navigator.clipboard, Notification, etc.' },
+        { title: 'Graphics',           preview: 'CanvasRenderingContext2D, WebGL, WebGPU, OffscreenCanvas, ImageBitmap.' },
+        { title: 'Crypto',             preview: 'crypto.randomUUID, crypto.getRandomValues, crypto.subtle.' },
+        { title: 'Performance',        preview: 'performance.now, performance.mark, performance.measure.' },
+        { title: 'History / navigation', preview: 'history.pushState, history.back, location.href, location.reload.' },
+        { title: 'Console',            preview: 'console.log, warn, error, table, dir, group, time, count, etc.' }
+      ]
+    },
+
+    // -------- 8.23 HTML ENTITIES --------
+    {
+      groupTitle: '8.23 HTML Entities',
+      groupPreview: 'Character escape codes used in HTML text (like &amp;lt; for <).',
+      items: [
+        { title: 'Common',             preview: '&amp;lt;, &amp;gt;, &amp;amp;, &amp;quot;, &amp;#39;, &amp;#96;, &amp;nbsp;.' },
+        { title: 'Symbols',            preview: '&amp;copy;, &amp;reg;, &amp;trade;, &amp;hellip;, &amp;mdash;, &amp;bull;, etc.' },
+        { title: 'Arrows',             preview: '&amp;larr;, &amp;uarr;, &amp;rarr;, &amp;darr;, &amp;harr;.' },
+        { title: 'Currency',           preview: '&amp;dollar;, &amp;cent;, &amp;pound;, &amp;yen;, &amp;euro;.' },
+        { title: 'Numeric entity syntax', preview: '&amp;#NNN; (decimal) and &amp;#xHHH; (hex) — any character.' }
+      ]
+    }
+
   ]
+
 };
 
 

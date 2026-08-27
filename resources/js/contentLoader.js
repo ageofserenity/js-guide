@@ -75,6 +75,15 @@ const groups = {
     "debugContentPt3.js",
     "debugContentPt4.js",
   ],
+
+
+                      /* ==========================================================
+     SECTION 8: BUILT-IN REFERENCE
+     ========================================================== */
+
+  "resources/js/content/referenceContent/": [
+    "referenceContent.js",
+  ],
 };
 
 Object.entries(groups).forEach(([folder, files]) => {

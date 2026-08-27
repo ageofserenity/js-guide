@@ -639,7 +639,7 @@ function init() {
 
   // Sections that use 3+ level deep nested accordions
   // (mental: 3 levels, topics: 4 levels)
-  const deepSections = ['mental', 'topics','combos', 'methods', 'patterns', 'debug'];
+  const deepSections = ['mental', 'topics','combos', 'methods', 'patterns', 'debug', 'builtinref'];
 
   // Render breadcrumbs and prev/next for every section
   SECTIONS.forEach((section, index) => {
