@@ -40,10 +40,9 @@
     if (typeof DEEP_TOPICS === 'undefined' || !DEEP_TOPICS.builtinref) return;
     if (typeof CONTENT === 'undefined') return;
 
-    // Pre-build searchable index once at load
-    const index = buildIndex();
-
-    // Debounced typing
+    // Debounced typing — rebuild index each search so late-loading
+    // content (referenceContent.js loads async via contentLoader) is
+    // always included.
     let debounceId;
     input.addEventListener('input', function () {
       clearTimeout(debounceId);
@@ -76,11 +75,13 @@
         (grp.items || []).forEach(function (item, iIdx) {
           const path = 'builtinref-' + gIdx + '-' + iIdx;
           const raw  = CONTENT[path] || '';
+          // Only the item's own text — NOT the group's. Otherwise
+          // every item in a group inherits the group's title words
+          // (e.g. searching "input" would match every item in
+          // "8.10 DOM — Form / Input Properties").
           const searchText = (
-            (grp.groupTitle   || '') + ' ' +
-            (grp.groupPreview || '') + ' ' +
-            (item.title       || '') + ' ' +
-            (item.preview     || '') + ' ' +
+            (item.title   || '') + ' ' +
+            (item.preview || '') + ' ' +
             stripHtml(raw)
           ).toLowerCase();
           arr.push({ gIdx: gIdx, iIdx: iIdx, path: path, searchText: searchText });
@@ -110,9 +111,11 @@
         return;
       }
 
-      // Find matches
+      // Find matches — build index fresh each search
+      const index = buildIndex();
       const matchingItemPaths = new Set();
       const matchingGroupIdxs = new Set();
+
       index.forEach(function (entry) {
         if (entry.searchText.indexOf(query) !== -1) {
           matchingItemPaths.add(entry.path);
@@ -237,7 +240,7 @@
         idx = found + qLen;
       }
       if (idx < text.length) parts.push({ text: text.slice(idx), match: false });
-      if (parts.length <= 1) return;
+      if (!parts.some(function (p) { return p.match; })) return;
 
       const parent = textNode.parentNode;
       const frag   = document.createDocumentFragment();
