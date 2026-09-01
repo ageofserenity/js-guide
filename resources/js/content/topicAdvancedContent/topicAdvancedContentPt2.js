@@ -17,7 +17,8 @@ Object.assign(CONTENT, {
   /* --- Chunk 0: What & How --- */
 
   /* 0.0 What it is */
-  'topics-11-0-0-0': `
+  'topics-11-0-0-0': 
+  `
     <p>The <strong>DOM</strong> (Document Object Model) is JavaScript's live, in-memory representation of the HTML page. When the browser loads an HTML file, it doesn't keep the HTML around as raw text — it parses it into a tree of objects, and that tree is what JavaScript can read, change, and respond to. The DOM is that tree.</p>
     <p>Every tag in your HTML — <code>&lt;div&gt;</code>, <code>&lt;p&gt;</code>, <code>&lt;button&gt;</code>, <code>&lt;img&gt;</code> — becomes a JavaScript object. Every piece of text, every attribute, every nested tag, all of it. Once your script runs, "the page" and "the DOM" are the same thing — change the DOM, the page changes.</p>
   `,
