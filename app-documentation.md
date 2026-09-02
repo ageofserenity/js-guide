@@ -443,3 +443,8 @@ Prism then applies syntax highlighting from `prism-theme.css`.
 - Section 8 Built-in Reference — structure, lists, and search bar are in place; may be reordered or expanded later.
 - Consider extending the same live-filter search pattern to Section 5 (methods) if it proves useful.
 - Polish styling, mobile behavior, dark mode consistency.
+
+
+##  Other Wants
+
+- For any lesson introducing a syntax construct (arrays, objects, functions, loops), the very first sentence names the symbol/keyword that defines it, so the reader knows what they're looking at before I explain what it does.
