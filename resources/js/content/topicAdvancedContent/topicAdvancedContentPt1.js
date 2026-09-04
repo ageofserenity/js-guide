@@ -2220,6 +2220,1161 @@ const prices = products.map(p => p.price);</code></pre>
     </ul>
   `,
 
+/* ========================================================= 
+   Sub-lesson: 3.10.5 Arrays → commas between items
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-9-4-0-0': `
+    <p><strong>Commas</strong> are the character JavaScript uses to separate one item from the next inside an array. When you write <code>[1, 2, 3]</code>, the commas are the boundary markers — they tell the parser "the first item ends here, the next item starts here." Without them, the parser can't tell where one item ends and the next begins, and either throws a SyntaxError or interprets multiple items as one weird expression.</p>
+    <p>The rule is simple: one comma between every pair of items, zero commas anywhere else. Two commas in a row creates a hole (usually a bug). A comma at the very start creates a hole at position 0. A comma at the very end is a special case — trailing commas are legal and often preferred for multi-line arrays. This lesson zooms in on that one rule and all the edge cases around it, because misplaced commas are one of the most common sources of array syntax errors and subtly wrong-shaped arrays.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-9-4-0-1': `
+<pre class="language-javascript"><code class="language-javascript">// One comma between each pair of items — the standard rule:
+[1, 2, 3];              // ✓ length 3
+['a', 'b', 'c'];        // ✓ length 3
+[true, false];          // ✓ length 2
+
+// Whitespace around the comma is optional and ignored:
+[1,2,3];                // ✓ same as [1, 2, 3]
+[ 1 , 2 , 3 ];          // ✓ same
+[1,
+ 2,
+ 3];                    // ✓ same — newlines don't matter
+
+// Empty array — no items, no commas:
+[];                     // ✓ length 0
+
+// Single-item array — no comma needed inside:
+['only'];               // ✓ length 1
+[42];                   // ✓ length 1
+
+// Trailing comma — legal and often preferred for multi-line arrays:
+[1, 2, 3,];             // ✓ length 3, NOT 4 — trailing comma doesn't add an item
+
+const list = [
+  'apple',
+  'banana',
+  'cherry',             // ← trailing comma is standard style for multi-line
+];
+list.length;            // 3
+
+// Wrong: missing comma between items
+[1 2 3];                // ✗ SyntaxError
+
+// Wrong: leading comma creates a hole
+[, 1, 2, 3];            // ✗ length 4, index 0 is a hole (undefined)
+
+// Wrong: middle comma with nothing between creates a hole
+[1, , 3];               // ✗ length 3, index 1 is a hole
+
+// Wrong: multiple commas in a row
+[1, , , 4];             // ✗ length 4, indexes 1 and 2 are holes
+
+// Trailing comma inside an object literal is also legal:
+[{ a: 1, b: 2, }, { c: 3, }];   // ✓ trailing commas in each object are fine</code></pre>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-9-4-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const colors = ['red', 'green', 'blue'];
+
+// Visualizing the role of commas:
+//
+//   [   'red'   ,   'green'   ,   'blue'   ]
+//    │         │  │           │  │        │
+//    │         │  │           │  │        └── closing bracket — array ends
+//    │         │  │           │  └───────────── third item
+//    │         │  │           └────────────────── second comma — separator
+//    │         │  └──────────────────────────── second item
+//    │         └────────────────────────────── first comma — separator
+//    └─────────────────────────────────────── first item
+//
+// Commas are the ONLY thing separating items. Without them, the parser
+// can't tell them apart.
+
+// Rule: N items need N-1 commas.
+//   [1]           → 1 item, 0 commas
+//   [1, 2]        → 2 items, 1 comma
+//   [1, 2, 3]     → 3 items, 2 commas
+//   [1, 2, 3, 4]  → 4 items, 3 commas
+//
+// The trailing-comma exception:
+//   [1, 2, 3,]    → still 3 items — trailing comma ignored
+//   [1, 2, 3, 4,] → still 4 items
+
+// What happens when you break the rule:
+
+// Too FEW commas → SyntaxError (parser can't parse)
+[1 2 3];                // parser expected a comma between 1 and 2
+
+// Too MANY commas → HOLES (parser sees an "empty item")
+[1, , 3];               // length 3, index 1 is a hole
+[, 1, 2];               // length 3, index 0 is a hole
+
+// A hole is a slot that exists (counts toward length) but has no value.
+// Reading it returns undefined, but it behaves differently from an
+// explicit undefined in some iteration methods.
+
+const holey = [1, , 3];
+holey.length;           // 3
+holey[1];               // undefined (looks like an item)
+holey.map(x => 'y');    // [1, empty, 'y'] — .map SKIPS holes!
+
+const explicit = [1, undefined, 3];
+explicit.length;        // 3
+explicit[1];            // undefined
+explicit.map(x => 'y'); // ['y', 'y', 'y'] — no skipping</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-9-4-0-3': `
+    <p><strong>N items require exactly N-1 commas.</strong> Two items, one comma. Three items, two commas. Five items, four commas. Always exactly one less than the item count. Break this rule in either direction and you get a SyntaxError (too few) or holes (too many).</p>
+
+    <p><strong>Whitespace around commas is optional and ignored.</strong> <code>[1,2,3]</code>, <code>[1, 2, 3]</code>, and <code>[1 ,  2 ,  3]</code> all produce identical arrays. Most style guides recommend one space after each comma for readability, but the parser doesn't care.</p>
+<pre class="language-javascript"><code class="language-javascript">[1,2,3];      // works
+[1, 2, 3];    // works — standard style
+[1 , 2 , 3];  // works — unusual spacing but valid</code></pre>
+
+    <p><strong>Newlines don't replace commas.</strong> Even when items are on separate lines, you still need the comma. This trips up people coming from languages like Python (which uses newlines and indentation as separators) — JavaScript always requires the comma.</p>
+<pre class="language-javascript"><code class="language-javascript">// ✗ Wrong — missing commas
+const list = [
+  'apple'
+  'banana'
+  'cherry'
+];
+// SyntaxError — newlines don't separate items
+
+// ✓ Correct
+const list = [
+  'apple',
+  'banana',
+  'cherry'
+];</code></pre>
+
+    <p><strong>Trailing commas are legal and often preferred.</strong> A comma right before the closing bracket doesn't add an extra item. This is a special case built into the language specifically because trailing commas make multi-line arrays easier to maintain — adding a new item only changes the new line, not the previous line, which makes git diffs cleaner.</p>
+<pre class="language-javascript"><code class="language-javascript">// Without trailing comma — adding 'grape' changes TWO lines
+const list = [
+  'apple',
+  'banana',
+  'cherry'     // ← this line changes to add the comma
+];
+const list = [
+  'apple',
+  'banana',
+  'cherry',    // ← this line changed
+  'grape'      // ← this line was added
+];
+
+// With trailing comma — adding 'grape' changes ONE line
+const list = [
+  'apple',
+  'banana',
+  'cherry',    // ← already has the comma, no change
+];
+const list = [
+  'apple',
+  'banana',
+  'cherry',
+  'grape',     // ← just this line was added
+];</code></pre>
+
+    <p><strong>Leading and middle commas create HOLES — almost never what you want.</strong> A hole is a slot that counts toward <code>.length</code> but has no value. Reading a hole returns <code>undefined</code>, but holes behave inconsistently with iteration methods — some methods skip them, others treat them like explicit <code>undefined</code>. Writing arrays with intentional holes is almost always a bug in modern JavaScript. If you really want <code>undefined</code> at a position, write <code>undefined</code> explicitly.</p>
+<pre class="language-javascript"><code class="language-javascript">const withHole = [1, , 3];
+const withUndefined = [1, undefined, 3];
+
+// Both look similar at a glance:
+withHole.length;              // 3
+withUndefined.length;         // 3
+withHole[1];                  // undefined
+withUndefined[1];             // undefined
+
+// But they behave differently in iteration:
+withHole.forEach(x => console.log(x));         // logs 1, then 3 (skips hole)
+withUndefined.forEach(x => console.log(x));    // logs 1, undefined, 3
+
+withHole.map(x => 'y');                        // [1, empty, 'y']
+withUndefined.map(x => 'y');                   // ['y', 'y', 'y']
+
+// Rule: if you see a lone comma in the middle or start of an array,
+// it's almost certainly a typo. Add the missing value or remove the comma.</code></pre>
+
+    <p><strong>Commas work identically for any item type.</strong> Numbers, strings, booleans, objects, arrays, functions — the comma is the same separator. It doesn't care what's between them. This also means <code>[{...}, {...}, {...}]</code> and <code>[[...], [...], [...]]</code> follow the exact same rule: one comma between each item at the outer level.</p>
+<pre class="language-javascript"><code class="language-javascript">// All work the same way — commas between items:
+[1, 2, 3];
+['a', 'b', 'c'];
+[true, false, null, undefined];
+[{ id: 1 }, { id: 2 }];
+[[1, 2], [3, 4]];
+[1, 'two', true, { name: 'Os' }, [1, 2]];   // mixed types still just need commas</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-9-4-1-0': `
+    <p>Without a separator character, JavaScript would have no way to tell where one item ends and the next begins inside an array literal. Consider <code>[1 2 3]</code> — is that one item (the strange expression "1 2 3")? Three separate items (1, 2, and 3)? Two items ("1" and "2 3")? Without a rule, the parser can't decide, so it just throws an error. The comma is the rule: "the character between items is always a comma."</p>
+    <p>This is the same problem every language solves somehow. Python uses commas (or optionally newlines with indentation). Bash uses spaces. SQL uses commas. Some languages let you pick between multiple separators; JavaScript picks one — the comma — and sticks with it everywhere. Once you internalize "commas separate items, always," you can write arrays without thinking about it and read any JavaScript code fluently.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-9-4-1-1': `
+    <p>You use commas because you have to — there's no other syntax for separating array items in JavaScript. The interesting choices aren't <em>whether</em> to use commas but <em>how you format them</em>: one line vs multi-line, trailing comma or not, one space or none after each comma. These are style choices, not language rules, and different codebases handle them differently.</p>
+    <p>The two style choices most worth adopting: <strong>one space after each comma</strong> for single-line arrays (<code>[1, 2, 3]</code> not <code>[1,2,3]</code>) and <strong>trailing commas on multi-line arrays</strong>. Both make code easier to read and easier to maintain. Almost every popular style guide (Airbnb, StandardJS, Prettier's default) enforces these two rules — following them means your code will look natural to almost any JavaScript developer.</p>
+    <p>Don't ever intentionally use commas to create holes. Writing <code>[1, , , 4]</code> is almost always a typo, and even when it isn't, it's confusing to future readers who will assume it's a typo. If you need placeholder values, use <code>undefined</code> or <code>null</code> explicitly — they communicate intent and don't have the "sometimes skipped by iteration methods" quirk that holes have.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-9-4-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Every array literal, without exception:
+const flat = [1, 2, 3];
+const strings = ['red', 'green', 'blue'];
+const mixed = ['Os', 30, true];
+
+// Multi-line arrays with trailing commas (recommended for lists that
+// might grow over time):
+const routes = [
+  { path: '/',        component: Home    },
+  { path: '/about',   component: About   },
+  { path: '/contact', component: Contact },
+];
+
+// Nested arrays — commas at every level
+const grid = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9],
+];
+
+// Array of objects with trailing commas inside AND outside
+const users = [
+  { id: 1, name: 'Os',  role: 'admin', },
+  { id: 2, name: 'Sam', role: 'user',  },
+];
+
+// Passing multiple items to a function that accepts an array
+element.classList.add(...['btn', 'primary', 'large']);
+console.log([timestamp, level, message]);
+
+// Building an array inline as a function argument
+process([
+  'step-1',
+  'step-2',
+  'step-3',
+]);
+
+// Destructuring assignment — commas separate the variables you're extracting
+const [first, second, third] = someArray;
+const [, , third] = someArray;   // ← the leading commas SKIP items, not create holes here
+                                  //   (destructuring is a special case)
+
+// Wherever you write an array, commas are part of the syntax.</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-9-4-1-3': `
+    <p>Think of commas in an array like the dividers between items in a shopping list. If your list says "milk bread eggs," you can't tell if that's one item (some weird thing called "milk bread eggs") or three items. But if you write "milk, bread, eggs," now it's obviously three items. The comma is the divider that makes the boundaries clear.</p>
+    <p>The rule is: put a divider between every pair of items, and only there. If you have three items, you need two dividers (between item 1 and 2, and between item 2 and 3). No divider before the first item. No divider after the last item — well, actually one comma at the very end is okay (that's the trailing comma exception), but any others in weird places create "phantom items" that look like they should exist but are actually empty.</p>
+    <p>The trailing comma thing is a convenience for lists you're likely to add to. Imagine your grocery list on paper: "milk, bread, eggs" with no comma after "eggs." If you want to add "cheese," you have to first go back and put a comma after "eggs," then add "cheese." Two edits. If your list had already ended with "eggs," (with a trailing comma), you just add "cheese," at the end. One edit. Same idea in code — trailing commas save a step when you're maintaining long lists.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-9-4-1-4': `
+    <p>The comma is a parser-level separator token. When JavaScript reads an array literal, it walks left to right through what's between the brackets, evaluating each expression and using commas to know where one expression ends and the next begins. Every comma the parser sees marks a boundary; every item between a pair of boundaries becomes one slot in the array.</p>
+    <p>Two edge cases fall out of this model:</p>
+    <p><strong>Trailing commas</strong> — the parser sees a comma right before the closing bracket, expects another item, but finds the closing bracket instead. Instead of erroring, the language spec has a rule that says "trailing commas are fine; don't create an extra slot." This is a special case, not a general "commas at the end are ignored" rule.</p>
+    <p><strong>Missing items between commas</strong> — the parser sees a comma, expects an expression, but finds another comma or the closing bracket. The rule here is "create an empty slot (a hole) at this position." This is why <code>[1, , 3]</code> becomes a 3-item array with a hole in the middle. It's not a syntax error because the language spec explicitly allows it; it's just almost always a bug when it happens.</p>
+    <p>The mental picture: <em>a comma is a "next item marker." The parser puts every expression it finds into the next slot; every empty position between commas becomes a hole; a trailing comma is a special "you can stop now" signal that doesn't add a slot.</em> Once you see the parser's perspective, all the weird cases make sense.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-9-4-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// Scenario: exactly how the parser handles commas, walked through
+// for three different arrays.
+
+// Array A: normal 3-item array
+const a = [1, 2, 3];
+
+// Step 1: parser sees '[' → array starts, prepare an empty array
+// Step 2: parser evaluates '1' → store 1 at index 0
+//         array so far: [1]
+// Step 3: parser sees ',' → move on to next item
+// Step 4: parser evaluates '2' → store 2 at index 1
+//         array so far: [1, 2]
+// Step 5: parser sees ',' → move on
+// Step 6: parser evaluates '3' → store 3 at index 2
+//         array so far: [1, 2, 3]
+// Step 7: parser sees ']' → array ends, length = 3
+
+// Array B: array with a middle hole
+const b = [1, , 3];
+
+// Step 1: '[' → start
+// Step 2: '1' → store 1 at index 0
+// Step 3: ',' → next item expected
+// Step 4: parser expects an expression, but sees ',' immediately
+//         → this position becomes a HOLE at index 1
+// Step 5: ',' → move on again
+// Step 6: '3' → store 3 at index 2
+// Step 7: ']' → array ends, length = 3
+//
+// b.length is 3, but b[1] is undefined and behaves oddly in .map, .forEach, etc.
+
+// Array C: trailing comma
+const c = [1, 2, 3,];
+
+// Step 1: '[' → start
+// Step 2: '1' → store 1 at index 0
+// Step 3: ',' → next item expected
+// Step 4: '2' → store 2 at index 1
+// Step 5: ',' → next
+// Step 6: '3' → store 3 at index 2
+// Step 7: ',' → next item expected, BUT
+// Step 8: ']' → array ends
+//         Special rule: trailing comma before ] is IGNORED, no hole created
+//         length = 3
+
+// Key takeaways:
+//   - Every comma is a "next item" signal.
+//   - If the next thing is another comma, a hole appears.
+//   - If the next thing is ']' (trailing comma), it's ignored.
+//   - If there's no comma between items, SyntaxError.
+
+// This is why:
+//   [1, , 3].length === 3           ← the empty position counts
+//   [1, 2, 3,].length === 3         ← trailing comma doesn't add one
+//   [1 2 3]                         ← SyntaxError
+//   [,]                              ← [empty] — 1-item array with a hole
+//   [,,]                             ← [empty, empty] — 2 holes
+//   []                               ← empty array, 0 items</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-9-4-2-0': `
+    <p>Comma-related bugs cluster around a few very recognizable patterns.</p>
+    <p><strong>1. "SyntaxError: Unexpected token" or "Unexpected identifier".</strong> You forgot a comma between items. The parser expected a separator or a closing bracket, but found the start of another item. Fix: check every item boundary in the array — one comma each. Multi-line arrays are especially easy to typo here because your eyes gloss over the missing punctuation.</p>
+    <p><strong>2. Array length is one more than expected.</strong> You have a leading comma (<code>[, 1, 2]</code>) or an extra middle comma (<code>[1, , 2]</code>) that created a hole. The item count is what you expected, but length counts the hole too. Fix: remove the extra comma; use explicit <code>undefined</code> if you truly needed a placeholder.</p>
+    <p><strong>3. <code>.map</code> or <code>.forEach</code> skips items unexpectedly.</strong> You created an array with a hole and now iteration methods aren't visiting that position. This is a real language quirk — most iteration methods skip holes but not <code>undefined</code>. Fix: make sure your array doesn't contain holes. Common source: writing <code>[1, , 3]</code> when you meant <code>[1, undefined, 3]</code>.</p>
+    <p><strong>4. Trailing comma treated as an error in old environments.</strong> Very old JavaScript engines (pre-ES5, which basically means IE8 and before) sometimes counted trailing commas as an extra item. In any modern environment (2015 and later) this isn't a concern. If you're supporting truly ancient browsers, drop trailing commas — but this is almost never necessary anymore.</p>
+    <p><strong>5. Trailing comma in function calls.</strong> Trailing commas are ALSO legal in function argument lists in modern JavaScript (ES2017+): <code>myFunc(1, 2, 3,)</code>. Some tools or linters flag it as a warning, but it's syntactically valid. If your project's linter complains, follow the project's style.</p>
+    <p><strong>6. Confusing array commas with the comma operator.</strong> The comma operator (<code>a, b</code>) evaluates two expressions and returns the second. In array context, commas are separators, not the operator. Rarely a source of real bugs, but worth knowing that "comma" has different meanings in different contexts.</p>
+    <p><strong>7. Newlines instead of commas.</strong> You wrote multi-line array items without commas, expecting the newlines to separate them. JavaScript doesn't work that way — newlines are just whitespace, and whitespace is not a separator. Fix: add commas.</p>
+    <p><strong>8. Extra comma at the start that you can't see.</strong> You wrote <code>[ , 1, 2, 3]</code> and didn't notice the leading comma. Length is 4 instead of 3, and the first item is a hole. Fix: check the very beginning of the array literal for leading commas.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-9-4-2-1': `
+    <p>Commas are separator tokens: one between every pair of items, zero anywhere else — with the trailing-comma exception. That's the entire rule. When you break it in one direction (too few commas), you get a SyntaxError. When you break it in the other direction (too many commas), you get holes. When you follow the trailing-comma convention (one comma right before the closing bracket), the language quietly ignores it, which is exactly what you want for maintainable code.</p>
+    <p>The other click: <em>a comma always means "next item is coming next."</em> If the next thing is another comma, you get a hole (empty slot). If the next thing is a closing bracket, the trailing-comma rule kicks in and it's ignored. If the next thing is an item, that item goes in the next slot. Every comma-related edge case is just an application of these two rules.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-9-4-2-2': `
+    <p><strong>Confusion: "trailing commas add an extra item"</strong></p>
+    <p>They don't. A comma right before the closing bracket is special-cased by the JavaScript spec and does nothing. <code>[1, 2, 3,]</code> has length 3, same as <code>[1, 2, 3]</code>.</p>
+
+    <p><strong>Confusion: "leading commas do the same thing as trailing commas"</strong></p>
+    <p>They don't. Leading commas create a hole at position 0. <code>[, 1, 2]</code> has length 3 with a hole at index 0. Only TRAILING commas are ignored.</p>
+
+    <p><strong>Confusion: "commas can be replaced by newlines"</strong></p>
+    <p>They can't. Even when items are on separate lines, you still need the comma. Newlines are whitespace to the parser, not separators.</p>
+
+    <p><strong>Confusion: "commas inside items count as separators"</strong></p>
+    <p>They don't. Only top-level commas (directly inside the array's brackets) are separators. Commas inside nested arrays, function calls, or object literals belong to those inner constructs and don't affect the outer array.</p>
+<pre class="language-javascript"><code class="language-javascript">const nested = [[1, 2], [3, 4]];
+nested.length;             // 2 — commas inside the inner arrays don't count for the outer
+const withFn = [fn(1, 2), fn(3, 4)];
+withFn.length;             // 2 — commas inside the function calls don't count</code></pre>
+
+    <p><strong>Confusion: "spaces after commas are required"</strong></p>
+    <p>They're not required by the parser — <code>[1,2,3]</code> works. Spaces are a style convention for readability, and most style guides enforce them, but the language itself doesn't care.</p>
+
+    <p><strong>Confusion: "holes and undefined are the same thing"</strong></p>
+    <p>They're subtly different. Both look like <code>undefined</code> when you access them by index, but iteration methods handle them differently — most methods (<code>.map</code>, <code>.forEach</code>, <code>.filter</code>) skip holes but visit explicit <code>undefined</code>. This is a JavaScript quirk to be aware of. Prefer explicit <code>undefined</code> if you truly need placeholders.</p>
+
+    <p><strong>Confusion: "commas in destructuring create holes too"</strong></p>
+    <p>They don't create holes — they skip items. <code>const [, , third] = arr</code> skips the first two items of arr and assigns the third to <code>third</code>. This is the destructuring equivalent of "I don't care about these positions."</p>
+<pre class="language-javascript"><code class="language-javascript">const [, , third] = [1, 2, 3];
+third;                      // 3 — first two skipped, third captured</code></pre>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-9-4-2-3': `
+<pre class="language-javascript"><code class="language-javascript">// Missing comma between items
+const nums = [1 2 3];
+// wrong: SyntaxError
+// fix: add commas
+const nums2 = [1, 2, 3];</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Missing commas in multi-line array (common typo)
+const list = [
+  'apple'
+  'banana'
+  'cherry'
+];
+// wrong: SyntaxError — newlines don't replace commas
+// fix: add commas
+const list2 = [
+  'apple',
+  'banana',
+  'cherry',
+];</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Leading comma creates a hole
+const items = [, 'apple', 'banana'];
+items.length;   // 3, not 2
+items[0];       // undefined — hole
+// fix: remove the leading comma
+const items2 = ['apple', 'banana'];</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Middle comma creates a hole
+const scores = [90, , 72];
+scores.length;   // 3, not 2
+scores[1];       // undefined — hole
+// fix: remove the extra comma
+const scores2 = [90, 72];
+// or use explicit undefined if you really need it
+const scores3 = [90, undefined, 72];</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Multiple middle commas create multiple holes
+const arr = [1, , , 4];
+arr.length;   // 4
+arr[1];       // undefined — hole
+arr[2];       // undefined — hole
+// fix: use undefined if placeholders were intentional
+const arr2 = [1, undefined, undefined, 4];</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Extra comma at the end thinking it adds an item
+const list = [1, 2, 3,];
+list.length;   // 3 — trailing comma is ignored
+// This is not a mistake — it's the trailing-comma convention.
+// Just don't expect it to add a fourth item.</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Holes silently break iteration
+const items = [1, , 3];
+items.map(x => x * 2);
+// wrong: [2, empty, 6] — the hole was SKIPPED
+// fix: use explicit undefined so map visits every position
+const items2 = [1, undefined, 3];
+items2.map(x => x * 2);   // [2, NaN, 6] — undefined * 2 is NaN, but at least visited</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Using a single comma to represent an empty array
+const empty = [,];
+empty.length;   // 1, not 0 — this is [hole]!
+// fix: empty array is just []
+const empty2 = [];</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Forgetting the comma between object items in an array of objects
+const users = [
+  { id: 1, name: 'Os' }
+  { id: 2, name: 'Sam' }
+];
+// wrong: SyntaxError — missing comma between the two objects
+// fix: add commas
+const users2 = [
+  { id: 1, name: 'Os' },
+  { id: 2, name: 'Sam' },
+];</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-9-4-3-0': `
+<pre class="language-javascript"><code class="language-javascript">// Zero items — no commas
+[].length;                       // 0
+
+// One item — no commas
+['only'].length;                 // 1
+[42].length;                     // 1
+
+// Two items — one comma
+[1, 2].length;                   // 2
+
+// Three items — two commas
+[1, 2, 3].length;                // 3
+
+// Trailing comma — legal, doesn't add an item
+[1, 2, 3,].length;               // 3
+
+// Multi-line with trailing comma
+const list = [
+  'apple',
+  'banana',
+  'cherry',
+];
+list.length;                     // 3
+
+// Whitespace variations — all identical
+[1,2,3];
+[1, 2, 3];
+[1 , 2 , 3];
+[
+  1,
+  2,
+  3,
+];
+// all → length 3, same items
+
+// HOLES from wrong commas
+[, 1, 2, 3].length;              // 4 — leading hole
+[1, , 3].length;                 // 3 — middle hole
+[1, , , 4].length;               // 4 — two middle holes
+[,,].length;                     // 2 — two holes
+[,].length;                      // 1 — one hole
+
+// Holes vs undefined
+[1, , 3].map(x => 'y');          // [1, empty, 'y'] — hole skipped
+[1, undefined, 3].map(x => 'y'); // ['y', 'y', 'y'] — no skip
+
+// Commas inside nested structures don't affect outer count
+[[1, 2], [3, 4]].length;         // 2
+[fn(1, 2), fn(3, 4)].length;     // 2
+[{ a: 1, b: 2 }].length;         // 1
+
+// Missing comma → SyntaxError (not shown; would fail to parse)
+// [1 2 3]                       ← would throw
+
+// Destructuring uses commas to SKIP (not create holes)
+const [, , third] = [1, 2, 3];
+third;                           // 3</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-9-4-3-1': `
+    <p><strong>Example: multi-line list of route definitions with trailing commas</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const routes = [
+  { path: '/',        component: Home    },
+  { path: '/about',   component: About   },
+  { path: '/contact', component: Contact },
+];</code></pre>
+
+    <p><strong>Example: array of CSS class names</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const classes = ['btn', 'primary', size, isActive ? 'active' : 'inactive'];
+element.className = classes.join(' ');</code></pre>
+
+    <p><strong>Example: array of dropdown options built from data</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const options = countries.map(c => ({
+  value: c.code,
+  label: c.name,
+}));</code></pre>
+
+    <p><strong>Example: destructuring to skip items</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const [, month, day] = date.split('/');   // skip the year, keep month and day</code></pre>
+
+    <p><strong>Example: multi-line array of test cases</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const testCases = [
+  { input: 'hello',   expected: 5  },
+  { input: '',        expected: 0  },
+  { input: 'a b c',   expected: 5  },
+  { input: 'longer',  expected: 6  },
+];</code></pre>
+
+    <p><strong>Example: comma-separated summary from an array</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const summary = tags.join(', ');
+// ['bug', 'urgent', 'frontend'] → "bug, urgent, frontend"</code></pre>
+
+    <p><strong>Example: single-line short array for a fixed set</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-9-4-3-2': `
+    <ul>
+      <li><strong>Array syntax []</strong> → commas are the separator inside the brackets</li>
+      <li><strong>Array items/elements</strong> → what commas separate</li>
+      <li><strong>.length</strong> → counts every slot, including holes created by wrong commas</li>
+      <li><strong>Trailing comma convention</strong> → legal, often preferred for multi-line arrays and multi-line function calls</li>
+      <li><strong>Holes</strong> → the JavaScript quirk that leading or middle commas create; usually a bug</li>
+      <li><strong>Iteration methods</strong> → most (<code>.map</code>, <code>.forEach</code>, <code>.filter</code>) skip holes but visit undefined; a real difference to know</li>
+      <li><strong>Destructuring</strong> → uses commas to SKIP items, not create holes: <code>const [, , third] = arr</code></li>
+      <li><strong>Object syntax</strong> → also uses commas between properties, with the same trailing-comma rule</li>
+      <li><strong>Function arguments</strong> → also comma-separated, also supports trailing commas in modern JS</li>
+      <li><strong>Comma operator</strong> → a totally different feature that shares the same character; rarely relevant</li>
+      <li><strong>Style guides</strong> → most enforce "space after comma" and "trailing commas on multi-line"</li>
+      <li><strong>Debugging</strong> → missing comma → SyntaxError; extra comma → hole (unexpected length or skipped iteration)</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-9-4-3-3': `
+    <ul>
+      <li>Array syntax []</li>
+      <li>Array items/elements</li>
+      <li>.length</li>
+      <li>Trailing commas</li>
+      <li>Holes vs undefined</li>
+      <li>Iteration methods (map, forEach, filter)</li>
+      <li>Destructuring</li>
+      <li>Object syntax</li>
+      <li>Common array mistakes</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+   Sub-lesson: 3.10.7 Arrays → first item
+ =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-9-6-0-0': `
+    <p>The <strong>first item</strong> of an array is the value at index <code>0</code> — the one at the very beginning of the list. Because JavaScript arrays are zero-indexed, "first" means position 0, not position 1. The syntax is short: <code>arr[0]</code>. That's the whole thing. Every time you need the item at the start of an array — the top search result, the first message in a conversation, the primary user, the header row — you're reaching for <code>arr[0]</code>.</p>
+    <p>Alongside the last item, first-item access is one of the most common array operations. Modern JavaScript also gives you <code>arr.at(0)</code> as a slightly newer alternative, which behaves identically to <code>arr[0]</code> for positive indexes. Both work; the bracket form is universal and slightly shorter, so it remains the standard idiom for the first item. This lesson zooms in on how to read the first item safely, what it returns when the array is empty, and the common patterns that show up around "getting the first one."</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-9-6-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const colors = ['red', 'green', 'blue'];
+
+// The standard way — bracket notation with index 0:
+colors[0];                  // "red"
+
+// Modern alternative — .at(0):
+colors.at(0);               // "red"
+
+// Both work identically for positive indexes. Bracket is the standard idiom.
+
+// Assigning the first item to a variable — very common
+const first = colors[0];    // "red"
+
+// Chaining property access if items are objects
+const users = [{ name: 'Os' }, { name: 'Sam' }];
+users[0].name;              // "Os"
+users[0]?.name;             // "Os" — optional chaining if array might be empty
+
+// Empty array — no first item
+const empty = [];
+empty[0];                   // undefined — no error
+empty.at(0);                // undefined
+
+// Single-item array — first and only
+const one = ['solo'];
+one[0];                     // "solo"
+
+// Modifying the first item (write with brackets on the left)
+colors[0] = 'crimson';
+colors;                     // ['crimson', 'green', 'blue']
+
+// Wrong: assuming index 1 is the first item (habit from 1-based languages)
+colors[1];                  // "green" — this is the SECOND item, not the first
+// fix: use index 0
+colors[0];                  // "red"
+
+// Wrong: accessing a property on an empty-array first item
+const noData = [];
+noData[0].name;             // TypeError — undefined has no .name
+// fix: check first, or use optional chaining
+noData[0]?.name;            // undefined, no throw</code></pre>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-9-6-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const colors = ['red', 'green', 'blue'];
+
+// Visualizing "first" in a zero-indexed array:
+//
+//   index:   0       1        2
+//   value:   'red'   'green'  'blue'
+//            ─┬─
+//             │
+//             └─ the FIRST item — at index 0
+//
+// Because indexes start at 0, "first" means "index 0."
+// This is different from human counting ("first, second, third" = 1, 2, 3).
+// Programming counts positions starting from 0, so the first position is 0.
+
+colors[0];                  // "red" — the first item
+
+// Two idioms for the same lookup:
+//   colors[0]      ← bracket notation, universal
+//   colors.at(0)   ← .at() method, modern (2022+)
+//
+// Both compute the same result. Choose based on team preference.
+// The bracket form is shorter and more common; .at() is useful mainly
+// when you also want negative indexes (like .at(-1) for the last item).
+
+// The first item can be any type:
+[42][0];                    // 42 — number
+[{ name: 'Os' }][0];        // { name: 'Os' } — object
+[[1, 2]][0];                // [1, 2] — nested array (an array whose first item is another array)
+[null][0];                  // null — even null counts as an item
+[undefined][0];             // undefined — same
+
+// The value returned is what's there NOW; if you change the array, subsequent
+// reads see the new value:
+colors[0] = 'crimson';
+colors[0];                  // "crimson" — updated
+
+// If the array is empty, there is no first item:
+[].length;                  // 0 — no items at all
+[][0];                      // undefined — no item at position 0
+// This is important because using undefined as if it were an item downstream
+// is one of the most common sources of bugs (see chunk 2).</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-9-6-0-3': `
+    <p><strong>The first item is always at index 0.</strong> Not index 1. This is the single most important thing to remember about array indexing in JavaScript (and most other programming languages). Programmers count from 0; humans count from 1. When you see <code>arr[1]</code> in code, that's the SECOND item, not the first.</p>
+<pre class="language-javascript"><code class="language-javascript">const items = ['a', 'b', 'c'];
+items[0];   // "a" — the FIRST item
+items[1];   // "b" — the SECOND item
+items[2];   // "c" — the THIRD (and last) item</code></pre>
+
+    <p><strong>Empty arrays return <code>undefined</code> for the first item.</strong> Both <code>[][0]</code> and <code>[].at(0)</code> return <code>undefined</code> without throwing. This is safe but silent — the bad value flows into whatever code you write next, and only fails there. If your array might be empty, guard the read: check <code>.length &gt; 0</code>, or use optional chaining when reaching into the returned value.</p>
+<pre class="language-javascript"><code class="language-javascript">const results = [];
+results[0];                 // undefined
+results[0].name;            // TypeError — undefined has no properties
+results[0]?.name;           // undefined, no throw
+
+// Common guard pattern:
+if (results.length > 0) {
+  const first = results[0];
+  // safe to use
+}
+
+// Or use a fallback with the nullish coalescing operator:
+const first = results[0] ?? { name: 'no result' };</code></pre>
+
+    <p><strong><code>arr[0]</code> and <code>arr.at(0)</code> are interchangeable for reading the first item.</strong> Both return the same value. The main practical difference is that <code>.at()</code> supports negative indexes (<code>arr.at(-1)</code> for the last item), while brackets don't. For the first item specifically, most code uses <code>arr[0]</code> because it's shorter and universally recognized.</p>
+
+    <p><strong>Reading the first item doesn't remove it.</strong> Both <code>arr[0]</code> and <code>arr.at(0)</code> are non-destructive — the array stays exactly as it was. If you want to read AND remove the first item, use <code>.shift()</code>. Note that <code>.shift()</code> is O(n) because it has to reindex all remaining items; for performance-sensitive code with big arrays, this matters.</p>
+<pre class="language-javascript"><code class="language-javascript">const queue = ['first', 'second', 'third'];
+
+// Read only — array unchanged
+queue[0];                   // "first"
+queue;                      // still ['first', 'second', 'third']
+
+// Read AND remove — array shortens
+const next = queue.shift(); // "first"
+queue;                      // ['second', 'third']</code></pre>
+
+    <p><strong>The first item can be any type.</strong> Number, string, boolean, object, array, function, null, undefined — whatever the array holds, the first slot holds one of those. Special-case values like <code>null</code> and <code>undefined</code> DO count as items and DO fill the first slot when they're the first thing put in.</p>
+<pre class="language-javascript"><code class="language-javascript">[null].length;              // 1 — null counts as an item
+[null][0];                  // null
+
+[undefined].length;         // 1 — undefined too
+[undefined][0];             // undefined
+
+// This is different from an empty slot (hole):
+[,].length;                 // 1 — a hole counts as a slot
+[,][0];                     // undefined — but iteration methods skip it</code></pre>
+
+    <p><strong>Assigning to <code>arr[0]</code> writes over the first item.</strong> The same bracket syntax is a WRITE when it appears on the left of <code>=</code>. This is the standard way to replace the first item without removing it or shifting others. The array's length doesn't change.</p>
+<pre class="language-javascript"><code class="language-javascript">const items = ['a', 'b', 'c'];
+items[0] = 'x';             // overwrites the first item
+items;                      // ['x', 'b', 'c']
+items.length;               // still 3
+
+// Compare to unshift (which INSERTS and shifts):
+items.unshift('y');
+items;                      // ['y', 'x', 'b', 'c']
+items.length;               // 4</code></pre>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-9-6-1-0': `
+    <p>You need the first item of an array constantly. The top result of a search. The first message in a chat window. The current step of a multi-step form. The primary owner in a list of collaborators. The first tab in a tab bar. The header row of a spreadsheet. The next item in a queue to process. The oldest entry in a chronological list. Any time "the one at the front" or "the top of the list" or "the earliest" is a meaningful concept, you're asking for the first item.</p>
+    <p>The lesson also solves a specific mental hazard: the off-by-one confusion between programming's 0-based indexing and human 1-based counting. When you say "the first user," a person means the number one user; but in code, that's <code>users[0]</code>, not <code>users[1]</code>. Reflexively reaching for <code>arr[0]</code> when you mean "first" is a habit that saves you from a whole class of subtle bugs, especially when translating requirements written in plain English ("the first of the month," "the first choice," "the first name") into code.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-9-6-1-1': `
+    <p>Reach for <code>arr[0]</code> any time you need the item at the start of a list. This includes: displaying the top result of a query, initializing a UI to show the first tab or step, checking the primary owner in a list, taking the next item off a queue, or comparing "what was the first thing that happened" against later events. All of these are direct positional reads — you don't need to search, you just need position 0.</p>
+    <p>Don't use <code>arr[0]</code> to search or filter — that's a different tool. If you want the first item that matches criteria (like "the first admin user" or "the first task that's not done"), use <code>.find()</code>. It's more expressive and doesn't hardcode a position that might not carry meaning. Reserve <code>arr[0]</code> for cases where "first by position" actually is what you mean.</p>
+    <p>Between <code>arr[0]</code> and <code>arr.at(0)</code>, prefer <code>arr[0]</code>. It's shorter, more universally recognized, and works in every JavaScript environment ever made. <code>.at(0)</code> is only meaningfully useful when you also want negative-index access via <code>.at(-1)</code>. If your code only reads the first item, brackets are the default choice.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-9-6-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Displaying the top search result
+const topResult = results[0];
+if (topResult) render(topResult);
+
+// Highlighting the primary owner in a shared document
+const primary = collaborators[0];
+badge.textContent = primary?.name ?? 'No owner';
+
+// Initializing a UI to show the first tab
+const currentTab = tabs[0];
+currentTab.classList.add('active');
+
+// Processing the next item from a queue (peek without removing)
+const nextJob = queue[0];
+if (nextJob) log(\`Next: \${nextJob.type}\`);
+
+// Getting the current step in a multi-step form
+const step = steps[currentIndex];   // uses index, but same idea
+
+// Reading the first (usually only) matching form input
+const firstEmail = document.querySelectorAll('input[type="email"]')[0];
+if (firstEmail) firstEmail.focus();
+
+// Extracting the initial value from a fresh array
+const [first] = someArray;          // destructuring — same as someArray[0]
+
+// The first key in a splitting operation
+const firstWord = sentence.split(' ')[0];   // "hello" from "hello world"
+
+// The area code from a phone number
+const areaCode = phone.split('-')[0];       // "555" from "555-123-4567"
+
+// The type of the first log entry
+const firstEntry = logs[0];
+if (firstEntry?.level === 'error') alertOnError();
+
+// Any time you need "the one at position 0," bracket-zero is the tool.</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-9-6-1-3': `
+    <p>Think of an array like a numbered row of lockers where the numbering starts at 0 instead of 1. Locker 0 is the first locker — the one at the very start of the row. When you want to see what's in the first locker, you say "locker 0, please" (that's <code>arr[0]</code>) and the row hands you whatever is inside.</p>
+    <p>The weird part is that "first" and "0" mean the same thing here. In everyday life, the first item on a shopping list is item 1. In JavaScript, the first item is item 0. This numbering choice sounds odd until you get used to it, but it's how almost every programming language works (Python, Java, C, C#, Ruby, Go — all zero-indexed). Once you internalize "the first item is at position 0," you'll stop tripping over it.</p>
+    <p>The other thing worth knowing: if the row is empty (no lockers at all), asking for locker 0 doesn't give you an error — it just gives you back "nothing" (<code>undefined</code>). This is a safety feature: reading from an empty array never crashes. But it can be a trap, because you then try to do something with that "nothing" — like read a property from it — and THAT throws. So always keep in mind that the first item might not exist, and handle the empty case explicitly.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-9-6-1-4': `
+    <p>The first item of an array is always at index 0 — this is a fixed language rule, not a design choice you can override. Every array has this property: if there's an item, it's at position 0; if there isn't, position 0 returns <code>undefined</code>. The two states are the ONLY two possible outcomes of reading <code>arr[0]</code>: a real item value, or <code>undefined</code>.</p>
+    <p>The syntactic pattern is <code>arr[0]</code>, one of the shortest expressions in the language. Under the hood, it's a direct property lookup on the array — constant time, no scanning, no allocation. Whether the array has 3 items or 3 million, reading the first item takes the same instant.</p>
+    <p>The relationship to remember: <em>index 0 is always the first, always exists (if the array has any items at all), and always safely returns <code>undefined</code> when the array is empty.</em> This makes <code>arr[0]</code> a reliable, no-surprise operation — the only question is whether you're prepared to handle the <code>undefined</code> case when the array might be empty.</p>
+    <p>The two ways to write it (<code>arr[0]</code> vs <code>arr.at(0)</code>) produce identical results. The bracket form is the universal idiom. <code>.at(0)</code> exists mainly for stylistic consistency with <code>.at(-1)</code> for the last item — if you already use <code>.at(-1)</code>, using <code>.at(0)</code> reads more consistently. Otherwise, brackets are shorter and the standard.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-9-6-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// Scenario: a search results page displays the top result prominently
+// at the top of the page, and the rest as a list below.
+
+const results = searchApi(query);   // returns an array of result objects
+
+function render() {
+  const topResult = results[0];
+
+  if (!topResult) {
+    // Empty results — show an empty state
+    container.innerHTML = '&lt;p&gt;No results found.&lt;/p&gt;';
+    return;
+  }
+
+  // Render the featured (first) result
+  featured.innerHTML = \`
+    &lt;article class="featured"&gt;
+      &lt;h2&gt;\${topResult.title}&lt;/h2&gt;
+      &lt;p&gt;\${topResult.snippet}&lt;/p&gt;
+    &lt;/article&gt;
+  \`;
+
+  // Render the rest of the results (from index 1 onward)
+  const rest = results.slice(1);
+  list.innerHTML = rest.map(r => \`
+    &lt;article class="result"&gt;
+      &lt;h3&gt;\${r.title}&lt;/h3&gt;
+    &lt;/article&gt;
+  \`).join('');
+}
+
+// Walk through what happens for a few different result sets:
+
+// Case A: results = [] (empty)
+// Step 1: topResult = results[0] = undefined
+// Step 2: !topResult is truthy (undefined is falsy)
+// Step 3: Show "No results found." Return early.
+
+// Case B: results = [{ title: 'Only one', snippet: '...' }]
+// Step 1: topResult = results[0] = { title: 'Only one', snippet: '...' }
+// Step 2: !topResult is false — continue
+// Step 3: Render the featured result with its title and snippet
+// Step 4: rest = results.slice(1) = [] — no other results
+// Step 5: list.innerHTML = ''.join('') = '' — empty list section
+
+// Case C: results = [{ title: 'A' }, { title: 'B' }, { title: 'C' }]
+// Step 1: topResult = results[0] = { title: 'A' }
+// Step 2: Featured article shows title "A"
+// Step 3: rest = results.slice(1) = [{ title: 'B' }, { title: 'C' }]
+// Step 4: List section renders two articles for B and C
+
+// Key patterns:
+//   - results[0] is always the "featured" or "primary" item.
+//   - Guard against empty with a truthy check before accessing properties.
+//   - slice(1) is the common way to get "everything after the first."
+//   - The same code handles 0, 1, or N results correctly.
+
+// This is the shape of most "top pick plus a list" UI patterns.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-9-6-2-0': `
+    <p>First-item bugs cluster around a small number of predictable patterns.</p>
+    <p><strong>1. Off-by-one — using index 1 for the first item.</strong> You wrote <code>arr[1]</code> because you thought "first" meant "one." That's the SECOND item. Fix: <code>arr[0]</code>. This is the classic bug that trips up beginners and people coming from 1-indexed languages (like Lua or older BASIC).</p>
+    <p><strong>2. "Cannot read properties of undefined" when the array is empty.</strong> You wrote <code>users[0].name</code> and the array was empty, so <code>users[0]</code> was <code>undefined</code>, and <code>.name</code> threw. Fix: guard with <code>if (users.length &gt; 0)</code> or use optional chaining <code>users[0]?.name</code>.</p>
+    <p><strong>3. Trying to modify a primitive first item through a copied variable.</strong> You wrote <code>let first = nums[0]; first = 999;</code> and expected the array to change. It didn't — primitives are copied when extracted. Fix: assign directly with <code>nums[0] = 999</code>.</p>
+    <p><strong>4. Confusing <code>arr[0]</code> with <code>.shift()</code>.</strong> <code>arr[0]</code> reads without removing. <code>.shift()</code> reads AND removes. If you meant to peek at the next item in a queue, use <code>arr[0]</code>. If you meant to take it off the queue, use <code>.shift()</code>.</p>
+    <p><strong>5. Using <code>arr[0]</code> when you should be searching.</strong> You wrote <code>const admin = users[0]</code> because "the admin should be first" — but that's a positional guess, not a real search. If you actually want the admin, use <code>.find(u => u.role === 'admin')</code>. This bug is subtle because it works accidentally in test data.</p>
+    <p><strong>6. Assuming the first item stays the same after sorting or filtering.</strong> You cached a reference to <code>arr[0]</code>, then sorted the array. Now the first item is different, but your cached variable still points to the old one. Fix: don't cache positional references across mutations; re-read <code>arr[0]</code> each time you need it.</p>
+    <p><strong>7. Ternaries or defaults hiding the empty case.</strong> You wrote <code>const first = arr[0] || 'default'</code> and got 'default' even when the array had a falsy first item (like <code>0</code> or <code>''</code>). Fix: use nullish coalescing (<code>??</code>), which only falls through for <code>null</code> and <code>undefined</code>: <code>const first = arr[0] ?? 'default'</code>.</p>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-9-6-2-1': `
+    <p>The first item of an array is always at index 0. That's the rule. In JavaScript, "first" means "position 0" — not "position 1." Once you internalize this, off-by-one errors on the first item stop happening. The syntax is <code>arr[0]</code>, and it's the shortest, most direct way to get what you want.</p>
+    <p>The other click: <code>arr[0]</code> either gives you a real item or <code>undefined</code> — those are the only two possibilities. There's no third case, no error, no crash. That safety is nice for reading, but it means you have to explicitly handle the empty-array case in code that follows. Any operation on the returned value (property access, method call, arithmetic) that assumes an item was returned will fail if the array was empty. The moment you internalize "reading the first item is safe, but USING it isn't," you'll instinctively guard with <code>?.</code> or a <code>.length</code> check.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-9-6-2-2': `
+    <p><strong>Confusion: "the first item is at index 1"</strong></p>
+    <p>It's at index 0. This is universal across almost every programming language. Memorize it once and let it become automatic — "first is zero" is the mantra.</p>
+
+    <p><strong>Confusion: "reading arr[0] removes or affects the array"</strong></p>
+    <p>It doesn't. Reads are non-destructive. Use <code>.shift()</code> to remove and return the first item; use <code>arr[0]</code> to just peek at it.</p>
+
+    <p><strong>Confusion: "arr[0] throws when the array is empty"</strong></p>
+    <p>It doesn't. It returns <code>undefined</code>. Using that <code>undefined</code> as if it were an item (like <code>arr[0].name</code>) is what throws. Guard against that.</p>
+
+    <p><strong>Confusion: "arr[0] and arr.at(0) are meaningfully different"</strong></p>
+    <p>They're not for reading. Both return the same value. The main practical difference is that <code>.at()</code> supports negative indexes; brackets don't. For "first item," bracket is the standard idiom.</p>
+
+    <p><strong>Confusion: "const arr means arr[0] can't change"</strong></p>
+    <p>It can. <code>const</code> prevents reassigning the variable (<code>arr = ...</code>), but it doesn't prevent modifying the array's contents. <code>arr[0] = 'new'</code> is legal on a <code>const</code> array.</p>
+
+    <p><strong>Confusion: "reading arr[0] and then using it means changes to the array affect my variable"</strong></p>
+    <p>Depends on the type. If the first item was a primitive (number, string, boolean), your variable is a copy — array changes don't affect it. If it was an object, your variable is a reference — modifying properties on it DOES affect the array's item.</p>
+<pre class="language-javascript"><code class="language-javascript">// Primitive first item — copied
+const nums = [1, 2, 3];
+let first = nums[0];
+nums[0] = 999;
+first;                  // still 1 — copy is independent
+
+// Object first item — shared reference
+const users = [{ name: 'Os' }];
+const first = users[0];
+first.name = 'X';
+users[0].name;          // 'X' — same object</code></pre>
+
+    <p><strong>Confusion: "arr[0] falls back to 'default' when the first item is 0 or ''"</strong></p>
+    <p>It does with <code>||</code>, and that's usually a bug. <code>arr[0] || 'default'</code> falls through for ANY falsy first item — including <code>0</code>, <code>''</code>, <code>false</code>, and <code>NaN</code> — not just when the array is empty. Use <code>??</code> if you only want to fall through for <code>null</code> or <code>undefined</code>.</p>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-9-6-2-3': `
+<pre class="language-javascript"><code class="language-javascript">// Off-by-one — using index 1 for the first item
+const items = ['a', 'b', 'c'];
+const first = items[1];
+// wrong: items[1] is 'b', not 'a'
+// fix: use index 0
+const first2 = items[0];</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Reading first item property on an empty array
+const users = [];
+const name = users[0].name;
+// wrong: TypeError — users[0] is undefined
+// fix: check first, or use optional chaining
+if (users.length > 0) {
+  const name = users[0].name;
+}
+// or
+const name2 = users[0]?.name;   // undefined, no throw</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Modifying a primitive copy expecting the array to update
+const scores = [90, 85, 72];
+let first = scores[0];
+first = 100;
+console.log(scores);
+// wrong: scores is still [90, 85, 72] — first was a copy
+// fix: assign directly
+scores[0] = 100;</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Confusing arr[0] with .shift()
+const queue = ['a', 'b', 'c'];
+const next = queue[0];
+console.log(queue);
+// queue is still ['a', 'b', 'c'] — arr[0] doesn't remove
+// If you meant "take the next item off the queue":
+const removed = queue.shift();
+// removed is 'a', queue is now ['b', 'c']</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Using arr[0] as a search for a specific item
+const users = [
+  { role: 'user', name: 'Sam' },
+  { role: 'admin', name: 'Os' },
+];
+const admin = users[0];   // WRONG — this is the FIRST user, not the admin
+// fix: search by criteria
+const admin2 = users.find(u => u.role === 'admin');</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Caching arr[0] before mutation
+const items = ['a', 'b', 'c'];
+const first = items[0];   // 'a'
+items.unshift('z');
+first;                    // still 'a' (a primitive, copied)
+items[0];                 // 'z' (updated)
+// If items were objects, first would still refer to the old first object,
+// which is now at items[1]. Point being: don't rely on cached first
+// after mutations.</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Using || instead of ?? for defaults
+const counts = [0, 5, 10];
+const first = counts[0] || 100;
+// wrong: first is 100, because counts[0] is 0 (falsy) — the || fell through
+// fix: use ?? (nullish coalescing)
+const first2 = counts[0] ?? 100;   // 0 — only null/undefined trigger fallback</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Chaining without safety on the result
+const data = getData();   // might return an empty array
+const label = data[0].title.toUpperCase();
+// wrong: if data is empty, data[0] is undefined and .title throws
+// fix: guard the chain
+const label2 = data[0]?.title?.toUpperCase() ?? '';</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-9-6-3-0': `
+<pre class="language-javascript"><code class="language-javascript">const colors = ['red', 'green', 'blue'];
+
+// The two idioms
+colors[0];                       // "red"
+colors.at(0);                    // "red"
+
+// Empty array
+[].length;                       // 0
+[][0];                           // undefined
+[].at(0);                        // undefined
+
+// Single-item array — first and only
+['solo'][0];                     // "solo"
+[42][0];                         // 42
+[{ id: 1 }][0];                  // { id: 1 }
+
+// Different value types as the first item
+[null][0];                       // null
+[undefined][0];                  // undefined
+[false][0];                      // false
+[0][0];                          // 0
+[[1, 2]][0];                     // [1, 2] — first item is a nested array
+
+// Reading is non-destructive
+const items = ['a', 'b', 'c'];
+items[0];                        // "a"
+items.length;                    // still 3
+
+// Removing is different (use .shift)
+items.shift();                   // "a"
+items;                           // ['b', 'c']
+
+// Modify first item — bracket assignment
+const scores = [90, 85, 72];
+scores[0] = 100;
+scores;                          // [100, 85, 72]
+
+// Optional chaining on first item
+const users = [{ name: 'Os' }];
+users[0]?.name;                  // "Os"
+[].at(0)?.name;                  // undefined, no throw
+
+// Property access on empty
+[].at(0).name;                   // TypeError — undefined has no properties
+
+// Destructuring — equivalent to arr[0]
+const [first] = ['x', 'y', 'z']; // first = 'x'
+const [head, ...rest] = ['x', 'y', 'z']; // head = 'x', rest = ['y', 'z']
+
+// Bracket doesn't support negative
+[1, 2, 3][-1];                   // undefined
+// Use .at for negative
+[1, 2, 3].at(-1);                // 3
+
+// || vs ??
+[0, 1, 2][0] || 'fallback';      // 'fallback' — 0 is falsy!
+[0, 1, 2][0] ?? 'fallback';      // 0 — nullish only</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-9-6-3-1': `
+    <p><strong>Example: featuring the top search result</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const top = results[0];
+if (top) featureBanner.textContent = top.title;</code></pre>
+
+    <p><strong>Example: initializing to the first tab</strong></p>
+<pre class="language-javascript"><code class="language-javascript">tabs[0]?.classList.add('active');
+showPanel(tabs[0]?.dataset.panel);</code></pre>
+
+    <p><strong>Example: peeking at the next queued job</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const next = queue[0];
+statusLabel.textContent = next ? \`Up next: \${next.name}\` : 'Queue empty';</code></pre>
+
+    <p><strong>Example: the primary owner in a document</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const primaryOwner = collaborators[0];
+badge.textContent = primaryOwner?.name ?? 'Unowned';</code></pre>
+
+    <p><strong>Example: first-word check for a command parser</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const parts = input.trim().split(' ');
+const command = parts[0];
+if (command === 'help') showHelp();</code></pre>
+
+    <p><strong>Example: focus the first invalid field on submit</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const invalid = [...form.querySelectorAll(':invalid')];
+invalid[0]?.focus();</code></pre>
+
+    <p><strong>Example: destructuring the first result</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const [first, ...rest] = posts;
+if (first) renderHero(first);
+renderList(rest);</code></pre>
+
+    <p><strong>Example: safely reading the first uploaded file</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const firstFile = fileInput.files[0];
+if (firstFile) upload(firstFile);</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-9-6-3-2': `
+    <ul>
+      <li><strong>Array indexes</strong> → 0-based positions; the first is at 0</li>
+      <li><strong>Last item</strong> → the mirror pattern; last is at <code>length - 1</code> or <code>arr.at(-1)</code></li>
+      <li><strong>Array .length</strong> → checking <code>length &gt; 0</code> guards the empty-array case</li>
+      <li><strong>Reading items with bracket notation</strong> → the general syntax; first-item is the most common instance</li>
+      <li><strong>.at()</strong> → modern accessor; behaves the same as brackets for positive indexes</li>
+      <li><strong>.shift()</strong> → reads AND removes the first item (destructive)</li>
+      <li><strong>.unshift()</strong> → adds new items to the front; the added item becomes the new first</li>
+      <li><strong>Destructuring</strong> → <code>const [first] = arr</code> is equivalent to <code>arr[0]</code></li>
+      <li><strong>Optional chaining (<code>?.</code>)</strong> → safely reads properties when the first item might not exist</li>
+      <li><strong>Nullish coalescing (<code>??</code>)</strong> → fallback for empty; safer than <code>||</code> because it doesn't skip falsy first items</li>
+      <li><strong>.find()</strong> → the search-by-criteria alternative when "first" doesn't just mean "position 0"</li>
+      <li><strong>.slice(1)</strong> → common pattern for "everything after the first item"</li>
+      <li><strong>Debugging</strong> → most first-item bugs are off-by-one (using index 1) or missing empty-array guards</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-9-6-3-3': `
+    <ul>
+      <li>Array indexes</li>
+      <li>Last item</li>
+      <li>Array .length</li>
+      <li>Reading items with bracket notation</li>
+      <li>.shift() — remove and return first</li>
+      <li>.unshift() — add to front</li>
+      <li>Destructuring</li>
+      <li>Optional chaining</li>
+      <li>Nullish coalescing (??)</li>
+      <li>.find() — search by criteria</li>
+      <li>Common array mistakes</li>
+    </ul>
+  `,
+
+
   /* ========================================================= 
    Sub-lesson: 3.10.9 Arrays → .length
  =======================================================*/

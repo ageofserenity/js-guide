@@ -1,0 +1,45 @@
+Section 3.10 Arrays — Skipped Lessons
+
+--------------------------------------------------------------------
+
+3.10.6 indexes starting at 0 — SKIPPED (to be removed)
+
+Reason:
+  The 0-based indexing concept is covered extensively across multiple
+  other lessons in Section 3.10:
+
+  - 3.10.7 first item — hinges on the 0-based rule (arr[0])
+  - 3.10.8 last item — the length - 1 relationship comes directly from 0-based
+  - 3.10.9 .length — explains the length vs highest-index offset in depth
+  - 3.10.10 reading items with bracket notation — full coverage of index behavior
+
+  Writing a full 18-piece lesson would duplicate content the reader
+  either just saw or is about to see.
+
+Plan:
+  Remove from data.js later. Currently at path topics-9-5-*.
+
+If revisited later, options:
+  - Turn it into a SHORT concept-only lesson focused on: why 0-based
+    indexing exists, the off-by-one bug pattern, comparison with
+    1-based languages — no repeat of the mechanics.
+  - Remove entirely from data.js and let the other lessons cover it.
+  - Merge the "why 0-based" concept into the "first item" lesson intro.
+
+--------------------------------------------------------------------
+
+3.3.13 common methods — SKIPPED (Strings section)
+
+Reason:
+  Most string method coverage lives in Section 5 (Method/Snippet
+  Reference), which already has the 18-piece lesson format applied
+  to each individual method (toUpperCase, toLowerCase, trim, includes,
+  slice, split, replace, indexOf, startsWith, endsWith, etc.).
+
+  Creating a "common methods" lesson in 3.3 would duplicate that work.
+
+If revisited later, options:
+  - Turn it into a short OVERVIEW lesson (~5 sentences per method) with
+    links pointing into Section 5 for the full treatment.
+  - Remove from data.js entirely and update the section flow.
+  - Keep it as-is (empty) and rely on Section 5 as the canonical source.
