@@ -5071,6 +5071,1487 @@ if (third) third.checked = true;</code></pre>
   `,
 
   /* ========================================================= 
+     Sub-lesson: 3.10.10 Arrays → updating items
+   =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-9-10-0-0': `
+    <p>The <code>=</code> assignment operator with bracket notation is how you change what's stored at a specific position in an array. You write the array's variable name, followed by square brackets containing the index you want to change, followed by <code>=</code> and the new value: <code>colors[0] = 'crimson'</code>, <code>users[3] = newUser</code>, <code>scores[i] = 100</code>. (The <code>i</code> in that last one is just a variable holding an index — <code>i</code> is a common convention short for "index," not required syntax; any variable name, literal number, or expression that produces a number works the same way.) JavaScript replaces whatever was at that position with the value on the right side of <code>=</code>. Nothing else in the array is touched — same length, same other items, just that one slot changed.</p>
+    <p>This is the write side of the same bracket syntax you already know for reading. The brackets and index look identical to <code>arr[0]</code>; the only difference is that they appear on the left side of an <code>=</code>. That symmetry is the whole API: brackets on the right of <code>=</code> read the position, brackets on the left of <code>=</code> write to it. Once you learn one, you know the other — and this single mechanism handles everything from replacing an item you already have to extending the array past its current end.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-9-10-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const colors = ['red', 'green', 'blue'];
+
+// Basic write — replace the value at a specific index
+colors[0] = 'crimson';       // colors is now ['crimson', 'green', 'blue']
+colors[1] = 'lime';          // colors is now ['crimson', 'lime', 'blue']
+colors[2] = 'navy';          // colors is now ['crimson', 'lime', 'navy']
+
+// The index can be a variable or an expression
+const i = 1;
+colors[i] = 'olive';                    // writes at position 1
+colors[i + 1] = 'teal';                 // writes at position 2
+colors[colors.length - 1] = 'indigo';   // writes at the last position
+
+// Writing at an index that doesn't exist yet EXTENDS the array
+const items = ['a', 'b'];
+items[2] = 'c';              // items is now ['a', 'b', 'c'] — length grew to 3
+items[5] = 'f';              // items is now ['a', 'b', 'c', empty, empty, 'f']
+                             // length is 6, positions 3 and 4 are HOLES
+
+// Any value type is allowed on the right
+colors[0] = 42;              // numbers work
+colors[1] = true;            // booleans work
+colors[2] = { hex: '#f00' }; // objects work
+colors[0] = null;            // null works
+colors[1] = undefined;       // even undefined works
+
+// Writing into a nested array — chain brackets on the left
+const grid = [[1, 2], [3, 4]];
+grid[0][1] = 99;             // grid is now [[1, 99], [3, 4]]
+
+// Writing a property on an object item — dot after the brackets
+const users = [{ name: 'Os' }, { name: 'Sam' }];
+users[0].name = 'Osiris';    // users[0] is now { name: 'Osiris' }
+
+// const does NOT block bracket assignment
+const fixed = ['a', 'b'];
+fixed[0] = 'z';              // allowed — const locks the reference, not the contents
+fixed = ['x', 'y'];          // TypeError — reassigning the variable is blocked
+
+// Wrong: negative indexes silently create weird string keys, not "last"
+colors[-1] = 'oops';         // does NOT set the last item — see the details piece
+
+// Wrong: .at() is read-only
+colors.at(0) = 'x';          // SyntaxError — .at() can't be on the left of =</code></pre>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-9-10-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const colors = ['red', 'green', 'blue'];
+colors[1] = 'lime';
+
+// Breaking down the assignment expression:
+//
+//   colors[1] = 'lime';
+//   │      │  │    │
+//   │      │  │    └── the NEW VALUE — what will replace the current contents
+//   │      │  └─────── the ASSIGNMENT OPERATOR — "put the right side into the left slot"
+//   │      └────────── the INDEX — which position to write to
+//   └───────────────── the ARRAY — the container you're writing into
+//
+// The brackets are still the ACCESS OPERATOR. Their position relative
+// to = decides whether they READ or WRITE:
+//
+//   const x = colors[1];    // brackets on the RIGHT of = → READ
+//   colors[1] = 'lime';     // brackets on the LEFT  of = → WRITE
+
+// Step by step, what JS does when it evaluates colors[1] = 'lime':
+//
+// 1. Evaluate 'lime' — the right side. Get the string "lime".
+// 2. Evaluate 'colors' — get the array reference.
+// 3. Evaluate '1' — get the number 1 (the index).
+// 4. Store "lime" at position 1 of the array.
+// 5. Return the value that was written ("lime") as the expression's result.
+
+// That last step matters: assignment is itself an expression, not just a statement.
+// It returns the assigned value, so you can chain or capture it:
+const written = (colors[0] = 'scarlet');
+// colors[0] is now "scarlet", and 'written' also holds "scarlet".
+
+// You can even chain multiple writes:
+colors[0] = colors[1] = colors[2] = 'black';
+// All three positions are now "black".
+// (Reads right-to-left: set colors[2]='black', that returns 'black',
+//  which then gets written into colors[1], which returns 'black' again,
+//  which gets written into colors[0].)
+
+// The array is MODIFIED IN PLACE. There is no new array.
+// Any other variable pointing to the same array sees the change:
+const alias = colors;
+colors[0] = 'white';
+// alias[0] is now "white" too — same array, one reference change is visible everywhere.</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-9-10-0-3': `
+    <p><strong>Bracket-on-left is a write; bracket-on-right is a read.</strong> The syntax is identical either way. The only thing that flips it from read to write is whether the brackets are on the left side of an <code>=</code>. This is the entire rule. Once you see it, the whole array read/write API collapses into one consistent pattern.</p>
+<pre class="language-javascript"><code class="language-javascript">const arr = ['a', 'b', 'c'];
+const x = arr[0];       // READ — brackets on right of =
+arr[0] = 'z';           // WRITE — brackets on left of =</code></pre>
+
+    <p><strong>Writing at an out-of-bounds index extends the array and creates HOLES.</strong> If you write to index <code>10</code> in a 3-item array, the array's <code>length</code> becomes <code>11</code>, positions <code>3</code> through <code>9</code> become empty slots ("holes"), and reading them returns <code>undefined</code>. The array is now "sparse." This is legal but almost never what you want — use <code>.push()</code> to append cleanly, and only write directly to an index if you already know that slot should exist.</p>
+<pre class="language-javascript"><code class="language-javascript">const items = ['a', 'b', 'c'];
+items[10] = 'z';
+console.log(items.length);   // 11
+console.log(items[5]);       // undefined
+console.log(items);          // ['a', 'b', 'c', empty × 7, 'z']</code></pre>
+
+    <p><strong>Negative and non-numeric indexes don't behave the way you'd expect.</strong> <code>arr[-1] = 'x'</code> does NOT set the last item — it adds a property literally named <code>"-1"</code> to the array object, which doesn't count toward <code>.length</code> and won't show up in loops or most methods. Same for string keys like <code>arr['name'] = 'x'</code>. Arrays are objects underneath, so this is technically allowed, but it defeats the point of using an array. If you want to write to the last item, use <code>arr[arr.length - 1] = x</code>.</p>
+<pre class="language-javascript"><code class="language-javascript">const items = ['a', 'b', 'c'];
+items[-1] = 'z';
+console.log(items.length);            // still 3
+console.log(items);                   // ['a', 'b', 'c']  ← 'z' is hidden
+console.log(items[-1]);               // 'z'  ← it's there, but as a property
+items[items.length - 1] = 'z';        // this is how you replace the last item
+console.log(items);                   // ['a', 'b', 'z']</code></pre>
+
+    <p><strong><code>const</code> does NOT prevent bracket assignment.</strong> <code>const</code> locks the variable to a specific array reference — you can't reassign the variable to a different array. But the array's contents are still mutable. <code>arr[0] = x</code> changes what's inside the array without changing which array the variable points to, so it's allowed. If you need a truly frozen array, use <code>Object.freeze(arr)</code>.</p>
+<pre class="language-javascript"><code class="language-javascript">const arr = ['a', 'b'];
+arr[0] = 'z';               // OK — modifying contents
+arr = ['x', 'y'];           // TypeError — reassigning the variable
+const frozen = Object.freeze(['a', 'b']);
+frozen[0] = 'z';            // silently ignored (or throws in strict mode)</code></pre>
+
+    <p><strong>Bracket assignment mutates the array in place — every reference to it sees the change.</strong> Arrays are reference types. If two variables point to the same array (or if the array was passed into a function), writing to a position updates the one and only underlying array. Every reference now sees the new value. This is different from primitives, where copying a value gives you a separate independent copy.</p>
+<pre class="language-javascript"><code class="language-javascript">const original = [1, 2, 3];
+const alias = original;
+alias[0] = 99;
+console.log(original);        // [99, 2, 3] — the original changed too</code></pre>
+
+    <p><strong>Assignment is an expression and returns the assigned value.</strong> <code>arr[0] = 'x'</code> is not just a statement — the whole thing evaluates to <code>'x'</code>. That's why chained assignments (<code>a = b = c = 5</code>) work and why you can wrap an assignment in parentheses to capture the value while also writing it. You rarely need this on purpose, but it's worth knowing so unexpected chains don't confuse you.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-9-10-1-0': `
+    <p>Arrays are worthless if their contents can never change. The whole point of storing a list of scores, todos, cart items, or messages is that those things update over time — a score increases, a todo gets completed, a cart quantity changes, a message is edited. You need a way to reach into a specific slot and swap in a new value without rebuilding the entire array from scratch. Bracket assignment is that mechanism — the direct, positional write that lets you change one item and leave everything else alone.</p>
+    <p>The specific problem the syntax solves is <em>positional replacement</em>. Given an array, an index, and a new value, replace whatever is at that position. Not "add a new item to the end" (that's <code>.push()</code>). Not "remove and insert" (that's <code>.splice()</code>). Not "produce a new array with every item transformed" (that's <code>.map()</code>). Just "the value at this specific slot needs to be this new value, right now, in place." Bracket assignment is the shortest, most direct way to express that intent.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-9-10-1-1': `
+    <p>Use bracket assignment any time you know the exact position of the item you want to change. If you know it's the first item, that's <code>arr[0] = newValue</code>. If you're inside a <code>for</code> loop with counter <code>i</code>, that's <code>arr[i] = newValue</code>. If you just called <code>.findIndex()</code> and got a position back, that's <code>arr[thatIndex] = newValue</code>. All of these are moments where "I know exactly which slot" is true, and bracket assignment is the tool. It's also the fastest way to change one item — no method call, no new array allocation, just a direct write.</p>
+    <p>Don't use bracket assignment when you actually need to add, insert, or remove — those are structural changes and belong to <code>.push()</code>, <code>.unshift()</code>, <code>.splice()</code>, and their siblings. Also don't use it when you want a new array left over with the change applied instead of modifying the original — reach for <code>.map()</code>, the spread operator, or <code>.with()</code> (a modern method that returns a copy with one index changed). Bracket assignment is specifically for "I have this array, I want to modify it in place, I know the exact position." Any deviation from that shape usually means a different tool is the right one.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-9-10-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Replacing an item at a known position
+const colors = ['red', 'green', 'blue'];
+colors[1] = 'lime';
+
+// Updating a specific item found by index-search
+const idx = users.findIndex(u => u.id === 42);
+if (idx !== -1) {
+  users[idx] = updatedUser;
+}
+
+// Bulk-transforming inside a for loop (mutating each item in place)
+for (let i = 0; i < prices.length; i++) {
+  prices[i] = prices[i] * 1.1;   // add 10% tax
+}
+
+// Toggling a boolean in a checkbox-state array
+selected[i] = !selected[i];
+
+// Updating one cell in a 2D grid (board games, spreadsheets)
+const board = [
+  [' ', ' ', ' '],
+  [' ', ' ', ' '],
+  [' ', ' ', ' '],
+];
+board[1][1] = 'X';       // center cell
+
+// Updating a property on an object item (very common)
+const users = [{ name: 'Os', age: 30 }];
+users[0].age = 31;        // reach into the object at the array position
+
+// Filling an array by writing to each position
+const zeros = new Array(5);
+for (let i = 0; i < zeros.length; i++) {
+  zeros[i] = 0;
+}
+
+// Building up a lookup table by writing at computed indexes
+const counts = [];
+for (const item of items) {
+  counts[item.id] = (counts[item.id] || 0) + 1;
+}
+
+// Swapping two positions using a temporary variable
+const tmp = arr[i];
+arr[i] = arr[j];
+arr[j] = tmp;
+
+// Any time you know "which position" and have a new value ready, brackets on
+// the left of = will put that value there.</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-9-10-1-3': `
+    <p>Think of an array like a row of lockers, each with a number on it. Reading with brackets was walking up to a locker and opening it to see what's inside. Bracket assignment is walking up to a locker, opening it, taking out whatever was there, and putting something new in. The locker still exists in the same spot, still has the same number, still holds one item — but the item is different now.</p>
+    <p>The row is very cooperative. Tell it "locker 3, here's a new shirt" and it swaps out whatever was there. Tell it "locker 12, here's a phone" even if there is no locker 12 and it will build the locker on the spot — plus every locker between 3 and 12 that didn't exist yet, all sitting there empty. That's what "extending the array creates holes" means. The row didn't complain, but you now have a bunch of empty lockers you weren't expecting.</p>
+    <p>The important part: the row itself is the same row. If your friend was also looking at the same row of lockers, they'd see your change too. This is the reference thing — arrays are shared by reference, so a write is visible to everyone holding the array. Bracket assignment isn't producing a "new row with one different locker." It's editing the original row that everyone can see.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-9-10-1-4': `
+    <p>Bracket assignment is a store operation: given an array, an index, and a value, place the value at that position in the array. The array is a numbered set of slots; the index tells JavaScript which slot; the value on the right of <code>=</code> is what gets placed there. That's the entire mechanism. Nothing else happens — no shifting of other items, no length recalculation for the general case, no new array. Just an in-place edit of one slot.</p>
+    <p>The key mental model: <em>brackets on the left of <code>=</code> write; brackets on the right read</em>. The syntax is identical — <code>arr[i]</code> — but the meaning flips based on which side of <code>=</code> the expression sits on. <code>const x = arr[0]</code> reads. <code>arr[0] = x</code> writes. Same brackets, opposite direction. This is the same one-syntax-two-jobs pattern you've already seen for reading; internalizing it here is what makes the whole array API feel like one thing instead of two.</p>
+    <p>The other mental model that matters: <em>bracket assignment mutates; it does not copy</em>. If <code>a</code> and <code>b</code> both point to the same array, writing through <code>a</code> changes what <code>b</code> sees. If you passed the array into a function, the function's writes are visible to the caller when the function returns. This is different from primitives (numbers, strings) where copying a value gives you an independent duplicate. With arrays, one write is one edit to the one underlying object that everyone shares.</p>
+    <p>Finally: <em>writing to an index past the current length silently extends the array</em>. There is no bounds check. There is no error. If you write to <code>arr[500]</code>, the array is now at least 501 items long, with holes in between. This is a common source of bugs when an index is computed from something unreliable (user input, a stale variable, a wrong formula) — you don't crash, you just quietly grow the array. If bounds matter, check them yourself.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-9-10-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// Scenario: a quiz where the user can go back and change any answer.
+// The answers array holds one entry per question. Whenever the user
+// changes their answer to question N, we overwrite answers[N].
+const answers = ['A', 'B', 'C', 'D', 'A'];
+
+// The user goes back and changes question 2 from 'C' to 'B'.
+answers[2] = 'B';
+
+// Then changes question 4 from 'A' to 'D'.
+answers[4] = 'D';
+
+console.log(answers);
+// ['A', 'B', 'B', 'D', 'D']
+
+// What JS does, step by step, focusing on the two writes:
+
+// Step 1: Evaluate answers[2] = 'B'.
+//   1a. Evaluate the right side 'B'. Result: the string "B".
+//   1b. Evaluate 'answers' on the left. Result: the array reference.
+//   1c. Evaluate '2' as the index. Result: the number 2.
+//   1d. Store "B" at position 2 of the array.
+//        The array is now ['A', 'B', 'B', 'D', 'A'].
+//   1e. The expression returns "B" (not usually captured).
+
+// Step 2: Evaluate answers[4] = 'D'.
+//   2a. Right side 'D'. Result: the string "D".
+//   2b. Left side 'answers'. Result: same array reference.
+//   2c. Index '4'. Result: the number 4.
+//   2d. Store "D" at position 4 of the array.
+//        The array is now ['A', 'B', 'B', 'D', 'D'].
+//   2e. Expression returns "D".
+
+// Observations:
+//   - Only positions 2 and 4 changed. Every other item was untouched.
+//   - The array's length did not change (writes were within existing bounds).
+//   - No new array was created — this is the SAME array, edited in place.
+//   - If any other code held a reference to 'answers', that code now
+//     also sees the updated values on the next read.
+
+// What if the user answered a NEW question we didn't have a slot for yet?
+answers[5] = 'A';
+// The array grows to length 6, and position 5 now holds 'A'.
+// The array is now ['A', 'B', 'B', 'D', 'D', 'A'].
+
+// What if they somehow skipped ahead and answered question 8?
+answers[8] = 'C';
+// Length is now 9, positions 6 and 7 are HOLES (empty slots).
+// The array is now ['A', 'B', 'B', 'D', 'D', 'A', empty, empty, 'C'].
+// This is legal but almost never what you want — usually you'd use .push()
+// or fill the gap explicitly before jumping ahead.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-9-10-2-0': `
+    <p>Bracket-assignment bugs cluster around a handful of patterns. For each one, the buggy shape is on top and the diagnostic check that catches it is right below.</p>
+
+    <p><strong>1. The change "didn't happen."</strong> You wrote to a position but reading it back shows the old value. Usually the index was wrong, or you wrote to a copy of the array instead of the original.</p>
+<pre class="language-javascript"><code class="language-javascript">// BUG — value seems unchanged after the write
+const colors = ['red', 'green', 'blue'];
+colors[2] = 'lime';                // meant to change 'green' at index 1
+console.log(colors[1]);            // still 'green' — where did my update go?
+
+// DEBUG — log the whole array to see where the write actually landed
+console.log(colors);               // ['red', 'green', 'lime']
+                                   // wrote to slot 2, not the slot you were checking</code></pre>
+
+    <p><strong>2. The array unexpectedly got much longer.</strong> You wrote to an index that was past the current end, silently extending the array and filling the gap with holes.</p>
+<pre class="language-javascript"><code class="language-javascript">// BUG — length jumps far beyond what you expected
+const arr = ['a', 'b', 'c'];
+const i = 10;                     // i came from somewhere (loop counter, form input, etc.)
+arr[i] = 'z';
+console.log(arr.length);          // 11 — did NOT expect this
+
+// DEBUG — same setup, but bounds-check i BEFORE writing
+const arr2 = ['a', 'b', 'c'];
+const i2 = 10;
+if (i2 < 0 || i2 >= arr2.length) {
+  console.warn('index out of range:', i2, 'length:', arr2.length);
+} else {
+  arr2[i2] = 'z';
+}</code></pre>
+
+    <p><strong>3. Weird holes appear in loops or method calls.</strong> Follow-on from #2: <code>.forEach()</code>, <code>.map()</code>, and <code>for...of</code> skip empty slots, so iteration seems to jump over positions that "should" be there.</p>
+<pre class="language-javascript"><code class="language-javascript">// BUG — some indexes never fire in forEach
+arr.forEach((v, i) => console.log(i, v));   // 0, 1, 2, 8, 9  (3–7 missing)
+
+// DEBUG — count holes vs real items
+console.log('length:', arr.length);
+console.log('actual items:', arr.filter(() => true).length);
+// if these don't match, the array has holes</code></pre>
+
+    <p><strong>4. Another variable also changed.</strong> You wrote through one variable and a completely different variable now shows the new value. They point to the same array.</p>
+<pre class="language-javascript"><code class="language-javascript">// BUG — mutating a shared reference
+const original = [1, 2, 3];
+const copy = original;            // NOT a copy — same reference
+copy[0] = 99;
+console.log(original[0]);         // 99
+
+// DEBUG — check identity before writing
+console.log(original === copy);   // true = same array, writes will affect both
+// fix: make a real shallow copy
+const realCopy = [...original];
+console.log(original === realCopy); // false</code></pre>
+
+    <p><strong>5. Negative-index write doesn't affect the last item.</strong> <code>arr[-1] = x</code> silently added a property named <code>"-1"</code> to the array object instead of updating the last item.</p>
+<pre class="language-javascript"><code class="language-javascript">// BUG — thought this updated the last item
+const arr = ['a', 'b', 'c'];
+arr[-1] = 'z';
+console.log(arr);                 // ['a', 'b', 'c']  ← unchanged
+console.log(arr.length);          // still 3
+
+// DEBUG — the phantom property is visible as a string key
+console.log(arr[-1]);             // 'z'  ← it's there, just not IN the array
+console.log(Object.keys(arr));    // ['0', '1', '2', '-1']  ← smoking gun
+// fix: use the real last-index formula
+arr[arr.length - 1] = 'z';</code></pre>
+
+    <p><strong>6. "Assignment to constant variable" error even though you're not reassigning.</strong> You tried to reassign the whole array instead of writing to an index. <code>const</code> blocks the first; not the second.</p>
+<pre class="language-javascript"><code class="language-javascript">// BUG — TypeError: Assignment to constant variable.
+const arr = ['a', 'b'];
+arr = ['x', 'y'];                 // reassigning the variable — blocked
+
+// DEBUG — look at what's on the left of =
+// if it's just the variable name, that's a reassignment
+// if it's variableName[something], that's an index write (allowed)
+arr[0] = 'x';                     // this is fine
+arr[1] = 'y';                     // this is fine</code></pre>
+
+    <p><strong>7. Nested write throws "Cannot set properties of undefined."</strong> You wrote <code>arr[i][j] = x</code> but <code>arr[i]</code> didn't exist yet, so there was nothing to write into.</p>
+<pre class="language-javascript"><code class="language-javascript">// BUG — TypeError from the inner write
+const grid = [];
+grid[0][0] = 'X';                 // grid[0] is undefined
+
+// DEBUG — read the intermediate step first
+console.log('grid[0] is:', grid[0]);   // undefined — that's the problem
+// fix: create the inner container before writing into it
+grid[0] = [];
+grid[0][0] = 'X';</code></pre>
+
+    <p><strong>8. Writing an object into every position, then updating "one" updates all.</strong> You used <code>.fill()</code> with an object, or wrote the same object reference into multiple slots. Every slot held the same object, so one edit hit them all.</p>
+<pre class="language-javascript"><code class="language-javascript">// BUG — updating grid[0] changes every position
+const grid = new Array(3).fill({ x: 0 });
+grid[0].x = 99;
+console.log(grid[1].x);           // 99
+console.log(grid[2].x);           // 99
+
+// DEBUG — identity check between slots
+console.log(grid[0] === grid[1]); // true — same object, edits are shared
+// fix: build a fresh object per position
+const grid2 = Array.from({ length: 3 }, () => ({ x: 0 }));
+console.log(grid2[0] === grid2[1]); // false</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-9-10-2-1': `
+    <p>Bracket assignment is a store: array plus index plus new value, and the value lands at that position in the array. It never inserts, never shifts, never copies. It just overwrites one slot — or creates that slot if it didn't exist yet. The operation is instant, in-place, and permanent for every reference to that array.</p>
+    <p>The click that connects everything: <em>bracket assignment is the write side of the same syntax you already use to read</em>. <code>arr[i]</code> is the expression that means "position i of arr." Put it on the right of <code>=</code> and it reads that position. Put it on the left of <code>=</code> and it writes to that position. This single symmetry is the entire array read/write API — one syntax, one rule (left is write, right is read), one mental model. Every other array method is either a specialization of this (writing to <code>.length</code>, writing to <code>arr[arr.length]</code>) or a helper built on top of it. Once bracket assignment clicks, arrays feel like a very small, very consistent tool.</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-9-10-2-2': `
+    <p><strong>Confusion: "bracket assignment creates a new array with the change applied"</strong></p>
+    <p>It doesn't. It mutates the existing array in place. Every reference to that array now sees the new value. If you need a new array with one change applied (common in React and other frameworks that expect immutable updates), use <code>.with(i, newValue)</code> or spread into a copy: <code>[...arr.slice(0, i), newValue, ...arr.slice(i + 1)]</code>.</p>
+
+    <p><strong>Confusion: "<code>const</code> means the array can't be modified"</strong></p>
+    <p><code>const</code> only prevents reassigning the variable itself. The array the variable points to is still mutable — you can write to indexes, push, pop, splice, and so on. If you want an actually immutable array, use <code>Object.freeze()</code>, but be aware it only freezes one level deep.</p>
+
+    <p><strong>Confusion: "<code>arr[-1] = x</code> sets the last item"</strong></p>
+    <p>It doesn't. Bracket notation doesn't understand negative indexes for either reads or writes. <code>arr[-1] = x</code> silently adds a property named <code>"-1"</code> to the array object — it won't show up in <code>.length</code>, iteration, or most methods. Use <code>arr[arr.length - 1] = x</code>. Also note: <code>.at(-1)</code> is read-only; you cannot assign to it.</p>
+
+    <p><strong>Confusion: "writing to a large index just gets ignored"</strong></p>
+    <p>It doesn't get ignored — it extends the array and fills the gap with empty slots ("holes"). <code>arr[100] = 'x'</code> on a 3-item array leaves you with a 101-item array with 97 holes. Reads from those holes return <code>undefined</code>, but iteration methods will skip them, which can lead to surprising bugs.</p>
+
+    <p><strong>Confusion: "bracket assignment and <code>.push()</code> are interchangeable"</strong></p>
+    <p>They overlap only for one specific case: <code>arr[arr.length] = x</code> is equivalent to <code>arr.push(x)</code> — both append one item to the end. Anywhere else, they're different: <code>.push()</code> always appends to the end; bracket assignment writes at a specific index (which may or may not be the end). Use <code>.push()</code> when you mean "append" — it's clearer and prevents accidental holes.</p>
+
+    <p><strong>Confusion: "assignment returns nothing, so I can't use it in an expression"</strong></p>
+    <p>Assignment IS an expression — it returns the value that was assigned. That's why <code>a = b = c = 5</code> works (each <code>=</code> returns the assigned value, which is then assigned by the one to its left). You rarely need to capture the return value, but it's worth knowing exists — it explains why chained assignments work and prevents surprise when you see them.</p>
+
+    <p><strong>Confusion: "I can update a string character with brackets the same way"</strong></p>
+    <p>You can't. <code>str[0] = 'X'</code> on a string looks like it should work, and it doesn't throw in non-strict mode, but strings are immutable in JavaScript — the assignment silently does nothing. If you need to "change a character," build a new string: <code>'X' + str.slice(1)</code>, or use <code>str.replace()</code>.</p>
+
+    <p><strong>Confusion: "writing to a nested position needs a special syntax"</strong></p>
+    <p>It doesn't. Chained brackets on the left work the same as chained brackets on the right: <code>grid[0][1] = x</code> is "reach into <code>grid[0]</code>, then write <code>x</code> to position 1 of whatever that is." Each pair of brackets is one step. The only rule: every step before the last one is a READ, and the last one is the WRITE — so all the earlier positions must already exist.</p>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-9-10-2-3': `
+<pre class="language-javascript"><code class="language-javascript">// Writing to the wrong index by off-by-one
+const items = ['a', 'b', 'c'];
+items[items.length] = 'd';
+// works but easy to get wrong — this appends because length is 3 and last valid is 2
+// intent was "replace last item"? use length - 1
+items[items.length - 1] = 'd';   // ['a', 'b', 'd']</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Trying to update the last item with a negative index
+const items = ['a', 'b', 'c'];
+items[-1] = 'z';
+// wrong: adds a property named "-1", does NOT touch the last item
+// fix: compute the real index
+items[items.length - 1] = 'z';   // ['a', 'b', 'z']</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Writing past the end and creating holes accidentally
+const items = ['a', 'b'];
+items[10] = 'z';
+// wrong: items is now length 11 with 8 empty slots
+// fix: if you meant to append, use push
+const items2 = ['a', 'b'];
+items2.push('z');                // ['a', 'b', 'z']</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Mutating a shared array without realizing it
+function markFirstDone(list) {
+  list[0].done = true;
+}
+const todos = [{ text: 'buy milk', done: false }];
+markFirstDone(todos);
+// todos[0].done is now true — the caller's array was mutated
+// fix (if you want to leave the caller's array alone): copy first
+function markFirstDoneCopy(list) {
+  return [{ ...list[0], done: true }, ...list.slice(1)];
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Trying to reassign a const array instead of writing an index
+const colors = ['red', 'green'];
+colors = ['blue', 'yellow'];
+// wrong: TypeError — const blocks reassigning the variable
+// fix: write each index, or use a let
+colors[0] = 'blue';
+colors[1] = 'yellow';</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Filling an array with the same object reference
+const grid = new Array(3).fill({ x: 0 });
+grid[0].x = 99;
+console.log(grid[1].x);
+// wrong: 99 — all three positions hold the SAME object
+// fix: build fresh objects per position
+const grid2 = Array.from({ length: 3 }, () => ({ x: 0 }));
+grid2[0].x = 99;
+console.log(grid2[1].x);          // 0</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Assigning to .at() as if it were a writable accessor
+const items = ['a', 'b', 'c'];
+items.at(-1) = 'z';
+// wrong: SyntaxError — .at() is read-only
+// fix: use bracket notation for writes
+items[items.length - 1] = 'z';</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Writing to a nested position that doesn't exist yet
+const grid = [];
+grid[0][0] = 'X';
+// wrong: TypeError — grid[0] is undefined, can't set .0 on undefined
+// fix: create the inner array first
+const grid2 = [];
+grid2[0] = [];
+grid2[0][0] = 'X';                // [['X']]</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Trying to "update" a character in a string
+const word = 'cat';
+word[0] = 'b';
+console.log(word);
+// wrong: still "cat" — strings are immutable, the write is silently ignored
+// fix: build a new string
+const word2 = 'b' + word.slice(1);   // "bat"</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-9-10-3-0': `
+<pre class="language-javascript"><code class="language-javascript">const colors = ['red', 'green', 'blue'];
+
+// Basic replacement
+colors[0] = 'crimson';       // ['crimson', 'green', 'blue']
+colors[1] = 'lime';          // ['crimson', 'lime', 'blue']
+colors[2] = 'navy';          // ['crimson', 'lime', 'navy']
+
+// Replace the last item
+colors[colors.length - 1] = 'indigo';    // ['crimson', 'lime', 'indigo']
+
+// Append by writing to length position (equivalent to push)
+colors[colors.length] = 'gold';          // ['crimson', 'lime', 'indigo', 'gold']
+
+// Index from a variable
+const i = 1;
+colors[i] = 'olive';
+
+// Index from an expression
+colors[colors.length - 2] = 'teal';
+
+// Toggle a boolean at position i
+const flags = [false, false, true];
+flags[0] = !flags[0];                    // [true, false, true]
+
+// Increment a number at position i
+const counts = [0, 0, 0];
+counts[1] = counts[1] + 1;               // [0, 1, 0]
+counts[1] += 1;                          // [0, 2, 0] — same, shorter
+
+// Swap two positions
+const arr = ['a', 'b', 'c'];
+const tmp = arr[0];
+arr[0] = arr[2];
+arr[2] = tmp;                            // ['c', 'b', 'a']
+
+// Update a property on an object item
+const users = [{ name: 'Os', age: 30 }];
+users[0].age = 31;                       // [{ name: 'Os', age: 31 }]
+
+// Replace an entire object item
+users[0] = { name: 'Osiris', age: 31 };
+
+// Chained assignment across positions
+const zeros = [1, 1, 1];
+zeros[0] = zeros[1] = zeros[2] = 0;      // [0, 0, 0]
+
+// Nested write (2D grid)
+const grid = [[0, 0], [0, 0]];
+grid[1][1] = 9;                          // [[0, 0], [0, 9]]
+
+// Fill an array by writing to each position
+const squares = new Array(5);
+for (let i = 0; i < squares.length; i++) {
+  squares[i] = i * i;
+}
+// [0, 1, 4, 9, 16]
+
+// Assignment returns the assigned value
+const captured = (colors[0] = 'black');
+// captured is "black", colors[0] is also "black"</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-9-10-3-1': `
+    <p><strong>Example: updating a cart item's quantity by index</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const idx = cart.findIndex(item => item.id === productId);
+if (idx !== -1) {
+  cart[idx].quantity = newQuantity;
+  renderCart();
+}</code></pre>
+
+    <p><strong>Example: toggling a todo's done state</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function toggleTodo(i) {
+  todos[i].done = !todos[i].done;
+  render();
+}</code></pre>
+
+    <p><strong>Example: writing a player's move into a game board</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function placeMove(row, col, player) {
+  if (board[row][col] === ' ') {
+    board[row][col] = player;
+    checkWin();
+  }
+}</code></pre>
+
+    <p><strong>Example: applying tax to every price in place</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < prices.length; i++) {
+  prices[i] = prices[i] * 1.0725;
+}</code></pre>
+
+    <p><strong>Example: replacing a message after the user edits it</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function editMessage(messageId, newText) {
+  const idx = messages.findIndex(m => m.id === messageId);
+  if (idx !== -1) {
+    messages[idx].text = newText;
+    messages[idx].editedAt = Date.now();
+  }
+}</code></pre>
+
+    <p><strong>Example: swapping two items in a re-orderable list</strong></p>
+<pre class="language-javascript"><code class="language-javascript">function swap(a, b) {
+  const tmp = items[a];
+  items[a] = items[b];
+  items[b] = tmp;
+  renderList();
+}</code></pre>
+
+    <p><strong>Example: filling a schedule grid with default entries</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (let day = 0; day &lt; 7; day++) {
+  schedule[day] = [];
+  for (let hour = 0; hour &lt; 24; hour++) {
+    schedule[day][hour] = null;
+  }
+}</code></pre>
+
+    <p><strong>Example: marking a form field as validated in a parallel state array</strong></p>
+<pre class="language-javascript"><code class="language-javascript">fieldStates[fieldIndex] = { valid: true, message: '' };</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-9-10-3-2': `
+    <ul>
+      <li><strong>Reading items with bracket notation</strong> → the read side of the same syntax; brackets on the right of <code>=</code></li>
+      <li><strong>Array .length</strong> → writing past <code>length - 1</code> extends the array and can create holes</li>
+      <li><strong>Array indexes</strong> → the numbers you put in the brackets; still 0-based</li>
+      <li><strong>Mutation vs returning new array</strong> → bracket assignment is the classic mutation; <code>.with()</code>, <code>.map()</code>, spread are the immutable alternatives</li>
+      <li><strong>const with arrays</strong> → doesn't block bracket assignment; only blocks reassigning the variable</li>
+      <li><strong>References vs primitives</strong> → arrays are references; a write is visible through every variable pointing to the same array</li>
+      <li><strong>.push() / .unshift()</strong> → the "append" and "prepend" specializations; use these when you mean "add to the end/start"</li>
+      <li><strong>.splice()</strong> → for inserting or removing items structurally, not just replacing</li>
+      <li><strong>.with(i, value)</strong> → modern method that returns a new array with one index replaced (no mutation)</li>
+      <li><strong>.fill()</strong> → writes the same value into a range of positions in one call</li>
+      <li><strong>Nested arrays / arrays of objects</strong> → chain brackets or add a property access to reach into nested structure</li>
+      <li><strong>Object.freeze()</strong> → the way to actually block bracket assignment on an array</li>
+      <li><strong>Debugging</strong> → most bracket-assignment bugs are wrong index, unexpected mutation, or accidental holes</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-9-10-3-3': `
+    <ul>
+      <li>Reading items with bracket notation</li>
+      <li>Array .length</li>
+      <li>First item</li>
+      <li>Last item</li>
+      <li>Adding items: push(), unshift()</li>
+      <li>Removing items: pop(), shift()</li>
+      <li>slice() and splice()</li>
+      <li>Mutation vs returning new array</li>
+      <li>Nested arrays</li>
+      <li>Common array mistakes</li>
+      <li>const declarations</li>
+    </ul>
+  `,
+
+  /* ========================================================= 
+     Sub-lesson: 3.10.11 Arrays → looping arrays
+   =======================================================*/
+
+  /* --- Chunk 0: What & How --- */
+
+  /* 0.0 What it is */
+  'topics-9-11-0-0': `
+    <p>The <code>for</code> loop, <code>for...of</code> loop, and <code>.forEach()</code> method are the three main tools for walking through every item in an array — running the same block of code once per item, with each item available inside the block. The classic <code>for</code> loop uses a counter (a variable, by convention named <code>i</code>, short for "index") that starts at <code>0</code>, increases by <code>1</code> each pass, and stops when it reaches the array's length; inside the loop, <code>arr[i]</code> gives you the current item. <code>for...of</code> is a shorter form that hands you each item directly without a counter. <code>.forEach()</code> is a method you call on the array itself, passing a function that runs once per item.</p>
+    <p>The underlying idea is the same for all three: visit every position in the array, in order, doing something with each item. The differences are ergonomic — how much boilerplate you write, whether the current index is available, and how much control you have over stopping early. The <code>for</code> loop is the most flexible (you can break out, skip iterations, count backwards, count in twos); <code>for...of</code> is the shortest when you just need each item; <code>.forEach()</code> reads naturally when you're already chaining array methods or writing in a callback-style codebase.</p>
+  `,
+
+  /* 0.1 Syntax */
+  'topics-9-11-0-1': `
+<pre class="language-javascript"><code class="language-javascript">const colors = ['red', 'green', 'blue'];
+
+// Classic for loop — counter-based, most flexible
+for (let i = 0; i < colors.length; i++) {
+  console.log(i, colors[i]);
+}
+// 0 "red"
+// 1 "green"
+// 2 "blue"
+
+// for...of — hands you each item directly, no counter
+for (const color of colors) {
+  console.log(color);
+}
+// "red"
+// "green"
+// "blue"
+
+// for...of WITH index using .entries()
+for (const [i, color] of colors.entries()) {
+  console.log(i, color);
+}
+
+// .forEach — callback runs once per item
+colors.forEach((color, i) => {
+  console.log(i, color);
+});
+
+// while loop — less common but works
+let i = 0;
+while (i < colors.length) {
+  console.log(colors[i]);
+  i++;
+}
+
+// Break out early (works in for and for...of, NOT in forEach)
+for (let i = 0; i < colors.length; i++) {
+  if (colors[i] === 'green') break;
+}
+
+// Skip an iteration with continue
+for (let i = 0; i < colors.length; i++) {
+  if (colors[i] === 'green') continue;
+  console.log(colors[i]);
+}
+
+// Walk backwards
+for (let i = colors.length - 1; i >= 0; i--) {
+  console.log(colors[i]);
+}
+
+// Every other item
+for (let i = 0; i < colors.length; i += 2) {
+  console.log(colors[i]);
+}
+
+// Wrong: for...in on an array — iterates KEYS as strings, includes inherited
+for (const key in colors) {
+  console.log(key);        // "0", "1", "2" (strings, not numbers)
+}
+// Use for...of for values, or .entries() for [index, value].</code></pre>
+  `,
+
+  /* 0.2 Anatomy / Breakdown */
+  'topics-9-11-0-2': `
+<pre class="language-javascript"><code class="language-javascript">const colors = ['red', 'green', 'blue'];
+
+for (let i = 0; i < colors.length; i++) {
+  console.log(colors[i]);
+}
+
+// Breaking down the for loop's header:
+//
+//   for (let i = 0; i < colors.length; i++)
+//        │        │                 │
+//        │        │                 └── UPDATE: runs after each pass (usually i++)
+//        │        └───────────────────── CONDITION: checked before each pass — keep looping while true
+//        └──────────────────────────── INIT: runs once, before the loop starts
+//
+// The body inside { } runs once per pass, with i holding the current index.
+
+// Step by step, what JS does when the loop runs:
+//
+// 1. Run INIT: let i = 0. i is now 0.
+// 2. Check CONDITION: is 0 < 3? Yes.
+// 3. Run the body: console.log(colors[0]) → prints "red".
+// 4. Run UPDATE: i++. i is now 1.
+// 5. Check CONDITION: is 1 < 3? Yes.
+// 6. Body: prints "green".
+// 7. UPDATE: i is 2. CONDITION: 2 < 3? Yes. Body: prints "blue".
+// 8. UPDATE: i is 3. CONDITION: 3 < 3? No. Loop ends.
+//
+// The three header pieces don't HAVE to be let i = 0, i < length, i++.
+// You can start anywhere, count any way, stop on any condition. The
+// convention exists because 99% of array loops walk 0 → length - 1.
+
+// Anatomy of a for...of loop:
+//
+//   for (const color of colors) { ... }
+//        │           │
+//        │           └── the ARRAY (or any iterable) to walk through
+//        └────────────── the LOOP VARIABLE — holds one item per pass
+//
+// The loop variable gets a fresh binding each pass — const is safe here
+// because you're not reassigning it, JS re-declares it every iteration.
+
+// Anatomy of a .forEach() call:
+//
+//   colors.forEach((color, i) => { ... });
+//                   │      │
+//                   │      └── OPTIONAL — the current index
+//                   └────────── REQUIRED — the current item
+//
+// The callback runs once per item. Its return value is ignored.
+// A third parameter (the whole array) is also available but rarely used.</code></pre>
+  `,
+
+  /* 0.3 Syntax Details That Matter */
+  'topics-9-11-0-3': `
+    <p><strong>Use <code>&lt;</code> in the condition, not <code>&lt;=</code>.</strong> The last valid index is <code>length - 1</code>, so <code>i &lt; arr.length</code> stops correctly. <code>i &lt;= arr.length</code> runs one extra pass where <code>arr[i]</code> is <code>undefined</code>. This is the single most common loop bug.</p>
+<pre class="language-javascript"><code class="language-javascript">const items = ['a', 'b', 'c'];
+
+for (let i = 0; i < items.length; i++) { console.log(items[i]); }
+// "a", "b", "c"
+
+for (let i = 0; i <= items.length; i++) { console.log(items[i]); }
+// "a", "b", "c", undefined  ← the extra pass reads past the end</code></pre>
+
+    <p><strong><code>for...of</code> iterates VALUES; <code>for...in</code> iterates KEYS.</strong> They look similar but do very different things, and mixing them up is a classic trap. On an array, <code>for...of</code> gives you each item; <code>for...in</code> gives you each index as a string, and worse, includes any properties added to the array or inherited from prototypes. Only use <code>for...in</code> on plain objects, never on arrays.</p>
+<pre class="language-javascript"><code class="language-javascript">const items = ['a', 'b', 'c'];
+
+for (const v of items) console.log(v);   // "a", "b", "c"  (values)
+for (const k in items) console.log(k);   // "0", "1", "2"  (string keys)</code></pre>
+
+    <p><strong><code>.forEach()</code> cannot be stopped with <code>break</code> or <code>return</code>.</strong> <code>break</code> throws a syntax error inside a callback, and <code>return</code> only exits that one callback call — the loop continues with the next item. If you need to stop early, use a regular <code>for</code> or <code>for...of</code>, or switch to <code>.some()</code> (which stops when the callback returns true) or <code>.every()</code> (stops when it returns false).</p>
+<pre class="language-javascript"><code class="language-javascript">// Wrong: return doesn't stop forEach
+[1, 2, 3].forEach(n => {
+  if (n === 2) return;    // only skips this ONE iteration
+  console.log(n);
+});
+// 1, 3
+
+// Right: for...of with break
+for (const n of [1, 2, 3]) {
+  if (n === 2) break;
+  console.log(n);
+}
+// 1</code></pre>
+
+    <p><strong>Each header piece of the classic <code>for</code> loop can be omitted, though rarely useful.</strong> <code>for (;;) { }</code> is a legal infinite loop. Usually all three pieces are present because that's what makes the loop clearly bounded — but knowing they're optional helps you read unusual code.</p>
+
+    <p><strong>Modifying the array's length while looping over it is a bug magnet.</strong> Adding items in a forward loop can cause an infinite loop; removing items shifts everything down, causing you to skip the item now at the current index. If you need to modify during iteration, walk backwards, or build a new array with <code>.filter()</code> / <code>.map()</code> and replace the original.</p>
+<pre class="language-javascript"><code class="language-javascript">// Wrong: removing while walking forward skips items
+const items = ['a', 'b', 'c', 'd'];
+for (let i = 0; i < items.length; i++) {
+  if (items[i] === 'b') items.splice(i, 1);
+}
+// After removing 'b' at index 1, 'c' shifts to index 1, but i moves to 2 — 'c' skipped.
+
+// Fix: walk backwards
+for (let i = items.length - 1; i >= 0; i--) {
+  if (items[i] === 'b') items.splice(i, 1);
+}
+// Or better: use filter
+const kept = items.filter(v => v !== 'b');</code></pre>
+
+    <p><strong><code>.forEach()</code> and other array methods skip empty slots (holes) in sparse arrays.</strong> If you built holes by writing past the end (<code>arr[10] = 'x'</code> on a 3-item array), a classic <code>for</code> loop will visit those holes and read <code>undefined</code>, while <code>.forEach()</code> and <code>.map()</code> silently skip them. This causes surprising off-by-one results if you're not expecting it.</p>
+  `,
+
+  /* --- Chunk 1: Why & When --- */
+
+  /* 1.0 What problem it solves */
+  'topics-9-11-1-0': `
+    <p>An array might hold 3 items or 3,000 — and often you don't know the number ahead of time (it comes from an API, a form, a database, user input). You can't write out <code>colors[0]</code>, <code>colors[1]</code>, <code>colors[2]</code> by hand for every possible length; that only works when you already know exactly how many items exist and which ones you want. Looping solves this: write the block of code once, describe what to do with "the current item," and JavaScript runs it however many times the array happens to have items. This is what makes arrays actually useful in real programs — the ability to write logic once and apply it to any length of data.</p>
+    <p>The specific problem the syntax solves is <em>iteration</em>: given an ordered collection, visit each item, in order, doing something with each. Not "find the one matching item" (that's search). Not "get a summary value" (that's reduce). Just "walk through, one at a time, with the current item available." Every other array pattern — searching, filtering, summing, rendering a list to the DOM, calling an API for each entry — is iteration plus some extra logic on top. If you understand loops well, the rest of the array API stops looking like a pile of methods and starts looking like specialized shortcuts for common iteration jobs.</p>
+  `,
+
+  /* 1.1 Why use it */
+  'topics-9-11-1-1': `
+    <p>Use a loop any time you need to do something with more than one item and either (a) you don't know at write-time how many items there are, or (b) you'd be repeating the same line of code with just a different index. The moment you'd write <code>colors[0]; colors[1]; colors[2];</code> by hand, that's the signal that a loop belongs there instead. A loop scales to any length automatically, keeps the logic in one place, and stays correct when the data grows or shrinks.</p>
+    <p>Choose which loop based on what the code needs. Need the index (to render numbered items, compare two arrays position-by-position, or write back into the array)? Use classic <code>for</code> or <code>.forEach((item, i) =&gt; ...)</code>. Need to stop early? Use <code>for</code> or <code>for...of</code> with <code>break</code>. Just want each item in order with no ceremony? <code>for...of</code> is the shortest. Doing a transformation, filter, or summary? Reach past raw loops for <code>.map()</code>, <code>.filter()</code>, <code>.reduce()</code> — they're loops with the boilerplate hidden AND they express intent (transform, keep-what-matches, boil-down) more directly than a bare <code>for</code>.</p>
+  `,
+
+  /* 1.2 Where you use it */
+  'topics-9-11-1-2': `
+<pre class="language-javascript"><code class="language-javascript">// Printing every item
+for (const color of colors) {
+  console.log(color);
+}
+
+// Totaling numbers in an array
+let total = 0;
+for (const price of prices) {
+  total += price;
+}
+
+// Rendering a list of DOM cards
+for (const product of products) {
+  container.appendChild(makeCard(product));
+}
+
+// Building an HTML string from an array
+let html = '';
+for (const item of items) {
+  html += \`<li>\${item}</li>\`;
+}
+list.innerHTML = html;
+
+// Searching manually (usually .find() is better, but the raw loop shows the shape)
+let found = null;
+for (const user of users) {
+  if (user.id === 42) {
+    found = user;
+    break;
+  }
+}
+
+// Walking two arrays position by position (classic for is best here)
+for (let i = 0; i < names.length; i++) {
+  console.log(\`\${names[i]} is \${ages[i]}\`);
+}
+
+// Applying an update to every item in place
+for (let i = 0; i < prices.length; i++) {
+  prices[i] = prices[i] * 1.0725;   // add tax
+}
+
+// Filtering into a new array manually (.filter() usually cleaner)
+const active = [];
+for (const user of users) {
+  if (user.active) active.push(user);
+}
+
+// Counting matches
+let count = 0;
+for (const msg of messages) {
+  if (msg.unread) count++;
+}
+
+// Walking a 2D grid — nested loops
+for (let row = 0; row < board.length; row++) {
+  for (let col = 0; col < board[row].length; col++) {
+    console.log(board[row][col]);
+  }
+}
+
+// Any time the same logic applies to every item, or every item in a range,
+// or every item until some condition — a loop is the tool.</code></pre>
+  `,
+
+  /* 1.3 Plain English explanation */
+  'topics-9-11-1-3': `
+    <p>Picture the row of lockers again. Looping is walking down the row from locker 0 to the last locker, opening each one and doing something with what's inside. You don't decide which lockers to visit — you visit them all, in order. The counter (<code>i</code>) is your position in the row; it starts at 0, moves up by one each step, and the walk ends when you'd step past the last locker.</p>
+    <p>The three loop forms are just three ways to describe that walk. Classic <code>for</code> is you carrying a clipboard, writing down which locker number you're at and how to move to the next one. <code>for...of</code> is someone handing you the contents of each locker as you pass — you don't need the number, just the thing inside. <code>.forEach()</code> is telling a helper "here's what I want done with each locker, please walk it for me" — the helper does the walking, calls your instructions once per locker, and you never touch the counter yourself.</p>
+    <p>All three end at the same place: every locker visited, whatever you wrote in the body run for every one. The choice between them is about what makes the code easier to read for THIS particular walk. Sometimes you need the locker number (which item is this?). Sometimes you only need the contents. Sometimes you want to stop early. Pick the loop that lets you say what you mean with the least noise.</p>
+  `,
+
+  /* 1.4 Mental model */
+  'topics-9-11-1-4': `
+    <p>A loop is one block of code paired with an instruction to run it many times, each time with a slightly different context (usually the current index or the current item). Write the body as if you only had one item to deal with; the loop's job is to feed each item to that body in turn. Every loop, regardless of form, follows this shape: <em>set up → check whether to continue → run the body → adjust → repeat</em>.</p>
+    <p>The key mental model: <em>the loop variable changes each pass; everything else you reference is either constant or has to be updated deliberately inside the body</em>. This is why accumulator patterns (<code>total += price</code>) declare the accumulator OUTSIDE the loop — inside, it would reset to zero every pass. It's also why closures over the loop variable behave differently for <code>var</code> (shared binding across all iterations, a classic bug) vs <code>let</code> (fresh binding each iteration, what you almost always want).</p>
+    <p>The other model that matters: <em>a loop is an expression of intent, not just a mechanism</em>. Reading <code>for (let i = 0; i &lt; arr.length; i++)</code> should read to you as "for each item in the array, in order." Reading <code>for...of</code> or <code>.forEach()</code> should also read as "for each item." When your loop needs a bunch of extra logic to skip items, break early, or track multiple things, that's often the code telling you a specialized array method (<code>.find()</code>, <code>.filter()</code>, <code>.reduce()</code>) would say what you actually mean more clearly.</p>
+    <p>Finally: <em>loops always run in order, always start from the beginning by default, and always end at the last item unless you break out</em>. There's no random access, no parallelism, no skipping to the middle. This is the point — iteration is deterministic and complete. If you need to jump around, don't loop; use direct bracket access (<code>arr[i]</code>) with an index you computed some other way.</p>
+  `,
+
+  /* 1.5 Step-by-step walkthrough */
+  'topics-9-11-1-5': `
+<pre class="language-javascript"><code class="language-javascript">// Scenario: given an array of prices, sum them into a total.
+const prices = [10, 25, 8, 42, 5];
+
+let total = 0;
+for (let i = 0; i < prices.length; i++) {
+  total = total + prices[i];
+}
+
+console.log(total);   // 90
+
+// What JS does, step by step:
+
+// Setup:
+//   total = 0
+//   (i doesn't exist yet — it lives inside the for loop's header)
+
+// Step 1: Run INIT: let i = 0.
+//   State: i = 0, total = 0
+
+// Step 2: Check CONDITION: is 0 < 5? Yes.
+// Step 3: Run BODY: total = total + prices[0].
+//   prices[0] is 10. total becomes 0 + 10 = 10.
+// Step 4: Run UPDATE: i++. i is now 1.
+
+// Step 5: CONDITION: 1 < 5? Yes.
+// Step 6: BODY: total = 10 + prices[1] = 10 + 25 = 35.
+// Step 7: UPDATE: i is now 2.
+
+// Step 8: CONDITION: 2 < 5? Yes.
+// Step 9: BODY: total = 35 + 8 = 43.
+// Step 10: UPDATE: i is 3.
+
+// Step 11: CONDITION: 3 < 5? Yes.
+// Step 12: BODY: total = 43 + 42 = 85.
+// Step 13: UPDATE: i is 4.
+
+// Step 14: CONDITION: 4 < 5? Yes.
+// Step 15: BODY: total = 85 + 5 = 90.
+// Step 16: UPDATE: i is 5.
+
+// Step 17: CONDITION: 5 < 5? NO. Loop ends. Control moves past the loop.
+
+// Step 18: console.log(total) → prints 90.
+
+// Observations:
+//   - The body ran 5 times, once per item.
+//   - i took values 0, 1, 2, 3, 4 during the body.
+//   - i briefly became 5 to trigger the exit — but the body did NOT run at 5.
+//   - total was declared OUTSIDE the loop so it survives across passes.
+//     If we'd written let total = 0; inside, it would reset to 0 each pass
+//     and the final result would just be the last price.
+
+// Same job with for...of (no counter needed):
+let total2 = 0;
+for (const price of prices) {
+  total2 += price;
+}
+
+// Same job with .forEach:
+let total3 = 0;
+prices.forEach(price => { total3 += price; });
+
+// Same job with .reduce (the specialized "boil down to one value" method):
+const total4 = prices.reduce((sum, price) => sum + price, 0);
+
+// All four produce 90. The for and for...of loops are the underlying pattern;
+// .forEach and .reduce are shortcuts built on top.</code></pre>
+  `,
+
+  /* --- Chunk 2: The Click --- */
+
+  /* 2.0 Debugging clue */
+  'topics-9-11-2-0': `
+    <p>Loop bugs cluster around a handful of patterns. For each one, the buggy shape is on top and the diagnostic check that catches it is right below.</p>
+
+    <p><strong>1. Off-by-one — one extra pass at the end.</strong> You used <code>&lt;=</code> instead of <code>&lt;</code>, so the loop runs one time past the last index and reads <code>undefined</code>.</p>
+<pre class="language-javascript"><code class="language-javascript">// BUG — last iteration reads undefined
+const items = ['a', 'b', 'c'];
+for (let i = 0; i <= items.length; i++) {
+  console.log(items[i]);
+}
+// "a", "b", "c", undefined
+
+// DEBUG — log i and items.length at the top of the body
+for (let i = 0; i <= items.length; i++) {
+  console.log('i:', i, 'length:', items.length, 'item:', items[i]);
+}
+// when i === length, item is undefined — that's the extra pass
+// fix: change <= to <</code></pre>
+
+    <p><strong>2. Infinite loop — the update was forgotten or wrong.</strong> The condition never becomes false because <code>i</code> never changes (or changes the wrong direction), so the browser tab freezes.</p>
+<pre class="language-javascript"><code class="language-javascript">// BUG — no i++ in a while loop, tab hangs
+let i = 0;
+while (i < items.length) {
+  console.log(items[i]);
+  // forgot i++
+}
+
+// DEBUG — add a safety counter that breaks out after N passes
+let i2 = 0;
+let safety = 0;
+while (i2 < items.length) {
+  console.log(items[i2]);
+  if (++safety > 1000) { console.warn('runaway loop'); break; }
+  i2++;    // the real fix
+}</code></pre>
+
+    <p><strong>3. <code>break</code> or <code>return</code> in <code>.forEach()</code> doesn't stop the loop.</strong> <code>break</code> is a syntax error inside a callback; <code>return</code> only skips this one iteration. The loop keeps going.</p>
+<pre class="language-javascript"><code class="language-javascript">// BUG — return doesn't stop forEach
+[1, 2, 3, 4].forEach(n => {
+  if (n === 2) return;
+  console.log(n);
+});
+// 1, 3, 4  — you wanted it to stop at 2
+
+// DEBUG — swap to for...of with break
+for (const n of [1, 2, 3, 4]) {
+  if (n === 2) break;
+  console.log(n);
+}
+// 1  — actually stops</code></pre>
+
+    <p><strong>4. Removing items while walking forward skips items.</strong> <code>splice()</code> shifts every later item down by one, but your counter still increments — so the item that shifted into the current slot never gets visited.</p>
+<pre class="language-javascript"><code class="language-javascript">// BUG — 'c' gets skipped
+const items = ['a', 'b', 'c', 'd'];
+for (let i = 0; i < items.length; i++) {
+  console.log('visiting', i, items[i]);
+  if (items[i] === 'b') items.splice(i, 1);
+}
+// visiting 0 a, visiting 1 b, visiting 2 d  ← 'c' never visited
+
+// DEBUG — walk backwards so removal doesn't affect later indexes
+const items2 = ['a', 'b', 'c', 'd'];
+for (let i = items2.length - 1; i >= 0; i--) {
+  console.log('visiting', i, items2[i]);
+  if (items2[i] === 'b') items2.splice(i, 1);
+}
+// or better: filter into a new array
+const kept = items.filter(v => v !== 'b');</code></pre>
+
+    <p><strong>5. <code>for...in</code> used on an array — you got string keys, not values.</strong> <code>for...in</code> iterates enumerable keys, not values, and includes inherited/added properties. Almost always a bug on arrays.</p>
+<pre class="language-javascript"><code class="language-javascript">// BUG — values look wrong because they're actually keys
+const items = ['a', 'b', 'c'];
+for (const x in items) {
+  console.log(x);
+}
+// "0", "1", "2"  ← strings, not the values
+
+// DEBUG — check the type
+for (const x in items) {
+  console.log(x, typeof x);   // "0" string, "1" string, "2" string
+}
+// fix: use for...of for values, or .entries() for [i, value]
+for (const v of items) console.log(v);           // "a", "b", "c"
+for (const [i, v] of items.entries()) console.log(i, v);</code></pre>
+
+    <p><strong>6. <code>await</code> inside <code>.forEach()</code> doesn't actually wait.</strong> The callback returns a promise, but <code>.forEach()</code> ignores return values, so all iterations kick off in parallel and the code after the loop runs before any of them finish.</p>
+<pre class="language-javascript"><code class="language-javascript">// BUG — "done" prints before any of the fetches finish
+async function loadAll(urls) {
+  urls.forEach(async url => {
+    const data = await fetch(url);
+    console.log('got', url);
+  });
+  console.log('done');
+}
+
+// DEBUG — use for...of instead; await works there naturally
+async function loadAllFixed(urls) {
+  for (const url of urls) {
+    const data = await fetch(url);
+    console.log('got', url);
+  }
+  console.log('done');
+}</code></pre>
+
+    <p><strong>7. Nested loops using the same counter name.</strong> Inner loop reuses <code>i</code>, quietly shadowing (or overwriting, with <code>var</code>) the outer loop's counter.</p>
+<pre class="language-javascript"><code class="language-javascript">// BUG — with var, inner i overwrites outer i and the outer loop breaks
+for (var i = 0; i < 3; i++) {
+  for (var i = 0; i < 3; i++) {
+    console.log(i);
+  }
+}
+// runs 3 times total, not 9
+
+// DEBUG — use let (fresh binding per scope) AND distinct names for clarity
+for (let row = 0; row < 3; row++) {
+  for (let col = 0; col < 3; col++) {
+    console.log(row, col);
+  }
+}
+// runs 9 times as intended</code></pre>
+
+    <p><strong>8. Accumulator declared inside the loop resets every pass.</strong> The variable holding your running total or built-up array lives only for one iteration, so at the end you only have the last pass's contribution.</p>
+<pre class="language-javascript"><code class="language-javascript">// BUG — total always ends up as the last price
+const prices = [10, 20, 30];
+for (const price of prices) {
+  let total = 0;         // resets every pass
+  total += price;
+  console.log(total);    // 10, 20, 30
+}
+
+// DEBUG — declare the accumulator OUTSIDE the loop
+let total = 0;
+for (const price of prices) {
+  total += price;
+}
+console.log(total);      // 60</code></pre>
+  `,
+
+  /* 2.1 The part that makes it click */
+  'topics-9-11-2-1': `
+    <p>A loop is "here's what to do with one item; do it for all of them, in order." Write the body as if you only had a single item to handle, then let the loop feed each item to that body in turn. The counter (<code>i</code>) or loop variable is the placeholder that changes each pass; everything else — accumulators, results, references to outside data — lives OUTSIDE the loop and persists across passes.</p>
+    <p>The other click: <em>every array method is a loop underneath</em>. <code>.forEach()</code>, <code>.map()</code>, <code>.filter()</code>, <code>.reduce()</code>, <code>.find()</code>, <code>.some()</code>, <code>.every()</code> are all variations of "loop through the array, do X with each item, produce Y." Once you see this, the whole array API stops being a pile of methods to memorize and starts looking like a menu of specialized loops. Learn to write a raw <code>for</code> loop first; then reach for the specialized method only when it says what you mean more clearly than the raw loop does. Both are fine; both compile down to the same machine work; the choice is about what reads better to the next person (including future-you).</p>
+  `,
+
+  /* 2.2 Common confusions */
+  'topics-9-11-2-2': `
+    <p><strong>Confusion: "<code>for...in</code> and <code>for...of</code> are the same thing"</strong></p>
+    <p>They're not. <code>for...in</code> iterates KEYS (as strings, including inherited properties on objects). <code>for...of</code> iterates VALUES (from any iterable — arrays, strings, Maps, Sets). On an array, <code>for...in</code> gives <code>"0"</code>, <code>"1"</code>, <code>"2"</code>; <code>for...of</code> gives the items. On a plain object, <code>for...of</code> throws — use <code>for...in</code> or <code>Object.keys()</code>. Rule of thumb: <code>for...of</code> for arrays, <code>for...in</code> only for objects when you specifically want the keys.</p>
+
+    <p><strong>Confusion: "<code>.forEach()</code> returns the transformed array"</strong></p>
+    <p>It doesn't — it returns <code>undefined</code>. Its job is side effects, not building a new array. If you want a transformed array back, use <code>.map()</code>. If you want a filtered array, use <code>.filter()</code>. <code>.forEach()</code> is only for cases where you're doing something with each item that doesn't produce a return value (logging, updating the DOM, mutating in place).</p>
+
+    <p><strong>Confusion: "I can <code>break</code> out of <code>.forEach()</code>"</strong></p>
+    <p>You can't. <code>break</code> is a syntax error inside a callback function. <code>return</code> works but only exits that one callback call — the loop keeps going. If early exit matters, use <code>for</code> or <code>for...of</code> with <code>break</code>, or switch to <code>.some()</code> / <code>.every()</code> / <code>.find()</code>, all of which stop as soon as their condition is satisfied.</p>
+
+    <p><strong>Confusion: "<code>await</code> inside <code>.forEach()</code> waits for each fetch"</strong></p>
+    <p>It doesn't. The <code>async</code> callback returns a promise, but <code>.forEach()</code> ignores return values, so all iterations start in parallel and the code AFTER the loop runs before any of them finish. Use <code>for...of</code> to await sequentially, or <code>Promise.all(arr.map(...))</code> to run in parallel and wait for all.</p>
+
+    <p><strong>Confusion: "the loop variable persists after the loop"</strong></p>
+    <p>Depends on how you declared it. With <code>let i</code> or <code>const item</code>, no — the variable is scoped to the loop and gone afterward. With <code>var i</code>, yes — <code>var</code> is function-scoped, so <code>i</code> leaks out into the surrounding function. Almost always use <code>let</code> for loop counters and <code>const</code> for <code>for...of</code> variables; that's the modern default.</p>
+
+    <p><strong>Confusion: "changing the array's length mid-loop is safe"</strong></p>
+    <p>It usually isn't. Adding items in a forward <code>for</code> loop can extend <code>length</code> and cause an infinite loop. Removing items shifts everything down and causes you to skip. If you need to modify during iteration, either walk backwards, or build a new array with <code>.filter()</code> / <code>.map()</code> and assign it back.</p>
+
+    <p><strong>Confusion: "<code>for...of</code> is slower than a classic <code>for</code>"</strong></p>
+    <p>In micro-benchmarks, sometimes — but almost never enough to matter in real code. Modern engines optimize both heavily. Pick the form that reads clearest for the job; only reach for raw <code>for</code> for performance if you've measured a real bottleneck.</p>
+
+    <p><strong>Confusion: "nested loops always mean <code>i</code> and <code>j</code>"</strong></p>
+    <p>They're a convention (again, from math), not a rule. Descriptive names — <code>row</code>/<code>col</code>, <code>outerIdx</code>/<code>innerIdx</code>, <code>userIdx</code>/<code>orderIdx</code> — read much more clearly in real code. Use <code>i</code>/<code>j</code> for genuinely generic algorithms; use descriptive names when the loops mean something specific.</p>
+  `,
+
+  /* 2.3 Common mistakes */
+  'topics-9-11-2-3': `
+<pre class="language-javascript"><code class="language-javascript">// Off-by-one with <=
+const items = ['a', 'b', 'c'];
+for (let i = 0; i <= items.length; i++) {
+  console.log(items[i]);
+}
+// wrong: last pass logs undefined
+// fix: use <
+for (let i = 0; i < items.length; i++) {
+  console.log(items[i]);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Forgetting the counter update — infinite loop
+let i = 0;
+while (i < items.length) {
+  console.log(items[i]);
+  // wrong: no i++, this hangs the tab
+}
+// fix: increment inside the body
+let j = 0;
+while (j < items.length) {
+  console.log(items[j]);
+  j++;
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Trying to break out of forEach
+[1, 2, 3, 4].forEach(n => {
+  if (n === 3) break;
+  console.log(n);
+});
+// wrong: SyntaxError — break isn't allowed inside a callback
+// fix: use for...of
+for (const n of [1, 2, 3, 4]) {
+  if (n === 3) break;
+  console.log(n);
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Using for...in on an array
+const items = ['a', 'b', 'c'];
+for (const x in items) {
+  console.log(x.toUpperCase());
+}
+// wrong: x is a string key ("0", "1", "2"), toUpperCase gives "0", "1", "2"
+// fix: use for...of for values
+for (const x of items) {
+  console.log(x.toUpperCase());   // "A", "B", "C"
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Removing items while walking forward
+const items = ['a', 'b', 'c', 'd'];
+for (let i = 0; i < items.length; i++) {
+  if (items[i] === 'b') items.splice(i, 1);
+}
+// wrong: 'c' gets skipped because it shifts into index 1 after removing 'b'
+// fix: walk backwards, or use filter
+const kept = ['a', 'b', 'c', 'd'].filter(v => v !== 'b');   // ['a', 'c', 'd']</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Awaiting inside forEach
+async function loadAll(urls) {
+  urls.forEach(async url => {
+    await fetch(url);
+  });
+  console.log('done');
+}
+// wrong: 'done' prints before any fetch finishes
+// fix: use for...of
+async function loadAllFixed(urls) {
+  for (const url of urls) {
+    await fetch(url);
+  }
+  console.log('done');
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Declaring the accumulator inside the loop
+const prices = [10, 20, 30];
+for (const p of prices) {
+  let total = 0;
+  total += p;
+}
+// wrong: total resets to 0 every pass — final total is unreachable
+// fix: declare outside
+let total = 0;
+for (const p of prices) {
+  total += p;
+}
+// total is 60</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Reusing the same counter name in nested loops with var
+for (var i = 0; i < 3; i++) {
+  for (var i = 0; i < 3; i++) {
+    console.log(i);
+  }
+}
+// wrong: inner i overwrites outer i — outer loop runs once
+// fix: use let and distinct names
+for (let row = 0; row < 3; row++) {
+  for (let col = 0; col < 3; col++) {
+    console.log(row, col);
+  }
+}</code></pre>
+
+<pre class="language-javascript"><code class="language-javascript">// Expecting forEach to return the built-up array
+const doubled = [1, 2, 3].forEach(n => n * 2);
+console.log(doubled);
+// wrong: undefined — forEach always returns undefined
+// fix: use map
+const doubled2 = [1, 2, 3].map(n => n * 2);   // [2, 4, 6]</code></pre>
+  `,
+
+  /* --- Chunk 3: In Practice --- */
+
+  /* 3.0 Tiny examples */
+  'topics-9-11-3-0': `
+<pre class="language-javascript"><code class="language-javascript">const colors = ['red', 'green', 'blue'];
+
+// Print each item
+for (const c of colors) console.log(c);
+
+// Print with index
+colors.forEach((c, i) => console.log(i, c));
+
+// Total a number array
+let total = 0;
+for (const n of [10, 20, 30]) total += n;
+// total === 60
+
+// Find the biggest number
+let max = -Infinity;
+for (const n of [7, 2, 9, 3]) {
+  if (n > max) max = n;
+}
+// max === 9
+
+// Count how many match a condition
+let unread = 0;
+for (const m of messages) {
+  if (m.read === false) unread++;
+}
+
+// Build a new array from an old one (manual — .map is cleaner)
+const upper = [];
+for (const c of colors) upper.push(c.toUpperCase());
+
+// Search manually (early exit)
+let found = null;
+for (const u of users) {
+  if (u.id === targetId) { found = u; break; }
+}
+
+// Walk backwards
+for (let i = colors.length - 1; i >= 0; i--) {
+  console.log(colors[i]);
+}
+
+// Every other item
+for (let i = 0; i < colors.length; i += 2) {
+  console.log(colors[i]);
+}
+
+// Nested loops for a 2D grid
+const grid = [[1, 2], [3, 4]];
+for (let r = 0; r < grid.length; r++) {
+  for (let c = 0; c < grid[r].length; c++) {
+    console.log(grid[r][c]);
+  }
+}
+
+// Loop with break on a condition
+for (const n of [1, 2, 3, 4, 5]) {
+  if (n > 3) break;
+  console.log(n);
+}
+// 1, 2, 3
+
+// Loop with continue to skip
+for (const n of [1, 2, 3, 4, 5]) {
+  if (n % 2 === 0) continue;
+  console.log(n);
+}
+// 1, 3, 5
+
+// Get both index and item from for...of
+for (const [i, c] of colors.entries()) {
+  console.log(i, c);
+}</code></pre>
+  `,
+
+  /* 3.1 Real website uses */
+  'topics-9-11-3-1': `
+    <p><strong>Example: rendering a list of product cards to the DOM</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (const product of products) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = \`<h3>\${product.name}</h3><p>\${product.price}</p>\`;
+  container.appendChild(card);
+}</code></pre>
+
+    <p><strong>Example: summing a shopping cart's line-item totals</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let subtotal = 0;
+for (const item of cart) {
+  subtotal += item.price * item.quantity;
+}</code></pre>
+
+    <p><strong>Example: counting unread messages for a notification badge</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let unread = 0;
+for (const m of messages) {
+  if (!m.read) unread++;
+}
+badge.textContent = unread;</code></pre>
+
+    <p><strong>Example: attaching a click handler to every button in a group</strong></p>
+<pre class="language-javascript"><code class="language-javascript">const buttons = document.querySelectorAll('.tab');
+buttons.forEach((btn, i) => {
+  btn.addEventListener('click', () => activateTab(i));
+});</code></pre>
+
+    <p><strong>Example: applying a tax rate to every price in place</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (let i = 0; i < prices.length; i++) {
+  prices[i] = prices[i] * 1.0725;
+}</code></pre>
+
+    <p><strong>Example: searching for the first matching user and stopping</strong></p>
+<pre class="language-javascript"><code class="language-javascript">let match = null;
+for (const u of users) {
+  if (u.email === targetEmail) {
+    match = u;
+    break;
+  }
+}
+if (match) showProfile(match);</code></pre>
+
+    <p><strong>Example: rendering a tic-tac-toe board from a 2D array</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (let row = 0; row < board.length; row++) {
+  for (let col = 0; col < board[row].length; col++) {
+    const cell = document.querySelector(\`[data-r="\${row}"][data-c="\${col}"]\`);
+    cell.textContent = board[row][col];
+  }
+}</code></pre>
+
+    <p><strong>Example: loading a list of URLs sequentially with await</strong></p>
+<pre class="language-javascript"><code class="language-javascript">for (const url of urls) {
+  const res = await fetch(url);
+  const data = await res.json();
+  results.push(data);
+}</code></pre>
+  `,
+
+  /* 3.2 Connects to */
+  'topics-9-11-3-2': `
+    <ul>
+      <li><strong>Reading items with bracket notation</strong> → what <code>arr[i]</code> does inside every classic <code>for</code> loop</li>
+      <li><strong>Updating items</strong> → what <code>arr[i] = value</code> does when you loop to mutate in place</li>
+      <li><strong>Array .length</strong> → the stopping point for almost every array loop</li>
+      <li><strong>if / else</strong> → the conditional logic inside loop bodies (skip, count, filter, break)</li>
+      <li><strong>break / continue</strong> → controlling flow inside classic <code>for</code> and <code>for...of</code></li>
+      <li><strong>.forEach()</strong> → the callback-style loop for side effects</li>
+      <li><strong>.map()</strong> → a loop that returns a new transformed array</li>
+      <li><strong>.filter()</strong> → a loop that returns items matching a condition</li>
+      <li><strong>.reduce()</strong> → a loop that boils an array down to one value</li>
+      <li><strong>.find() / .some() / .every()</strong> → loops with a specific search intent, short-circuit on match</li>
+      <li><strong>for...in</strong> → key iteration for OBJECTS (not arrays); easy to mix up with <code>for...of</code></li>
+      <li><strong>let vs var</strong> → loop variable scoping; <code>let</code> gives per-iteration binding, <code>var</code> leaks</li>
+      <li><strong>async / await</strong> → works inside <code>for</code> and <code>for...of</code>, breaks in <code>.forEach()</code></li>
+      <li><strong>Nested arrays</strong> → nested loops walk each dimension</li>
+      <li><strong>Debugging arrays</strong> → most loop bugs are off-by-one, wrong loop type, or accumulator scope</li>
+    </ul>
+  `,
+
+  /* 3.3 See also */
+  'topics-9-11-3-3': `
+    <ul>
+      <li>Reading items with bracket notation</li>
+      <li>Updating items</li>
+      <li>Array .length</li>
+      <li>forEach(), map(), filter()</li>
+      <li>reduce()</li>
+      <li>includes() and find()</li>
+      <li>for...of loops</li>
+      <li>break and continue</li>
+      <li>Nested arrays</li>
+      <li>Common array mistakes</li>
+      <li>let vs var</li>
+    </ul>
+  `,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /* ========================================================= 
    Sub-lesson: 3.10.21 Arrays → array of objects
  =======================================================*/
 
